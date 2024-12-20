@@ -38,7 +38,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::put('course-sub-category/{parent_id}/{sub_category_id}/update', [CourseSubCategoryController::class, 'update'])->name('course-sub-category.update');
     Route::delete('course-sub-category/{parent_id}/{sub_category_id}', [CourseSubCategoryController::class, 'destroy'])->name('course-sub-category.destroy');
     Route::put('course-sub-category/status-update/{id}', [CourseSubCategoryController::class, 'statusUpdate'])->name('course-sub-category.status-update');
-     /** Course Language Routes */
+    /** Course Language Routes */
     Route::put('course-language/status-update/{id}', [CourseLanguageController::class, 'statusUpdate'])->name('course-language.status-update');
     Route::resource('course-language', CourseLanguageController::class)->names('course-language');
     /** Course Level Routes */

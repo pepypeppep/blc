@@ -77,7 +77,6 @@ class AuthenticatedSessionController extends Controller
 
             return redirect()->back()->with($notification);
         }
-
     }
 
     /**

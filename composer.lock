@@ -4,8 +4,83 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c83ff2c9d75c6164b56b79cfc099409d",
+    "content-hash": "08ed1b237c3c6393d35b01b62b240640",
     "packages": [
+        {
+            "name": "anayarojo/shoppingcart",
+            "version": "4.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/anayarojo/laravel-shopping-cart.git",
+                "reference": "96e0f3c88cbb5ec2c28e09b1e480e28103fcbe1e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/anayarojo/laravel-shopping-cart/zipball/96e0f3c88cbb5ec2c28e09b1e480e28103fcbe1e",
+                "reference": "96e0f3c88cbb5ec2c28e09b1e480e28103fcbe1e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/events": "5.4.*||5.5.*||5.6.*||5.7.*||5.8.*||^6.0||^7.0||^8.0||^9.0||^10||^11",
+                "illuminate/session": "5.4.*||5.5.*||5.6.*||5.7.*||5.8.*||^6.0||^7.0||^8.0||^9.0||^10||^11",
+                "illuminate/support": "5.4.*||5.5.*||5.6.*||5.7.*||5.8.*||^6.0||^7.0||^8.0||^9.0||^10||^11",
+                "nesbot/carbon": "~1.20||^1.26.3||^2.0||^3.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "orchestra/testbench": "^3.4|^4.0|^5.0|^6.0|^9.0",
+                "phpunit/phpunit": "~5.0||~6.0||~7.0||~8.0||~9.0||~10.0"
+            },
+            "suggest": {
+                "gloudemans/notify": "Simple flash notifications for Laravel"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Cart": "Gloudemans\\Shoppingcart\\Facades\\Cart"
+                    },
+                    "providers": [
+                        "Gloudemans\\Shoppingcart\\ShoppingcartServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Gloudemans\\Shoppingcart\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rob Gloudemans",
+                    "email": "info@robgloudemans.nl",
+                    "homepage": "http://robgloudemans.nl/"
+                },
+                {
+                    "name": "Patrick Henninger",
+                    "email": "privat@skyraptor.eu",
+                    "homepage": "https://skyraptor.eu/"
+                },
+                {
+                    "name": "Raul Anaya Rojo",
+                    "email": "isw.anayarojo@gmail.com",
+                    "homepage": "https://anayarojo.net/"
+                }
+            ],
+            "description": "Laravel Shoppingcart",
+            "keywords": [
+                "laravel",
+                "shoppingcart"
+            ],
+            "support": {
+                "source": "https://github.com/anayarojo/laravel-shopping-cart/tree/4.2.3"
+            },
+            "time": "2024-03-19T21:32:39+00:00"
+        },
         {
             "name": "aws/aws-crt-php",
             "version": "v1.2.7",
@@ -2296,6 +2371,70 @@
                 "source": "https://github.com/laravel/prompts/tree/v0.3.2"
             },
             "time": "2024-11-12T14:59:47+00:00"
+        },
+        {
+            "name": "laravel/sanctum",
+            "version": "v4.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/sanctum.git",
+                "reference": "698064236a46df016e64a7eb059b1414e0b281df"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/sanctum/zipball/698064236a46df016e64a7eb059b1414e0b281df",
+                "reference": "698064236a46df016e64a7eb059b1414e0b281df",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/console": "^11.0",
+                "illuminate/contracts": "^11.0",
+                "illuminate/database": "^11.0",
+                "illuminate/support": "^11.0",
+                "php": "^8.2",
+                "symfony/console": "^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.6",
+                "orchestra/testbench": "^9.0",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^10.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Sanctum\\SanctumServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Sanctum\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Laravel Sanctum provides a featherweight authentication system for SPAs and simple APIs.",
+            "keywords": [
+                "auth",
+                "laravel",
+                "sanctum"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/sanctum/issues",
+                "source": "https://github.com/laravel/sanctum"
+            },
+            "time": "2024-12-11T16:40:21+00:00"
         },
         {
             "name": "laravel/serializable-closure",

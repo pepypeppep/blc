@@ -240,38 +240,40 @@
                                         <div class="instructor__social">
                                             <ul class="list-wrap justify-content-start">
                                                 @if ($course->instructor->facebook)
-                                                    <li><a href="{{ $course->instructor->facebook }}" aria-label="Facebook"><i
-                                                                class="fab fa-facebook-f"></i></a></li>
+                                                    <li><a href="{{ $course->instructor->facebook }}"
+                                                            aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                                    </li>
                                                 @endif
                                                 @if ($course->instructor->twitter)
-                                                    <li><a href="{{ $course->instructor->twitter }}" aria-label="Twitter"><i
-                                                                class="fab fa-twitter"></i></a></li>
+                                                    <li><a href="{{ $course->instructor->twitter }}"
+                                                            aria-label="Twitter"><i class="fab fa-twitter"></i></a></li>
                                                 @endif
                                                 @if ($course->instructor->linkedin)
-                                                    <li><a href="{{ $course->instructor->linkedin }}" aria-label="Linkedin"><i
-                                                                class="fab fa-linkedin"></i></a></li>
+                                                    <li><a href="{{ $course->instructor->linkedin }}"
+                                                            aria-label="Linkedin"><i class="fab fa-linkedin"></i></a></li>
                                                 @endif
                                                 @if ($course->instructor->github)
-                                                    <li><a href="{{ $course->instructor->github }}" aria-label="Github"><i
-                                                                class="fab fa-github"></i></a></li>
+                                                    <li><a href="{{ $course->instructor->github }}"
+                                                            aria-label="Github"><i class="fab fa-github"></i></a></li>
                                                 @endif
 
                                                 @if ($course->instructor->facebook)
-                                                <li><a href="{{ $course->instructor->facebook }}" aria-label="Facebook"><i
-                                                            class="fab fa-facebook-f"></i></a></li>
-                                            @endif
-                                            @if ($course->instructor->twitter)
-                                                <li><a href="{{ $course->instructor->twitter }}" aria-label="Twitter"><i
-                                                            class="fab fa-twitter"></i></a></li>
-                                            @endif
-                                            @if ($course->instructor->website)
-                                                <li><a href="{{ $course->instructor->website }}" aria-label="Website"><i
-                                                            class="fas fa-link"></i></a></li>
-                                            @endif
-                                            @if ($course->instructor->github)
-                                                <li><a href="{{ $course->instructor->github }}" aria-label="Github"><i
-                                                            class="fab fa-github"></i></a></li>
-                                            @endif
+                                                    <li><a href="{{ $course->instructor->facebook }}"
+                                                            aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                                    </li>
+                                                @endif
+                                                @if ($course->instructor->twitter)
+                                                    <li><a href="{{ $course->instructor->twitter }}"
+                                                            aria-label="Twitter"><i class="fab fa-twitter"></i></a></li>
+                                                @endif
+                                                @if ($course->instructor->website)
+                                                    <li><a href="{{ $course->instructor->website }}"
+                                                            aria-label="Website"><i class="fas fa-link"></i></a></li>
+                                                @endif
+                                                @if ($course->instructor->github)
+                                                    <li><a href="{{ $course->instructor->github }}"
+                                                            aria-label="Github"><i class="fab fa-github"></i></a></li>
+                                                @endif
                                             </ul>
                                         </div>
                                     </div>
@@ -290,20 +292,24 @@
                                                 <div class="instructor__social">
                                                     <ul class="list-wrap justify-content-start">
                                                         @if ($instructor->instructor->facebook)
-                                                            <li><a href="{{ $instructor->instructor->facebook }}" aria-label="Facebook"><i
+                                                            <li><a href="{{ $instructor->instructor->facebook }}"
+                                                                    aria-label="Facebook"><i
                                                                         class="fab fa-facebook-f"></i></a></li>
                                                         @endif
                                                         @if ($instructor->instructor->twitter)
-                                                            <li><a href="{{ $instructor->instructor->twitter }}" aria-label="Twitter"><i
+                                                            <li><a href="{{ $instructor->instructor->twitter }}"
+                                                                    aria-label="Twitter"><i
                                                                         class="fab fa-twitter"></i></a></li>
                                                         @endif
                                                         @if ($instructor->instructor->website)
-                                                            <li><a href="{{ $instructor->instructor->website }}" aria-label="Website"><i
-                                                                        class="fas fa-link"></i></a></li>
+                                                            <li><a href="{{ $instructor->instructor->website }}"
+                                                                    aria-label="Website"><i class="fas fa-link"></i></a>
+                                                            </li>
                                                         @endif
                                                         @if ($instructor->instructor->github)
-                                                            <li><a href="{{ $instructor->instructor->github }}" aria-label="Github"><i
-                                                                        class="fab fa-github"></i></a></li>
+                                                            <li><a href="{{ $instructor->instructor->github }}"
+                                                                    aria-label="Github"><i class="fab fa-github"></i></a>
+                                                            </li>
                                                         @endif
                                                     </ul>
                                                 </div>

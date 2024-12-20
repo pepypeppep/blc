@@ -16,13 +16,13 @@ class MaintenanceModeMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $cachedSetting = Cache::get('setting', null);
-        if ($cachedSetting !== null && $cachedSetting?->maintenance_mode) {
-            return redirect()->route('maintenance.mode')->with([
-                'alert-type' => 'error',
-                'messege' => __("Under Maintenance Mode you can't access"),
-            ]);
-        }
+        // $cachedSetting = Cache::get('setting', null);
+        // if ($cachedSetting !== null && $cachedSetting?->maintenance_mode) {
+        //     return redirect()->route('maintenance.mode')->with([
+        //         'alert-type' => 'error',
+        //         'messege' => __("Under Maintenance Mode you can't access"),
+        //     ]);
+        // }
 
         return $next($request);
     }

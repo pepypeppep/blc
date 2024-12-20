@@ -28,10 +28,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         try {
-            /** Cache settings */
-            $setting = Cache::rememberForever('setting', fn() => (object) Setting::pluck('value', 'key')->all());
-            $marketing_setting = Cache::rememberForever('marketing_setting', fn() => (object) MarketingSetting::pluck('value', 'key')->all());
-            $seo_setting = Cache::rememberForever('seo_setting', fn() => (object) SeoSetting::all()->groupBy('page_name')->mapWithKeys(function ($group, $pageName) {
+             /** Cache settings */
+            $setting = Cache::rememberForever('setting', fn () => (object) Setting::pluck('value', 'key')->all());
+            $marketing_setting = Cache::rememberForever('marketing_setting', fn () => (object) MarketingSetting::pluck('value', 'key')->all());
+            $seo_setting = Cache::rememberForever('seo_setting', fn () => (object) SeoSetting::all()->groupBy('page_name')->mapWithKeys(function ($group, $pageName) {
                 return [$pageName => $group->first()];
             }));
 

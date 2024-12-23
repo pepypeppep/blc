@@ -10,8 +10,10 @@ use Modules\Faq\app\Models\Faq;
 use Modules\Frontend\app\Models\Section;
 use Modules\Testimonial\app\Models\Testimonial;
 
-class AboutPageController extends Controller {
-    function index(): View {
+class AboutPageController extends Controller
+{
+    function index(): View
+    {
         $theme_name = Session::has('demo_theme') ? Session::get('demo_theme') : DEFAULT_HOMEPAGE;
 
         $sections = Section::whereHas("home", function ($q) use ($theme_name) {

@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
+            // $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->foreignId('user_id');
             $table->foreignId('course_id');
-            $table->boolean('has_access')->default(0);
+            $table->boolean('has_access')->default(1);
             $table->timestamps();
         });
     }

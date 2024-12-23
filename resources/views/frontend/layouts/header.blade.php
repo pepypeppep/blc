@@ -166,13 +166,6 @@
                             </div>
                             <div class="tgmenu__action">
                                 <ul class="list-wrap">
-                                    <li class="mini-cart-icon">
-                                        <a href="{{ route('cart') }}" class="cart-count">
-                                            <img src="{{ asset('frontend/img/icons/cart.svg') }}" class="injectable"
-                                                alt="img">
-                                            <span class="mini-cart-count">{{ Cart::content()->count() }}</span>
-                                        </a>
-                                    </li>
                                     <li class="mini-cart-icon user_icon">
                                         <a href="javascript:;" class="cart-count">
                                             <img src="{{ asset('frontend/img/icons/menu_user.svg') }}" alt="img">

@@ -17,55 +17,57 @@ use Modules\Course\app\Models\CourseLevel;
 
 class CoursePageController extends Controller
 {
-    function index() : View {
+    function index(): View
+    {
         $categories = CourseCategory::active()->whereNull('parent_id')->with(['translation'])->get();
         $languages = CourseLanguage::where('status', 1)->get();
         $levels = CourseLevel::where('status', 1)->with('translation')->get();
         return view('frontend.pages.course', compact('categories', 'languages', 'levels'));
     }
 
-    function fetchCourses(Request $request) {
+    function fetchCourses(Request $request)
+    {
         $query = Course::query();
         $query->where(['is_approved' => 'approved', 'status' => 'active']);
-        $query->whereHas('category.parentCategory', function($q) use ($request) {
+        $query->whereHas('category.parentCategory', function ($q) use ($request) {
             $q->where('status', 1);
         });
-        $query->whereHas('category', function($q) use ($request) {
+        $query->whereHas('category', function ($q) use ($request) {
             $q->where('status', 1);
         });
-            
-        $query->when($request->search, function($q) use ($request) {
-            $q->where('title', 'like', '%'.$request->search.'%');
+
+        $query->when($request->search, function ($q) use ($request) {
+            $q->where('title', 'like', '%' . $request->search . '%');
         });
-        $query->when($request->main_category, function($q) use ($request) {
-            $q->whereHas('category', function($q) use ($request) {
-                $q->whereHas('parentCategory', function($q) use ($request) {
+        $query->when($request->main_category, function ($q) use ($request) {
+            $q->whereHas('category', function ($q) use ($request) {
+                $q->whereHas('parentCategory', function ($q) use ($request) {
                     $q->where('slug', $request->main_category);
                 });
             });
         });
-        $query->when($request->category && $request->filled('category'), function($q) use ($request) {
+        $query->when($request->category && $request->filled('category'), function ($q) use ($request) {
             $categoriesIds = explode(',', $request->category);
             $q->whereIn('category_id', $categoriesIds);
         });
-        $query->when($request->language && $request->filled('language'), function($q) use ($request) {
+        $query->when($request->language && $request->filled('language'), function ($q) use ($request) {
             $languagesIds = explode(',', $request->language);
-            $q->whereHas('languages', function($q) use ($languagesIds) {
+            $q->whereHas('languages', function ($q) use ($languagesIds) {
                 $q->whereIn('language_id', $languagesIds);
             });
         });
 
-        $query->when($request->price, function($q) use ($request) {
-            if($request->price == 'paid') {
+        $query->when($request->price, function ($q) use ($request) {
+            if ($request->price == 'paid') {
                 $q->where('price', '>', 0);
-            }else {
+            } else {
                 $q->where('price', 0)->orWhere('price', null);
             }
         });
 
-        $query->when($request->level, function($q) use ($request) {
+        $query->when($request->level, function ($q) use ($request) {
             $levelsIds = explode(',', $request->level);
-            $q->whereHas('levels', function($q) use ($levelsIds) {
+            $q->whereHas('levels', function ($q) use ($levelsIds) {
                 $q->whereIn('level_id', $levelsIds);
             });
         });
@@ -86,8 +88,8 @@ class CoursePageController extends Controller
         ];
 
         // if main category is selected then show sub category card
-        if($request->main_category && $request->filled('main_category')) {
-            $subCategories = CourseCategory::whereHas('parentCategory', function($q) use ($request) {
+        if ($request->main_category && $request->filled('main_category')) {
+            $subCategories = CourseCategory::whereHas('parentCategory', function ($q) use ($request) {
                 $q->where('slug', $request->main_category);
             })->with('translation')->get();
             $categoriesIds = explode(',', $request->category);
@@ -97,14 +99,15 @@ class CoursePageController extends Controller
         return response()->json($data);
     }
 
-    function show(string $slug) {
-        $course = Course::active()->with(['chapters' => function($query) {
+    function show(string $slug)
+    {
+        $course = Course::active()->with(['chapters' => function ($query) {
             $query->orderBy('order', 'asc')->with(['chapterItems', 'chapterItems.lesson', 'chapterItems.quiz']);
         }])
-        ->withCount(['reviews' => function($query) {
-            $query->where('status', 1)->whereHas('course')->whereHas('user');
-        }])
-        ->where('slug', $slug)->firstOrFail();
+            ->withCount(['reviews' => function ($query) {
+                $query->where('status', 1)->whereHas('course')->whereHas('user');
+            }])
+            ->where('slug', $slug)->firstOrFail();
         $courseLessonCount = CourseChapterLesson::where('course_id', $course->id)->count();
         $courseQuizCount = Quiz::where('course_id', $course->id)->count();
         $reviews = CourseReview::where('course_id', $course->id)->where('status', 1)->whereHas('course')->whereHas('user')->orderBy('created_at', 'desc')->paginate(20);

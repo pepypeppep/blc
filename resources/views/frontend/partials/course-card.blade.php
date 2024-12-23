@@ -25,7 +25,14 @@
                         href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
                 </p>
                 <div class="courses__item-bottom">
-                    @if (in_array($course->id, session('enrollments') ?? []))
+                    <div class="button">
+                        <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
+                            data-id="">
+                            <span class="text">Lihat Detail</span>
+                            <i class="flaticon-arrow-right"></i>
+                        </a>
+                    </div>
+                    {{-- @if (in_array($course->id, session('enrollments') ?? []))
                         <div class="button">
                             <a href="{{ route('student.enrolled-courses') }}" class="already-enrolled-btn"
                                 data-id="">
@@ -47,14 +54,7 @@
                                 <i class="flaticon-arrow-right"></i>
                             </a>
                         </div>
-                    @endif
-                    @if ($course->price == 0)
-                        <h5 class="price">{{ __('Free') }}</h5>
-                    @elseif ($course->price > 0 && $course->discount > 0)
-                        <h5 class="price">{{ currency($course->discount) }}</h5>
-                    @else
-                        <h5 class="price">{{ currency($course->price) }}</h5>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
         </div>

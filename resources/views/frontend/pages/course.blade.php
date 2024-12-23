@@ -43,64 +43,6 @@
 
                             <div class="sub-category-holder "></div>
                             <div class="courses-widget">
-                                <h4 class="widget-title">{{ __('Language') }}</h4>
-                                <div class="courses-cat-list">
-                                    <ul class="list-wrap">
-
-                                        <li>
-                                            <div class="form-check">
-                                                <input class="form-check-input language-checkbox" type="checkbox"
-                                                    value="" id="lang">
-                                                <label class="form-check-label"
-                                                    for="lang">{{ __('All Language') }}</label>
-                                            </div>
-                                        </li>
-                                        @foreach ($languages as $language)
-                                            <li>
-                                                <div class="form-check">
-                                                    <input class="form-check-input language-checkbox" type="checkbox"
-                                                        value="{{ $language->id }}" id="lang_{{ $language->id }}">
-                                                    <label class="form-check-label"
-                                                        for="lang_{{ $language->id }}">{{ $language->name }}</label>
-                                                </div>
-                                            </li>
-                                        @endforeach
-
-                                    </ul>
-                                </div>
-                                <div class="show-more">
-                                </div>
-                            </div>
-                            <div class="courses-widget">
-                                <h4 class="widget-title">{{ __('Price') }}</h4>
-                                <div class="courses-cat-list">
-                                    <ul class="list-wrap">
-                                        <li>
-                                            <div class="form-check">
-                                                <input class="form-check-input price-checkbox" type="checkbox"
-                                                    value="" id="price_1">
-                                                <label class="form-check-label"
-                                                    for="price_1">{{ __('All Price') }}</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="form-check">
-                                                <input class="form-check-input price-checkbox" type="checkbox"
-                                                    value="free" id="price_2">
-                                                <label class="form-check-label" for="price_2">{{ __('Free') }}</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="form-check">
-                                                <input class="form-check-input price-checkbox" type="checkbox"
-                                                    value="paid" id="price_3">
-                                                <label class="form-check-label" for="price_3">{{ __('Paid') }}</label>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="courses-widget">
                                 <h4 class="widget-title">{{ __('Skill level') }}</h4>
                                 <div class="courses-cat-list">
                                     <ul class="list-wrap">
@@ -148,14 +90,13 @@
                                             </select>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="grid" role="tabpanel"
-                            aria-labelledby="grid-tab">
+                        <div class="tab-pane fade show active" id="grid" role="tabpanel" aria-labelledby="grid-tab">
                             <div
                                 class="course-holder row courses__grid-wrap row-cols-1 row-cols-xl-3 row-cols-lg-2 row-cols-md-2 row-cols-sm-1">
                                 {{-- dynamic content will go here via ajax --}}

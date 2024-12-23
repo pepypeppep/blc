@@ -21,7 +21,7 @@ class SetLocaleMiddleware
         if (!Session::has('lang')) {
             Session::put('lang', getDefaultLanguage());
             App::setlocale(Session::get('lang'));
-        }else{
+        } else {
             App::setlocale(Session::get('lang'));
         }
 

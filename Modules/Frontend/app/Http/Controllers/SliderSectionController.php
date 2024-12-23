@@ -15,13 +15,15 @@ use Modules\Frontend\app\Traits\UpdateSectionTraits;
 use Modules\Language\app\Traits\GenerateTranslationTrait;
 use Modules\Frontend\app\Http\Requests\SliderSectionUpdateRequest;
 
-class SliderSectionController extends Controller {
+class SliderSectionController extends Controller
+{
     use GenerateTranslationTrait, RedirectHelperTrait, UpdateSectionTraits;
 
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index()
+    {
         checkAdminHasPermissionAndThrowException('section.management');
         $code = request('code') ?? getSessionLanguage();
         if (!Language::where('code', $code)->exists()) {
@@ -39,7 +41,8 @@ class SliderSectionController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(SliderSectionUpdateRequest $request) {
+    public function update(SliderSectionUpdateRequest $request)
+    {
         checkAdminHasPermissionAndThrowException('section.management');
         $section = Section::getByName('slider_section');
 
@@ -47,15 +50,15 @@ class SliderSectionController extends Controller {
         $global_content = $this->updateSectionContent($section?->global_content, $request, [], ['image_one', 'image_two', 'image_three']);
 
         // Update translated content
-        $content = $this->updateSectionContent($section?->content, $request, ['short_title_one','title_one', 'sub_title_one', 'short_title_two','title_two', 'sub_title_two', 'short_title_three','title_three', 'sub_title_three']);
+        $content = $this->updateSectionContent($section?->content, $request, ['short_title_one', 'title_one', 'sub_title_one', 'short_title_two', 'title_two', 'sub_title_two', 'short_title_three', 'title_three', 'sub_title_three']);
 
         $section->update(['global_content' => $global_content]);
 
-        $translation = SectionTranslation::where('section_id', $section->id)->exists();
+        // $translation = SectionTranslation::where('section_id', $section->id)->exists();
 
-        if (!$translation) {
-            $this->generateTranslations(TranslationModels::Section, $section, 'section_id', $request);
-        }
+        // if (!$translation) {
+        //     $this->generateTranslations(TranslationModels::Section, $section, 'section_id', $request);
+        // }
 
         $this->updateTranslations($section, $request, $request->only('code'), ['content' => $content]);
 

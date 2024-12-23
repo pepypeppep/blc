@@ -43,7 +43,8 @@ $language_code = !empty(request('code')) ? request('code') : getSessionLanguage(
                                             <option
                                                 {{ request()->input('menu') == $val->id ? 'selected="selected"' : '' }}
                                                 value="{{ $val->id }}">
-                                                {{ Str::replace('_', ' ', ucwords($val->getTranslation($language_code)?->name)) }}</option>
+                                                {{ Str::replace('_', ' ', ucwords($val->getTranslation($language_code)?->name)) }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     <span class="submit-btn">

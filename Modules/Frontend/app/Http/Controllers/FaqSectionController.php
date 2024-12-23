@@ -13,13 +13,15 @@ use Modules\Language\app\Enums\TranslationModels;
 use Modules\Language\app\Models\Language;
 use Modules\Language\app\Traits\GenerateTranslationTrait;
 
-class FaqSectionController extends Controller {
+class FaqSectionController extends Controller
+{
     use GenerateTranslationTrait, RedirectHelperTrait, UpdateSectionTraits;
 
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index()
+    {
         checkAdminHasPermissionAndThrowException('section.management');
         $code = request('code') ?? getSessionLanguage();
         if (!Language::where('code', $code)->exists()) {
@@ -33,7 +35,8 @@ class FaqSectionController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         checkAdminHasPermissionAndThrowException('section.management');
         $request->validate([
             'short_title'     => ['required', 'string', 'max:255'],
@@ -67,11 +70,11 @@ class FaqSectionController extends Controller {
 
         $section->update(['global_content' => $global_content]);
 
-        $translation = SectionTranslation::where('section_id', $section->id)->exists();
+        // $translation = SectionTranslation::where('section_id', $section->id)->exists();
 
-        if (!$translation) {
-            $this->generateTranslations(TranslationModels::Section, $section, 'section_id', $request);
-        }
+        // if (!$translation) {
+        //     $this->generateTranslations(TranslationModels::Section, $section, 'section_id', $request);
+        // }
 
         $this->updateTranslations($section, $request, $request->only('code'), ['content' => $content]);
 

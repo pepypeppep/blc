@@ -17,7 +17,7 @@
         </li>
 
         <li class="{{ isRoute('admin.instructor-request-setting.*', 'active') }}">
-            <a class="nav-link" href="{{ route('admin.instructor-request-setting.index', ['code' => 'en']) }}">
+            <a class="nav-link" href="{{ route('admin.instructor-request-setting.index', ['code' => 'id']) }}">
                 {{ __('Request Settings') }}
             </a>
         </li>

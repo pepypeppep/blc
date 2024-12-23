@@ -20,22 +20,22 @@
                 class="fas fa-puzzle-piece"></i><span>{{ __('Sections') }}</span></a>
 
         <ul class="dropdown-menu">
-            @if(DEFAULT_HOMEPAGE != ThemeList::BUSINESS->value)
+            @if (DEFAULT_HOMEPAGE != ThemeList::BUSINESS->value)
                 <li class="{{ isRoute('admin.hero-section.*', 'active') }}">
-                    <a class="nav-link" href="{{ route('admin.hero-section.index', ['code' => 'en']) }}">
+                    <a class="nav-link" href="{{ route('admin.hero-section.index', ['code' => 'id']) }}">
                         {{ __('Hero Section') }}
                     </a>
                 </li>
             @endif
             @theme([ThemeList::BUSINESS->value])
                 <li class="{{ isRoute('admin.slider-section.*', 'active') }}">
-                    <a class="nav-link" href="{{ route('admin.slider-section.index', ['code' => 'en']) }}">
+                    <a class="nav-link" href="{{ route('admin.slider-section.index', ['code' => 'id']) }}">
                         {{ __('Slider Section') }}
                     </a>
                 </li>
             @endtheme
             <li class="{{ isRoute('admin.about-section.*', 'active') }}">
-                <a class="nav-link" href="{{ route('admin.about-section.index', ['code' => 'en']) }}">
+                <a class="nav-link" href="{{ route('admin.about-section.index', ['code' => 'id']) }}">
                     {{ __('About Section') }}
                 </a>
             </li>
@@ -51,26 +51,30 @@
             </li>
             <li class="{{ isRoute('admin.featured-instructor-section.*', 'active') }}">
                 <a class="nav-link"
-                    href="{{ route('admin.featured-instructor-section.edit', ['featured_instructor_section' => 1, 'code' => 'en']) }}">
+                    href="{{ route('admin.featured-instructor-section.edit', ['featured_instructor_section' => 1, 'code' => 'id']) }}">
                     {{ __('Featured Instructor') }}
                 </a>
             </li>
-            @theme([ThemeList::MAIN->value, ThemeList::ONLINE->value, ThemeList::UNIVERSITY->value,ThemeList::LANGUAGE->value])
+            @theme([
+                ThemeList::MAIN->value,
+                ThemeList::ONLINE->value,
+                ThemeList::UNIVERSITY->value,
+                ThemeList::LANGUAGE->value
+            ])
                 <li class="{{ isRoute('admin.counter-section.*', 'active') }}">
-                    <a class="nav-link" href="{{ route('admin.counter-section.index', ['code' => 'en']) }}">
+                    <a class="nav-link" href="{{ route('admin.counter-section.index', ['code' => 'id']) }}">
                         {{ __('Counter Section') }}
                     </a>
                 </li>
             @endtheme
-                <li class="{{ isRoute('admin.faq-section.*', 'active') }}">
-                    <a class="nav-link" href="{{ route('admin.faq-section.index', ['code' => 'en']) }}">
-                        {{ __('Faq Section') }}
-                    </a>
-                </li>
+            <li class="{{ isRoute('admin.faq-section.*', 'active') }}">
+                <a class="nav-link" href="{{ route('admin.faq-section.index', ['code' => 'id']) }}">
+                    {{ __('Faq Section') }}
+                </a>
+            </li>
 
             <li class="{{ isRoute('admin.our-features-section.*', 'active') }}">
-                <a class="nav-link"
-                    href="{{ route('admin.our-features-section.index', ['code' => 'en']) }}">
+                <a class="nav-link" href="{{ route('admin.our-features-section.index', ['code' => 'id']) }}">
                     {{ __('Our Features Section') }}
                 </a>
             </li>

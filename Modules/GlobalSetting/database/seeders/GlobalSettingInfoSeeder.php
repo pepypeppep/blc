@@ -14,10 +14,10 @@ class GlobalSettingInfoSeeder extends Seeder
     public function run(): void
     {
         $setting_data = [
-            'app_name' => 'SkillGro',
+            'app_name' => 'LMS Kabupaten Bantul',
             'version' => '2.0.0',
             'logo' => 'uploads/website-images/logo.svg',
-            'timezone' => 'Asia/Dhaka',
+            'timezone' => 'Asia/Jakarta',
             'favicon' => 'uploads/website-images/favicon.png',
             'cookie_status' => 'active',
             'border' => 'normal',

@@ -309,7 +309,7 @@ enum AllCountriesDetailsEnum: string
             (object) ['name' => 'Divehi, Dhivehi, Maldivian', 'code' => 'dv'],
             (object) ['name' => 'Dutch', 'code' => 'nl'],
             (object) ['name' => 'Dzongkha', 'code' => 'dz'],
-            (object) ['name' => 'English', 'code' => 'en'],
+            (object) ['name' => 'English', 'code' => 'id'],
             (object) ['name' => 'Esperanto', 'code' => 'eo'],
             (object) ['name' => 'Estonian', 'code' => 'et'],
             (object) ['name' => 'Ewe', 'code' => 'ee'],

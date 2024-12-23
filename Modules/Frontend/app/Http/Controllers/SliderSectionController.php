@@ -54,11 +54,11 @@ class SliderSectionController extends Controller
 
         $section->update(['global_content' => $global_content]);
 
-        $translation = SectionTranslation::where('section_id', $section->id)->exists();
+        // $translation = SectionTranslation::where('section_id', $section->id)->exists();
 
-        if (!$translation) {
-            $this->generateTranslations(TranslationModels::Section, $section, 'section_id', $request);
-        }
+        // if (!$translation) {
+        //     $this->generateTranslations(TranslationModels::Section, $section, 'section_id', $request);
+        // }
 
         $this->updateTranslations($section, $request, $request->only('code'), ['content' => $content]);
 

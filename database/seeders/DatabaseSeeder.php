@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
             EmailTemplateSeeder::class,
             SeoInfoSeeder::class,
             HomePagesSectionSeeder::class,
+            SectionTranslationSeeder::class,
             RolePermissionSeeder::class,
             AdminInfoSeeder::class,
             UserSeeder::class,
@@ -50,9 +51,14 @@ class DatabaseSeeder extends Seeder
             CertificateBuilderItemSeeder::class,
             FeaturedInstructorSectionSeeder::class,
             MenubuilderSeeder::class,
+            MenuItemSeeder::class,
+            SocialLinkSeeder::class,
             InstructorRequestSeeder::class,
             BadgeSeeder::class,
             // CourseSeeder::class,
+            FaqSeeder::class,
+            CustomPageSeeder::class,
+            FooterSettingSeeder::class
         ]);
     }
 }

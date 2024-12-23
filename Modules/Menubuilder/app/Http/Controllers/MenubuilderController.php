@@ -32,7 +32,7 @@ class MenubuilderController extends Controller
             return view('menubuilder::index')->with(['menulist' => $menuList, 'languages' => $languages, 'defaultMenusList' => $defaultMenusList]);
         }
 
-        if(empty(request()?->input('menu'))) {
+        if (empty(request()?->input('menu'))) {
             request()->merge(['menu' => Menus::first()->id ?? null]);
         }
 
@@ -40,20 +40,20 @@ class MenubuilderController extends Controller
         $menus = $menuItems->getAll(request()->input("menu"));
 
         $data = ['menus' => $menus, 'indmenu' => $menu, 'menulist' => $menuList, 'languages' => $languages, 'defaultMenusList' => $defaultMenusList];
-        if( config('menubuilder.use_roles')) {
-            $data['roles'] = DB::table(config('menubuilder.roles_table'))->select([config('menubuilder.roles_pk'),config('menubuilder.roles_title_field')])->get();
+        if (config('menubuilder.use_roles')) {
+            $data['roles'] = DB::table(config('menubuilder.roles_table'))->select([config('menubuilder.roles_pk'), config('menubuilder.roles_title_field')])->get();
             $data['role_pk'] = config('menubuilder.roles_pk');
             $data['role_title_field'] = config('menubuilder.roles_title_field');
         }
-        return view('menubuilder::index',$data);
+        return view('menubuilder::index', $data);
     }
 
     public function createMenu()
     {
         checkAdminHasPermissionAndThrowException('menu.create');
         $slug = Str::of(request()->input("menuname"))->slug('-');
-        if(Menus::where('slug',$slug)->exists()){
-            $slug = $slug .'-'.Str::random(5);
+        if (Menus::where('slug', $slug)->exists()) {
+            $slug = $slug . '-' . Str::random(5);
         }
 
         $menu = new Menus();
@@ -90,11 +90,11 @@ class MenubuilderController extends Controller
     public function updateMenu()
     {
         checkAdminHasPermissionAndThrowException('menu.update');
-        
+
         $menu = Menus::find(request()->input("idmenu"));
 
         $code = request()->input("code");
-        if($code == config('app.locale')){
+        if ($code == config('app.locale')) {
             $menu->name = request()->input("menuname");
             $menu->save();
         }
@@ -134,11 +134,11 @@ class MenubuilderController extends Controller
             foreach ($arrayData as $value) {
                 $menuItem = MenuItem::find($value['id']);
                 $code = $value['code'];
-                if($code == config('app.locale')){
+                if ($code == config('app.locale')) {
                     $menuItem->label = $value['label'];
                     $menuItem->link = $value['link'];
                     if (config('menubuilder.use_roles')) {
-                        $menuItem->role_id = $value['role_id'] ? $value['role_id'] : 0 ;
+                        $menuItem->role_id = $value['role_id'] ? $value['role_id'] : 0;
                     }
                     $menuItem->save();
                 }
@@ -153,16 +153,16 @@ class MenubuilderController extends Controller
             }
         } else {
             $menuItem = MenuItem::find(request()->input("id"));
-            if(request()->input("code") == config('app.locale')){
+            if (request()->input("code") == config('app.locale')) {
                 $menuItem->label = request()->input("label");
                 $menuItem->link = request()->input("url");
                 $menuItem->class = request()->input("clases");
                 if (config('menubuilder.use_roles')) {
-                    $menuItem->role_id = request()->input("role_id") ? request()->input("role_id") : 0 ;
+                    $menuItem->role_id = request()->input("role_id") ? request()->input("role_id") : 0;
                 }
                 $menuItem->save();
             }
-            
+
             request()->merge(['code' => request()->input("code")]);
 
             $this->updateTranslations(
@@ -179,7 +179,7 @@ class MenubuilderController extends Controller
         $menuItem->label = request()->input("labelmenu");
         $menuItem->link = request()->input("linkmenu");
         if (config('menubuilder.use_roles')) {
-            $menuItem->role_id = request()->input("rolemenu") ? request()->input("rolemenu")  : 0 ;
+            $menuItem->role_id = request()->input("rolemenu") ? request()->input("rolemenu")  : 0;
         }
         $menuItem->menu_id = request()->input("idmenu");
         $menuItem->sort = MenuItem::getNextSortRoot(request()->input("idmenu"));
@@ -193,6 +193,5 @@ class MenubuilderController extends Controller
             'menu_item_id',
             request(),
         );
-
     }
 }

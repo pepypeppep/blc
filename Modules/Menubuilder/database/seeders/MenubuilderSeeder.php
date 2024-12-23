@@ -44,6 +44,38 @@ class MenubuilderSeeder extends Seeder
 
         $menu_translations = array(
             array(
+                "id" => 3,
+                "menu_id" => 9,
+                "lang_code" => "id",
+                "name" => "nav_menu",
+                "created_at" => "2024-05-23 12:10:20",
+                "updated_at" => "2024-05-23 12:10:20",
+            ),
+            array(
+                "id" => 4,
+                "menu_id" => 10,
+                "lang_code" => "id",
+                "name" => "footer_col_one",
+                "created_at" => "2024-05-26 06:25:04",
+                "updated_at" => "2024-05-26 06:25:04",
+            ),
+            array(
+                "id" => 5,
+                "menu_id" => 13,
+                "lang_code" => "id",
+                "name" => "footer_col_two",
+                "created_at" => "2024-05-26 06:25:37",
+                "updated_at" => "2024-05-26 06:25:37",
+            ),
+            array(
+                "id" => 6,
+                "menu_id" => 14,
+                "lang_code" => "id",
+                "name" => "footer_col_three",
+                "created_at" => "2024-05-26 06:32:09",
+                "updated_at" => "2024-05-26 06:32:09",
+            ),
+            array(
                 "id" => 7,
                 "menu_id" => 9,
                 "lang_code" => "en",
@@ -52,7 +84,7 @@ class MenubuilderSeeder extends Seeder
                 "updated_at" => "2024-05-23 12:10:20",
             ),
             array(
-                "id" => 9,
+                "id" => 8,
                 "menu_id" => 10,
                 "lang_code" => "en",
                 "name" => "footer_col_one",
@@ -60,7 +92,7 @@ class MenubuilderSeeder extends Seeder
                 "updated_at" => "2024-05-26 06:25:04",
             ),
             array(
-                "id" => 15,
+                "id" => 9,
                 "menu_id" => 13,
                 "lang_code" => "en",
                 "name" => "footer_col_two",
@@ -68,7 +100,7 @@ class MenubuilderSeeder extends Seeder
                 "updated_at" => "2024-05-26 06:25:37",
             ),
             array(
-                "id" => 17,
+                "id" => 10,
                 "menu_id" => 14,
                 "lang_code" => "en",
                 "name" => "footer_col_three",
@@ -140,9 +172,9 @@ class MenubuilderSeeder extends Seeder
                 "updated_at" => "2024-05-31 17:15:13",
             ),
         );
-        
-        
-       \DB::table('menus')->insert($menus); 
-       \DB::table('menu_translations')->insert($menu_translations);
+
+
+        \DB::table('menus')->insert($menus);
+        \DB::table('menu_translations')->insert($menu_translations);
     }
 }

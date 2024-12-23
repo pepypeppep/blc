@@ -31,13 +31,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            InstallerDatabaseSeeder::class,
+            // InstallerDatabaseSeeder::class,
             LanguageSeeder::class,
-            CurrencySeeder::class,
+            // CurrencySeeder::class,
             GlobalSettingInfoSeeder::class,
             MarketingSettingSeeder::class,
-            BasicPaymentInfoSeeder::class,
-            PaymentGatewaySeeder::class,
+            // BasicPaymentInfoSeeder::class,
+            // PaymentGatewaySeeder::class,
             CustomPaginationSeeder::class,
             EmailTemplateSeeder::class,
             SeoInfoSeeder::class,
@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             AdminInfoSeeder::class,
             UserSeeder::class,
-            PageBuilderDatabaseSeeder::class,
+            // PageBuilderDatabaseSeeder::class,
             CertificateBuilderSeeder::class,
             CertificateBuilderItemSeeder::class,
             FeaturedInstructorSectionSeeder::class,

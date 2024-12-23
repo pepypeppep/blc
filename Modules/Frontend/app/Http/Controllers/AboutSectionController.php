@@ -14,12 +14,14 @@ use Modules\Language\app\Enums\TranslationModels;
 use Modules\Language\app\Models\Language;
 use Modules\Language\app\Traits\GenerateTranslationTrait;
 
-class AboutSectionController extends Controller {
+class AboutSectionController extends Controller
+{
     use GenerateTranslationTrait, RedirectHelperTrait, UpdateSectionTraits;
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index()
+    {
         checkAdminHasPermissionAndThrowException('section.management');
         $code = request('code') ?? getSessionLanguage();
         if (!Language::where('code', $code)->exists()) {
@@ -33,7 +35,8 @@ class AboutSectionController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(AboutSectionUpdateRequest $request) {
+    public function update(AboutSectionUpdateRequest $request)
+    {
         checkAdminHasPermissionAndThrowException('section.management');
         $section = Section::getByName('about_section');
 
@@ -55,5 +58,4 @@ class AboutSectionController extends Controller {
 
         return $this->redirectWithMessage(RedirectType::UPDATE->value);
     }
-
 }

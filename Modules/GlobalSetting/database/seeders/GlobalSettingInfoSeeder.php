@@ -57,7 +57,7 @@ class GlobalSettingInfoSeeder extends Seeder
             'mail_password' => 'mail_password',
             'mail_port' => 'mail_port',
             'mail_encryption' => 'ssl',
-            'mail_sender_name' => 'WebSolutionUs',
+            'mail_sender_name' => 'bantulkab',
             'contact_message_receiver_mail' => 'receiver@gmail.com',
             'pusher_app_id' => 'pusher_app_id',
             'pusher_app_key' => 'pusher_app_key',
@@ -69,7 +69,7 @@ class GlobalSettingInfoSeeder extends Seeder
             'maintenance_mode' => 0,
             'maintenance_title' => 'Website Under maintenance',
             'maintenance_description' => '<p>We are currently performing maintenance on our website to<br>improve your experience. Please check back later.</p>
-            <p><a title="Websolutions" href="https://websolutionus.com/">Websolutions</a></p>',
+            <p><a title="BantulKab" href="https://bantulkab.go.id/">BantulKab</a></p>',
             'last_update_date' => date('Y-m-d H:i:s'),
             'is_queable' => 'inactive',
             'commission_rate' => 0,
@@ -97,7 +97,7 @@ class GlobalSettingInfoSeeder extends Seeder
             'wasabi_region' => 'us-east-1',
             'wasabi_bucket' => 'wasabi_bucket',
             'wasabi_status' => 'inactive',
-            
+
             'aws_access_id' => 'aws_access_id',
             'aws_secret_key' => 'aws_secret_key',
             'aws_region' => 'us-east-1',
@@ -106,11 +106,11 @@ class GlobalSettingInfoSeeder extends Seeder
             'header_topbar_status' => 'active',
             'cursor_dot_status' => 'active',
             'header_social_status' => 'active',
-            'watermark_img'=> 'uploads/website-images/watermark.svg',
-            'position'=> 'top_right',
-            'opacity'=> '0.7',
-            'max_width'=> '300',
-            'watermark_status'=> 'active',
+            'watermark_img' => 'uploads/website-images/watermark.svg',
+            'position' => 'top_right',
+            'opacity' => '0.7',
+            'max_width' => '300',
+            'watermark_status' => 'active',
         ];
 
         foreach ($setting_data as $index => $setting_item) {

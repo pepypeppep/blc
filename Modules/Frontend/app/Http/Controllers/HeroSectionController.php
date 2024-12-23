@@ -14,13 +14,15 @@ use Modules\Frontend\app\Traits\UpdateSectionTraits;
 use Modules\Language\app\Traits\GenerateTranslationTrait;
 use Modules\Frontend\app\Http\Requests\HeroSectionUpdateRequest;
 
-class HeroSectionController extends Controller {
+class HeroSectionController extends Controller
+{
     use GenerateTranslationTrait, RedirectHelperTrait, UpdateSectionTraits;
 
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index()
+    {
         checkAdminHasPermissionAndThrowException('section.management');
         $code = request('code') ?? getSessionLanguage();
         if (!Language::where('code', $code)->exists()) {
@@ -38,7 +40,8 @@ class HeroSectionController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(HeroSectionUpdateRequest $request) {
+    public function update(HeroSectionUpdateRequest $request)
+    {
         checkAdminHasPermissionAndThrowException('section.management');
         $section = Section::getByName('hero_section');
 
@@ -46,7 +49,7 @@ class HeroSectionController extends Controller {
         $global_content = $this->updateSectionContent($section?->global_content, $request, ['action_button_url', 'video_button_url', 'booking_number'], ['banner_image', 'banner_background', 'banner_background_two', 'hero_background', 'enroll_students_image']);
 
         // Update translated content
-        $content = $this->updateSectionContent($section?->content, $request, ['short_title', 'title', 'sub_title', 'total_student', 'total_instructor', 'total_courses','average_reviews', 'video_button_text', 'action_button_text']);
+        $content = $this->updateSectionContent($section?->content, $request, ['short_title', 'title', 'sub_title', 'total_student', 'total_instructor', 'total_courses', 'average_reviews', 'video_button_text', 'action_button_text']);
 
         $section->update(['global_content' => $global_content]);
 

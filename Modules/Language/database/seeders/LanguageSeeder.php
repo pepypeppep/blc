@@ -13,20 +13,26 @@ class LanguageSeeder extends Seeder
     public function run(): void
     {
         $language = new Language();
-        $language->name = 'English';
-        $language->code = 'en';
+        $language->name = 'Indonesia';
+        $language->code = 'id';
         $language->is_default = true;
         $language->save();
 
-        $language = new Language();
-        $language->name = 'Hindi';
-        $language->code = 'hi';
-        $language->save();
+        // $language = new Language();
+        // $language->name = 'English';
+        // $language->code = 'en';
+        // $language->is_default = true;
+        // $language->save();
 
-        $language = new Language();
-        $language->name = 'Arabic';
-        $language->code = 'ar';
-        $language->direction = 'rtl';
-        $language->save();
+        // $language = new Language();
+        // $language->name = 'Hindi';
+        // $language->code = 'hi';
+        // $language->save();
+
+        // $language = new Language();
+        // $language->name = 'Arabic';
+        // $language->code = 'ar';
+        // $language->direction = 'rtl';
+        // $language->save();
     }
 }

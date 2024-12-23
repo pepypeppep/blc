@@ -36,13 +36,13 @@
                     <label class="form-file-manager-label" for="">{{ __('Path') }}
                         <code>*</code></label>
                     <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1">
-                            <a data-input="path" data-preview="holder" class="file-manager">
+                        <span class="input-group-text file-choose" id="basic-addon1">
+                            <a data-input="path" data-preview="holder">
                                 <i class="fa fa-picture-o"></i> {{ __('Choose') }}
                             </a>
                         </span>
-                        <input id="path" readonly class="form-control file-manager-input" type="text"
-                            name="upload_path" value="">
+                        <input class="form-control d-none" type="file" name="upload_path" accept=".pdf, .docx, .txt">
+                        <input id="path" readonly class="form-control file-choose" type="text">
                     </div>
                 </div>
             </div>
@@ -71,3 +71,18 @@
         </div>
     </form>
 </div>
+<script>
+    $(document).ready(function() {
+        $(".file-choose").on("click", function() {
+            $("input[name='upload_path']").trigger("click");
+            $("input[name='upload_path']").on("change", function() {
+                var file = $(this).get(0).files[0];
+                var fileName = file.name;
+                $("#path").val(fileName);
+
+                var fileExt = fileName.split('.').pop().toLowerCase();
+                $('#file_type_select').val(fileExt).trigger('change');
+            });
+        });
+    });
+</script>

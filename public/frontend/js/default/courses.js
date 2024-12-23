@@ -15,6 +15,15 @@ const supported_source = [
 
 /** On Document Load */
 $(document).ready(function () {
+    $(".thumbnail-choose").on("click", function () {
+        $("input[name='thumbnail']").trigger("click");
+        $("input[name='thumbnail']").on("change", function () {
+            var file = $(this).get(0).files[0];
+            var fileName = file.name;
+            $("#thumbnail").val(fileName);
+        });
+    });
+
     if ($("#demo_video_storage").val() == "upload") {
         $(".upload").removeClass("d-none");
         $(".external_link").addClass("d-none");
@@ -194,30 +203,36 @@ $(document).ready(function () {
         $(".add-course-section-modal").modal("show");
     });
 
-    $("body").on("change", ".add_lesson_form #source, .update_lesson_form #source", function () {
-        const select_source = $(this).val();
-        const isUpload = select_source === "upload";
-        const isCloud = (select_source == "wasabi" || select_source == "aws");
-        const isMediaSource = ['youtube', 'vimeo'].includes(select_source);
-    
-        // Reset file type options visibility
-        $("#file_type option").show();
-        
-        // Manage visibility based on source type
-        $(".upload").toggleClass("d-none", !isUpload);
-        $(".cloud_storage").toggleClass("d-none", !isCloud);
-        $(".link_path").toggleClass("d-none", isUpload);
-        $("#input_link").attr("readonly", isCloud);
+    $("body").on(
+        "change",
+        ".add_lesson_form #source, .update_lesson_form #source",
+        function () {
+            const select_source = $(this).val();
+            const isUpload = select_source === "upload";
+            const isCloud = select_source == "wasabi" || select_source == "aws";
+            const isMediaSource = ["youtube", "vimeo"].includes(select_source);
 
-        // Toggle file type options
-        $("#file_type option").each(function () {
-            const showOption = isMediaSource ? $(this).val() === "video" : true;
-            $(this).toggle(showOption);
-        });
+            // Reset file type options visibility
+            $("#file_type option").show();
 
-        // Reset the file type selection
-        $("#file_type").val("");
-    });
+            // Manage visibility based on source type
+            $(".upload").toggleClass("d-none", !isUpload);
+            $(".cloud_storage").toggleClass("d-none", !isCloud);
+            $(".link_path").toggleClass("d-none", isUpload);
+            $("#input_link").attr("readonly", isCloud);
+
+            // Toggle file type options
+            $("#file_type option").each(function () {
+                const showOption = isMediaSource
+                    ? $(this).val() === "video"
+                    : true;
+                $(this).toggle(showOption);
+            });
+
+            // Reset the file type selection
+            $("#file_type").val("");
+        }
+    );
 
     $("body").on("change", "#file_type", function () {
         let filetype = $(this).val();
@@ -234,16 +249,16 @@ $(document).ready(function () {
 
     $("body").on("change", "#live_type", function () {
         let live_type = $(this).val();
-        if (live_type === 'jitsi') {
-            $(".meeting-id-box").removeClass('col-md-6').addClass('col-md-12');
-            $(".zoom-box").addClass('d-none');
-            $(".zoom-alert-box").addClass('d-none');
-            $(".jitsi-alert-box").removeClass('d-none');
+        if (live_type === "jitsi") {
+            $(".meeting-id-box").removeClass("col-md-6").addClass("col-md-12");
+            $(".zoom-box").addClass("d-none");
+            $(".zoom-alert-box").addClass("d-none");
+            $(".jitsi-alert-box").removeClass("d-none");
         } else {
-            $(".meeting-id-box").removeClass('col-md-12').addClass('col-md-6');
-            $(".zoom-box").removeClass('d-none');
-            $(".zoom-alert-box").removeClass('d-none');
-            $(".jitsi-alert-box").addClass('d-none');
+            $(".meeting-id-box").removeClass("col-md-12").addClass("col-md-6");
+            $(".zoom-box").removeClass("d-none");
+            $(".zoom-alert-box").removeClass("d-none");
+            $(".jitsi-alert-box").addClass("d-none");
         }
     });
 
@@ -300,34 +315,34 @@ $(document).ready(function () {
         e.preventDefault();
         $(".progress").removeClass("d-none");
         $("body .dynamic-modal .submit-btn").prop("disabled", true);
-        var fileInput = $('#file-input')[0];
+        var fileInput = $("#file-input")[0];
 
         // Check if files are selected
         if (fileInput.files.length === 0) {
-            toastr.error('Please select a file.');
+            toastr.error("Please select a file.");
             $(".progress").addClass("d-none");
             $("body .dynamic-modal .submit-btn").prop("disabled", false);
             return;
         }
         var formData = new FormData();
-        formData.append('_token',$('meta[name="csrf-token"]').attr("content"));
-        formData.append('file', fileInput.files[0]);
-        formData.append('source', $("#source").val());
+        formData.append("_token", $('meta[name="csrf-token"]').attr("content"));
+        formData.append("file", fileInput.files[0]);
+        formData.append("source", $("#source").val());
 
         $.ajax({
-            url: base_url + '/instructor/cloud/store',
-            type: 'POST',
+            url: base_url + "/instructor/cloud/store",
+            type: "POST",
             data: formData,
             contentType: false,
             processData: false,
-            success: function(response) {
-                if(response.status == "success"){
+            success: function (response) {
+                if (response.status == "success") {
                     $("#input_link").val(response.path);
                     toastr.success(response.message);
-                }else{
+                } else {
                     toastr.error(response.message);
                 }
-                fileInput.value = '';
+                fileInput.value = "";
             },
             error: function (xhr, status, error) {
                 let errors = xhr.responseJSON.errors;
@@ -335,10 +350,10 @@ $(document).ready(function () {
                     toastr.error(value);
                 });
             },
-            complete: function(){
+            complete: function () {
                 $(".progress").addClass("d-none");
                 $("body .dynamic-modal .submit-btn").prop("disabled", false);
-            }
+            },
         });
     });
 
@@ -346,10 +361,14 @@ $(document).ready(function () {
     $("body").on("submit", ".add_lesson_form", function (e) {
         e.preventDefault();
         let url = $(this).attr("action");
+        var formData = new FormData(this);
         $.ajax({
             method: "POST",
             url: url,
-            data: $(this).serialize(),
+            data: formData,
+            contentType: false,
+            processData: false,
+            // data: $(this).serialize(),
             beforeSend: function () {
                 $("body .dynamic-modal .submit-btn")
                     .prop("disabled", true)
@@ -408,10 +427,14 @@ $(document).ready(function () {
     $("body").on("submit", ".update_lesson_form", function (e) {
         e.preventDefault();
         let url = $(this).attr("action");
+        var formData = new FormData(this);
         $.ajax({
             method: "POST",
             url: url,
-            data: $(this).serialize(),
+            data: formData,
+            contentType: false,
+            processData: false,
+            // data: $(this).serialize(),
             beforeSend: function () {
                 $("body .dynamic-modal .submit-btn")
                     .prop("disabled", true)

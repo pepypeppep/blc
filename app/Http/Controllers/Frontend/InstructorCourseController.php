@@ -47,7 +47,7 @@ class InstructorCourseController extends Controller
         $rules = [
             'title' => ['required', 'max:255'],
             'seo_description' => ['nullable', 'string', 'max:255'],
-            'thumbnail' => ['required', 'max:255'],
+            'thumbnail' => ['required', 'mimes:jpeg,png,jpg', 'max:10240'],
             'demo_video_source' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
             'discount_price' => ['nullable', 'numeric', new ValidateDiscountRule()],
@@ -59,7 +59,8 @@ class InstructorCourseController extends Controller
             'seo_description.string' => __('Seo description must be a string'),
             'seo_description.max' => __('Seo description must be less than 255 characters long'),
             'thumbnail.required' => __('Thumbnail is required'),
-            'thumbnail.max' => __('Thumbnail must be less than 255 characters long'),
+            'thumbnail.mimes' => __('Thumbnail must be a file of type: jpeg, png, jpg'),
+            'thumbnail.max' => __('Thumbnail must be less than 10MB'),
             'demo_video_source.string' => __('Demo video source must be a string'),
             'path.string' => __('Path must be a string'),
             'price.required' => __('Price is required'),
@@ -82,10 +83,14 @@ class InstructorCourseController extends Controller
             $course->slug = $slug;
         }
 
+        $thumbnail = $request->file('thumbnail');
+        $filename = $course->slug . '_' . time() . '.png';
+        $path = $thumbnail->storeAs('thumbnail', $filename, ['disk' => 'private']);
+
         $course->title = $request->title;
         $course->instructor_id = auth('web')->user()->id;
         $course->seo_description = $request->seo_description;
-        $course->thumbnail = $request->thumbnail;
+        $course->thumbnail = "/private/" . $path;
         $course->demo_video_storage = $request->demo_video_storage;
         $course->demo_video_source = $request->demo_video_storage == 'upload' ? $request->upload_path : $request->external_path;
         $course->price = $request->price;

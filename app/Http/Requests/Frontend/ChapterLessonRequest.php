@@ -4,13 +4,15 @@ namespace App\Http\Requests\Frontend;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ChapterLessonRequest extends FormRequest {
+class ChapterLessonRequest extends FormRequest
+{
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array {
+    public function rules(): array
+    {
         if ($this->type == 'lesson') {
             return $this->lessonRules();
         } elseif ($this->type == 'document') {
@@ -22,7 +24,8 @@ class ChapterLessonRequest extends FormRequest {
         }
     }
 
-    function lessonRules(): array {
+    function lessonRules(): array
+    {
         $rules = [
             'title'       => ['required', 'max:255'],
             'description' => ['nullable', 'max:600'],
@@ -40,7 +43,8 @@ class ChapterLessonRequest extends FormRequest {
 
         return $rules;
     }
-    function documentRules(): array {
+    function documentRules(): array
+    {
         $rules = [
             'chapter'     => ['required', 'exists:course_chapters,id'],
             'title'       => ['required', 'max:255'],
@@ -48,21 +52,24 @@ class ChapterLessonRequest extends FormRequest {
             'file_type'   => ['required', 'in:txt,pdf,docx'],
             'upload_path' => [
                 'required',
-                function ($attribute, $value, $fail) {
-                    $fileType = request()->input('file_type');
-                    $extension = pathinfo($value, PATHINFO_EXTENSION);
+                'mimes:pdf,docx,txt',
+                'max:30000',
+                // function ($attribute, $value, $fail) {
+                //     $fileType = request()->input('file_type');
+                //     $extension = pathinfo($value, PATHINFO_EXTENSION);
 
-                    if ($extension !== $fileType) {
-                        $fail(__('The upload file extension does not match the required file type.'));
-                    }
-                },
+                //     if ($extension !== $fileType) {
+                //         $fail(__('The upload file extension does not match the required file type.'));
+                //     }
+                // },
             ],
         ];
 
         return $rules;
     }
 
-    function liveRules(): array {
+    function liveRules(): array
+    {
         $rules = [
             'chapter'     => ['required', 'exists:course_chapters,id'],
             'title'       => ['required', 'max:255'],
@@ -82,7 +89,8 @@ class ChapterLessonRequest extends FormRequest {
 
         return $rules;
     }
-    function quizRules(): array {
+    function quizRules(): array
+    {
         $rules = [
             'chapter'    => ['required', 'exists:course_chapters,id'],
             'title'      => ['required', 'max:255', 'string'],
@@ -95,7 +103,8 @@ class ChapterLessonRequest extends FormRequest {
         return $rules;
     }
 
-    public function messages() {
+    public function messages()
+    {
         $messages = [
             'title.required'       => __('The title field is required.'),
             'title.max'            => __('The title may not be greater than 255 characters.'),
@@ -126,5 +135,4 @@ class ChapterLessonRequest extends FormRequest {
 
         return $messages;
     }
-
 }

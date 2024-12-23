@@ -39,13 +39,14 @@
                                     <label class="form-file-manager-label" for="">{{ __('Thumbnail') }}
                                         <code>*</code></label>
                                     <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon1">
-                                            <a data-input="thumbnail" data-preview="holder" class="file-manager-image">
+                                        <span class="input-group-text thumbnail-choose" id="basic-addon1">
+                                            <a data-input="thumbnail" data-preview="holder">
                                                 <i class="fa fa-picture-o"></i> {{ __('Choose') }}
                                             </a>
                                         </span>
-                                        <input id="thumbnail" readonly class="form-control file-manager-input"
-                                            type="text" name="thumbnail" value="{{ @$course?->thumbnail }}">
+                                        <input class="form-control d-none" type="file" name="thumbnail" accept="image/*">
+                                        <input id="thumbnail" readonly class="form-control thumbnail-choose" type="text"
+                                            value="{{ @$course?->thumbnail }}">
                                     </div>
                                 </div>
                             </div>
@@ -55,28 +56,11 @@
                                     <label for="demo_video_storage">{{ __('Demo Video Storage') }}
                                         <code>({{ __('optional') }})</code></label>
                                     <select name="demo_video_storage" id="demo_video_storage" class="form-select">
-                                        <option @selected(@$course?->demo_video_storage == 'upload') value="upload">{{ __('upload') }}</option>
                                         <option @selected(@$course?->demo_video_storage == 'youtube') value="youtube">{{ __('youtube') }}</option>
                                         <option @selected(@$course?->demo_video_storage == 'vimeo') value="vimeo">{{ __('vimeo') }}</option>
                                         <option @selected(@$course?->demo_video_storage == 'external_link') value="external_link">
                                             {{ __('external_link') }}</option>
                                     </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 upload {{ @$course?->demo_video_storage == 'upload' ? '' : 'd-none' }}">
-                                <div class="from-group mb-3">
-                                    <label class="form-file-manager-label" for="">{{ __('Path') }}
-                                        <code></code></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon1">
-                                            <a data-input="path" data-preview="holder" class="file-manager">
-                                                <i class="fa fa-picture-o"></i> {{ __('Choose') }}
-                                            </a>
-                                        </span>
-                                        <input id="path" readonly class="form-control file-manager-input"
-                                            type="text" name="upload_path" value="{{ @$course?->demo_video_source }}">
-                                    </div>
                                 </div>
                             </div>
 
@@ -94,18 +78,11 @@
                             </div>
 
 
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-grp">
                                     <label for="price">{{ __('Price') }} <code>*</code></label>
                                     <input id="price" name="price" type="text" value="{{ @$course?->price }}">
-                                    <code>{{ __('Put 0 for free') }}</code>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-grp">
-                                    <label for="discount_price">{{ __('Discount Price') }} <code></code></label>
-                                    <input id="discount_price" name="discount_price" type="text"
-                                        value="{{ @$course?->discount_price }}">
+                                    {{-- <code>{{ __('Put 0 for free') }}</code> --}}
                                 </div>
                             </div>
                             <div class="col-md-12">

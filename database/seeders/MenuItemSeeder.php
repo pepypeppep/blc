@@ -29,7 +29,7 @@ class MenuItemSeeder extends Seeder
             $menuItem->sort = MenuItem::getNextSortRoot(9);
             $menuItem->save();
 
-            request()->merge(['label' => $menu->name]);
+            request()->merge(['label' => $menu->name == 'Rumah' ? 'Beranda' : $menu->name]);
 
             $this->generateTranslations(
                 TranslationModels::MenuItem,
@@ -52,7 +52,7 @@ class MenuItemSeeder extends Seeder
             $menuItem->sort = MenuItem::getNextSortRoot(10);
             $menuItem->save();
 
-            request()->merge(['label' => $menu->name]);
+            request()->merge(['label' => $menu->name == 'Rumah' ? 'Beranda' : $menu->name]);
 
             $this->generateTranslations(
                 TranslationModels::MenuItem,
@@ -94,7 +94,7 @@ class MenuItemSeeder extends Seeder
             $menuItem->sort = MenuItem::getNextSortRoot(13);
             $menuItem->save();
 
-            request()->merge(['label' => $menu->name]);
+            request()->merge(['label' => $menu->name == 'Rumah' ? 'Beranda' : $menu->name]);
 
             $this->generateTranslations(
                 TranslationModels::MenuItem,
@@ -124,7 +124,7 @@ class MenuItemSeeder extends Seeder
             $menuItem->sort = MenuItem::getNextSortRoot(14);
             $menuItem->save();
 
-            request()->merge(['label' => $menu->name]);
+            request()->merge(['label' => $menu->name == 'Rumah' ? 'Beranda' : $menu->name]);
 
             $this->generateTranslations(
                 TranslationModels::MenuItem,

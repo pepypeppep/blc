@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use Carbon\Carbon;
 use App\Models\Quiz;
+use App\Models\User;
 use Firebase\JWT\JWT;
 use App\Models\Course;
 use App\Models\QuizResult;
@@ -390,5 +391,17 @@ class LearningController extends Controller
         ];
 
         return JWT::encode($payload, $private_key, "RS256", $api_key);
+    }
+
+    function getStudents(Request $request)
+    {
+        $students = User::where('role', 'student')
+            ->where(function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->q . '%')
+                    ->orWhere('email', 'like', '%' . $request->q . '%');
+            })
+            ->where('id', '!=', auth()->id())
+            ->get();
+        return response()->json($students);
     }
 }

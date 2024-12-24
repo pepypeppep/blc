@@ -109,6 +109,36 @@ $(document).ready(function () {
         templateSelection: formatRepoSelection,
     });
 
+    // get participant profiles for select2
+    $(".participant_select").select2({
+        ajax: {
+            url: "/student/courses/get-students",
+            dataType: "json",
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term, // search term
+                    page: params.page,
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data,
+                    pagination: {
+                        more: false,
+                    },
+                };
+            },
+            cache: true,
+        },
+        placeholder: search_participant_placeholder,
+        minimumInputLength: 3,
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection,
+    });
+
     function formatRepo(repo) {
         if (repo.loading) {
             return repo.text;
@@ -137,6 +167,11 @@ $(document).ready(function () {
     function formatRepoSelection(repo) {
         return repo.name || repo.text;
     }
+
+    $(".participant_select").on("change", function () {
+        let count = $(this).val().length;
+        $("#participant_count").text(count);
+    });
 
     /** make accordion child's sortable */
     if ($(".course-section .accordion-body").length) {

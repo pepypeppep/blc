@@ -155,6 +155,9 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         /** download certificate route */
         Route::get('download-certificate/{id}', [StudentDashboardController::class, 'downloadCertificate'])->name('download-certificate');
         Route::view('wishlist', 'frontend.wishlist.index')->name('wishlist');
+
+        /** general service **/
+        Route::get('courses/get-students', [LearningController::class, 'getStudents'])->name('courses.get-students');
     });
 
     /**

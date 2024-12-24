@@ -146,7 +146,7 @@ class InstructorCourseController extends Controller
                 break;
             case '4':
                 $courseId = request('id');
-                $course = Course::findOrFail($courseId);
+                $course = Course::with('enrollments')->findOrFail($courseId);
                 return view('frontend.instructor-dashboard.course.finish', compact('course'));
                 break;
             default:
@@ -178,7 +178,9 @@ class InstructorCourseController extends Controller
             case '4':
                 $request->validate([
                     'status' => ['required'],
-                    'message_for_reviewer' => ['nullable', 'max:1000']
+                    'message_for_reviewer' => ['nullable', 'max:1000'],
+                    'participants' => ['required', 'array'],
+                    'participants.*' => ['exists:users,id']
                 ]);
                 $this->storeFinish($request);
                 return response()->json([
@@ -245,6 +247,8 @@ class InstructorCourseController extends Controller
         $course->message_for_reviewer = $request->message_for_reviewer;
         $course->status = $request->status;
         $course->save();
+
+        $course->enrollments()->sync($request->participants);
     }
 
     function getInstructors(Request $request)

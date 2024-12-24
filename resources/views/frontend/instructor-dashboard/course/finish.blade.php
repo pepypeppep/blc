@@ -17,6 +17,22 @@
                         <input type="hidden" name="next_step" value="4">
 
                         <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <div class="partner_instructor_list">
+                                    <div class="d-flex justify-content-between">
+                                        <label for="">{{ __('Select course participant') }} <code>*</code></label>
+                                        <span>Jumlah peserta : <span class="text-danger"
+                                                id="participant_count">{{ count($course->enrollments) }}</span></span>
+                                    </div>
+                                    <select class="select2 participant_select form-select" name="participants[]"
+                                        multiple="multiple">
+                                        @foreach ($course?->enrollments as $enrollment)
+                                            <option value="{{ $enrollment->user->id }}" selected="selected">
+                                                {{ $enrollment?->user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-md-12">
                                 <div class="form-grp">
                                     <label for="">{{ __('Message for Reviewer') }} <code></code></label>
@@ -30,7 +46,8 @@
                                     <select name="status" id="" class="form-select">
                                         {{-- <option value="">{{ __('Select') }}</option> --}}
                                         <option @selected($course->status == 'active') value="active">{{ __('Publish') }}</option>
-                                        <option @selected($course->status == 'inactive') value="inactive">{{ __('UnPublish') }}</option>
+                                        <option @selected($course->status == 'inactive') value="inactive">{{ __('UnPublish') }}
+                                        </option>
                                         <option @selected($course->status == 'is_draft') value="is_draft">{{ __('Draft') }}</option>
                                     </select>
                                 </div>

@@ -36,15 +36,15 @@
                     <label for="source">{{ __('Source') }} <code>*</code></label>
                     <select name="source" id="source" class="source form-select">
                         <option value="">{{ __('Select') }}</option>
-                        @if($setting?->aws_status == 'active')
+                        @if ($setting?->aws_status == 'active')
                             <option value="aws">{{ config('course.storage_source.aws') }}</option>
                         @endif
                         @foreach (config('course.storage_source') as $key => $value)
-                            @if($key != 'aws' && $key != 'wasabi')
+                            @if ($key != 'aws' && $key != 'wasabi')
                                 <option value="{{ $key }}">{{ $value }}</option>
                             @endif
                         @endforeach
-                        @if($setting?->wasabi_status == 'active')
+                        @if ($setting?->wasabi_status == 'active')
                             <option value="wasabi">{{ config('course.storage_source.wasabi') }}</option>
                         @endif
                     </select>
@@ -64,7 +64,7 @@
                 </div>
             </div>
 
-            <div class="col-md-9 upload">
+            {{-- <div class="col-md-9 upload bg-danger">
                 <div class="from-group mb-3">
                     <label class="form-file-manager-label" for="">{{ __('Path') }}
                         <code>*</code></label>
@@ -85,15 +85,17 @@
                     <div class="input-group">
                         <div class="input-group">
                             <input id="file-input" type="file" class="form-control">
-                            <button type="button" id="cloud-btn" class="input-group-text" id="basic-addon1"><i class="fas fa-upload"></i></button>
+                            <button type="button" id="cloud-btn" class="input-group-text" id="basic-addon1"><i
+                                    class="fas fa-upload"></i></button>
                         </div>
                     </div>
                     <div class="progress d-none">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar"
+                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-9 link_path d-none">
+            </div> --}}
+            <div class="col-md-8 link_path">
                 <div class="form-grp">
                     <label for="meta_description">{{ __('Path') }} <code>*</code></label>
                     <div class="input-group mb-3">
@@ -104,7 +106,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="form-grp">
                     <label for="duration">{{ __('Duration') }} <code>* ({{ __('in minutes') }})</code></label>
                     <input id="duration" name="duration" type="text" value="">

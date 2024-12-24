@@ -132,7 +132,6 @@
     <script src="{{ asset('frontend/js/default/learning-player.js') }}?v={{ $setting?->version }}"></script>
     <script src="{{ asset('frontend/js/default/quiz-page.js') }}?v={{ $setting?->version }}"></script>
     <script src="{{ asset('frontend/js/default/qna.js') }}?v={{ $setting?->version }}"></script>
-    <script src="{{ asset('frontend/js/default/qna.js') }}?v={{ $setting?->version }}"></script>
     <script src="{{ asset('frontend/js/pdf.min.js') }}"></script>
     <script src="{{ asset('frontend/js/jszip.min.js') }}"></script>
     <script src="{{ asset('frontend/js/docx-preview.min.js') }}"></script>
@@ -170,10 +169,10 @@
     @if ($position === 'top_left')
     top: 0;
     left: 0;
-    @elseif ($position === 'bottom_right') 
+    @elseif ($position === 'bottom_right')
     bottom: 44px;
     right: 0;
-    @elseif ($position === 'bottom_left') 
+    @elseif ($position === 'bottom_left')
     bottom: 44px;
     left: 0;
     @else

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Models\Quiz;
 use App\Models\User;
 use App\Models\Course;
+use Illuminate\Support\Str;
 use App\Models\QuizQuestion;
 use Illuminate\Http\Request;
 use App\Models\CourseChapter;
@@ -18,8 +19,10 @@ use Illuminate\Support\Facades\Storage;
 use Modules\Order\app\Models\Enrollment;
 use App\Http\Requests\Frontend\ChapterLessonRequest;
 
-class CourseContentController extends Controller {
-    function chapterStore(Request $request, string $courseId): RedirectResponse {
+class CourseContentController extends Controller
+{
+    function chapterStore(Request $request, string $courseId): RedirectResponse
+    {
         $request->validate([
             'title' => ['required', 'max:255'],
         ], [
@@ -38,12 +41,14 @@ class CourseContentController extends Controller {
         return redirect()->back()->with(['messege' => __('Chapter created successfully'), 'alert-type' => 'success']);
     }
 
-    function chapterEdit(string $chapterId) {
+    function chapterEdit(string $chapterId)
+    {
         $chapter = CourseChapter::find($chapterId);
         return view('frontend.instructor-dashboard.course.partials.edit-section-modal', compact('chapter'))->render();
     }
 
-    function chapterUpdate(Request $request, string $chapterId) {
+    function chapterUpdate(Request $request, string $chapterId)
+    {
         $chapter = CourseChapter::findOrFail($chapterId);
         abort_if($chapter->instructor_id != auth('web')->user()->id, 403, __('unauthorized access'));
         $chapter->title = $request->title;
@@ -51,7 +56,8 @@ class CourseContentController extends Controller {
         return redirect()->back()->with(['messege' => __('Updated successfully'), 'alert-type' => 'success']);
     }
 
-    function chapterDestroy(string $chapterId) {
+    function chapterDestroy(string $chapterId)
+    {
         $chapter = CourseChapter::findOrFail($chapterId);
         abort_if($chapter->instructor_id != auth('web')->user()->id, 403, __('unauthorized access'));
         $chapterItems = CourseChapterItem::where('chapter_id', $chapterId)
@@ -69,7 +75,6 @@ class CourseContentController extends Controller {
             if (\File::exists(asset($lesson->file_path))) {
                 \File::delete(asset($lesson->file_path));
             }
-
         }
 
         // delete chapter items and chapter
@@ -79,12 +84,14 @@ class CourseContentController extends Controller {
         return response()->json(['status' => 'success', 'message' => __('Question deleted successfully')]);
     }
 
-    function chapterSorting(string $courseId) {
+    function chapterSorting(string $courseId)
+    {
         $chapters = CourseChapter::where('course_id', $courseId)->orderBy('order', 'ASC')->get();
         return view('frontend.instructor-dashboard.course.partials.chapter-sorting-index', compact('chapters', 'courseId'))->render();
     }
 
-    function chapterSortingStore(Request $request, string $courseId) {
+    function chapterSortingStore(Request $request, string $courseId)
+    {
         $newOrder = $request->chapter_ids;
 
         foreach ($newOrder as $key => $value) {
@@ -96,7 +103,8 @@ class CourseContentController extends Controller {
         return redirect()->back()->with(['messege' => __('Updated successfully'), 'alert-type' => 'success']);
     }
 
-    function lessonCreate(Request $request) {
+    function lessonCreate(Request $request)
+    {
         $courseId = $request->courseId;
         $chapterId = $request->chapterId;
         $chapters = CourseChapter::where('course_id', $courseId)->orderBy('order')->get();
@@ -132,7 +140,8 @@ class CourseContentController extends Controller {
         }
     }
 
-    function lessonStore(ChapterLessonRequest $request) {
+    function lessonStore(Request $request)
+    {
         $chapterItem = CourseChapterItem::create([
             'instructor_id' => auth('web')->id(),
             'chapter_id'    => $request->chapter_id,
@@ -156,6 +165,10 @@ class CourseContentController extends Controller {
                 'is_free'         => $request->is_free,
             ]);
         } elseif ($request->type == 'document') {
+            $file = $request->file('upload_path');
+            $filename = Str::slug($request->title) . '-' . time() . '.' . $file->getClientOriginalExtension();
+            $path = Storage::disk('private')->put('lesson/document/' . now()->year . '/' . now()->month . '/' . $filename, file_get_contents($file));
+
             CourseChapterLesson::create([
                 'title'           => $request->title,
                 'description'     => $request->description,
@@ -163,7 +176,7 @@ class CourseContentController extends Controller {
                 'course_id'       => $request->course_id,
                 'chapter_id'      => $request->chapter_id,
                 'chapter_item_id' => $chapterItem->id,
-                'file_path'       => $request->upload_path,
+                'file_path'       => 'lesson/document/' . now()->year . '/' . now()->month . '/' . $filename,
                 'file_type'       => $request->file_type,
             ]);
         } elseif ($request->type == 'live') {
@@ -189,16 +202,15 @@ class CourseContentController extends Controller {
                 'type'       => $request->live_type,
             ]);
             if ($request?->student_mail_sent == 'on') {
-                $user_ids = Enrollment::where('course_id',$chapter_lesson->course_id)->pluck('user_id')->toArray();
+                $user_ids = Enrollment::where('course_id', $chapter_lesson->course_id)->pluck('user_id')->toArray();
                 $users = User::select('name', 'email')->whereIn('id', $user_ids)->get();
                 $data = (object)[
-                    'course' => Course::select('title')->where('id',$chapter_lesson->course_id)->first()->title,
+                    'course' => Course::select('title')->where('id', $chapter_lesson->course_id)->first()->title,
                     'lesson' => $chapter_lesson->title,
                     'start_time' => formattedDateTime($start_time),
                     'join_url' => $join_url,
                 ];
-                (new MailSenderService)->sendLiveClassNotificationMailTrait($users,$data);
-
+                (new MailSenderService)->sendLiveClassNotificationMailTrait($users, $data);
             }
         } elseif ($request->type == 'quiz') {
             Quiz::create([
@@ -217,7 +229,8 @@ class CourseContentController extends Controller {
         return response()->json(['status' => 'success', 'message' => __('Lesson created successfully')]);
     }
 
-    function lessonEdit(Request $request) {
+    function lessonEdit(Request $request)
+    {
         $courseId = $request->courseId;
         $chapterItemId = $request->chapterItemId;
         $chapterItem = CourseChapterItem::with(['lesson', 'quiz'])->find($chapterItemId);
@@ -249,7 +262,8 @@ class CourseContentController extends Controller {
         }
     }
 
-    function lessonUpdate(ChapterLessonRequest $request) {
+    function lessonUpdate(ChapterLessonRequest $request)
+    {
         $chapterItem = CourseChapterItem::findOrFail($request->chapter_item_id);
         abort_if($chapterItem->instructor_id != auth('web')->user()->id, 403, __('unauthorized access'));
         $chapterItem->update([
@@ -258,7 +272,7 @@ class CourseContentController extends Controller {
 
         if ($request->type == 'lesson') {
             $courseChapterLesson = CourseChapterLesson::where('chapter_item_id', $chapterItem->id)->first();
-            
+
             $old_file_path = $courseChapterLesson->file_path;
             if (in_array($courseChapterLesson->storage, ['wasabi', 'aws']) && $old_file_path != $request->link_path) {
                 $disk = Storage::disk($courseChapterLesson->storage);
@@ -303,28 +317,37 @@ class CourseContentController extends Controller {
             ]);
 
             if ($request?->student_mail_sent == 'on') {
-                $user_ids = Enrollment::where('course_id',$courseChapterLesson->course_id)->pluck('user_id')->toArray();
+                $user_ids = Enrollment::where('course_id', $courseChapterLesson->course_id)->pluck('user_id')->toArray();
                 $users = User::select('name', 'email')->whereIn('id', $user_ids)->get();
                 $data = (object)[
-                    'course' => Course::select('title')->where('id',$courseChapterLesson->course_id)->first()->title,
+                    'course' => Course::select('title')->where('id', $courseChapterLesson->course_id)->first()->title,
                     'lesson' => $courseChapterLesson->title,
                     'start_time' => formattedDateTime($start_time),
                     'join_url' => $join_url,
                 ];
-                (new MailSenderService)->sendLiveClassNotificationMailTrait($users,$data);
-
+                (new MailSenderService)->sendLiveClassNotificationMailTrait($users, $data);
             }
         } elseif ($request->type == 'document') {
             $courseChapterLesson = CourseChapterLesson::where('chapter_item_id', $chapterItem->id)->first();
+            $old_file_path = $courseChapterLesson->file_path;
+
+            $file = $request->file('upload_path');
+            $filename = Str::slug($request->title) . '-' . time() . '.' . $file->getClientOriginalExtension();
+            $path = Storage::disk('private')->put('lesson/document/' . now()->year . '/' . now()->month . '/' . $filename, file_get_contents($file));
+
             $courseChapterLesson->update([
                 'title'           => $request->title,
                 'description'     => $request->description,
                 'course_id'       => $chapterItem->course_id,
                 'chapter_id'      => $chapterItem->chapter_id,
                 'chapter_item_id' => $chapterItem->id,
-                'file_path'       => $request->upload_path,
+                'file_path'       => 'lesson/document/' . now()->year . '/' . now()->month . '/' . $filename,
                 'file_type'       => $request->file_type,
             ]);
+
+            if (Storage::disk('private')->exists($old_file_path)) {
+                Storage::disk('private')->delete($old_file_path);
+            }
         } else {
             $quiz = Quiz::where('chapter_item_id', $chapterItem->id)->first();
             $quiz->update([
@@ -340,7 +363,8 @@ class CourseContentController extends Controller {
         return response()->json(['status' => 'success', 'message' => __('Lesson updated successfully')]);
     }
 
-    function sortLessons(Request $request, string $chapterId) {
+    function sortLessons(Request $request, string $chapterId)
+    {
         $newOrder = $request->orderIds;
         foreach ($newOrder as $key => $itemId) {
             $chapterItem = CourseChapterItem::where(['chapter_id' => $chapterId, 'id' => $itemId])->first();
@@ -351,7 +375,8 @@ class CourseContentController extends Controller {
         return response()->json(['status' => 'success', 'message' => __('Lesson sorted successfully')]);
     }
 
-    function chapterLessonDestroy(string $chapterItemId) {
+    function chapterLessonDestroy(string $chapterItemId)
+    {
         $chapterItem = CourseChapterItem::findOrFail($chapterItemId);
         abort_if($chapterItem->instructor_id != auth('web')->user()->id, 403, __('unauthorized access'));
 
@@ -383,11 +408,13 @@ class CourseContentController extends Controller {
         return response()->json(['status' => 'success', 'message' => __('Lesson deleted successfully')]);
     }
 
-    function createQuizQuestion(string $quizId) {
+    function createQuizQuestion(string $quizId)
+    {
         return view('frontend.instructor-dashboard.course.partials.quiz-question-create-modal', ['quizId' => $quizId])->render();
     }
 
-    function storeQuizQuestion(Request $request, string $quizId) {
+    function storeQuizQuestion(Request $request, string $quizId)
+    {
         $request->validate([
             'title'     => ['required', 'max:255'],
             'answers.*' => ['required', 'max:255'],
@@ -417,15 +444,16 @@ class CourseContentController extends Controller {
         }
 
         return response()->json(['status' => 'success', 'message' => __('Question created successfully')]);
-
     }
 
-    function editQuizQuestion(string $questionId) {
+    function editQuizQuestion(string $questionId)
+    {
         $question = QuizQuestion::findOrFail($questionId);
         return view('frontend.instructor-dashboard.course.partials.quiz-question-edit-modal', ['question' => $question])->render();
     }
 
-    function updateQuizQuestion(Request $request, string $questionId) {
+    function updateQuizQuestion(Request $request, string $questionId)
+    {
         $request->validate([
             'title'     => ['required', 'max:255'],
             'answers.*' => ['required', 'max:255'],
@@ -458,7 +486,8 @@ class CourseContentController extends Controller {
         return response()->json(['status' => 'success', 'message' => __('Question updated successfully')]);
     }
 
-    function destroyQuizQuestion(string $questionId) {
+    function destroyQuizQuestion(string $questionId)
+    {
         $question = QuizQuestion::findOrFail($questionId);
         $question->answers()->delete();
         $question->delete();

@@ -15,13 +15,15 @@ use Modules\Language\app\Enums\TranslationModels;
 use Modules\Language\app\Models\Language;
 use Modules\Language\app\Traits\GenerateTranslationTrait;
 
-class FeaturedInstructorController extends Controller {
+class FeaturedInstructorController extends Controller
+{
     use GenerateTranslationTrait, RedirectHelperTrait;
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id) {
+    public function edit($id)
+    {
 
         checkAdminHasPermissionAndThrowException('section.management');
 
@@ -38,7 +40,8 @@ class FeaturedInstructorController extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update(FeaturedInstructorSectionUpdateRequest $request, $id): RedirectResponse {
+    public function update(FeaturedInstructorSectionUpdateRequest $request, $id): RedirectResponse
+    {
         checkAdminHasPermissionAndThrowException('section.management');
 
         $featured = FeaturedInstructor::updateOrCreate(
@@ -75,5 +78,4 @@ class FeaturedInstructorController extends Controller {
             ]
         );
     }
-
 }

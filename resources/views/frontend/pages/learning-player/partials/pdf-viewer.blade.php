@@ -15,7 +15,7 @@
             <button class="btn btn-two" id="pdf_zoom_in"><i class="fas fa-search-plus"></i></button>
             <button class="btn btn-two"
                 onclick="
-                    let element = document.querySelector('.document-preview-area'); 
+                    let element = document.querySelector('.document-preview-area');
                     if (element) {
                         if (!document.fullscreenElement) {
                             element.requestFullscreen();
@@ -39,7 +39,7 @@
     };
 
     pdfjsLib
-        .getDocument("{{ asset($file_path ) }}")
+        .getDocument("{{ route('student.get-file-direct', ['id' => $file_path]) }}")
         .promise.then((pdf) => {
             myState.pdf = pdf;
             render();

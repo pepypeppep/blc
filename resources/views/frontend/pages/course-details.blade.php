@@ -137,7 +137,7 @@
                                                                                     </a>
                                                                                 </li>
                                                                             @else
-                                                                                <li class="course-item open-item">
+                                                                                {{-- <li class="course-item open-item">
                                                                                     <a href="@if (!in_array($chapterItem?->lesson->storage, ['wasabi', 'aws'])) {{ $chapterItem?->lesson->file_path }} @else {{ Storage::disk($chapterItem?->lesson->storage)->temporaryUrl($chapterItem?->lesson->file_path, now()->addHours(1)) }} @endif"
                                                                                         class="course-item-link popup-video">
                                                                                         <span
@@ -145,6 +145,23 @@
                                                                                         <div class="course-item-meta">
                                                                                             <span
                                                                                                 class="item-meta duration">{{ minutesToHours($chapterItem?->lesson?->duration) }}</span>
+                                                                                        </div>
+                                                                                    </a>
+                                                                                </li> --}}
+                                                                                <li class="course-item">
+                                                                                    <a href="javascript:;"
+                                                                                        class="course-item-link">
+                                                                                        <span
+                                                                                            class="item-name">{{ $chapterItem?->lesson?->title }}</span>
+                                                                                        <div class="course-item-meta">
+                                                                                            <span
+                                                                                                class="item-meta duration">
+                                                                                                --.-- </span>
+                                                                                            <span
+                                                                                                class="item-meta course-item-status">
+                                                                                                <img src="{{ asset('frontend/img/icons/lock.svg') }}"
+                                                                                                    alt="icon">
+                                                                                            </span>
                                                                                         </div>
                                                                                     </a>
                                                                                 </li>
@@ -473,7 +490,7 @@
                 <div class="col-xl-3 col-lg-4">
                     <div class="courses__details-sidebar">
                         <div class="courses__cost-wrap">
-                            <span>{{ __('This Course Fee') }}:</span>
+                            {{-- <span>{{ __('This Course Fee') }}:</span>
                             @if ($course->price == 0)
                                 <h2 class="title">{{ __('Free') }}</h2>
                             @elseif ($course->discount)
@@ -482,7 +499,9 @@
                                 </h2>
                             @else
                                 <h2 class="title">{{ currency($course->price) }}</h2>
-                            @endif
+                            @endif --}}
+                            <span>Jenis Kursus:</span>
+                            <h2 class="title">{{ $course->category->parentCategory->translation->name }}</h2>
 
                         </div>
                         <div class="courses__information-wrap">
@@ -528,7 +547,7 @@
                                         <span>{{ __('No') }}</span>
                                     @endif
                                 </li>
-                                <li class="level-wrapper">
+                                {{-- <li class="level-wrapper">
                                     <b>
                                         <img src="{{ asset('frontend/img/icons/course_icon06.svg') }}" alt="img"
                                             class="injectable">
@@ -540,7 +559,7 @@
                                             <span>{{ $language->language->name }}</span>
                                         @endforeach
                                     </ul>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
                         <div class="courses__details-social">
@@ -555,7 +574,12 @@
                         </div>
                         <div class="courses__details-enroll">
                             <div class="tg-button-wrap">
-                                @if (in_array($course->id, session('enrollments') ?? []))
+                                <a href="{{ route('student.enrolled-courses') }}"
+                                    class="btn btn-two arrow-btn already-enrolled-btn" data-id="">
+                                    <span class="text">Mulai Kursus</span>
+                                    <i class="flaticon-arrow-right"></i>
+                                </a>
+                                {{-- @if (in_array($course->id, session('enrollments') ?? []))
                                     <a href="{{ route('student.enrolled-courses') }}"
                                         class="btn btn-two arrow-btn already-enrolled-btn" data-id="">
                                         <span class="text">{{ __('Enrolled') }}</span>
@@ -572,7 +596,7 @@
                                         <span class="text">{{ __('Add To Cart') }}</span>
                                         <i class="flaticon-arrow-right"></i>
                                     </a>
-                                @endif
+                                @endif --}}
 
                             </div>
                         </div>

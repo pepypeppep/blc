@@ -94,7 +94,7 @@
                                                             <div
                                                                 class="edit_course_icons d-flex flex-wrap align-items-center">
                                                                 <span class="icon-container"><i
-                                                                        class="fas {{$chapterItem->type == 'lesson' ? 'fa-video' : 'fa-chalkboard-teacher'}}"></i></span>
+                                                                        class="fas {{ $chapterItem->type == 'lesson' ? 'fa-video' : 'fa-chalkboard-teacher' }}"></i></span>
                                                                 <p class="mb-0 ms-2 bold-text">
                                                                     {{ truncate($chapterItem?->lesson?->title) }}</p>
                                                             </div>

@@ -31,30 +31,31 @@
         </div>
 
         <div class="row">
-            <div class="col-md-9 upload">
+            <div class="col-md-12 upload">
                 <div class="from-group mb-3">
                     <label class="form-file-manager-label" for="">{{ __('Path') }}
                         <code>*</code></label>
                     <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1">
-                            <a data-input="path" data-preview="holder" class="file-manager">
+                        <span class="input-group-text file-choose" id="basic-addon1">
+                            <a data-input="path" data-preview="holder">
                                 <i class="fa fa-picture-o"></i> {{ __('Choose') }}
                             </a>
                         </span>
-                        <input id="path" readonly class="form-control file-manager-input" type="text"
-                            name="upload_path"
-                            value="{{ $chapterItem->lesson->file_path}}">
+                        <input class="form-control d-none" type="file" name="upload_path" accept=".pdf, .docx, .txt">
+                        <input id="path" readonly class="form-control file-choose" type="text"
+                            value="{{ $chapterItem->lesson->file_path }}">
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 d-none">
                 <div class="form-grp">
                     <label for="file_type_select">{{ __('File Type') }} <code>*</code></label>
                     <select name="file_type" id="file_type_select" class="file_type form-select">
                         <option value="">{{ __('Select') }}</option>
                         @foreach (config('course.file_types') as $key => $value)
-                        @if (in_array($key, ['pdf', 'txt', 'docx']))
-                            <option @selected($chapterItem->lesson->file_type == $key) value="{{ $key }}">{{ $value }}</option>
+                            @if (in_array($key, ['pdf', 'txt', 'docx']))
+                                <option @selected($chapterItem->lesson->file_type == $key) value="{{ $key }}">{{ $value }}
+                                </option>
                             @endif
                         @endforeach
                     </select>
@@ -72,3 +73,18 @@
         </div>
     </form>
 </div>
+<script>
+    $(document).ready(function() {
+        $(".file-choose").on("click", function() {
+            $("input[name='upload_path']").trigger("click");
+            $("input[name='upload_path']").on("change", function() {
+                var file = $(this).get(0).files[0];
+                var fileName = file.name;
+                $("#path").val(fileName);
+
+                var fileExt = fileName.split('.').pop().toLowerCase();
+                $('#file_type_select').val(fileExt).trigger('change');
+            });
+        });
+    });
+</script>

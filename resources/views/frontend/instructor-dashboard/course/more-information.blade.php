@@ -97,8 +97,8 @@
                                 <div
                                     class="partner_instructor_list {{ $course?->partner_instructor == 0 ? 'd-none' : '' }}">
                                     <label for="cpacity">{{ __('Select a partner instructor') }} <code></code></label>
-                                    <select class="select2 partner_instructor_select form-select" name="partner_instructors[]"
-                                        multiple="multiple">
+                                    <select class="select2 partner_instructor_select form-select"
+                                        name="partner_instructors[]" multiple="multiple">
                                         @foreach ($course?->partnerInstructors as $instructor)
                                             <option value="{{ $instructor->instructor->id }}" selected="selected">
                                                 {{ $instructor?->instructor->name }}</option>
@@ -116,7 +116,8 @@
                                             @if ($category->subCategories->isNotEmpty())
                                                 <optgroup label="{{ $category->translation?->name }}">
                                                     @foreach ($category->subCategories as $subCategory)
-                                                        <option @selected($course?->category_id == $subCategory->id) value="{{ $subCategory->id }}">
+                                                        <option @selected($course?->category_id == $subCategory->id)
+                                                            value="{{ $subCategory->id }}">
                                                             {{ $subCategory->translation?->name }}
                                                         </option>
                                                     @endforeach
@@ -129,11 +130,11 @@
                                     @enderror
                                 </div>
                             </div>
-                            
+
 
                             <div class="filter-holder">
                                 <div class="row mb-3">
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-md-12 mb-3">
                                         <div class="card">
                                             <div class="card-body">
                                                 <h5 class="card-title">{{ __('Level') }}</h5>
@@ -157,29 +158,6 @@
                                                             <label class="form-check-label"
                                                                 for="language-{{ $level->id }}">
                                                                 {{ $level->translation?->name }}
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title">{{ __('Language') }}</h5>
-                                                @foreach ($languages as $language)
-                                                    <div class="form-group">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input"
-                                                                {{ in_array($language->id, $courseLanguage) ? 'checked' : '' }}
-                                                                name="languages[]" type="checkbox"
-                                                                value="{{ $language->id }}"
-                                                                id="checkbox{{ $language->id }}">
-                                                            <label class="form-check-label"
-                                                                for="checkbox{{ $language->id }}">
-                                                                {{ $language->name }}
                                                             </label>
                                                         </div>
                                                     </div>

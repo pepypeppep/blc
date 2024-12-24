@@ -58,7 +58,8 @@ class DatabaseSeeder extends Seeder
             // CourseSeeder::class,
             FaqSeeder::class,
             CustomPageSeeder::class,
-            FooterSettingSeeder::class
+            FooterSettingSeeder::class,
+            CurrencySeeder::class
         ]);
     }
 }

@@ -6,7 +6,7 @@
         <ul class="list-wrap">
             <li class="{{ Route::is('instructor.dashboard') ? 'active' : '' }}">
                 <a href="{{ route('instructor.dashboard') }}">
-                    <img src="{{asset('uploads/website-images/dashboard.svg')}}">{{ __('Dashboard') }}</a>
+                    <img src="{{ asset('uploads/website-images/dashboard.svg') }}">{{ __('Dashboard') }}</a>
             </li>
             <li class="{{ Route::is('instructor.courses.*') ? 'active' : '' }}">
                 <a href="{{ route('instructor.courses.index') }}">
@@ -16,32 +16,32 @@
             </li>
             <li class="{{ Route::is('instructor.lesson-questions.index') ? 'active' : '' }}">
                 <a href="{{ route('instructor.lesson-questions.index') }}">
-                    <img src="{{asset('uploads/website-images/questions.svg')}}">
+                    <img src="{{ asset('uploads/website-images/questions.svg') }}">
                     {{ __('Lesson Questions') }}
                 </a>
             </li>
 
-            <li class="{{ Route::is('instructor.payout.index') ? 'active' : '' }}">
+            {{-- <li class="{{ Route::is('instructor.payout.index') ? 'active' : '' }}">
                 <a href="{{ route('instructor.payout.index') }}">
-                    <img src="{{asset('uploads/website-images/payout.svg')}}">
+                    <img src="{{ asset('uploads/website-images/payout.svg') }}">
                     {{ __('Request Payout') }}
                 </a>
-            </li>
+            </li> --}}
             <li class="{{ Route::is('instructor.announcements.index') ? 'active' : '' }}">
                 <a href="{{ route('instructor.announcements.index') }}">
-                    <img src="{{asset('uploads/website-images/announcement.svg')}}">
+                    <img src="{{ asset('uploads/website-images/announcement.svg') }}">
                     {{ __('Announcement') }}
                 </a>
             </li>
-            <li class="{{ Route::is('instructor.my-sells.index') ? 'active' : '' }}">
+            {{-- <li class="{{ Route::is('instructor.my-sells.index') ? 'active' : '' }}">
                 <a href="{{ route('instructor.my-sells.index') }}">
                     <img src="{{asset('uploads/website-images/sales.svg')}}">
                     {{ __('My Sales') }}
                 </a>
-            </li>
+            </li> --}}
             <li class="{{ Route::is('instructor.wishlist') ? 'active' : '' }}">
                 <a href="{{ route('instructor.wishlist') }}">
-                    <img src="{{asset('uploads/website-images/heart.svg')}}">{{ __('Wishlist') }}</a>
+                    <img src="{{ asset('uploads/website-images/heart.svg') }}">{{ __('Wishlist') }}</a>
             </li>
         </ul>
     </nav>
@@ -52,13 +52,13 @@
         <ul class="list-wrap">
             <li class="{{ Route::is('instructor.zoom-setting.index') ? 'active' : '' }}">
                 <a href="{{ route('instructor.zoom-setting.index') }}">
-                    <img src="{{asset('uploads/website-images/zoom.svg')}}">
+                    <img src="{{ asset('uploads/website-images/zoom.svg') }}">
                     {{ __('Zoom live setting') }}
                 </a>
             </li>
             <li class="{{ Route::is('instructor.jitsi-setting.index') ? 'active' : '' }}">
                 <a href="{{ route('instructor.jitsi-setting.index') }}">
-                    <img src="{{asset('uploads/website-images/zoom.svg')}}">
+                    <img src="{{ asset('uploads/website-images/zoom.svg') }}">
                     {{ __('Jitsi live setting') }}
                 </a>
             </li>
@@ -69,9 +69,8 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('logout') }}"
-                    onclick="event.preventDefault(); $('#logout-form').trigger('submit');">
-                    <img src="{{asset('uploads/website-images/logout.svg')}}">
+                <a href="{{ route('logout') }}" onclick="event.preventDefault(); $('#logout-form').trigger('submit');">
+                    <img src="{{ asset('uploads/website-images/logout.svg') }}">
                     {{ __('Logout') }}
                 </a>
             </li>

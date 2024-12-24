@@ -7,6 +7,7 @@ use App\Models\UserEducation;
 use App\Models\UserExperience;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Modules\InstructorRequest\app\Models\InstructorRequest;
 
 class UserSeeder extends Seeder
 {
@@ -248,5 +249,13 @@ class UserSeeder extends Seeder
         //         'education' => $educations[$i],
         //     ]);
         // }
+
+        foreach (User::where('role', 'instructor')->get() as $key => $instructor) {
+            InstructorRequest::updateOrCreate([
+                'user_id' => $instructor->id
+            ], [
+                'status' => 'approved'
+            ]);
+        }
     }
 }

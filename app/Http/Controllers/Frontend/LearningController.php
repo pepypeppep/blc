@@ -22,9 +22,11 @@ use App\Traits\GenerateSecureLinkTrait;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
-class LearningController extends Controller {
+class LearningController extends Controller
+{
     use GenerateSecureLinkTrait;
-    function index(string $slug) {
+    function index(string $slug)
+    {
         $course = Course::active()->with([
             'chapters',
             'chapters.chapterItems',
@@ -88,7 +90,8 @@ class LearningController extends Controller {
         ));
     }
 
-    function getFileInfo(Request $request) {
+    function getFileInfo(Request $request)
+    {
         // set progress status
         CourseProgress::where('course_id', $request->courseId)->update(['current' => 0]);
         $progress = CourseProgress::updateOrCreate(
@@ -109,7 +112,7 @@ class LearningController extends Controller {
             if (in_array($fileInfo['storage'], ['wasabi', 'aws'])) {
                 $fileInfo['file_path'] = Storage::disk($fileInfo['storage'])->temporaryUrl($fileInfo['file_path'], now()->addSeconds(30));
             }
-            if($fileInfo['storage'] == 'upload'){
+            if ($fileInfo['storage'] == 'upload') {
                 $fileInfo['file_path'] = $this->generateSecureLink($fileInfo['file_path']);
             }
             return response()->json([
@@ -124,8 +127,16 @@ class LearningController extends Controller {
                     'course.instructor.jitsi_credential:id,instructor_id,app_id,api_key,permissions',
                     'live:id,lesson_id,start_time,type,meeting_id,password,join_url',
                 ])->select([
-                    'id', 'course_id', 'chapter_item_id', 'title', 'description',
-                    'duration', 'file_path', 'storage', 'file_type', 'downloadable',
+                    'id',
+                    'course_id',
+                    'chapter_item_id',
+                    'title',
+                    'description',
+                    'duration',
+                    'file_path',
+                    'storage',
+                    'file_type',
+                    'downloadable',
                 ])->findOrFail($request->lessonId)->toArray(),
                 ['type' => 'live']
             );
@@ -152,12 +163,12 @@ class LearningController extends Controller {
             $fileInfo = array_merge(CourseChapterLesson::select(['id', 'file_path', 'storage', 'file_type', 'downloadable', 'description'])->findOrFail($request->lessonId)->toArray(), ['type' => 'document']);
             if ('pdf' == $fileInfo['file_type']) {
                 return response()->json([
-                    'view'      => view('frontend.pages.learning-player.partials.pdf-viewer', ['file_path' => $fileInfo['file_path']])->render(),
+                    'view'      => view('frontend.pages.learning-player.partials.pdf-viewer', ['file_path' => $fileInfo['id']])->render(),
                     'file_info' => $fileInfo,
                 ]);
             } elseif ('docx' == $fileInfo['file_type']) {
                 return response()->json([
-                    'view'      => view('frontend.pages.learning-player.partials.docx-viewer', ['file_path' => $fileInfo['file_path']])->render(),
+                    'view'      => view('frontend.pages.learning-player.partials.docx-viewer', ['file_path' => $fileInfo['id']])->render(),
                     'file_info' => $fileInfo,
                 ]);
             } else {
@@ -174,7 +185,17 @@ class LearningController extends Controller {
         }
     }
 
-    function makeLessonComplete(Request $request) {
+    function getDirectFile(string $id)
+    {
+        $file = CourseChapterLesson::findOrFail($id);
+        if (Storage::disk('private')->exists($file->file_path)) {
+            $file = Storage::disk('private')->get($file->file_path);
+            return response($file, 200)->header('Content-Type', 'application/pdf');
+        }
+    }
+
+    function makeLessonComplete(Request $request)
+    {
         $progress = CourseProgress::where(['lesson_id' => $request->lessonId, 'user_id' => userAuth()->id, 'type' => $request->type])->first();
         if ($progress) {
             $progress->watched = $request->status;
@@ -189,7 +210,8 @@ class LearningController extends Controller {
         }
     }
 
-    function downloadResource(string $lessonId) {
+    function downloadResource(string $lessonId)
+    {
         $resource = CourseChapterLesson::findOrFail($lessonId);
         if (!\File::exists(public_path($resource->file_path))) {
             return redirect()->back()->with(['alert-type' => 'error', 'messege' => __('Links is broke or some thing went wrong')]);
@@ -197,7 +219,8 @@ class LearningController extends Controller {
         return response()->download(public_path($resource->file_path));
     }
 
-    function quizIndex(string $id) {
+    function quizIndex(string $id)
+    {
         $attempt = QuizResult::where('user_id', userAuth()->id)->where('quiz_id', $id)->count();
         $quiz = Quiz::withCount('questions')->findOrFail($id);
         if ($attempt >= $quiz->attempt) {
@@ -207,7 +230,8 @@ class LearningController extends Controller {
         return view('frontend.pages.learning-player.quiz-index', compact('quiz', 'attempt'));
     }
 
-    function quizStore(Request $request, string $id) {
+    function quizStore(Request $request, string $id)
+    {
         $grad = 0;
         $result = [];
         $quiz = Quiz::findOrFail($id);
@@ -234,7 +258,8 @@ class LearningController extends Controller {
         return redirect()->route('student.quiz.result', ['id' => $id, 'result_id' => $quizResult->id]);
     }
 
-    function quizResult(string $id, string $resultId) {
+    function quizResult(string $id, string $resultId)
+    {
         $attempt = QuizResult::where('user_id', userAuth()->id)->where('quiz_id', $id)->count();
         $quiz = Quiz::withCount('questions')->findOrFail($id);
         $quizResult = QuizResult::findOrFail($resultId);
@@ -242,7 +267,8 @@ class LearningController extends Controller {
         return view('frontend.pages.learning-player.quiz-result', compact('quiz', 'attempt', 'quizResult'));
     }
 
-    function addReview(Request $request) {
+    function addReview(Request $request)
+    {
         $request->validate([
             'course_id'            => ['required', 'exists:courses,id'],
             'rating'               => ['required', 'integer', 'min:1', 'max:5'],
@@ -268,10 +294,10 @@ class LearningController extends Controller {
         ]);
 
         return redirect()->back()->with(['alert-type' => 'success', 'messege' => __('Review added successfully')]);
-
     }
 
-    function fetchReviews(Request $request, string $courseId) {
+    function fetchReviews(Request $request, string $courseId)
+    {
         $reviews = CourseReview::where(['course_id' => $courseId, 'status' => 1])->whereHas('course')->whereHas('user')->orderBy('id', 'desc')->paginate(8, ['*'], 'page', $request->page ?? 1);
         return response()->json([
             'view'       => view('frontend.pages.learning-player.partials.review-card', compact('reviews'))->render(),
@@ -281,7 +307,8 @@ class LearningController extends Controller {
         ]);
     }
 
-    function liveSession(Request $request, string $slug, string $lesson_id) {
+    function liveSession(Request $request, string $slug, string $lesson_id)
+    {
         $lesson = CourseChapterLesson::select('id', 'course_id', 'chapter_item_id', 'title')->with(['course' => function ($q) {
             $q->select('id', 'instructor_id', 'slug');
         }, 'course.instructor' => function ($q) {
@@ -297,8 +324,8 @@ class LearningController extends Controller {
         if ($lesson->live->type == 'zoom') {
             return view('frontend.pages.learning-player.partials.live.zoom', compact('lesson'));
         } else {
-            $jitsi_credential = JitsiSetting::where('instructor_id',$lesson->course->instructor_id)->first();
-            if($jitsi_credential){
+            $jitsi_credential = JitsiSetting::where('instructor_id', $lesson->course->instructor_id)->first();
+            if ($jitsi_credential) {
                 $jwt = $this->generateJwtToken($jitsi_credential);
                 $roomName = "{$jitsi_credential->app_id}/{$lesson->live->meeting_id}";
                 return view('frontend.pages.learning-player.partials.live.jitsi', [
@@ -316,7 +343,8 @@ class LearningController extends Controller {
      *
      * @return string
      */
-    protected function generateJwtToken($jitsi_credential) {
+    protected function generateJwtToken($jitsi_credential)
+    {
         $user = userAuth();
         $instructor = $jitsi_credential->instructor_id == $user->id;
 

@@ -32,7 +32,7 @@
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="dashboard__counter-item">
                     <div class="icon">
-                        <img src="{{asset('uploads/website-images/order.svg')}}">
+                        <img src="{{ asset('uploads/website-images/order.svg') }}">
                     </div>
                     <div class="content">
                         <span class="count odometer" data-count="{{ $totalOrders }}"></span>
@@ -43,7 +43,7 @@
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="dashboard__counter-item">
                     <div class="icon">
-                        <img src="{{asset('uploads/website-images/order.svg')}}">
+                        <img src="{{ asset('uploads/website-images/order.svg') }}">
                     </div>
                     <div class="content">
                         <span class="count odometer" data-count="{{ $totalPendingOrders }}"></span>
@@ -55,7 +55,7 @@
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="dashboard__counter-item">
                     <div class="icon">
-                        <img src="{{asset('uploads/website-images/dollar.svg')}}">
+                        <img src="{{ asset('uploads/website-images/dollar.svg') }}">
                     </div>
                     <div class="content">
                         <span class="count" data-count="">{{ currency(userAuth()->wallet_balance) }}</span>
@@ -66,7 +66,7 @@
             <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="dashboard__counter-item">
                     <div class="icon">
-                        <img src="{{asset('uploads/website-images/dollar.svg')}}">
+                        <img src="{{ asset('uploads/website-images/dollar.svg') }}">
                     </div>
                     <div class="content">
                         <span class="count">{{ currency($totalWithdraw) }}</span>

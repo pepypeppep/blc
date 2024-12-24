@@ -47,7 +47,7 @@ class InstructorCourseController extends Controller
         $rules = [
             'title' => ['required', 'max:255'],
             'seo_description' => ['nullable', 'string', 'max:255'],
-            'thumbnail' => ['required', 'mimes:jpeg,png,jpg', 'max:10240'],
+            'thumbnail' => $request->edit_mode == 1 ? ['nullable', 'mimes:jpeg,png,jpg', 'max:10240'] : ['required', 'mimes:jpeg,png,jpg', 'max:10240'],
             'demo_video_source' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
             'discount_price' => ['nullable', 'numeric', new ValidateDiscountRule()],
@@ -83,14 +83,18 @@ class InstructorCourseController extends Controller
             $course->slug = $slug;
         }
 
-        $thumbnail = $request->file('thumbnail');
-        $filename = $course->slug . '_' . time() . '.png';
-        $path = $thumbnail->storeAs('thumbnail', $filename, ['disk' => 'private']);
+
+
+        if ($request->edit_mode != 1) {
+            $thumbnail = $request->file('thumbnail');
+            $filename = $course->slug . '_' . time() . '.png';
+            $path = $thumbnail->storeAs('thumbnail', $filename, ['disk' => 'private']);
+            $course->thumbnail = "/private/" . $path;
+        }
 
         $course->title = $request->title;
         $course->instructor_id = auth('web')->user()->id;
         $course->seo_description = $request->seo_description;
-        $course->thumbnail = "/private/" . $path;
         $course->demo_video_storage = $request->demo_video_storage;
         $course->demo_video_source = $request->demo_video_storage == 'upload' ? $request->upload_path : $request->external_path;
         $course->price = $request->price;

@@ -25,16 +25,16 @@
                             </div>
 
                             <div class="col-md-12">
-                              <div class="form-grp">
-                                  <label for="">{{ __('Status') }} <code>*</code></label>
-                                  <select name="status" id="" class="form-select">
-                                    <option value="">{{ __('Select') }}</option>
-                                    <option @selected($course->status == 'active') value="active">{{ __('Publish') }}</option>
-                                    <option @selected($course->status == 'inactive') value="inactive">{{ __('UnPublish') }}</option>
-                                    <option @selected($course->status == 'is_draft') value="is_draft">{{ __('Draft') }}</option>
-                                  </select>
-                              </div>
-                          </div>
+                                <div class="form-grp">
+                                    <label for="">{{ __('Status') }} <code>*</code></label>
+                                    <select name="status" id="" class="form-select">
+                                        {{-- <option value="">{{ __('Select') }}</option> --}}
+                                        <option @selected($course->status == 'active') value="active">{{ __('Publish') }}</option>
+                                        <option @selected($course->status == 'inactive') value="inactive">{{ __('UnPublish') }}</option>
+                                        <option @selected($course->status == 'is_draft') value="is_draft">{{ __('Draft') }}</option>
+                                    </select>
+                                </div>
+                            </div>
 
                             <div>
                                 <button class="btn btn-primary" type="submit">{{ __('Save') }}</button>

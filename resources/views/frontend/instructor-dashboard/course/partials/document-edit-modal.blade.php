@@ -31,7 +31,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-9 upload">
+            <div class="col-md-12 upload">
                 <div class="from-group mb-3">
                     <label class="form-file-manager-label" for="">{{ __('Path') }}
                         <code>*</code></label>
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 d-none">
                 <div class="form-grp">
                     <label for="file_type_select">{{ __('File Type') }} <code>*</code></label>
                     <select name="file_type" id="file_type_select" class="file_type form-select">

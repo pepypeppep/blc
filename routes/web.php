@@ -130,6 +130,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         /** learning routes */
         Route::get('learning/{slug}', [LearningController::class, 'index'])->name('learning.index');
         Route::post('learning/get-file-info', [LearningController::class, 'getFileInfo'])->name('get-file-info');
+        Route::get('learning/get-file-direct/{id}', [LearningController::class, 'getDirectFile'])->name('get-file-direct');
         Route::post('learning/make-lesson-complete', [LearningController::class, 'makeLessonComplete'])->name('make-lesson-complete');
         Route::get('learning/resource-download/{id}', [LearningController::class, 'downloadResource'])->name('download-resource');
 
@@ -154,7 +155,6 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         /** download certificate route */
         Route::get('download-certificate/{id}', [StudentDashboardController::class, 'downloadCertificate'])->name('download-certificate');
         Route::view('wishlist', 'frontend.wishlist.index')->name('wishlist');
-
     });
 
     /**

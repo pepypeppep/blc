@@ -66,3 +66,16 @@
 @push('scripts')
     <script src="{{ asset('frontend/js/default/courses.js') }}"></script>
 @endpush
+@push('styles')
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #5751e1;
+            border: 1px solid #4943bd;
+            color: #fff;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #fff;
+        }
+    </style>
+@endpush

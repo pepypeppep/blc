@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Course;
+use Illuminate\View\View;
+use Illuminate\Http\Request;
 use App\Models\CourseChapter;
 use App\Models\CourseChapterItem;
-use App\Models\CoursePartnerInstructor;
-use App\Models\CourseSelectedFilterOption;
-use App\Models\CourseSelectedLanguage;
 use App\Models\CourseSelectedLevel;
-use App\Models\User;
 use App\Rules\ValidateDiscountRule;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use App\Models\CourseSelectedLanguage;
+use App\Models\CoursePartnerInstructor;
 use Illuminate\Support\Facades\Session;
-use Illuminate\View\View;
-use Modules\Course\app\Models\CourseCategory;
-use Modules\Course\app\Models\CourseDeleteRequest;
-use Modules\Course\app\Models\CourseLanguage;
+use Modules\Order\app\Models\Enrollment;
+use App\Models\CourseSelectedFilterOption;
 use Modules\Course\app\Models\CourseLevel;
+use Modules\Course\app\Models\CourseCategory;
+use Modules\Course\app\Models\CourseLanguage;
+use Modules\Course\app\Models\CourseDeleteRequest;
 
 class InstructorCourseController extends Controller
 {
@@ -248,7 +249,14 @@ class InstructorCourseController extends Controller
         $course->status = $request->status;
         $course->save();
 
-        $course->enrollments()->sync($request->participants);
+        // delete and add enrollments
+        $enrollments = $course->enrollments()->pluck('user_id')->toArray();
+        $newEnrollments = array_diff($request->participants, $enrollments);
+        $removedEnrollments = array_diff($enrollments, $request->participants);
+        foreach ($newEnrollments as $enrollment) {
+            $course->enrollments()->create(['user_id' => $enrollment]);
+        }
+        Enrollment::whereIn('user_id', $removedEnrollments)->where('course_id', $course->id)->delete();
     }
 
     function getInstructors(Request $request)

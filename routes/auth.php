@@ -9,8 +9,13 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\Auth\SSOController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
+
+Route::get('/auth/sso/callback', [SSOController::class, 'callback'])->name('auth.sso.callback');
+
 
 Route::middleware('guest:web')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -48,6 +53,7 @@ Route::middleware('guest:web')->group(function () {
         Route::get('auth/{driver}/callback', 'handleDriverCallback')->name('auth.social.callback');
     });
 
+    Route::post('/auth/sso/login', [SSOController::class, 'redirect'])->name('auth.sso.login');
 });
 
 Route::middleware('auth')->group(function () {

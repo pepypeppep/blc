@@ -23,7 +23,7 @@ services:
   db:
     image: "mariadb:11.6"
     ports:
-      - "127.0.0.1:3306:3306"
+      - "127.0.0.1:30001:3306"
     environment:
       MYSQL_DATABASE: lms_dev
       MYSQL_USER: lms_dev

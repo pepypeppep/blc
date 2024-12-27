@@ -1,5 +1,5 @@
 {
-    "name": "Ematerai Devcontainer",
+    "name": "LMS Devcontainer",
     "dockerComposeFile": [
         "../docker-compose-dev.yml"
     ],

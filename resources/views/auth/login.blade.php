@@ -66,6 +66,14 @@
                         <div class="account__switch">
                             <p>{{ __('Dont have an account?') }}<a href="{{ route('register') }}">{{ __('Sign Up') }}</a></p>
                         </div>
+
+                        <form method="POST" action="{{ route('auth.sso.login') }}" class="account__form">
+                            @csrf
+                            {{-- SSO LOGIN BUTTON --}}
+                            <button type="submit" class="btn btn-two arrow-btn">{{ __('Sign In with SSO') }}<img
+                                src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
+                                class="injectable"></button>
+                        </form>
                     </div>
                 </div>
             </div>

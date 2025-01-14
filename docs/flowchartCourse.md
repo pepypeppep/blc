@@ -1,3 +1,5 @@
+# FLOWCHART COURSE
+
 ```mermaid
 flowchart TD
     A(["Mulai"]) --> B["Admin OPD membuat kursus baru"]

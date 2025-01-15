@@ -3,7 +3,7 @@ flowchart TD
     Start([Mulai]) --> A[Admin BKPSDM Membuat Lowongan Pendidikan Lanjutan]
     A --> B[Pegawai Melamar Lowongan]
     B --> C{Syarat Lowongan Terpenuhi?}
-    C -- Tidak --> D[Lowongan Pegawai Ditolak] --> End1([Selesai])
+    C -- Tidak --> End1([Selesai])
     C -- Ya --> E[Pegawai Melakukan Assesment]
     E --> F{Assesment Sesuai?}
     F -- Tidak --> G[Lamaran Ditolak] --> End2([Selesai])

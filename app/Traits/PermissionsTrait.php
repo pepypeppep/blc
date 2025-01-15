@@ -343,4 +343,25 @@ trait PermissionsTrait
 
         return $permissions;
     }
+
+    private static function getAdminOPDPermissions(): array
+    {
+        $properties = [
+            self::$dashboardPermissions,
+            self::$coursePermissions,
+            self::$customerPermissions,
+        ];
+
+        $permissions = [];
+        foreach ($properties as $value) {
+            if (is_array($value)) {
+                $permissions[] = [
+                    'group_name' => $value['group_name'],
+                    'permissions' => (array) $value['permissions'],
+                ];
+            }
+        }
+
+        return $permissions;
+    }
 }

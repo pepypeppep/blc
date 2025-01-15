@@ -54,5 +54,24 @@ class RolePermissionSeeder extends Seeder
                 $roleAdminBKPSDM->givePermissionTo($permission);
             }
         }
+
+        // Create a admin OPD
+        $roleAdminOPD = Role::updateOrCreate(['name' => 'Admin OPD', 'guard_name' => 'admin']);
+
+        $permissions = self::getAdminOPDPermissions();
+
+        for ($i = 0; $i < count($permissions); $i++) {
+            $permissionGroup = $permissions[$i]['group_name'];
+
+            for ($j = 0; $j < count($permissions[$i]['permissions']); $j++) {
+                $permission = Permission::updateOrCreate([
+                    'name' => $permissions[$i]['permissions'][$j],
+                    'group_name' => $permissionGroup,
+                    'guard_name' => 'admin',
+                ]);
+
+                $roleAdminOPD->givePermissionTo($permission);
+            }
+        }
     }
 }

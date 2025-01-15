@@ -37,7 +37,7 @@
                     @include('badges::sidebar')
                 @endif
 
-                @if (Module::isEnabled('Blog'))
+                @if (Module::isEnabled('Blog') && (checkAdminHasPermission('blog.view') || checkAdminHasPermission('blog.category.view') || checkAdminHasPermission('blog.comment.view')))
                     @include('blog::sidebar')
                 @endif
             @endif

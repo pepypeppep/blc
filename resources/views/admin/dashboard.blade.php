@@ -5,7 +5,7 @@
 @section('admin-content')
     <div class="main-content">
         {{-- Show Credentials Setup Alert --}}
-        @if (Route::is('admin.dashboard') && ($checkCrentials = checkCrentials()))
+        {{-- @if (Route::is('admin.dashboard') && ($checkCrentials = checkCrentials()))
             @if ($checkCrentials->status)
                 <div class="alert alert-danger alert-has-icon alert-dismissible d-none" id="missingCrentialsAlert">
                     <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
@@ -334,11 +334,11 @@
                     @endif
                 </div>
             </div>
-        </section>
+        </section> --}}
     </div>
 @endsection
 
-@push('js')
+{{-- @push('js')
     <script src="{{ asset('backend/js/chart.umd.min.js') }}"></script>
 
     <script>
@@ -489,4 +489,4 @@
             });
         });
     </script>
-@endpush
+@endpush --}}

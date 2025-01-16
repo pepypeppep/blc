@@ -159,7 +159,7 @@ trait PermissionsTrait
     public static array $pagePermissions = [
         'group_name' => 'page builder',
         'permissions' => [
-           'page.management' 
+            'page.management'
         ],
     ];
     public static array $newsletterPermissions = [
@@ -308,6 +308,49 @@ trait PermissionsTrait
     {
         $reflection = new ReflectionClass(__TRAIT__);
         $properties = $reflection->getStaticProperties();
+
+        $permissions = [];
+        foreach ($properties as $value) {
+            if (is_array($value)) {
+                $permissions[] = [
+                    'group_name' => $value['group_name'],
+                    'permissions' => (array) $value['permissions'],
+                ];
+            }
+        }
+
+        return $permissions;
+    }
+
+    private static function getAdminBKPSDMPermissions(): array
+    {
+        $properties = [
+            self::$dashboardPermissions,
+            self::$coursePermissions,
+            self::$CertificatePermission,
+            self::$badgePermission,
+        ];
+
+        $permissions = [];
+        foreach ($properties as $value) {
+            if (is_array($value)) {
+                $permissions[] = [
+                    'group_name' => $value['group_name'],
+                    'permissions' => (array) $value['permissions'],
+                ];
+            }
+        }
+
+        return $permissions;
+    }
+
+    private static function getAdminOPDPermissions(): array
+    {
+        $properties = [
+            self::$dashboardPermissions,
+            self::$coursePermissions,
+            self::$customerPermissions,
+        ];
 
         $permissions = [];
         foreach ($properties as $value) {

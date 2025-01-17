@@ -13,11 +13,11 @@
     <section class="dashboard__area section-pb-120">
         <div class="container">
             <div class="dashboard__top-wrap">
-                <div class="dashboard__top-bg" data-background="{{ asset(auth()->user()->cover) }}"></div>
+                <div class="dashboard__top-bg" data-background="{{ asset('frontend/img/frontend-cover.png') }}"></div>
                 <div class="dashboard__instructor-info">
                     <div class="dashboard__instructor-info-left">
                         <div class="thumb">
-                            <img src="{{ asset(auth()->user()->image) }}" alt="img">
+                            <img src="{{ asset('frontend/img/frontend-avatar.png') }}" alt="img">
                         </div>
                         <div class="content">
                             <h4 class="title">{{ auth()->user()->name }}</h4>

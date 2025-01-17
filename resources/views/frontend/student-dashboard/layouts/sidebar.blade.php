@@ -30,12 +30,6 @@
     <nav class="dashboard__sidebar-menu">
         <ul class="list-wrap">
             <li>
-                <a href="{{ route('student.setting.index') }}">
-                    <i class="flaticon-user"></i>
-                    {{ __('Profile Settings') }}
-                </a>
-            </li>
-            <li>
                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); $('#logout-form').trigger('submit');">
                     <img src="{{ asset('uploads/website-images/logout.svg') }}">
                     {{ __('Logout') }}

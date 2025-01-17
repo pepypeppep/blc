@@ -29,5 +29,6 @@
     "SocialLink": true,
     "ContactSetting": false,
     "Menubuilder": true,
-    "Installer": true
+    "Installer": true,
+    "PendidikanLanjutan": true
 }

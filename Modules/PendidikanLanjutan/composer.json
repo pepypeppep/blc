@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/pendidikanlanjutan",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\PendidikanLanjutan\\": "",
+            "Modules\\PendidikanLanjutan\\App\\": "app/",
+            "Modules\\PendidikanLanjutan\\Database\\Factories\\": "database/factories/",
+            "Modules\\PendidikanLanjutan\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\PendidikanLanjutan\\Tests\\": "tests/"
+        }
+    }
+}

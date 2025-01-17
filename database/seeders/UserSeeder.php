@@ -25,8 +25,20 @@ class UserSeeder extends Seeder
         \DB::table('user_experiences')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
+        \DB::table('unors')->insert([
+            [
+                'id' => 1,
+                'name' => 'Unor Example 1',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Unor Example 2',
+            ]
+        ]);
+
         User::create([
             'id' => 1000,
+            'unor_id' => 1,
             'name' => 'Jhon Doe',
             'email' => 'student@gmail.com',
             'password' => bcrypt('1234'),
@@ -36,6 +48,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'id' => 1001,
+            'unor_id' => 1,
             'name' => 'Jason Thorne',
             'email' => 'instructor@gmail.com',
             'password' => bcrypt('1234'),
@@ -72,6 +85,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'id' => 1002,
+            'unor_id' => 1,
             'name' => 'Mark Davenport',
             'email' => 'instructortwo@gmail.com',
             'password' => bcrypt('1234'),
@@ -108,6 +122,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'id' => 1003,
+            'unor_id' => 1,
             'name' => 'Ethan Granger',
             'email' => 'instructortrhee@gmail.com',
             'password' => bcrypt('1234'),
@@ -144,6 +159,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'id' => 1004,
+            'unor_id' => 1,
             'name' => 'Lucas Hale',
             'email' => 'instructorfour@gmail.com',
             'password' => bcrypt('1234'),
@@ -180,6 +196,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'id' => 1005,
+            'unor_id' => 1,
             'name' => 'Nathaniel Cross',
             'email' => 'instructorfive@gmail.com',
             'password' => bcrypt('1234'),
@@ -216,6 +233,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'id' => 1006,
+            'unor_id' => 1,
             'name' => 'Adrian Pierce',
             'email' => 'instructorsix@gmail.com',
             'password' => bcrypt('1234'),

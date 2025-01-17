@@ -1925,5 +1925,9 @@
     "supports only these types of currencies":"supports only these types of currencies",
     "The selected payment method is now inactive.":"The selected payment method is now inactive.",
     "Addon requires application version":"Addon requires application version",
-    "Current version":"Current version"
+    "Current version":"Current version",
+    "ContinuingEducation": "Continuing Education",
+    "Vacancy":"Vacancy",
+    "Vacancy List" : "Vacancy List"
+
 }

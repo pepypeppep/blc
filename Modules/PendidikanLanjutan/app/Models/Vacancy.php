@@ -11,7 +11,6 @@ class Vacancy extends Model
     use HasFactory;
 
     protected $fillable = [
-        'periode_id',
         'name',
         'description',
         'start_at',

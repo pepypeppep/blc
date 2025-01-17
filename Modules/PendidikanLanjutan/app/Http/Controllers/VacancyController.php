@@ -42,7 +42,6 @@ class VacancyController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'periode_id' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'start_at' => 'nullable|date|before:end_at',
@@ -56,7 +55,6 @@ class VacancyController extends Controller
             'vacancy_details.*.description' => 'nullable|string',
             'unor_ids.*' => 'required|exists:unors,id',
         ], [
-            'periode_id.required' => 'Periode ID wajib diisi.',
             'name.required' => 'Nama lowongan wajib diisi.',
             'start_at.before' => 'Tanggal mulai harus sebelum tanggal berakhir.',
             'end_at.after' => 'Tanggal berakhir harus setelah tanggal mulai.',
@@ -71,7 +69,6 @@ class VacancyController extends Controller
         DB::transaction(function () use ($request) {
             // Membuat vacancy baru
             $vacancy = Vacancy::create($request->only([
-                'periode_id',
                 'name',
                 'description',
                 'start_at',
@@ -123,7 +120,6 @@ class VacancyController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'periode_id' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'start_at' => 'nullable|date|before:end_at',
@@ -137,7 +133,6 @@ class VacancyController extends Controller
             'vacancy_details.*.description' => 'nullable|string',
             'unor_ids.*' => 'required|exists:unors,id',
         ], [
-            'periode_id.required' => 'Periode ID wajib diisi.',
             'name.required' => 'Nama lowongan wajib diisi.',
             'start_at.before' => 'Tanggal mulai harus sebelum tanggal berakhir.',
             'end_at.after' => 'Tanggal berakhir harus setelah tanggal mulai.',
@@ -155,7 +150,6 @@ class VacancyController extends Controller
 
             // Memperbarui data Vacancy
             $vacancy->update($request->only([
-                'periode_id',
                 'name',
                 'description',
                 'start_at',

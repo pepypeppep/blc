@@ -20,4 +20,9 @@ class Unor extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function vacancies()
+    {
+        return $this->belongsToMany(Vacancy::class, 'vacancy_unors', 'unor_id', 'vacancy_id');
+    }
 }

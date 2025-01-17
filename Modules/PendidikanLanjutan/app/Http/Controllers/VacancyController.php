@@ -18,7 +18,11 @@ class VacancyController extends Controller
     {
         $vacancies = Vacancy::all();
 
-        return 'sucess';
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Vacancy successfully rendered.',
+            'data' => $vacancies,
+        ], 200);
 
         // return view('PendidikanLanjutan::vacancies.index', compact('vacancies'));
     }
@@ -51,6 +55,15 @@ class VacancyController extends Controller
             'vacancy_details.*.type_value' => 'nullable|string|max:255',
             'vacancy_details.*.description' => 'nullable|string',
             'unor_ids.*' => 'required|exists:unors,id',
+        ], [
+            'periode_id.required' => 'Periode ID wajib diisi.',
+            'name.required' => 'Nama lowongan wajib diisi.',
+            'start_at.before' => 'Tanggal mulai harus sebelum tanggal berakhir.',
+            'end_at.after' => 'Tanggal berakhir harus setelah tanggal mulai.',
+            'year.required' => 'Tahun wajib diisi.',
+            'year.digits' => 'Tahun harus terdiri dari 4 digit.',
+            'year.between' => 'Tahun harus antara 1900 hingga '.date('Y').'.',
+            'vacancy_details.required' => 'Detail lowongan wajib diisi.',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -77,6 +90,8 @@ class VacancyController extends Controller
             'status' => 'success',
             'message' => 'Vacancy created successfully.',
         ], 200);
+
+        // return redirect()->route('vacancies.index')->with('success', 'Vacancy created successfully.');
     }
 
     /**

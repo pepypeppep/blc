@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\PendidikanLanjutan\app\Http\Controllers\PendidikanLanjutanController;
+use Modules\PendidikanLanjutan\app\Http\Controllers\VacancyController;
 
 /*
 |--------------------------------------------------------------------------

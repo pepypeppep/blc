@@ -6,10 +6,7 @@
 
 @section('contents')
     <!-- breadcrumb-area -->
-    <x-frontend.breadcrumb
-        :title="__('')"
-        :links="[]"
-    />
+    <x-frontend.breadcrumb :title="__('')" :links="[]" />
     <!-- breadcrumb-area-end -->
 
     <!-- dashboard-area -->
@@ -26,27 +23,20 @@
                             <h4 class="title">{{ auth()->user()->name }}</h4>
                             <ul class="list-wrap">
                                 <li>
-                                    <img src="{{ asset('frontend/img/icons/envelope.svg') }}" alt="img" class="injectable">
+                                    <img src="{{ asset('frontend/img/icons/envelope.svg') }}" alt="img"
+                                        class="injectable">
                                     {{ auth()->user()->email }}
                                 </li>
-                                @if(auth()->user()->phone)
-                                <li>
-                                    <img  src="{{ asset('frontend/img/icons/phone.svg') }}" alt="img" class="injectable">
-                                    {{ auth()->user()->phone }}
-                                </li>
+                                @if (auth()->user()->phone)
+                                    <li>
+                                        <img src="{{ asset('frontend/img/icons/phone.svg') }}" alt="img"
+                                            class="injectable">
+                                        {{ auth()->user()->phone }}
+                                    </li>
                                 @endif
-                                
+
                             </ul>
                         </div>
-                    </div>
-                    <div class="dashboard__instructor-info-right">
-                        @if (instructorStatus() == 'approved')
-                        <a href="{{ route('instructor.dashboard') }}" class="btn btn-two arrow-btn">{{ __('Instructor Dashboard') }} <img
-                            src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img" class="injectable"></a>
-                        @elseif (instructorStatus() != 'pending')
-                        <a href="{{ route('become-instructor') }}" class="btn btn-two arrow-btn">{{ __('Become an Instructor') }} <img
-                            src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img" class="injectable"></a>
-                        @endif
                     </div>
                 </div>
             </div>

@@ -18,13 +18,13 @@ class VacancyController extends Controller
     {
         $vacancies = Vacancy::all();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Vacancy successfully rendered.',
-            'data' => $vacancies,
-        ], 200);
+        // return response()->json([
+        //     'status' => 'success',
+        //     'message' => 'Vacancy successfully rendered.',
+        //     'data' => $vacancies,
+        // ], 200);
 
-        // return view('PendidikanLanjutan::vacancies.index', compact('vacancies'));
+        return view('pendidikanlanjutan::Vacancy.index', compact('vacancies'));
     }
 
     /**
@@ -32,7 +32,7 @@ class VacancyController extends Controller
      */
     public function create()
     {
-        return view('PendidikanLanjutan::vacancies.create');
+        return view('pendidikanlanjutan::Vacancy.create');
     }
 
     /**
@@ -100,7 +100,7 @@ class VacancyController extends Controller
     {
         $vacancy = Vacancy::findOrFail($id);
 
-        return view('PendidikanLanjutan::vacancies.show', compact('vacancy'));
+        return view('pendidikanlanjutan::Vacancy.show', compact('vacancy'));
     }
 
     /**
@@ -110,7 +110,7 @@ class VacancyController extends Controller
     {
         $vacancy = Vacancy::findOrFail($id);
 
-        return view('PendidikanLanjutan::vacancies.edit', compact('vacancy'));
+        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy'));
     }
 
     /**

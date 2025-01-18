@@ -3,7 +3,7 @@
 namespace Modules\PendidikanLanjutan\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\PendidikanLanjutan\Entities\Vacancy;
+use Modules\PendidikanLanjutan\app\Models\Vacancy;
 
 class VacancySeeder extends Seeder
 {

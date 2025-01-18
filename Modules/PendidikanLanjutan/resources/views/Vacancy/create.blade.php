@@ -10,7 +10,7 @@
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
                     </div>
-                    <div class="breadcrumb-item active"><a href="{{ route('admin.blogs.index') }}">{{ __('Blog List') }}</a>
+                    <div class="breadcrumb-item active"><a href="{{ route('admin.pendidikanlanjutan.index') }}">{{ __('Vacancy List') }}</a>
                     </div>
                     <div class="breadcrumb-item">{{ __('Create Vacancy') }}</div>
                 </div>
@@ -22,7 +22,7 @@
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('Create Vacancy') }}</h4>
                                 <div>
-                                    <a href="{{ route('admin.blogs.index') }}" class="btn btn-primary"><i
+                                    <a href="{{ route('admin.pendidikanlanjutan.index') }}" class="btn btn-primary"><i
                                             class="fa fa-arrow-left"></i>{{ __('Back') }}</a>
                                 </div>
                             </div>
@@ -30,49 +30,127 @@
                                 <form action="{{ route('admin.blogs.store') }}" method="POST"
                                     enctype="multipart/form-data">
                                     @csrf
-                                    <div class="row">
+                                    <div class="row mb-3">
+
                                         <div class="form-group col-md-8 offset-md-2">
-                                            <label>{{ __('Thumbnail Image') }}<span class="text-danger">*</span></label>
-                                            <div id="image-preview" class="image-preview">
-                                                <label for="image-upload" id="image-label">{{ __('Image') }}</label>
-                                                <input type="file" name="image" id="image-upload">
-                                            </div>
-                                            @error('image')
+                                            <label>{{ __('Unit Organisasi') }} <span class="text-danger">*</span></label>
+                                            <input type="text" id="unor" class="form-control" name="unor"
+                                                value="{{ old('unor') }}">
+                                            @error('unor')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
 
                                         <div class="form-group col-md-8 offset-md-2">
-                                            <label>{{ __('Title') }} <span class="text-danger">*</span></label>
-                                            <input type="text" id="title" class="form-control" name="title"
-                                                value="{{ old('title') }}">
-                                            @error('title')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label>{{ __('Slug') }} <span class="text-danger">*</span></label>
-                                            <input type="text" id="slug" class="form-control" name="slug"
-                                                value="{{ old('slug') }}">
-                                            @error('slug')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label>{{ __('Category') }} <span class="text-danger">*</span></label>
-                                            <select name="blog_category_id" class="form-control select2" id="category">
-                                                <option value="">{{ __('Select Category') }}</option>
-                                                {{-- @foreach ($categories as $category)
-                                                    <option {{ $category->id == old('blog_category_id') ? 'selected' : '' }}
-                                                        value="{{ $category->id }}">{{ $category->title }}
-                                                    </option>
-                                                @endforeach --}}
+                                            <label for="education_level">{{ __('Jenjang Pendidikan Lanjutan') }} <span class="text-danger">*</span></label>
+                                            <select name="education_level" class="form-control select2" id="education_level">
+                                                <option value="strata_1">{{ __('Strata I') }}</option>
+                                                <option value="strata_2">{{ __('Strata II') }}</option>
+                                                <option value="strata_3">{{ __('Strata III') }}</option>
+                                                <option value="profesi_ppds">{{ __('Profesi, PPDS (Dokter Spesialis)') }}</option>
+                                                <option value="ppds_subspesialis">{{ __('PPDS (Dokter Subspesialis)') }}</option>
                                             </select>
-                                            @error('category_id')
+                                            @error('education_level')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
+                                        </div>
+
+                                        <div class="form-group col-md-8 offset-md-2">
+                                            <label>{{ __('Program Studi Pendidikan Lanjutan') }} <span class="text-danger">*</span></label>
+                                            <input type="text" id="study_program" class="form-control" name="study_program"
+                                                value="{{ old('study_program') }}">
+                                            @error('study_program')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group col-md-8 offset-md-2">
+                                            <label for="minimum_rank">{{ __('Syarat Minimal Pangkat/Golongan') }} <span class="text-danger">*</span></label>
+                                            <select name="minimum_rank" class="form-control select2" id="minimum_rank">
+                                                <option value="juru_ia">{{ __('Juru (Ia)') }}</option>
+                                                <option value="juru_muda_tingkat_i_ib">{{ __('Juru Muda Tingkat I (Ib)') }}</option>
+                                                <option value="juru_ic">{{ __('Juru (Ic)') }}</option>
+                                                <option value="juru_tingkat_i_id">{{ __('Juru Tingkat I (Id)') }}</option>
+                                                <option value="pengatur_iia">{{ __('Pengatur (IIa)') }}</option>
+                                                <option value="pengatur_muda_tingkat_i_iib">{{ __('Pengatur Muda Tingkat I (IIb)') }}</option>
+                                                <option value="pengatur_iic">{{ __('Pengatur (IIc)') }}</option>
+                                                <option value="pengatur_tingkat_i_iid">{{ __('Pengatur Tingkat I (IId)') }}</option>
+                                                <option value="penata_iiia">{{ __('Penata (IIIa)') }}</option>
+                                                <option value="penata_muda_tingkat_i_iiib">{{ __('Penata Muda Tingkat I (IIIb)') }}</option>
+                                                <option value="penata_iiic">{{ __('Penata (IIIc)') }}</option>
+                                                <option value="penata_tingkat_i_iiid">{{ __('Penata Tingkat I (IIId)') }}</option>
+                                                <option value="pembina_iva">{{ __('Pembina (IVa)') }}</option>
+                                                <option value="pembina_tingkat_i_ivb">{{ __('Pembina Tingkat I (IVb)') }}</option>
+                                                <option value="pembina_utama_muda_ivc">{{ __('Pembina Utama Muda (IVc)') }}</option>
+                                                <option value="pembina_utama_madya_ivd">{{ __('Pembina Utama Madya (IVd)') }}</option>
+                                                <option value="pembina_utama_ive">{{ __('Pembina Utama (IVe)') }}</option>
+                                            </select>
+                                            @error('minimum_rank')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group col-md-8 offset-md-2">
+                                            <label for="employment_status">{{ __('Status Kepegawaian') }} <span class="text-danger">*</span></label>
+                                            <select name="employment_status" class="form-control select2" id="employment_status">
+                                                <option value="diberhentikan_dari_jabatan">{{ __('Diberhentikan dari Jabatan') }}</option>
+                                                <option value="tidak_diberhentikan_dari_jabatan">{{ __('Tidak Diberhentikan dari Jabatan') }}</option>
+                                            </select>
+                                            @error('employment_status')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group col-md-8 offset-md-2">
+                                            <label for="funding_source">{{ __('Pembiayaan') }} <span class="text-danger">*</span></label>
+                                            <select name="funding_source" class="form-control select2" id="funding_source">
+                                                <option value="non_apbd">{{ __('Non APBD') }}</option>
+                                                <option value="mandiri">{{ __('Mandiri') }}</option>
+                                            </select>
+                                            @error('funding_source')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group col-md-8 offset-md-2">
+                                            <label for="formasi_count">{{ __('Jumlah Formasi') }} <span class="text-danger">*</span></label>
+                                            <input type="text" id="formasi_count" class="form-control" name="formasi_count"
+                                                value="{{ old('formasi_count') }}">
+                                            @error('formasi_count')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group col-md-8 offset-md-2">
+                                            <label>{{ __('Batas Usia Pensiun') }} <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" id="retirement_age" class="form-control"
+                                                name="retirement_age" value="{{ old('retirement_age') }}">
+                                            @error('retirement_age')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+
+                                        <div class="form-group col-md-8 offset-md-2">
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label>{{ __('Start Date') }} <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="date" id="start_at" class="form-control"
+                                                        name="start_at" value="{{ old('start_at') }}">
+                                                    @error('start_at')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label>{{ __('End Date') }} <span class="text-danger">*</span></label>
+                                                    <input type="date" id="end_at" class="form-control" name="end_at"
+                                                        value="{{ old('end_at') }}">
+                                                    @error('end_at')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="form-group col-md-8 offset-md-2">
@@ -82,69 +160,8 @@
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
-
-
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label>
-                                                <input type="hidden" name="show_homepage" class="custom-switch-input"
-                                                    value="0">
-                                                <input type="checkbox" name="show_homepage" class="custom-switch-input"
-                                                    value="1" {{ old('show_homepage') == 1 ? 'checked' : '' }}>
-                                                <span class="custom-switch-indicator"></span>
-                                                <span class="custom-switch-description">{{ __('Show on homepage') }}</span>
-                                            </label>
-                                        </div>
-
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label>
-                                                <input type="hidden" value="0" name="is_popular"
-                                                    class="custom-switch-input">
-                                                <input type="checkbox" value="1" name="is_popular"
-                                                    class="custom-switch-input" {{ old('is_popular') == 1 ? 'checked' : '' }}>
-                                                <span class="custom-switch-indicator"></span>
-                                                <span
-                                                    class="custom-switch-description">{{ __('Mark as a Popular') }}</span>
-                                            </label>
-                                        </div>
-
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label>
-                                                <input type="hidden" value="0" name="status"
-                                                    class="custom-switch-input">
-                                                <input type="checkbox" value="1" name="status"
-                                                    class="custom-switch-input" {{ old('status') == 1 ? 'checked' : '' }}>
-                                                <span class="custom-switch-indicator"></span>
-                                                <span class="custom-switch-description">{{ __('Status') }}</span>
-                                            </label>
-                                        </div>
-
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label>{{ __('Tags') }}</label>
-                                            <input type="text" class="form-control tags" name="tags"
-                                                value="{{ old('tags') }}">
-                                            @error('tags')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label>{{ __('SEO Title') }}</label>
-                                            <input type="text" class="form-control" name="seo_title"
-                                                value="{{ old('seo_title') }}">
-                                            @error('seo_title')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label>{{ __('SEO Description') }}</label>
-                                            <textarea name="seo_description" id="" cols="30" rows="10" class="form-control text-area-5">{{ old('seo_description') }}</textarea>
-                                            @error('seo_description')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
                                     </div>
+
                                     <div class="row">
                                         <div class="text-center col-md-8 offset-md-2">
                                             <x-admin.save-button :text="__('Save')"></x-admin.save-button>

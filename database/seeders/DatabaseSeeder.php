@@ -22,6 +22,10 @@ use Modules\Frontend\database\seeders\FeaturedInstructorSectionSeeder;
 use Modules\InstructorRequest\database\seeders\InstructorRequestSeeder;
 use Modules\CertificateBuilder\database\seeders\CertificateBuilderSeeder;
 use Modules\CertificateBuilder\database\seeders\CertificateBuilderItemSeeder;
+use Modules\PendidikanLanjutan\database\seeders\VacancySeeder;
+use Modules\PendidikanLanjutan\database\seeders\VacancyDetailSeeder;
+use Modules\PendidikanLanjutan\database\seeders\VacancyDetailUserAttachmentSeeder;
+use Modules\PendidikanLanjutan\database\seeders\VacancyUserSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -59,7 +63,12 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,
             CustomPageSeeder::class,
             FooterSettingSeeder::class,
-            CurrencySeeder::class
+            CurrencySeeder::class,
+
+            VacancySeeder::class,
+            VacancyDetailSeeder::class,
+            VacancyUserSeeder::class,
+            VacancyDetailUserAttachmentSeeder::class,
         ]);
     }
 }

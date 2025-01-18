@@ -3,7 +3,7 @@
 namespace Modules\PendidikanLanjutan\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Modules\PendidikanLanjutan\Entities\VacancyDetailUserAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyDetailUserAttachment;
 
 class VacancyDetailUserAttachmentSeeder extends Seeder
 {

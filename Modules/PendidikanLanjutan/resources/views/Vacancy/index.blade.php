@@ -19,7 +19,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route('admin.pendidikanlanjutan.index') }}" method="GET"
+                                <form action="{{ route('admin.vacancies.index') }}" method="GET"
                                     onchange="$(this).trigger('submit')" class="form_padding">
                                     <div class="row">
                                         <div class="col-md-2 form-group">
@@ -29,8 +29,7 @@
                                         <div class="col-md-2 form-group">
                                             <select name="start_date" id="start_date" class="form-control">
                                                 <option value="">{{ __('Start Date') }}</option>
-                                                <option value="1"
-                                                    {{ request('start_date') == '1' ? 'selected' : '' }}>
+                                                <option value="1" {{ request('start_date') == '1' ? 'selected' : '' }}>
                                                     {{ __('Yes') }}
                                                 </option>
                                                 <option value="0"
@@ -42,12 +41,10 @@
                                         <div class="col-md-2 form-group">
                                             <select name="end_date" id="end_date" class="form-control">
                                                 <option value="">{{ __('End Date') }}</option>
-                                                <option value="1"
-                                                    {{ request('end_date') == '1' ? 'selected' : '' }}>
+                                                <option value="1" {{ request('end_date') == '1' ? 'selected' : '' }}>
                                                     {{ __('Yes') }}
                                                 </option>
-                                                <option value="0"
-                                                    {{ request('end_date') == '0' ? 'selected' : '' }}>
+                                                <option value="0" {{ request('end_date') == '0' ? 'selected' : '' }}>
                                                     {{ __('No') }}
                                                 </option>
                                             </select>
@@ -104,7 +101,7 @@
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('Vacancy List') }}</h4>
                                 <div>
-                                    <a href="{{ route('admin.pendidikanlanjutan.create') }}" class="btn btn-primary"><i
+                                    <a href="{{ route('admin.vacancies.create') }}" class="btn btn-primary"><i
                                             class="fa fa-plus"></i>{{ __('Add New') }}</a>
                                 </div>
                             </div>
@@ -123,38 +120,33 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- @forelse () --}}
+                                            @forelse ($vacancies as $vacancy)
                                                 <tr>
-                                                    <td>1</td>
-                                                    <td>
-                                                        Nama
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $vacancy->name }}</td>
+                                                    <td>{{ $vacancy->description }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($vacancy->start_at)->format('d F Y') }}
                                                     </td>
-                                                    <td>Keterangan</td>
-
+                                                    <td>{{ \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') }}</td>
+                                                    <td>{{ $vacancy->status }}</td>
                                                     <td>
-                                                        16 Januari 2025
-                                                    </td>
-                                                    <td>
-                                                        17 Januari 2025
-                                                    </td>
-
-                                                    <td>
-                                                        Aktif
-                                                    </td>
-                                                    <td>
-                                                        <a href="#"
-                                                            class="btn btn-warning btn-sm m-1"><i class="fa fa-edit"
-                                                                aria-hidden="true"></i></a>
+                                                        <a href="{{ route('admin.vacancies.edit', $vacancy->id) }}"
+                                                            class="btn btn-warning btn-sm m-1">
+                                                            <i class="fa fa-edit" aria-hidden="true"></i>
+                                                        </a>
                                                         <a href="javascript:;" data-toggle="modal"
                                                             data-target="#deleteModal" class="btn btn-danger btn-sm m-1"
-                                                            onclick="#"><i
-                                                                class="fa fa-trash" aria-hidden="true"></i></a>
+                                                            onclick="deleteVacancy({{ $vacancy->id }})">
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
-                                            {{-- @empty
-                                                <x-empty-table :name="__('Vacancy')" route="admin.pendidikanlanjutan.create" create="yes"
-                                                    :message="__('No data found!')" colspan="7"></x-empty-table>
-                                            @endforelse --}}
+                                            @empty
+                                                <tr>
+                                                    <td colspan="7" class="text-center">{{ __('No vacancies found!') }}
+                                                    </td>
+                                                </tr>
+                                            @endforelse
                                         </tbody>
                                     </table>
                                 </div>
@@ -178,7 +170,7 @@
         "use strict"
 
         function deleteData(id) {
-            $("#deleteForm").attr("action", '{{ url('/admin/pendidikanlanjutan/') }}' + "/" + id)
+            $("#deleteForm").attr("action", '{{ url('/admin/vacancies/') }}' + "/" + id)
         }
         "use strict"
 
@@ -193,7 +185,7 @@
                 data: {
                     _token: '{{ csrf_token() }}',
                 },
-                url: "{{ url('/admin/pendidikanlanjutan/status-update') }}" + "/" + id,
+                url: "{{ url('/admin/vacancies/status-update') }}" + "/" + id,
                 success: function(response) {
                     if (response.success) {
                         toastr.success(response.message);
@@ -204,7 +196,7 @@
                 error: function(xhr, status, err) {
                     console.log(err);
                     let errors = xhr.responseJSON.errors;
-                    $.each(errors, function (key, value) {
+                    $.each(errors, function(key, value) {
                         toastr.error(value);
                     })
                 }

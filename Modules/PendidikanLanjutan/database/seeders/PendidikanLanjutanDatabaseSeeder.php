@@ -1,8 +1,12 @@
 <?php
 
-namespace Modules\PendidikanLanjutan\database\seeders;
+namespace Modules\PendidikanLanjutan\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\PendidikanLanjutan\database\seeders\VacancySeeder;
+use Modules\PendidikanLanjutan\database\seeders\VacancyDetailSeeder;
+use Modules\PendidikanLanjutan\database\seeders\VacancyDetailUserAttachmentSeeder;
+use Modules\PendidikanLanjutan\database\seeders\VacancyUserSeeder;
 
 class PendidikanLanjutanDatabaseSeeder extends Seeder
 {
@@ -11,6 +15,11 @@ class PendidikanLanjutanDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        $this->call([
+            VacancySeeder::class,
+            VacancyDetailSeeder::class,
+            VacancyUserSeeder::class,
+            VacancyDetailUserAttachmentSeeder::class,
+        ]);
     }
 }

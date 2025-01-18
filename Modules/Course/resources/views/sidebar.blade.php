@@ -16,35 +16,44 @@
                     @endif
                 </a>
             </li>
-            <li
-                class="{{ isRoute('admin.course-category.*', 'active') }} {{ isRoute('admin.course-sub-category.*', 'active') }}">
-                <a class="nav-link" href="{{ route('admin.course-category.index') }}">
-                    {{ __('Categories') }}
-                </a>
-            </li>
+            @if (getAdminAuthRole() != 'Admin OPD')
+                <li
+                    class="{{ isRoute('admin.course-category.*', 'active') }} {{ isRoute('admin.course-sub-category.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.course-category.index') }}">
+                        {{ __('Categories') }}
+                    </a>
+                </li>
+            @endif
 
-            <li class="{{ isRoute('admin.course-language.*', 'active') }}">
-                <a class="nav-link" href="{{ route('admin.course-language.index') }}">
-                    {{ __('languages') }}
-                </a>
-            </li>
+            @if (getAdminAuthRole() == 'Super Admin')
+                <li class="{{ isRoute('admin.course-language.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.course-language.index') }}">
+                        {{ __('languages') }}
+                    </a>
+                </li>
+            @endif
 
-            <li class="{{ isRoute('admin.course-level.*', 'active') }}">
-                <a class="nav-link" href="{{ route('admin.course-level.index') }}">
-                    {{ __('levels') }}
-                </a>
-            </li>
+            @if (getAdminAuthRole() != 'Admin OPD')
+                <li class="{{ isRoute('admin.course-level.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.course-level.index') }}">
+                        {{ __('levels') }}
+                    </a>
+                </li>
+            @endif
 
             <li class="{{ isRoute('admin.course-review.*', 'active') }}">
                 <a class="nav-link" href="{{ route('admin.course-review.index') }}">
                     {{ __('Course Reviews') }}
                 </a>
             </li>
-            <li class="{{ isRoute('admin.course-delete-request.*', 'active') }}">
-                <a class="nav-link" href="{{ route('admin.course-delete-request.index') }}">
-                    {{ __('Course Delete Requests') }}
-                </a>
-            </li>
+
+            @if (getAdminAuthRole() != 'Admin OPD')
+                <li class="{{ isRoute('admin.course-delete-request.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.course-delete-request.index') }}">
+                        {{ __('Course Delete Requests') }}
+                    </a>
+                </li>
+            @endif
         </ul>
     </li>
 @endif

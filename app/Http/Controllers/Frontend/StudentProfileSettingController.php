@@ -35,8 +35,8 @@ class StudentProfileSettingController extends Controller
         $user = Auth::user();
         $experiences = UserExperience::where('user_id', $user->id)->get();
         $educations = UserEducation::where('user_id', $user->id)->get();
-        $states = State::where(['country_id' => $user->country_id,'status' => 1])->get();
-        $cities = City::where(['state_id' => $user->state_id,'status' => 1])->get();
+        $states = State::where(['country_id' => $user->country_id, 'status' => 1])->get();
+        $cities = City::where(['state_id' => $user->state_id, 'status' => 1])->get();
 
         return view('frontend.student-dashboard.profile.index', compact('user', 'experiences', 'educations', 'states', 'cities'));
     }
@@ -46,14 +46,14 @@ class StudentProfileSettingController extends Controller
 
         $user = Auth::user();
         // handle image files
-        if ($request->hasFile('avatar')) {
-            $imagePath = file_upload(file: $request->avatar, optimize: true);
-            $user->image = $imagePath;
-        }
-        if ($request->hasFile('cover')) {
-            $imagePath = file_upload(file: $request->cover, optimize: true);
-            $user->cover = $imagePath;
-        }
+        // if ($request->hasFile('avatar')) {
+        //     $imagePath = file_upload(file: $request->avatar, optimize: true);
+        //     $user->image = $imagePath;
+        // }
+        // if ($request->hasFile('cover')) {
+        //     $imagePath = file_upload(file: $request->cover, optimize: true);
+        //     $user->cover = $imagePath;
+        // }
 
         $user->name = $request->name;
         $user->email = $request->email;
@@ -165,7 +165,8 @@ class StudentProfileSettingController extends Controller
         return $this->redirectWithMessage(RedirectType::UPDATE->value, 'student.setting.index');
     }
 
-    function destroyEducation(string $id) : JsonResponse {
+    function destroyEducation(string $id): JsonResponse
+    {
         setFormTabStep('profile_tab', 'education');
 
         $education = UserEducation::whereUserId(Auth::user()->id)->whereId($id)->firstOrFail();
@@ -176,7 +177,8 @@ class StudentProfileSettingController extends Controller
         ]);
     }
 
-    function updateAddress(StudentProfileAddressUpdateRequest $request) : RedirectResponse {
+    function updateAddress(StudentProfileAddressUpdateRequest $request): RedirectResponse
+    {
 
         $user = Auth::user();
         $user->address = $request->address;
@@ -188,7 +190,8 @@ class StudentProfileSettingController extends Controller
         return $this->redirectWithMessage(RedirectType::UPDATE->value, 'student.setting.index');
     }
 
-    function updateSocials(StudentProfileSocialUpdateRequest $request) : RedirectResponse {
+    function updateSocials(StudentProfileSocialUpdateRequest $request): RedirectResponse
+    {
         $user = Auth::user();
         $user->facebook = $request->facebook;
         $user->twitter = $request->twitter;

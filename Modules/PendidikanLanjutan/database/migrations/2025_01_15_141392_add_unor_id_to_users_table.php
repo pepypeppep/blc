@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Modules\PendidikanLanjutan\app\Models\Unor;
 
 return new class extends Migration
 {
@@ -12,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('forget_password_token')->nullable();
+            $table->foreignIdFor(Unor::class)->constrained()->cascadeOnDelete();
         });
     }
 
@@ -22,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('forget_password_token');
+            $table->dropForeign(['unor_id']);
+            $table->dropColumn('unor_id');
         });
     }
 };

@@ -22,7 +22,7 @@
             @if (checkAdminHasPermission('course.management') ||
                     checkAdminHasPermission('course.certificate.management') ||
                     checkAdminHasPermission('badge.management') ||
-                    checkAdminHasPermission('blog.view'))
+                    checkAdminHasPermission('pendidikanlanjutan.view'))
                 <li class="menu-header">{{ __('Manage Contents') }}</li>
 
                 @if (Module::isEnabled('Course') && checkAdminHasPermission('course.management'))
@@ -39,6 +39,10 @@
 
                 @if (Module::isEnabled('Blog') && (checkAdminHasPermission('blog.view') || checkAdminHasPermission('blog.category.view') || checkAdminHasPermission('blog.comment.view')))
                     @include('blog::sidebar')
+                @endif
+
+                @if (Module::isEnabled('PendidikanLanjutan') && (checkAdminHasPermission('pendidikanlanjutan.view')))
+                    @include('pendidikanlanjutan::sidebar')
                 @endif
             @endif
 

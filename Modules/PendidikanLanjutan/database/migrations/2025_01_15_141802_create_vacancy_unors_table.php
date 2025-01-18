@@ -1,5 +1,7 @@
 <?php
 
+use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use Modules\PendidikanLanjutan\app\Models\Unor;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,9 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_skill_topics', function (Blueprint $table) {
+        Schema::create('vacancy_unors', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id');
+            $table->foreignIdFor(Vacancy::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Unor::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_skill_topics');
+        Schema::dropIfExists('vacancy_unors');
     }
 };

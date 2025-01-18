@@ -189,9 +189,9 @@
                                                     <li><a
                                                             href="{{ route('student.dashboard') }}">{{ __('Student Dashboard') }}</a>
                                                     </li>
-                                                    <li><a
+                                                    {{-- <li><a
                                                             href="{{ userAuth()->role == 'instructor' ? route('instructor.setting.index') : route('student.setting.index') }}">{{ __('Profile') }}</a>
-                                                    </li>
+                                                    </li> --}}
                                                     <li><a
                                                             href="{{ userAuth()->role == 'instructor' ? route('instructor.courses.index') : route('student.enrolled-courses') }}">{{ __('Courses') }}</a>
                                                     </li>

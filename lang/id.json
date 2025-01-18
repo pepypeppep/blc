@@ -1929,5 +1929,11 @@
     "supports only these types of currencies": "hanya mendukung jenis mata uang ini",
     "The selected payment method is now inactive.": "Metode pembayaran yang dipilih sekarang tidak aktif.",
     "Addon requires application version": "Addon memerlukan versi aplikasi",
-    "Current version": "Versi saat ini"
+    "Current version": "Versi saat ini",
+    "ContinuingEducation": "Pendidikan Lanjutan",
+    "Vacancy":"Lowongan",
+    "Vacancy List" : "Daftar Lowongan",
+    "Create Vacancy" : "Buat Lowongan",
+    "Vacancy Delete Confirmation": "Konfirmasi Penghapusan Lowongan"
+
 }

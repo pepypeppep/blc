@@ -363,6 +363,7 @@ trait PermissionsTrait
             self::$dashboardPermissions,
             self::$coursePermissions,
             self::$customerPermissions,
+            self::$PendidikanLanjutanPermissions,
         ];
 
         $permissions = [];

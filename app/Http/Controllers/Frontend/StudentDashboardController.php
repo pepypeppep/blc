@@ -16,6 +16,8 @@ use Modules\CertificateBuilder\app\Models\CertificateBuilder;
 use Modules\CertificateBuilder\app\Models\CertificateBuilderItem;
 use Modules\Order\app\Models\Enrollment;
 use Modules\Order\app\Models\Order;
+use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use App\Models\User;
 
 class StudentDashboardController extends Controller {
     public function index(): View {
@@ -43,6 +45,32 @@ class StudentDashboardController extends Controller {
         $quizAttempts = QuizResult::with(['quiz'])->where('user_id', userAuth()->id)->orderByDesc('id')->paginate(10);
 
         return view('frontend.student-dashboard.quiz-attempts.index', compact('quizAttempts'));
+    }
+
+    function continuingEducation() {
+        $vacancies = Vacancy::whereHas('users', function ($query) {
+            $query->where('user_id', userAuth()->id); // next update with value_type, unor, dll
+        })->with(['details', 'unors', 'users'])->paginate(10);
+
+        return view('frontend.student-dashboard.continuing-education.index', compact('vacancies'));
+    }
+
+    function continuingEducationDetail($id) {
+        $vacancy = Vacancy::with('details')->findOrFail($id);
+
+        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy'));
+    }
+
+    public function continuingEducationAttachment($id) {
+        $vacancy = Vacancy::with('users', 'details')->findOrFail($id);
+
+        $attachment = $vacancy->users->firstWhere('id', auth()->id())?->pivot->sk_file;
+
+        // if (!$attachment) {
+        //     return redirect()->back()->with('error', __('No attachment found.'));
+        // }
+
+        return view('frontend.student-dashboard.continuing-education.attachment', compact('vacancy', 'attachment'));
     }
 
     function downloadCertificate(string $id) {

@@ -127,6 +127,10 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('enrolled-courses', [StudentDashboardController::class, 'enrolledCourses'])->name('enrolled-courses');
         Route::get('quiz-attempts', [StudentDashboardController::class, 'quizAttempts'])->name('quiz-attempts');
 
+        Route::get('continuing-education', [StudentDashboardController::class, 'continuingEducation'])->name('continuing-education');
+        Route::get('continuing-education/{id}', [StudentDashboardController::class, 'continuingEducationDetail'])->name('continuing-education.show');
+        Route::get('continuing-education-attachment/{id}', [StudentDashboardController::class, 'continuingEducationAttachment'])->name('continuing-education.attachment');
+
         /** learning routes */
         Route::get('learning/{slug}', [LearningController::class, 'index'])->name('learning.index');
         Route::post('learning/get-file-info', [LearningController::class, 'getFileInfo'])->name('get-file-info');

@@ -23,8 +23,10 @@ class Role
             }
         }
 
+        // dd(getAdminAuthRole());
+
         $allowed_roles = explode('|', $role);
-        if (!in_array(getAdminAuthRole(), $allowed_roles)) {
+        if (getAdminAuthRole() != null && !in_array(getAdminAuthRole(), $allowed_roles)) {
             abort(404);
         }
 

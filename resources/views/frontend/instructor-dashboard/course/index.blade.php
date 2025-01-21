@@ -3,7 +3,7 @@
 @section('dashboard-contents')
     <div class="dashboard__content-wrap pb-0">
         <div class="dashboard__content-title d-flex flex-wrap justify-content-between">
-            <h4 class="title">{{ __('All Courses') }}</h4>
+            <h4 class="title">{{ __('All Courses') }} Fadila</h4>
             <a href="{{ route('instructor.courses.create') }}"
                 class="btn btn-primary btn-hight-basic">{{ __('Add Course') }}</a>
         </div>
@@ -51,6 +51,12 @@
                                                                 @endif
                                                             </ul>
                                                             <ul class="edit_btn d-flex flex-wrap">
+                                                                <li>
+                                                                    <a
+                                                                        href="{{ route('instructor.courses.detail', $course->id) }}">
+                                                                        <i class="far fa-eye"></i>
+                                                                    </a>
+                                                                </li>
                                                                 <li>
                                                                     <a
                                                                         href="{{ route('instructor.courses.edit-view', $course->id) }}">

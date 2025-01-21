@@ -71,13 +71,13 @@ $(document).ready(function () {
     });
 
     // show/hide partner instructor div
-    $(".partner_instructor_btn").on("change", function () {
-        if ($(this).is(":checked")) {
-            $(".partner_instructor_list").removeClass("d-none");
-        } else {
-            $(".partner_instructor_list").addClass("d-none");
-        }
-    });
+    // $(".partner_instructor_btn").on("change", function () {
+    //     if ($(this).is(":checked")) {
+    //         $(".partner_instructor_list").removeClass("d-none");
+    //     } else {
+    //         $(".partner_instructor_list").addClass("d-none");
+    //     }
+    // });
 
     // get instructor profiles for select2
     $(".partner_instructor_select").select2({
@@ -146,19 +146,19 @@ $(document).ready(function () {
 
         var $container = $(
             "<div class='select2-result-repository clearfix'>" +
-                "<div class='select2-result-repository__avatar'><img src='" +
-                "/" +
-                repo.image +
-                "' /></div>" +
-                "<div class='select2-result-repository__meta'>" +
-                "<div class='select2-result-repository__title'>" +
-                repo.name +
-                "</div>" +
-                "<div class='select2-result-repository__description'>" +
-                repo.email +
-                "</div>" +
-                "</div>" +
-                "</div>"
+            "<div class='select2-result-repository__avatar'><img src='" +
+            "/" +
+            repo.image +
+            "' /></div>" +
+            "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title'>" +
+            repo.name +
+            "</div>" +
+            "<div class='select2-result-repository__description'>" +
+            repo.email +
+            "</div>" +
+            "</div>" +
+            "</div>"
         );
 
         return $container;

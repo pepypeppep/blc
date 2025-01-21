@@ -203,6 +203,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
         Route::get('courses/get-filters/{category_id}', [InstructorCourseController::class, 'getFiltersByCategory'])->name('courses.get-filters');
         Route::get('courses/get-instructors', [InstructorCourseController::class, 'getInstructors'])->name('courses.get-instructors');
+        Route::get('courses/{id}/detail', [InstructorCourseController::class, 'detail'])->name('courses.detail');
 
         Route::post('courses/create', [InstructorCourseController::class, 'store'])->name('courses.store');
         Route::post('courses/update', [InstructorCourseController::class, 'update'])->name('courses.update');

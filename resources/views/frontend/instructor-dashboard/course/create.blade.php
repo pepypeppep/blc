@@ -4,7 +4,11 @@
     <div class="dashboard__content-wrap">
 
         <div class="dashboard__content-title d-flex justify-content-between">
-            <h4 class="title">{{ __('Create Course') }}</h4>
+            @if (isset($editMode) && $editMode == true)
+                <h4 class="title">{{ __('Edit Course') }}</h4>
+            @else
+                <h4 class="title">{{ __('Create Course') }}</h4>
+            @endif
         </div>
         <div class="row">
             <div class="col-12">

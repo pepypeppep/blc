@@ -17,10 +17,13 @@ use App\Models\CoursePartnerInstructor;
 use Illuminate\Support\Facades\Session;
 use Modules\Order\app\Models\Enrollment;
 use App\Models\CourseSelectedFilterOption;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Modules\Course\app\Models\CourseLevel;
 use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
 use Modules\Course\app\Models\CourseDeleteRequest;
+use Yajra\DataTables\Facades\DataTables;
 
 class InstructorCourseController extends Controller
 {
@@ -305,5 +308,47 @@ class InstructorCourseController extends Controller
         $deleteRequest->save();
 
         return redirect()->back()->with(['messege' => __('Request sent successfully'), 'alert-type' => 'success']);
+    }
+
+    /*
+     * @param string $id
+     * @return View
+     */
+    function detail(Request $request, string $id)
+    {
+        $course = Course::with([
+            'instructor',
+            'category',
+            'levels',
+            'languages',
+        ])
+            ->with(['chapters' => function ($query) {
+                $query->orderBy('order', 'asc')->with(['chapterItems', 'chapterItems.lesson', 'chapterItems.quiz']);
+            }])
+            ->findOrFail($id);
+
+        if ($request->ajax()) {
+            //datatables course with enrollments
+            $enrollments = $course->enrollments()->with(['user'])->get();
+            return DataTables::of($enrollments)
+                ->addColumn('name', function ($enrollment) {
+                    return $enrollment->user->name;
+                })
+                ->addColumn('email', function ($enrollment) {
+                    return $enrollment->user->email;
+                })
+                ->addColumn('created_at', function ($enrollment) {
+                    return Carbon::parse($enrollment->created_at)->diffForHumans();
+                })
+                ->make(true);
+        }
+
+        if (Storage::exists($course->thumbnail)) { // assume you save the path in column database named `path`
+            return response()->file(Storage::path($course->thumbnail));
+        } else {
+            return response()->file(Storage::path('private/no-photo.jpg'));
+        }
+
+        return view('frontend.instructor-dashboard.course.detail-content', compact('course'));
     }
 }

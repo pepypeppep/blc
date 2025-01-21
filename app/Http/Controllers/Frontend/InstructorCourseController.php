@@ -343,11 +343,9 @@ class InstructorCourseController extends Controller
                 ->make(true);
         }
 
-        if (Storage::exists($course->thumbnail)) { // assume you save the path in column database named `path`
-            return response()->file(Storage::path($course->thumbnail));
-        } else {
-            return response()->file(Storage::path('private/no-photo.jpg'));
-        }
+        // if (Storage::exists($course->thumbnail)) { // assume you save the path in column database named `path`
+        //     return response()->file(Storage::path($course->thumbnail));
+        // }
 
         return view('frontend.instructor-dashboard.course.detail-content', compact('course'));
     }

@@ -79,11 +79,13 @@ class CourseController extends Controller
         $course->title = $request->title;
         $course->seo_description = $request->seo_description;
         $course->thumbnail = $request->thumbnail;
-        $course->demo_video_storage = $request->demo_video_storage;
+        $course->demo_video_storage = 'upload';
         $course->demo_video_source = $request->demo_video_storage == 'upload' ? $request->upload_path : $request->external_path;
         $course->price = $request->price;
         $course->discount = $request->discount_price;
         $course->description = $request->description;
+        $course->background = $request->background;
+        $course->course_type = $request->course_type;
         $course->instructor_id = $request->instructor;
         $course->save();
 
@@ -190,6 +192,10 @@ class CourseController extends Controller
         $course->downloadable = $request->downloadable;
         $course->certificate = $request->certificate;
         $course->partner_instructor = $request->partner_instructor;
+        $course->start_date = $request->from_date;
+        $course->end_date = $request->to_date;
+        $course->output = $request->output;
+        $course->outcome = $request->outcome;
         $course->save();
 
         // delete unselected partner instructor
@@ -226,11 +232,12 @@ class CourseController extends Controller
 
     function storeFinish(Request $request)
     {
+        // dd($request->participants);
         checkAdminHasPermissionAndThrowException('course.management');
         $course = Course::findOrFail($request->course_id);
         $course->message_for_reviewer = $request->message_for_reviewer;
         $course->status = $request->status;
-        // $course->is_approved = 'approved';
+        $course->participants()->syncWithoutDetaching($request->participants);
         $course->save();
     }
 

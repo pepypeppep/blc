@@ -126,13 +126,14 @@
                                                 </div> --}}
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="demo_video_storage">Bentuk Pembelajaran <code>*</code></label>
-                                                        <select name="demo_video_storage" id="demo_video_storage"
+                                                        <label for="course_type">Bentuk Pembelajaran
+                                                            <code>*</code></label>
+                                                        <select name="course_type" id="demo_video_storage"
                                                             class="form-control">
-                                                            <option @selected(@$course?->demo_video_storage == 'upload') value="upload">
+                                                            <option @selected(@$course?->course_type == 'video') value="video">
                                                                 VIDEO
                                                             </option>
-                                                            <option @selected(@$course?->demo_video_storage == 'youtube') value="youtube">
+                                                            <option @selected(@$course?->course_type == 'pdf') value="pdf">
                                                                 PDF</option>
                                                         </select>
                                                     </div>
@@ -170,10 +171,11 @@
                                                             class="form-control" value="{{ @$course?->discount }}">
                                                     </div>
                                                 </div> --}}
+
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         {{-- <label for="description">{{ __('Description') }} --}}
-                                                        <label for="description">Latar Belakang
+                                                        <label for="description">Tujuan Pembelajaran
                                                             <code>*</code></label>
                                                         <textarea name="description" class="text-editor form-control summernote">{!! clean(@$course?->description) !!}</textarea>
                                                     </div>
@@ -181,9 +183,9 @@
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         {{-- <label for="description">{{ __('Description') }} --}}
-                                                        <label for="description">Tujuan Pembelajaran
+                                                        <label for="background">Latar Belakang
                                                             <code>*</code></label>
-                                                        <textarea name="description" class="text-editor form-control summernote">{!! clean(@$course?->description) !!}</textarea>
+                                                        <textarea name="background" class="text-editor form-control summernote">{!! clean(@$course?->background) !!}</textarea>
                                                     </div>
                                                 </div>
                                             </div>

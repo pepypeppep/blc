@@ -51,7 +51,13 @@ class Course extends Model {
         return $this->belongsTo(User::class, 'instructor_id', 'id')->withDefault();
     }
 
-    function chapters(): HasMany {
+    public function participants()
+    {
+        return $this->belongsToMany(User::class, 'course_participants');
+    }
+
+    function chapters(): HasMany
+    {
         return $this->hasMany(CourseChapter::class, 'course_id', 'id');
     }
 

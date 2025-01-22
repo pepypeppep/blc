@@ -49,9 +49,9 @@
                                                 <label for="from_date_start">Pelaksanaan Pembelajaran
                                                     <code>*</code></label>
                                                 <div class="input-group input-daterange">
-                                                    <input type="text" class="form-control" value="2012-04-05">
+                                                    <input type="text" name="from_date" class="form-control" value="2012-04-05">
                                                     <span class="input-group-text mx-2">{{ __('Sampai') }}</span>
-                                                    <input type="text" class="form-control" value="2012-04-19">
+                                                    <input type="text" name="to_date" class="form-control" value="2012-04-19">
                                                 </div>
 
                                             </div>
@@ -165,17 +165,17 @@
                                             <div class="col-md-12 mt-4">
                                                 <div class="form-group">
                                                     {{-- <label for="description">{{ __('Description') }} --}}
-                                                    <label for="description">Output Pembelajaran
+                                                    <label for="output">Output Pembelajaran
                                                         <code>*</code></label>
-                                                    <textarea name="description" class="text-editor form-control summernote">{!! clean(@$course?->description) !!}</textarea>
+                                                    <textarea name="output" class="text-editor form-control summernote">{!! clean(@$course?->output) !!}</textarea>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     {{-- <label for="description">{{ __('Description') }} --}}
-                                                    <label for="description">Outcome Pembelajaran
+                                                    <label for="outcome">Outcome Pembelajaran
                                                         <code>*</code></label>
-                                                    <textarea name="description" class="text-editor form-control summernote">{!! clean(@$course?->description) !!}</textarea>
+                                                    <textarea name="outcome" class="text-editor form-control summernote">{!! clean(@$course?->outcome) !!}</textarea>
                                                 </div>
                                             </div>
 

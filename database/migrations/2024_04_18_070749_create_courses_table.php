@@ -19,13 +19,18 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug');
             $table->string('seo_description')->nullable();
+            $table->string('course_type')->nullable();
             $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->integer('duration')->nullable();
             $table->string('timezone')->nullable();
             $table->string('thumbnail')->nullable();
             $table->enum('demo_video_storage', ['upload', 'youtube', 'vimeo', 'external_link', 'aws'])->default('upload');
             $table->text('demo_video_source')->nullable();
             $table->text('description')->nullable();
+            $table->text('background')->nullable();
+            $table->text('output')->nullable();
+            $table->text('outcome')->nullable();
             $table->integer('capacity')->nullable();
             $table->double('price')->default(0);
             $table->double('discount')->nullable();

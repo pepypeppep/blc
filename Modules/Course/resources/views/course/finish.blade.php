@@ -33,13 +33,13 @@
                                                     <label for="">{{ __('Select course participant') }}
                                                         <code>*</code></label>
                                                     <span>Jumlah peserta : <span class="text-danger"
-                                                            id="participant_count">{{ count($course->enrollments) }}</span></span>
+                                                            id="participant_count">{{ count($course->participants) }}</span></span>
                                                 </div>
                                                 <select class="select2 participant_select form-control"
                                                     name="participants[]" multiple="multiple">
-                                                    @foreach ($course?->enrollments as $enrollment)
-                                                        <option value="{{ $enrollment->user->id }}" selected="selected">
-                                                            {{ $enrollment?->user->name }}</option>
+                                                    @foreach ($course?->participants as $participant)
+                                                        <option value="{{ $participant->id }}" selected="selected">
+                                                            {{ $participant?->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>

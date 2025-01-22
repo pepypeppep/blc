@@ -163,6 +163,16 @@ if (!function_exists('adminAuth')) {
     }
 }
 
+if (!function_exists('getAdminAuthRole')) {
+    function getAdminAuthRole()
+    {
+        if (!Auth::guard('admin')->check()) {
+            return null;
+        }
+        return Auth::guard('admin')->user()->roles->first()->name;
+    }
+}
+
 // custom decode and encode input value
 function html_decode($text)
 {

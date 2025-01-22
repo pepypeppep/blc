@@ -27,23 +27,33 @@ use Modules\Course\app\Http\Controllers\ReviewController;
 Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::resource('course', CourseController::class)->names('course');
 
-    /** Course category routes */
-    Route::put('course-category/status-update/{id}', [CourseCategoryController::class, 'statusUpdate'])->name('course-category.status-update');
-    Route::resource('course-category', CourseCategoryController::class)->names('course-category');
-    /** Course sub category routes */
-    Route::get('course-sub-category/{parent_id}', [CourseSubCategoryController::class, 'index'])->name('course-sub-category.index');
-    Route::get('course-sub-category/{parent_id}/create', [CourseSubCategoryController::class, 'create'])->name('course-sub-category.create');
-    Route::post('course-sub-category/{parent_id}/store', [CourseSubCategoryController::class, 'store'])->name('course-sub-category.store');
-    Route::get('course-sub-category/{parent_id}/{sub_category_id}/edit', [CourseSubCategoryController::class, 'edit'])->name('course-sub-category.edit');
-    Route::put('course-sub-category/{parent_id}/{sub_category_id}/update', [CourseSubCategoryController::class, 'update'])->name('course-sub-category.update');
-    Route::delete('course-sub-category/{parent_id}/{sub_category_id}', [CourseSubCategoryController::class, 'destroy'])->name('course-sub-category.destroy');
-    Route::put('course-sub-category/status-update/{id}', [CourseSubCategoryController::class, 'statusUpdate'])->name('course-sub-category.status-update');
-    /** Course Language Routes */
-    Route::put('course-language/status-update/{id}', [CourseLanguageController::class, 'statusUpdate'])->name('course-language.status-update');
-    Route::resource('course-language', CourseLanguageController::class)->names('course-language');
-    /** Course Level Routes */
-    Route::put('course-level/status-update/{id}', [CourseLevelController::class, 'statusUpdate'])->name('course-level.status-update');
-    Route::resource('course-level', CourseLevelController::class)->names('course-level');
+    Route::group(['middleware' => 'role:Super Admin|Admin BKPSDM'], function () {
+        /** Course category routes */
+        Route::put('course-category/status-update/{id}', [CourseCategoryController::class, 'statusUpdate'])->name('course-category.status-update');
+        Route::resource('course-category', CourseCategoryController::class)->names('course-category');
+        /** Course sub category routes */
+        Route::get('course-sub-category/{parent_id}', [CourseSubCategoryController::class, 'index'])->name('course-sub-category.index');
+        Route::get('course-sub-category/{parent_id}/create', [CourseSubCategoryController::class, 'create'])->name('course-sub-category.create');
+        Route::post('course-sub-category/{parent_id}/store', [CourseSubCategoryController::class, 'store'])->name('course-sub-category.store');
+        Route::get('course-sub-category/{parent_id}/{sub_category_id}/edit', [CourseSubCategoryController::class, 'edit'])->name('course-sub-category.edit');
+        Route::put('course-sub-category/{parent_id}/{sub_category_id}/update', [CourseSubCategoryController::class, 'update'])->name('course-sub-category.update');
+        Route::delete('course-sub-category/{parent_id}/{sub_category_id}', [CourseSubCategoryController::class, 'destroy'])->name('course-sub-category.destroy');
+        Route::put('course-sub-category/status-update/{id}', [CourseSubCategoryController::class, 'statusUpdate'])->name('course-sub-category.status-update');
+    });
+
+
+    Route::group(['middleware' => 'role:Super Admin'], function () {
+        /** Course Language Routes */
+        Route::put('course-language/status-update/{id}', [CourseLanguageController::class, 'statusUpdate'])->name('course-language.status-update');
+        Route::resource('course-language', CourseLanguageController::class)->names('course-language');
+    });
+
+    Route::group(['middleware' => 'role:Super Admin|Admin BKPSDM'], function () {
+        /** Course Level Routes */
+        Route::put('course-level/status-update/{id}', [CourseLevelController::class, 'statusUpdate'])->name('course-level.status-update');
+        Route::resource('course-level', CourseLevelController::class)->names('course-level');
+    });
+
 
     /** Course Routes */
     Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
@@ -84,6 +94,8 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     /** review controller */
     Route::resource('course-review', CourseReviewController::class);
 
-    /** course delete request */
-    Route::resource('course-delete-request', CourseDeleteRequestController::class);
+    Route::group(['middleware' => 'role:Super Admin|Admin BKPSDM'], function () {
+        /** course delete request */
+        Route::resource('course-delete-request', CourseDeleteRequestController::class);
+    });
 });

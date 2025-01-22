@@ -31,7 +31,7 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         Route::get('customer-edit-experience-modal/{id}', 'editExperienceModal')->name('customer-edit-experience-modal');
         Route::put('customer-experience-update/{id}', 'experienceUpdate')->name('customer-experience-update');
         Route::delete('customer-experience-destroy/{id}', 'experienceDestroy')->name('customer-experience-destroy');
-        
+
         Route::get('customer-education-modal/{id}', 'educationModal')->name('customer-education-modal');
         Route::post('customer-education-store/{id}', 'educationStore')->name('customer-education-store');
         Route::get('customer-edit-education-modal/{id}', 'editEducationModal')->name('customer-edit-education-modal');
@@ -50,10 +50,12 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         Route::post('send-verify-request/{id}', 'send_verify_request')->name('send-verify-request');
         Route::post('send-verify-request-to-all', 'send_verify_request_to_all')->name('send-verify-request-to-all');
         Route::post('send-mail-to-customer/{id}', 'send_mail_to_customer')->name('send-mail-to-customer');
-        Route::get('send-bulk-mail', 'send_bulk_mail')->name('send-bulk-mail');
-        Route::post('send-bulk-mail-to-all', 'send_bulk_mail_to_all')->name('send-bulk-mail-to-all');
+
+        Route::group(['middleware' => 'role:Super Admin|Admin BKPSDM'], function () {
+            Route::get('send-bulk-mail', 'send_bulk_mail')->name('send-bulk-mail');
+            Route::post('send-bulk-mail-to-all', 'send_bulk_mail_to_all')->name('send-bulk-mail-to-all');
+        });
+
         Route::delete('customer-delete/{id}', 'destroy')->name('customer-delete');
-
     });
-
 });

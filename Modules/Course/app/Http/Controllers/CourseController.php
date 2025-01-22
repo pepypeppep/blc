@@ -28,16 +28,16 @@ class CourseController extends Controller
     function index(Request $request): View
     {
         $query = Course::query();
-        $query->when($request->keyword, fn ($q) => $q->where('title', 'like', '%' . request('keyword') . '%'));
-        $query->when($request->category, function($q) use ($request) {
-            $q->whereHas('category', function($q) use ($request) {
+        $query->when($request->keyword, fn($q) => $q->where('title', 'like', '%' . request('keyword') . '%'));
+        $query->when($request->category, function ($q) use ($request) {
+            $q->whereHas('category', function ($q) use ($request) {
                 $q->where('id', $request->category);
             });
         });
         $query->when($request->date && $request->filled('date'), fn($q) => $q->whereDate('created_at', $request->date));
         $query->when($request->approve_status && $request->filled('approve_status'), fn($q) => $q->where('is_approved', $request->approve_status));
         $query->when($request->status && $request->filled('status'), fn($q) => $q->where('status', $request->status));
-        $query->when($request->instructor && $request->filled('instructor'), function($q) use ($request) {
+        $query->when($request->instructor && $request->filled('instructor'), function ($q) use ($request) {
             $q->where('instructor_id', $request->instructor);
         });
         $query->withCount('enrollments');
@@ -224,7 +224,8 @@ class CourseController extends Controller
         }
     }
 
-    function storeFinish(Request $request) {
+    function storeFinish(Request $request)
+    {
         checkAdminHasPermissionAndThrowException('course.management');
         $course = Course::findOrFail($request->course_id);
         $course->message_for_reviewer = $request->message_for_reviewer;
@@ -245,14 +246,16 @@ class CourseController extends Controller
         return response()->json($instructors);
     }
 
-    function statusUpdate(Request $request, string $id) {
-      $course = Course::findOrFail($id);
-      $course->is_approved = $request->status;
-      $course->save();
-      return response(['status' => 'success', 'message' => __('Updated successfully')]);
+    function statusUpdate(Request $request, string $id)
+    {
+        $course = Course::findOrFail($id);
+        $course->is_approved = $request->status;
+        $course->save();
+        return response(['status' => 'success', 'message' => __('Updated successfully')]);
     }
 
-    function destroy(string $id) {
+    function destroy(string $id)
+    {
         checkAdminHasPermissionAndThrowException('course.management');
         $course = Course::findOrFail($id);
         if ($course->enrollments()->count() > 0) {
@@ -261,5 +264,17 @@ class CourseController extends Controller
         $course->delete();
 
         return response()->json(['status' => 'success', 'message' => __('Course deleted successfully')]);
+    }
+
+    function getStudents(Request $request)
+    {
+        $students = User::where('role', 'student')
+            ->where(function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->q . '%')
+                    ->orWhere('email', 'like', '%' . $request->q . '%');
+            })
+            ->where('id', '!=', auth()->id())
+            ->get();
+        return response()->json($students);
     }
 }

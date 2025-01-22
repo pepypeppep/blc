@@ -41,7 +41,8 @@
                                                             @foreach ($instructors as $instructor)
                                                                 <option value="{{ $instructor->id }}"
                                                                     @selected($instructor->id == @$course?->instructor_id)>{{ $instructor->name }}
-                                                                    ({{ $instructor->email }})</option>
+                                                                    ({{ $instructor->email }})
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -55,7 +56,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-12">
+                                                {{-- <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label for="seo_description">{{ __('Seo description') }}
                                                             <code></code></label>
@@ -63,7 +64,7 @@
                                                             value="{{ @$course?->seo_description }}" class="form-control"
                                                             placeholder="{{ __('150 - 160 characters recommended') }}">
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                                 <div class="col-md-12">
                                                     <div class="from-group mb-3">
                                                         <label class="form-file-manager-label"
@@ -83,7 +84,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="demo_video_storage">{{ __('Demo Video Storage') }}
                                                             <code>({{ __('optonal') }})</code></label>
@@ -122,9 +123,22 @@
                                                                 value="{{ @$course?->demo_video_source }}">
                                                         </div>
                                                     </div>
+                                                </div> --}}
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="demo_video_storage">Bentuk Pembelajaran <code>*</code></label>
+                                                        <select name="demo_video_storage" id="demo_video_storage"
+                                                            class="form-control">
+                                                            <option @selected(@$course?->demo_video_storage == 'upload') value="upload">
+                                                                VIDEO
+                                                            </option>
+                                                            <option @selected(@$course?->demo_video_storage == 'youtube') value="youtube">
+                                                                PDF</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
 
-                                                <div
+                                                {{-- <div
                                                     class="col-md-6 external_link {{ @$course?->demo_video_storage != 'upload' ? '' : 'd-none' }}">
                                                     <div class="form-grp">
                                                         <label for="meta_description">{{ __('Path') }}
@@ -138,26 +152,36 @@
                                                                 value="{{ @$course?->demo_video_source }}">
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="price">{{ __('Price') }} <code>*</code></label>
+                                                        {{-- <label for="price">{{ __('Price') }} <code>*</code></label> --}}
+                                                        <label for="price">Biaya Pembelajaran <code>*</code></label>
                                                         <input id="price" name="price" type="text"
                                                             class="form-control" value="{{ @$course?->price }}">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="discount_price">{{ __('Discount Price') }}
                                                             <code></code></label>
                                                         <input id="discount_price" name="discount_price" type="text"
                                                             class="form-control" value="{{ @$course?->discount }}">
                                                     </div>
+                                                </div> --}}
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        {{-- <label for="description">{{ __('Description') }} --}}
+                                                        <label for="description">Latar Belakang
+                                                            <code>*</code></label>
+                                                        <textarea name="description" class="text-editor form-control summernote">{!! clean(@$course?->description) !!}</textarea>
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label for="description">{{ __('Description') }}
+                                                        {{-- <label for="description">{{ __('Description') }} --}}
+                                                        <label for="description">Tujuan Pembelajaran
                                                             <code>*</code></label>
                                                         <textarea name="description" class="text-editor form-control summernote">{!! clean(@$course?->description) !!}</textarea>
                                                     </div>

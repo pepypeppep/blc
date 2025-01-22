@@ -68,6 +68,9 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::delete('courses/delete/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
     Route::post('courses/status-update/{id}', [CourseController::class, 'statusUpdate'])->name('courses.status-update');
 
+    /** Students */
+    Route::get('courses/get-students', [CourseController::class, 'getStudents'])->name('courses.get-students');
+
 
     /** Course content routes */
     Route::post('course-chapter/{course_id?}/store', [CourseContentController::class, 'chapterStore'])->name('course-chapter.store');

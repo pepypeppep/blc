@@ -45,6 +45,16 @@
                                                         type="text" value="{{ $course?->duration }}">
                                                 </div>
                                             </div>
+                                            <div class="col-md-12 my-4">
+                                                <label for="from_date_start">Pelaksanaan Pembelajaran
+                                                    <code>*</code></label>
+                                                <div class="input-group input-daterange">
+                                                    <input type="text" class="form-control" value="2012-04-05">
+                                                    <span class="input-group-text mx-2">{{ __('Sampai') }}</span>
+                                                    <input type="text" class="form-control" value="2012-04-19">
+                                                </div>
+
+                                            </div>
 
                                             <div class="col-12 my-2">
 
@@ -152,6 +162,23 @@
                                                 </div>
                                             </div>
 
+                                            <div class="col-md-12 mt-4">
+                                                <div class="form-group">
+                                                    {{-- <label for="description">{{ __('Description') }} --}}
+                                                    <label for="description">Output Pembelajaran
+                                                        <code>*</code></label>
+                                                    <textarea name="description" class="text-editor form-control summernote">{!! clean(@$course?->description) !!}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    {{-- <label for="description">{{ __('Description') }} --}}
+                                                    <label for="description">Outcome Pembelajaran
+                                                        <code>*</code></label>
+                                                    <textarea name="description" class="text-editor form-control summernote">{!! clean(@$course?->description) !!}</textarea>
+                                                </div>
+                                            </div>
+
                                             <div class="filter-holder col-md-12">
                                                 <div class="row">
                                                     <div class="col-md-4">
@@ -187,28 +214,28 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                <div class="col-md-4">
-                                                    <div class="card">
-                                                        <div class="card-body">
-                                                            <h5 class="card-title">{{ __('Language') }}</h5>
-                                                            @foreach ($languages as $language)
-                                                                <div class="form-group">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input"
-                                                                            {{ in_array($language->id, $courseLanguage) ? 'checked' : '' }}
-                                                                            name="languages[]" type="checkbox"
-                                                                            value="{{ $language->id }}"
-                                                                            id="checkbox{{ $language->id }}">
-                                                                        <label class="form-check-label"
-                                                                            for="checkbox{{ $language->id }}">
-                                                                            {{ $language->name }}
-                                                                        </label>
+                                                    <div class="col-md-4">
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">{{ __('Language') }}</h5>
+                                                                @foreach ($languages as $language)
+                                                                    <div class="form-group">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input"
+                                                                                {{ in_array($language->id, $courseLanguage) ? 'checked' : '' }}
+                                                                                name="languages[]" type="checkbox"
+                                                                                value="{{ $language->id }}"
+                                                                                id="checkbox{{ $language->id }}">
+                                                                            <label class="form-check-label"
+                                                                                for="checkbox{{ $language->id }}">
+                                                                                {{ $language->name }}
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            @endforeach
+                                                                @endforeach
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 </div>
 
                                             </div>
@@ -251,6 +278,12 @@
                     .replace(/-+/g, "-"); // Replace multiple - with single -
             }
         })
+        $('.input-daterange').datepicker({
+            todayBtn: "linked",
+            clearBtn: true,
+            autoclose: false,
+            format: "yyyy-mm-dd"
+        });
     </script>
 @endpush
 

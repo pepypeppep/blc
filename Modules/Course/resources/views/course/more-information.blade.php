@@ -103,7 +103,7 @@
                                                     </div>
                                                 </div> --}}
 
-                                                <div class="row w-100">
+                                                {{-- <div class="row w-100">
                                                     <div class="col-md-6">
                                                         <p>{{ __('Patner instructor') }}</p>
                                                     </div>
@@ -118,10 +118,10 @@
                                                             </label>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                             </div>
 
-                                            <div class="col-md-12">
+                                            {{-- <div class="col-md-12">
                                                 <div
                                                     class="partner_instructor_list {{ $course?->partner_instructor == 0 ? 'd-none' : '' }}">
                                                     <label for="cpacity">{{ __('Select a partner instructor') }}
@@ -135,7 +135,7 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="col-md-12 mt-2">
                                                 <div class="from-group">

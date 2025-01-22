@@ -1,5 +1,5 @@
 <li
-    class="nav-item dropdown {{ isRoute(['admin.all-customers','admin.all-instructors', 'admin.active-customers', 'admin.non-verified-customers', 'admin.banned-customers', 'admin.customer-show', 'admin.send-bulk-mail'], 'active') }}">
+    class="nav-item dropdown {{ isRoute(['admin.all-customers', 'admin.all-instructors', 'admin.active-customers', 'admin.non-verified-customers', 'admin.banned-customers', 'admin.customer-show', 'admin.send-bulk-mail'], 'active') }}">
     <a href="javascript:void()" class="nav-link has-dropdown">
         <i class="fas fa-users"></i><span>{{ __('Manage Users') }}</span>
     </a>
@@ -35,10 +35,12 @@
             </a>
         </li>
 
-        <li class="{{ isRoute('admin.send-bulk-mail', 'active') }}">
-            <a class="nav-link" href="{{ route('admin.send-bulk-mail') }}">
-                {{ __('Send bulk mail') }}
-            </a>
-        </li>
+        @if (getAdminAuthRole() != 'Admin OPD')
+            <li class="{{ isRoute('admin.send-bulk-mail', 'active') }}">
+                <a class="nav-link" href="{{ route('admin.send-bulk-mail') }}">
+                    {{ __('Send bulk mail') }}
+                </a>
+            </li>
+        @endif
     </ul>
 </li>

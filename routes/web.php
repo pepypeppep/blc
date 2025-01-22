@@ -173,10 +173,6 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::group(['middleware' => ['auth', 'verified', 'approved.instructor', 'role:instructor'], 'prefix' => 'instructor', 'as' => 'instructor.'], function () {
         Route::get('dashboard', [InstructorDashboardController::class, 'index'])->name('dashboard');
         // Profile setting routes
-        Route::get('zoom-setting', [InstructorLiveCredentialController::class, 'index'])->name('zoom-setting.index');
-        Route::put('zoom-setting', [InstructorLiveCredentialController::class, 'update'])->name('zoom-setting.update');
-        Route::get('jitsi-setting', [InstructorLiveCredentialController::class, 'jitsi_index'])->name('jitsi-setting.index');
-        Route::put('jitsi-setting', [InstructorLiveCredentialController::class, 'jitsi_update'])->name('jitsi-setting.update');
         Route::get('setting', [InstructorProfileSettingController::class, 'index'])->name('setting.index');
         Route::put('setting/profile', [InstructorProfileSettingController::class, 'updateProfile'])->name('setting.profile.update');
         Route::put('setting/bio', [InstructorProfileSettingController::class, 'updateBio'])->name('setting.bio.update');
@@ -207,6 +203,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
         Route::get('courses/get-filters/{category_id}', [InstructorCourseController::class, 'getFiltersByCategory'])->name('courses.get-filters');
         Route::get('courses/get-instructors', [InstructorCourseController::class, 'getInstructors'])->name('courses.get-instructors');
+        Route::get('courses/{id}/detail', [InstructorCourseController::class, 'detail'])->name('courses.detail');
 
         Route::post('courses/create', [InstructorCourseController::class, 'store'])->name('courses.store');
         Route::post('courses/update', [InstructorCourseController::class, 'update'])->name('courses.update');
@@ -255,7 +252,6 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
         Route::post('cloud/store', [CloudStorageController::class, 'store'])->name('cloud.store');
 
-        Route::view('wishlist', 'frontend.wishlist.index')->name('wishlist');
     });
     /** wishlist routes */
     Route::group(['middleware' => ['auth', 'verified']], function () {

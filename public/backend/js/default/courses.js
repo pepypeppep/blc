@@ -47,7 +47,7 @@ $(document).ready(function () {
             processData: false,
             contentType: false,
             beforeSend: function () {
-              $(".course-form button[type='submit']").prop("disabled", true);
+                $(".course-form button[type='submit']").prop("disabled", true);
                 toastr.warning("Please wait...");
             },
             success: function (response) {
@@ -76,13 +76,13 @@ $(document).ready(function () {
     });
 
     // show/hide partner instructor div
-    $(".partner_instructor_btn").on("change", function () {
-        if ($(this).is(":checked")) {
-            $(".partner_instructor_list").removeClass("d-none");
-        } else {
-            $(".partner_instructor_list").addClass("d-none");
-        }
-    });
+    // $(".partner_instructor_btn").on("change", function () {
+    //     if ($(this).is(":checked")) {
+    //         $(".partner_instructor_list").removeClass("d-none");
+    //     } else {
+    //         $(".partner_instructor_list").addClass("d-none");
+    //     }
+    // });
 
 
     // get instructor profiles for select2
@@ -122,19 +122,19 @@ $(document).ready(function () {
 
         var $container = $(
             "<div class='select2-result-repository clearfix'>" +
-                "<div class='select2-result-repository__avatar'><img src='" +
-                "/" +
-                repo.image +
-                "' /></div>" +
-                "<div class='select2-result-repository__meta'>" +
-                "<div class='select2-result-repository__title'>" +
-                repo.name +
-                "</div>" +
-                "<div class='select2-result-repository__description'>" +
-                repo.email +
-                "</div>" +
-                "</div>" +
-                "</div>"
+            "<div class='select2-result-repository__avatar'><img src='" +
+            "/" +
+            repo.image +
+            "' /></div>" +
+            "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title'>" +
+            repo.name +
+            "</div>" +
+            "<div class='select2-result-repository__description'>" +
+            repo.email +
+            "</div>" +
+            "</div>" +
+            "</div>"
         );
 
         return $container;
@@ -211,10 +211,10 @@ $(document).ready(function () {
         const isUpload = select_source === "upload";
         const isCloud = (select_source == "wasabi" || select_source == "aws");
         const isMediaSource = ['youtube', 'vimeo'].includes(select_source);
-    
+
         // Reset file type options visibility
         $("#file_type option").show();
-        
+
         // Manage visibility based on source type
         $(".upload").toggleClass("d-none", !isUpload);
         $(".cloud_storage").toggleClass("d-none", !isCloud);
@@ -283,7 +283,7 @@ $(document).ready(function () {
             },
             success: function (data) {
                 dynamicModalContent.html(data);
-                $(".file-manager").filemanager("file", {prefix: base_url + '/laravel-filemanager'});
+                $(".file-manager").filemanager("file", { prefix: base_url + '/laravel-filemanager' });
             },
             error: function (xhr, status, error) {
                 toastr(error);
@@ -305,7 +305,7 @@ $(document).ready(function () {
             return;
         }
         var formData = new FormData();
-        formData.append('_token',$('meta[name="csrf-token"]').attr("content"));
+        formData.append('_token', $('meta[name="csrf-token"]').attr("content"));
         formData.append('file', fileInput.files[0]);
         formData.append('source', $("#source").val());
 
@@ -315,11 +315,11 @@ $(document).ready(function () {
             data: formData,
             contentType: false,
             processData: false,
-            success: function(response) {
-                if(response.status == "success"){
+            success: function (response) {
+                if (response.status == "success") {
                     $("#input_link").val(response.path);
                     toastr.success(response.message);
-                }else{
+                } else {
                     toastr.error(response.message);
                 }
                 fileInput.value = '';
@@ -330,7 +330,7 @@ $(document).ready(function () {
                     toastr.error(value);
                 });
             },
-            complete: function(){
+            complete: function () {
                 $(".progress").addClass("d-none");
                 $("body .dynamic-modal .submit-btn").prop("disabled", false);
             }
@@ -388,7 +388,7 @@ $(document).ready(function () {
             },
             success: function (data) {
                 dynamicModalContent.html(data);
-                $(".file-manager").filemanager("file", {prefix: base_url + '/laravel-filemanager'});
+                $(".file-manager").filemanager("file", { prefix: base_url + '/laravel-filemanager' });
             },
             error: function (xhr, status, error) {
                 toastr(error);
@@ -514,7 +514,7 @@ $(document).ready(function () {
                     data: {
                         _token: $('meta[name="csrf-token"]').attr("content"),
                     },
-                    beforeSend: function () {},
+                    beforeSend: function () { },
                     success: function (data) {
                         if (data.status == "success") {
                             Swal.fire({
@@ -552,10 +552,10 @@ $(document).ready(function () {
                 }
             },
             error: function (xhr, status, error) {
-                    let errors = xhr.responseJSON.errors;
-                    $.each(errors, function (key, value) {
-                        toastr.error(value);
-                    })
+                let errors = xhr.responseJSON.errors;
+                $.each(errors, function (key, value) {
+                    toastr.error(value);
+                })
             }
         })
     })

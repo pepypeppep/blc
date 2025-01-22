@@ -63,7 +63,7 @@
                                 </div>
                             </div>
 
-                            <div class="row d-none">
+                            {{-- <div class="row d-none">
                                 <div class="col-md-6 ">
                                     <p>{{ __('Downloadable') }}</p>
                                 </div>
@@ -76,9 +76,9 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-md-6">
                                     <p>{{ __('Patner instructor') }}</p>
                                 </div>
@@ -91,9 +91,9 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
-                            <div class="col-md-12">
+                            {{-- <div class="col-md-12">
                                 <div
                                     class="partner_instructor_list {{ $course?->partner_instructor == 0 ? 'd-none' : '' }}">
                                     <label for="cpacity">{{ __('Select a partner instructor') }} <code></code></label>
@@ -105,7 +105,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="col-md-12 mt-2">
                                 <div class="from-group">
@@ -152,8 +152,7 @@
                                                         <div class="form-check">
                                                             <input class="form-check-input"
                                                                 {{ in_array($level->id, $courseLevel) ? 'checked' : '' }}
-                                                                name="levels[]" type="checkbox"
-                                                                value="{{ $level->id }}"
+                                                                name="levels[]" type="checkbox" value="{{ $level->id }}"
                                                                 id="language-{{ $level->id }}">
                                                             <label class="form-check-label"
                                                                 for="language-{{ $level->id }}">

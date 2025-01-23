@@ -12,28 +12,71 @@
                         <tbody>
                             <tr>
                                 <td>{{ __('Program Studi') }}</td>
-                                <td>{{ $vacancy->details->first()->name ?? '-' }}</td>
+                                <td>Informatika</td>
+                                <td class="text-center">
+                                    <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
+                                </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Jenjang Pendidikan') }}</td>
-                                <td>{{ $vacancy->details->first()->category ?? '-' }}</td>
+                                <td>Strata 1</td>
+                                <td class="text-center">
+                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                </td>
+
                             </tr>
                             <tr>
                                 <td>{{ __('Syarat Minimal Pangkat/Golongan') }}</td>
-                                <td>{{ $vacancy->details->first()->type_value ?? '-' }}</td>
+                                <td>Penata Muda Tingkat 1 (III/A)</td>
+                                <td class="text-center">
+                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ __('Status Kepegawaian') }}</td>
+                                <td>Tidak Diberhentikan Dari Jabatan</td>
+                                <td class="text-center">
+                                    <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ __('Pembiayaan') }}</td>
+                                <td>Non APBD</td>
+                                <td class="text-center">
+                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ __('Jumlah Formasi') }}</td>
+                                <td>1</td>
+                                <td class="text-center">
+                                    <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ __('Batas Usia Pensiun') }}</td>
+                                <td>3</td>
+                                <td class="text-center">
+                                    <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
+                                </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Tanggal Mulai Pendaftaran') }}</td>
-                                <td>{{ $vacancy->start_at ? \Carbon\Carbon::parse($vacancy->start_at)->format('d F Y') : '-' }}
+                                <td>{{ $vacancy->start_at ? \Carbon\Carbon::parse($vacancy->start_at)->format('d F Y') : '-' }}</td>
+                                <td class="text-center">
+                                    <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Tanggal Selesai Pendaftaran') }}</td>
-                                <td>{{ $vacancy->end_at ? \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') : '-' }}
+                                <td>{{ $vacancy->end_at ? \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') : '-' }}</td>
+                                <td class="text-center">
+                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>
@@ -74,7 +117,7 @@
                                 <th>{{ __('Jenis Lampiran') }}</th>
                                 <th>{{ __('Status') }}</th>
                                 <th>{{ __('Unggah Berkas') }}</th>
-                                <th class="text-center">{{ __('Hasil Verifikasi') }}</th>
+                                <th class="text-center">{{ __('Lihat Berkas') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,24 +130,15 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                        {{-- <li class="about__info-list-item" data-bs-toggle="tooltip" title="Lihat berkas">
-                                            <i class="fa fa-eye"></i>
-                                        </li> --}}
                                     </div>
                                 </td>
-                                <td>
-                                    <div class="text-center">
-                                        @if ($vacancy->is_active)
-                                        <span style="display: inline-block; padding: 5px 10px; background-color: #d4edda; color: #155724; border-radius: 3px;">
-                                            <i class="fas fa-check"></i>
-                                        </span>
-                                    @else
-                                        <span style="display: inline-block; padding: 5px 10px; background-color: #f8d7da; color: #721c24; border-radius: 3px;">
-                                            <i class="fas fa-times"></i>
-                                        </span>
-                                    @endif
-                                    </div>
+                                <td class="text-center">
+                                    <a href="#"
+                                        class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
+                                        <i class="fas fa-eye"></i> {{ __('View') }}
+                                    </a>
                                 </td>
+
                             </tr>
                             <tr>
                                 <td>2</td>
@@ -115,23 +149,13 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                        {{-- <li class="about__info-list-item" data-bs-toggle="tooltip" title="Lihat berkas">
-                                            <i class="fa fa-eye"></i>
-                                        </li> --}}
                                     </div>
                                 </td>
-                                <td>
-                                    <div class="text-center">
-                                        {{-- @if ($vacancy->is_active)  --}}
-                                        <span style="display: inline-block; padding: 5px 10px; background-color: #d4edda; color: #155724; border-radius: 3px;">
-                                            <i class="fas fa-check"></i>
-                                        </span>
-                                    {{-- @else
-                                        <span style="display: inline-block; padding: 5px 10px; background-color: #f8d7da; color: #721c24; border-radius: 3px;">
-                                            <i class="fas fa-times"></i>
-                                        </span>
-                                    @endif --}}
-                                    </div>
+                                <td class="text-center">
+                                    <a href="#"
+                                        class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
+                                        <i class="fas fa-eye"></i> {{ __('View') }}
+                                    </a>
                                 </td>
                             </tr>
                             <tr>
@@ -143,23 +167,13 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                        {{-- <li class="about__info-list-item" data-bs-toggle="tooltip" title="Lihat berkas">
-                                            <i class="fa fa-eye"></i>
-                                        </li> --}}
                                     </div>
                                 </td>
-                                <td>
-                                    <div class="text-center">
-                                        {{-- @if ($vacancy->is_active) --}}
-                                            <span style="display: inline-block; padding: 5px 10px; background-color: #d4edda; color: #155724; border-radius: 3px;">
-                                                <i class="fas fa-check"></i>
-                                            </span>
-                                        {{-- @else
-                                            <span style="display: inline-block; padding: 5px 10px; background-color: #f8d7da; color: #721c24; border-radius: 3px;">
-                                                <i class="fas fa-times"></i>
-                                            </span>
-                                        @endif --}}
-                                    </div>
+                                <td class="text-center">
+                                    <a href="#"
+                                        class="align-middle " data-bs-toggle="tooltip" title="Lihat Berkas">
+                                        <i class="fas fa-times"></i> {{ __('View') }}
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>

@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
+            {{-- <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="dashboard__counter-item">
                     <div class="icon">
                         <i class="flaticon-mortarboard"></i>
@@ -28,8 +28,8 @@
                         <p>{{ __('PENDING COURSES') }}</p>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
+            </div> --}}
+            {{-- <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="dashboard__counter-item">
                     <div class="icon">
                         <img src="{{ asset('uploads/website-images/order.svg') }}">
@@ -39,8 +39,8 @@
                         <p>{{ __('TOTAL ORDERS') }}</p>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
+            </div> --}}
+            {{-- <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="dashboard__counter-item">
                     <div class="icon">
                         <img src="{{ asset('uploads/website-images/order.svg') }}">
@@ -50,9 +50,9 @@
                         <p>{{ __('PENDING ORDERS') }}</p>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
-            <div class="col-lg-4 col-md-4 col-sm-6">
+            {{-- <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="dashboard__counter-item">
                     <div class="icon">
                         <img src="{{ asset('uploads/website-images/dollar.svg') }}">
@@ -62,8 +62,8 @@
                         <p class="mt-3">{{ __('Current Balance') }}</p>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
+            </div> --}}
+            {{-- <div class="col-lg-4 col-md-4 col-sm-6">
                 <div class="dashboard__counter-item">
                     <div class="icon">
                         <img src="{{ asset('uploads/website-images/dollar.svg') }}">
@@ -73,7 +73,7 @@
                         <p class="mt-3">{{ __('Total Payout') }}</p>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 @endsection

@@ -27,7 +27,7 @@ use Modules\Course\app\Http\Controllers\ReviewController;
 Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::resource('course', CourseController::class)->names('course');
 
-    Route::group(['middleware' => 'role:Super Admin|Admin BKPSDM'], function () {
+    Route::group(['middleware' => 'RoleAdmin:Super Admin|Admin BKPSDM'], function () {
         /** Course category routes */
         Route::put('course-category/status-update/{id}', [CourseCategoryController::class, 'statusUpdate'])->name('course-category.status-update');
         Route::resource('course-category', CourseCategoryController::class)->names('course-category');
@@ -42,13 +42,13 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     });
 
 
-    Route::group(['middleware' => 'role:Super Admin'], function () {
+    Route::group(['middleware' => 'RoleAdmin:Super Admin'], function () {
         /** Course Language Routes */
         Route::put('course-language/status-update/{id}', [CourseLanguageController::class, 'statusUpdate'])->name('course-language.status-update');
         Route::resource('course-language', CourseLanguageController::class)->names('course-language');
     });
 
-    Route::group(['middleware' => 'role:Super Admin|Admin BKPSDM'], function () {
+    Route::group(['middleware' => 'RoleAdmin:Super Admin|Admin BKPSDM'], function () {
         /** Course Level Routes */
         Route::put('course-level/status-update/{id}', [CourseLevelController::class, 'statusUpdate'])->name('course-level.status-update');
         Route::resource('course-level', CourseLevelController::class)->names('course-level');
@@ -97,7 +97,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     /** review controller */
     Route::resource('course-review', CourseReviewController::class);
 
-    Route::group(['middleware' => 'role:Super Admin|Admin BKPSDM'], function () {
+    Route::group(['middleware' => 'RoleAdmin:Super Admin|Admin BKPSDM'], function () {
         /** course delete request */
         Route::resource('course-delete-request', CourseDeleteRequestController::class);
     });

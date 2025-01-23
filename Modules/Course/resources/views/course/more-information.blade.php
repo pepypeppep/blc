@@ -49,9 +49,11 @@
                                                 <label for="from_date_start">Pelaksanaan Pembelajaran
                                                     <code>*</code></label>
                                                 <div class="input-group input-daterange">
-                                                    <input type="text" name="from_date" class="form-control" value="2012-04-05">
+                                                    <input type="text" name="from_date" class="form-control"
+                                                        value="2012-04-05">
                                                     <span class="input-group-text mx-2">{{ __('Sampai') }}</span>
-                                                    <input type="text" name="to_date" class="form-control" value="2012-04-19">
+                                                    <input type="text" name="to_date" class="form-control"
+                                                        value="2012-04-19">
                                                 </div>
 
                                             </div>
@@ -87,56 +89,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                {{-- <div class="row w-100">
-                                                    <div class="col-md-6">
-                                                        <p>{{ __('Downloadable') }}</p>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="switcher ms-3">
-                                                            <label for="toggle-2">
-                                                                <input type="checkbox" @checked($course?->downloadable == 1) id="toggle-2"
-                                                                    value="1" name="downloadable" />
-                                                                <span><small></small></span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div> --}}
-
-                                                {{-- <div class="row w-100">
-                                                    <div class="col-md-6">
-                                                        <p>{{ __('Patner instructor') }}</p>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="switcher ms-3">
-                                                            <label for="toggle-3">
-                                                                <input class="partner_instructor_btn"
-                                                                    @checked($course?->partner_instructor == 1) value="1"
-                                                                    type="checkbox" id="toggle-3"
-                                                                    name="partner_instructor" />
-                                                                <span><small></small></span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div> --}}
                                             </div>
-
-                                            {{-- <div class="col-md-12">
-                                                <div
-                                                    class="partner_instructor_list {{ $course?->partner_instructor == 0 ? 'd-none' : '' }}">
-                                                    <label for="cpacity">{{ __('Select a partner instructor') }}
-                                                        <code></code></label>
-                                                    <select class="select2 partner_instructor_select"
-                                                        name="partner_instructors[]" multiple="multiple">
-                                                        @foreach ($course?->partnerInstructors as $instructor)
-                                                            <option value="{{ $instructor->instructor->id }}"
-                                                                selected="selected">
-                                                                {{ $instructor?->instructor->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div> --}}
-
                                             <div class="col-md-12 mt-2">
                                                 <div class="from-group">
                                                     <label for="category">{{ __('Category') }}<span
@@ -164,16 +117,14 @@
 
                                             <div class="col-md-12 mt-4">
                                                 <div class="form-group">
-                                                    {{-- <label for="description">{{ __('Description') }} --}}
-                                                    <label for="output">Output Pembelajaran
+                                                    <label for="output">{{ __('Course Output') }}
                                                         <code>*</code></label>
                                                     <textarea name="output" class="text-editor form-control summernote">{!! clean(@$course?->output) !!}</textarea>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    {{-- <label for="description">{{ __('Description') }} --}}
-                                                    <label for="outcome">Outcome Pembelajaran
+                                                    <label for="outcome">{{ __('Course Outcome') }}
                                                         <code>*</code></label>
                                                     <textarea name="outcome" class="text-editor form-control summernote">{!! clean(@$course?->outcome) !!}</textarea>
                                                 </div>

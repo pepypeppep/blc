@@ -165,6 +165,33 @@ class UserSeeder extends Seeder
             'password' => bcrypt('1234'),
             'role' => 'instructor',
             'email_verified_at' => now(),
+        
+            
+            // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
+            // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
+
+            // developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
+
+            // a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
+            // ',
+            // 'job_title' => 'Developer',
+            // 'facebook' => 'https://www.facebook.com/',
+            // 'twitter' => 'https://twitter.com/',
+            // 'linkedin' => 'https://www.linkedin.com/',
+            // 'website' => 'https://www.websolutionus.com/',
+            // 'github' => 'https://www.github.com/',
+        ]);
+
+        User::create([
+            'id' => 1007,
+            'unor_id' => 1,
+            'name' => 'Laire Kaira Nayadita',
+            'email' => 'studenttwo@gmail.com',
+            'password' => bcrypt('1234'),
+            'role' => 'student',
+            'email_verified_at' => now(),
+        
+            
             // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
             // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
 

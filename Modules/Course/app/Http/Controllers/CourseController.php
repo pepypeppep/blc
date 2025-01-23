@@ -4,6 +4,7 @@ namespace Modules\Course\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use Modules\Order\app\Models\Enrollment;
 use App\Models\CourseChapter;
 use App\Models\CourseChapterItem;
 use App\Models\CourseChapterLesson;
@@ -237,7 +238,16 @@ class CourseController extends Controller
         $course = Course::findOrFail($request->course_id);
         $course->message_for_reviewer = $request->message_for_reviewer;
         $course->status = $request->status;
-        $course->participants()->syncWithoutDetaching($request->participants);
+
+        // delete and add enrollments
+        $enrollments = $course->enrollments()->pluck('user_id')->toArray();
+        $newEnrollments = array_diff($request->participants, $enrollments);
+        $removedEnrollments = array_diff($enrollments, $request->participants);
+        foreach ($newEnrollments as $enrollment) {
+            $course->enrollments()->create(['user_id' => $enrollment]);
+        }
+        Enrollment::whereIn('user_id', $removedEnrollments)->where('course_id', $course->id)->delete();
+
         $course->save();
     }
 

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\PendidikanLanjutan\app\Http\Controllers\PendidikanLanjutanController;
 use Modules\PendidikanLanjutan\app\Http\Controllers\VacancyController;
+use Modules\PendidikanLanjutan\app\Http\Controllers\VacancyParticipantController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +33,11 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         Route::put('{id}', [VacancyController::class, 'update'])->name('vacancies.update');
         Route::delete('{id}', [VacancyController::class, 'destroy'])->name('vacancies.destroy');
     });
+});
+
+Route::prefix('vacancies-participant')->group(function () {
+    Route::get('/', [VacancyParticipantController::class, 'index'])->name('vacancies-participant.index');
+    Route::post('{id}/register', [VacancyParticipantController::class, 'register'])->name('vacancies-participant.register');
+    Route::get('{id}', [VacancyParticipantController::class, 'show'])->name('vacancies-participant.show');
+    Route::post('{$vacancyDetailId}/upload-file/{$vacancyUserId}', [VacancyParticipantController::class, 'uploadFile'])->name('vacancies-participant.upload-file');
 });

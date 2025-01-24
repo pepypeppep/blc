@@ -115,6 +115,36 @@ $(document).ready(function () {
         templateSelection: formatRepoSelection,
     });
 
+    // get participant profiles for select2
+    $(".participant_select").select2({
+        ajax: {
+            url: "/admin/courses/get-students",
+            dataType: "json",
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term, // search term
+                    page: params.page,
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data,
+                    pagination: {
+                        more: false,
+                    },
+                };
+            },
+            cache: true,
+        },
+        placeholder: search_participant_placeholder,
+        minimumInputLength: 3,
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection,
+    });
+
     function formatRepo(repo) {
         if (repo.loading) {
             return repo.text;
@@ -145,34 +175,39 @@ $(document).ready(function () {
     }
 
     /** make accordion child's sortable */
-    $(".course-section .accordion-body").sortable({
-        items: "> .card",
-        containment: "parent",
-        cursor: "move",
-        handle: ".dragger",
-        tolerance: "pointer",
-        // function on update
-        update: function (event, ui) {
-            let orderIds = $(this).sortable("toArray", {
-                attribute: "data-chapter-item-id",
-            });
-            let chapterId = ui.item.data("chapterid");
-            let csrf_token = $('meta[name="csrf-token"]').attr("content");
-            $.ajax({
-                method: "post",
-                url: base_url + "/admin/course-chapter/lesson/sorting/" + chapterId,
-                data: {
-                    _token: csrf_token,
-                    orderIds: orderIds,
-                },
-                success: function (data) {
-                    if (data.status == "success") {
-                        toastr.success(data.message);
-                    }
-                },
-            });
-        },
-    });
+    if ($(".course-section .accordion-body").length) {
+        $(".course-section .accordion-body").sortable({
+            items: "> .card",
+            containment: "parent",
+            cursor: "move",
+            handle: ".dragger",
+            tolerance: "pointer",
+            // function on update
+            update: function (event, ui) {
+                let orderIds = $(this).sortable("toArray", {
+                    attribute: "data-chapter-item-id",
+                });
+                let chapterId = ui.item.data("chapterid");
+                let csrf_token = $('meta[name="csrf-token"]').attr("content");
+                $.ajax({
+                    method: "post",
+                    url:
+                        base_url +
+                        "/admin/course-chapter/lesson/sorting/" +
+                        chapterId,
+                    data: {
+                        _token: csrf_token,
+                        orderIds: orderIds,
+                    },
+                    success: function (data) {
+                        if (data.status == "success") {
+                            toastr.success(data.message);
+                        }
+                    },
+                });
+            },
+        });
+    }
 
     /** handle chapter sorting modal */
     $(".sort-chapter-btn").on("click", function () {
@@ -322,7 +357,7 @@ $(document).ready(function () {
                 } else {
                     toastr.error(response.message);
                 }
-                fileInput.value = '';
+                fileInput.value = "";
             },
             error: function (xhr, status, error) {
                 let errors = xhr.responseJSON.errors;
@@ -333,7 +368,7 @@ $(document).ready(function () {
             complete: function () {
                 $(".progress").addClass("d-none");
                 $("body .dynamic-modal .submit-btn").prop("disabled", false);
-            }
+            },
         });
     });
 

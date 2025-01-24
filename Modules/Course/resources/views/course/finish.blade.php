@@ -19,7 +19,8 @@
                         <div class="col-12">
                             @include('course::course.navigation')
                             <div class="instructor__profile-form-wrap mt-4">
-                                <form action="{{ route('admin.courses.update') }}" class="instructor__profile-form course-form">
+                                <form action="{{ route('admin.courses.update') }}"
+                                    class="instructor__profile-form course-form">
                                     @csrf
                                     <input type="hidden" name="course_id" id="" value="{{ $course->id }}">
                                     <input type="hidden" name="step" id="" value="4">
@@ -28,22 +29,43 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label for="">{{ __('Message for Reviewer') }} <code></code></label>
+                                                <div class="d-flex justify-content-between">
+                                                    <label for="">{{ __('Select course participant') }}
+                                                        <code>*</code></label>
+                                                    <span>{{ __('Number of Participants') }} : <span class="text-danger"
+                                                            id="participant_count">{{ count($course->enrollments) }}</span></span>
+                                                </div>
+                                                <select class="select2 participant_select form-control"
+                                                    name="participants[]" multiple="multiple">
+                                                    @foreach ($course?->enrollments as $enrollment)
+                                                        <option value="{{ $enrollment->user->id }}" selected="selected">
+                                                            {{ $enrollment->user->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="">{{ __('Message for Reviewer') }}
+                                                    <code></code></label>
                                                 <textarea name="message_for_reviewer" class="form-control">{{ $course->message_for_reviewer }}</textarea>
                                             </div>
                                         </div>
 
                                         <div class="col-md-12">
-                                          <div class="form-group">
-                                              <label for="">{{ __('Status') }} <code>*</code></label>
-                                              <select name="status" id="" class="form-control">
-                                                <option value="">{{ __('Select') }}</option>
-                                                <option @selected($course->status == 'active') value="active">{{ __('Publish') }}</option>
-                                                <option @selected($course->status == 'inactive') value="inactive">{{ __('UnPublish') }}</option>
-                                                <option @selected($course->status == 'is_draft') value="is_draft">{{ __('Draft') }}</option>
-                                              </select>
-                                          </div>
-                                      </div>
+                                            <div class="form-group">
+                                                <label for="">{{ __('Status') }} <code>*</code></label>
+                                                <select name="status" id="" class="form-control">
+                                                    <option value="">{{ __('Select') }}</option>
+                                                    <option @selected($course->status == 'active') value="active">{{ __('Publish') }}
+                                                    </option>
+                                                    <option @selected($course->status == 'inactive') value="inactive">
+                                                        {{ __('UnPublish') }}</option>
+                                                    <option @selected($course->status == 'is_draft') value="is_draft">
+                                                        {{ __('Draft') }}</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
                                         <div class="col-md-12">
                                             <button class="btn btn-primary" type="submit">{{ __('Save') }}</button>
@@ -60,6 +82,18 @@
 @endsection
 
 @push('js')
-<script src="{{ asset('backend/js/default/courses.js') }}"></script>
+    <script src="{{ asset('backend/js/default/courses.js') }}"></script>
 @endpush
+@push('styles')
+    <style>
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #5751e1;
+            border: 1px solid #4943bd;
+            color: #fff;
+        }
 
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #fff;
+        }
+    </style>
+@endpush

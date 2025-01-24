@@ -18,7 +18,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\InstructorRequest\app\Models\InstructorRequest;
 
-class User extends Authenticatable {
+class User extends Authenticatable
+{
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -89,7 +90,13 @@ class User extends Authenticatable {
         return $this->hasMany(Course::class, 'instructor_id');
     }
 
-    function country(): BelongsTo {
+    public function coursesTaken()
+    {
+        return $this->belongsToMany(Course::class, 'course_participants');
+    }
+
+    function country(): BelongsTo
+    {
         return $this->belongsTo(Country::class, 'country_id');
     }
     function orders(): HasMany {

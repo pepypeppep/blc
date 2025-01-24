@@ -4,6 +4,7 @@ namespace Modules\Course\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use Modules\Order\app\Models\Enrollment;
 use App\Models\CourseChapter;
 use App\Models\CourseChapterItem;
 use App\Models\CourseChapterLesson;
@@ -28,16 +29,16 @@ class CourseController extends Controller
     function index(Request $request): View
     {
         $query = Course::query();
-        $query->when($request->keyword, fn ($q) => $q->where('title', 'like', '%' . request('keyword') . '%'));
-        $query->when($request->category, function($q) use ($request) {
-            $q->whereHas('category', function($q) use ($request) {
+        $query->when($request->keyword, fn($q) => $q->where('title', 'like', '%' . request('keyword') . '%'));
+        $query->when($request->category, function ($q) use ($request) {
+            $q->whereHas('category', function ($q) use ($request) {
                 $q->where('id', $request->category);
             });
         });
         $query->when($request->date && $request->filled('date'), fn($q) => $q->whereDate('created_at', $request->date));
         $query->when($request->approve_status && $request->filled('approve_status'), fn($q) => $q->where('is_approved', $request->approve_status));
         $query->when($request->status && $request->filled('status'), fn($q) => $q->where('status', $request->status));
-        $query->when($request->instructor && $request->filled('instructor'), function($q) use ($request) {
+        $query->when($request->instructor && $request->filled('instructor'), function ($q) use ($request) {
             $q->where('instructor_id', $request->instructor);
         });
         $query->withCount('enrollments');
@@ -79,11 +80,13 @@ class CourseController extends Controller
         $course->title = $request->title;
         $course->seo_description = $request->seo_description;
         $course->thumbnail = $request->thumbnail;
-        $course->demo_video_storage = $request->demo_video_storage;
+        $course->demo_video_storage = 'upload';
         $course->demo_video_source = $request->demo_video_storage == 'upload' ? $request->upload_path : $request->external_path;
         $course->price = $request->price;
         $course->discount = $request->discount_price;
         $course->description = $request->description;
+        $course->background = $request->background;
+        $course->course_type = $request->course_type;
         $course->instructor_id = $request->instructor;
         $course->save();
 
@@ -190,6 +193,10 @@ class CourseController extends Controller
         $course->downloadable = $request->downloadable;
         $course->certificate = $request->certificate;
         $course->partner_instructor = $request->partner_instructor;
+        $course->start_date = $request->from_date;
+        $course->end_date = $request->to_date;
+        $course->output = $request->output;
+        $course->outcome = $request->outcome;
         $course->save();
 
         // delete unselected partner instructor
@@ -224,12 +231,23 @@ class CourseController extends Controller
         }
     }
 
-    function storeFinish(Request $request) {
+    function storeFinish(Request $request)
+    {
+        // dd($request->participants);
         checkAdminHasPermissionAndThrowException('course.management');
         $course = Course::findOrFail($request->course_id);
         $course->message_for_reviewer = $request->message_for_reviewer;
         $course->status = $request->status;
-        // $course->is_approved = 'approved';
+
+        // delete and add enrollments
+        $enrollments = $course->enrollments()->pluck('user_id')->toArray();
+        $newEnrollments = array_diff($request->participants, $enrollments);
+        $removedEnrollments = array_diff($enrollments, $request->participants);
+        foreach ($newEnrollments as $enrollment) {
+            $course->enrollments()->create(['user_id' => $enrollment]);
+        }
+        Enrollment::whereIn('user_id', $removedEnrollments)->where('course_id', $course->id)->delete();
+
         $course->save();
     }
 
@@ -245,14 +263,16 @@ class CourseController extends Controller
         return response()->json($instructors);
     }
 
-    function statusUpdate(Request $request, string $id) {
-      $course = Course::findOrFail($id);
-      $course->is_approved = $request->status;
-      $course->save();
-      return response(['status' => 'success', 'message' => __('Updated successfully')]);
+    function statusUpdate(Request $request, string $id)
+    {
+        $course = Course::findOrFail($id);
+        $course->is_approved = $request->status;
+        $course->save();
+        return response(['status' => 'success', 'message' => __('Updated successfully')]);
     }
 
-    function destroy(string $id) {
+    function destroy(string $id)
+    {
         checkAdminHasPermissionAndThrowException('course.management');
         $course = Course::findOrFail($id);
         if ($course->enrollments()->count() > 0) {
@@ -261,5 +281,17 @@ class CourseController extends Controller
         $course->delete();
 
         return response()->json(['status' => 'success', 'message' => __('Course deleted successfully')]);
+    }
+
+    function getStudents(Request $request)
+    {
+        $students = User::where('role', 'student')
+            ->where(function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->q . '%')
+                    ->orWhere('email', 'like', '%' . $request->q . '%');
+            })
+            ->where('id', '!=', auth()->id())
+            ->get();
+        return response()->json($students);
     }
 }

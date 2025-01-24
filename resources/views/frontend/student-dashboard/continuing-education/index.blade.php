@@ -12,11 +12,10 @@
                         <thead>
                             <tr>
                                 <th>{{ __('#') }}</th>
-                                <th  width="30%" >{{ __('Program Studi Pendidikan Lanjutan') }}</th>
+                                <th width="30%">{{ __('Program Studi Pendidikan Lanjutan') }}</th>
                                 <th>{{ __('Syarat Minimal Pangkat/Golongan') }}</th>
-                                <th>{{ __('Tanggal mulai') }}</th>
-                                <th>{{ __('Tanggal selesai') }}</th>
-                                <th>{{ __('Status') }}</th>
+                                <th width="20%">{{ __('Tanggal mulai') }}</th>
+                                <th width="20%">{{ __('Tanggal selesai') }}</th>
                                 <th>{{ __('Action') }}</th>
                             </tr>
                         </thead>
@@ -32,18 +31,13 @@
                                             {{ '-' }}
                                         @endif
                                     </td>
-                                    <td>{{ $vacancy->start_at ? \Carbon\Carbon::parse($vacancy->start_at)->format('d M Y') : '-' }}</td>
-                                    <td>{{ $vacancy->end_at ? \Carbon\Carbon::parse($vacancy->end_at)->format('d M Y') : '-' }}</td>
-                                    <td>
-                                        @php
-                                            $status = $vacancy->users->firstWhere('id', auth()->id())->pivot->status ?? 'inactive';
-                                        @endphp
-                                        <span class="badge {{ $status === 'active' ? 'bg-success' : 'bg-danger' }}">
-                                            {{ ucfirst($status) }}
-                                        </span>
+                                    <td>{{ $vacancy->start_at ? \Carbon\Carbon::parse($vacancy->start_at)->format('d F Y') : '-' }}
+                                    </td>
+                                    <td>{{ $vacancy->end_at ? \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') : '-' }}
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('student.continuing-education.show', $vacancy->id) }}" class="align-middle ">
+                                        <a href="{{ route('student.continuing-education.show', $vacancy->id) }}"
+                                            class="align-middle" data-bs-toggle="tooltip" title="Lihat selengkapnya">
                                             <i class="fas fa-eye"></i> {{ __('View') }}
                                         </a>
                                     </td>
@@ -61,3 +55,15 @@
         </div>
     </div>
 @endsection
+
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+@endpush

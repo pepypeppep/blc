@@ -37,10 +37,10 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="dashboard__instructor-info-right">
+                    {{-- <div class="dashboard__instructor-info-right">
                         <a href="{{ route('student.dashboard') }}" class="btn btn-two arrow-btn">{{ __('Student Dashboard') }} <img
                             src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img" class="injectable"></a>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
             <div class="row">

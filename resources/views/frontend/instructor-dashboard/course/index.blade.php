@@ -3,9 +3,9 @@
 @section('dashboard-contents')
     <div class="dashboard__content-wrap pb-0">
         <div class="dashboard__content-title d-flex flex-wrap justify-content-between">
-            <h4 class="title">{{ __('All Courses') }} Fadila</h4>
-            <a href="{{ route('instructor.courses.create') }}"
-                class="btn btn-primary btn-hight-basic">{{ __('Add Course') }}</a>
+            <h4 class="title">{{ __('All Courses') }} </h4>
+            {{-- <a href="{{ route('instructor.courses.create') }}"
+                class="btn btn-primary btn-hight-basic">{{ __('Add Course') }}</a> --}}
         </div>
         <div class="row">
             <div class="col-12">
@@ -21,10 +21,9 @@
                                                 <div class="row align-items-center">
                                                     <div class="col-xl-5">
                                                         <div class="courses__item-thumb courses__item-thumb-two">
-                                                            <a href="{{ route('instructor.courses.edit-view', $course->id) }}"
-                                                                class="shine__animate-link">
+                                                            <div class="shine__animate-link">
                                                                 <img src="{{ asset($course->thumbnail) }}" alt="img">
-                                                            </a>
+                                                            </div>
                                                             @if ($course->is_approved == 'pending')
                                                                 <p class="bg-warning">{{ __('Pending') }}</p>
                                                             @elseif($course->is_approved == 'rejected')
@@ -57,7 +56,7 @@
                                                                         <i class="far fa-eye"></i>
                                                                     </a>
                                                                 </li>
-                                                                <li>
+                                                                {{-- <li>
                                                                     <a
                                                                         href="{{ route('instructor.courses.edit-view', $course->id) }}">
                                                                         <i class="far fa-edit"></i>
@@ -68,11 +67,10 @@
                                                                         href="{{ route('instructor.course.delete-request.show', $course->id) }}">
                                                                         <i class="fas fa-trash-alt"></i>
                                                                     </a>
-                                                                </li>
+                                                                </li> --}}
                                                             </ul>
 
-                                                            <h5 class="title"><a
-                                                                    href="{{ route('instructor.courses.edit-view', $course->id) }}">{{ $course->title }}</a>
+                                                            <h5 class="title">{{ $course->title }}
                                                             </h5>
                                                             <div class="courses__item-content-bottom">
                                                                 <div class="author-two">

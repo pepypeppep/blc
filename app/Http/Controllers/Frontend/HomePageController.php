@@ -35,10 +35,12 @@ use Modules\PageBuilder\app\Models\CustomPage;
 use Modules\SiteAppearance\app\Models\SectionSetting;
 use Modules\Testimonial\app\Models\Testimonial;
 
-class HomePageController extends Controller {
+class HomePageController extends Controller
+{
     use MailSenderTrait;
 
-    function index(): View {
+    function index(): View
+    {
         $theme_name = Session::has('demo_theme') ? Session::get('demo_theme') : DEFAULT_HOMEPAGE;
 
         $sections = Section::whereHas("home", function ($q) use ($theme_name) {
@@ -87,7 +89,9 @@ class HomePageController extends Controller {
         $testimonials = Testimonial::all();
 
         $featuredBlogs = Blog::with(['translation', 'author'])
-            ->whereHas('category', function ($q) {$q->where('status', 1);})
+            ->whereHas('category', function ($q) {
+                $q->where('status', 1);
+            })
             ->where(['show_homepage' => 1, 'status' => 1])->orderBy('created_at', 'desc')->limit(4)->get();
         $sectionSetting = SectionSetting::first();
 
@@ -112,22 +116,26 @@ class HomePageController extends Controller {
         ));
     }
 
-    function countries(): JsonResponse {
+    function countries(): JsonResponse
+    {
         $countries = Country::where('status', 1)->get();
         return response()->json($countries);
     }
 
-    function states(string $id): JsonResponse {
+    function states(string $id): JsonResponse
+    {
         $states = State::where(['country_id' => $id, 'status' => 1])->get();
         return response()->json($states);
     }
 
-    function cities(string $id): JsonResponse {
+    function cities(string $id): JsonResponse
+    {
         $cities = City::where(['state_id' => $id, 'status' => 1])->get();
         return response()->json($cities);
     }
 
-    public function setCurrency() {
+    public function setCurrency()
+    {
         $currency = allCurrencies()->where('currency_code', request('currency'))->first();
         if (session()->has('currency_code')) {
             session()->forget('currency_code');
@@ -153,7 +161,8 @@ class HomePageController extends Controller {
         return redirect()->back()->with($notification);
     }
 
-    function instructorDetails(string $id) {
+    function instructorDetails(string $id)
+    {
         User::where(['status' => 'active', 'is_banned' => 0, 'id' => $id])->first();
         $instructor = User::where(['status' => 'active', 'is_banned' => 0, 'id' => $id])->with(['courses' => function ($query) {
             $query->withCount(['reviews as avg_rating' => function ($query) {
@@ -168,7 +177,8 @@ class HomePageController extends Controller {
         return view('frontend.pages.instructor-details', compact('instructor', 'experiences', 'educations', 'courses', 'badges'));
     }
 
-    function allInstructors() {
+    function allInstructors()
+    {
         $instructors = User::where(['status' => 'active', 'is_banned' => 0, 'role' => 'instructor'])
             ->withCount('courses as course_count')
             ->with(['courses' => function ($query) {
@@ -182,7 +192,8 @@ class HomePageController extends Controller {
         return view('frontend.pages.all-instructors', compact('instructors'));
     }
 
-    function quickConnect(Request $request, string $id) {
+    function quickConnect(Request $request, string $id)
+    {
         $validated = $request->validate([
             'name'                 => ['required', 'string', 'max:255'],
             'email'                => ['required', 'string', 'email', 'max:255'],
@@ -207,7 +218,8 @@ class HomePageController extends Controller {
         return redirect()->back()->with(['messege' => __('Message sent successfully'), 'alert-type' => 'success']);
     }
 
-    function handleMailSending(array $mailData) {
+    function handleMailSending(array $mailData)
+    {
         self::setMailConfig();
 
         // Get email template
@@ -226,12 +238,14 @@ class HomePageController extends Controller {
         }
     }
 
-    function customPage(string $slug) {
+    function customPage(string $slug)
+    {
         $page = CustomPage::where('slug', $slug)->firstOrFail();
         return view('frontend.pages.custom-page', compact('page'));
     }
 
-    function changeTheme(string $theme) {
+    function changeTheme(string $theme)
+    {
         if (Cache::get('setting')?->show_all_homepage != 1) {
             abort(404);
         }

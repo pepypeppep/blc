@@ -25,7 +25,7 @@ class SectionTranslationSeeder extends Seeder
                 'total_student' => '6905',
                 'total_instructor' => '100',
                 'video_button_text' => 'Pelatihan',
-                'action_button_text' => 'Kursus',
+                'action_button_text' => 'Pelatihan',
             ],
         ]);
 
@@ -63,8 +63,8 @@ class SectionTranslationSeeder extends Seeder
                 'sub_title_two' => 'Kuasai Keterampilan Apa Pun. Keluarkan Potensi Anda dan berubahlah menjadi yang terbaik',
                 'title_three' => 'Dapatkan Sertifikat',
                 'sub_title_three' => 'Mulai pembelajaran sekarang dan Segera Dapatkan Sertifikasi Hari Ini',
-                'title_four' => 'Informasi Kursus',
-                'sub_title_four' => 'Dapatkan informasi terkait kursus terbaru secara cepat',
+                'title_four' => 'Informasi Pelatihan',
+                'sub_title_four' => 'Dapatkan informasi terkait Pelatihan terbaru secara cepat',
             ],
         ]);
 

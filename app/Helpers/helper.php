@@ -1,27 +1,28 @@
 <?php
 
-use App\Enums\ThemeList;
-use App\Exceptions\AccessPermissionDeniedException;
 use App\Models\Course;
-use App\Traits\GetGlobalInformationTrait;
-use Illuminate\Http\UploadedFile;
+use App\Enums\ThemeList;
+use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\File;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
+use Nwidart\Modules\Facades\Module;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
-use Modules\BasicPayment\app\Models\BasicPayment;
-use Modules\Currency\app\Models\MultiCurrency;
-use Modules\GlobalSetting\app\Models\CustomCode;
-use Modules\GlobalSetting\app\Models\Setting;
-use Modules\Language\app\Models\Language;
+use Illuminate\Support\Facades\Storage;
 use Modules\Location\app\Models\Country;
 use Modules\Order\app\Models\Enrollment;
+use App\Traits\GetGlobalInformationTrait;
+use Modules\Language\app\Models\Language;
+use Modules\GlobalSetting\app\Models\Setting;
+use Modules\Currency\app\Models\MultiCurrency;
+use Modules\GlobalSetting\app\Models\CustomCode;
+use Modules\BasicPayment\app\Models\BasicPayment;
+use App\Exceptions\AccessPermissionDeniedException;
 use Modules\BasicPayment\app\Models\PaymentGateway;
-use Nwidart\Modules\Facades\Module;
 use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
 
 function file_upload(UploadedFile $file, string $path = 'uploads/custom-images/', string | null $oldFile = '', bool $optimize = false)

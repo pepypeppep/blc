@@ -1932,9 +1932,9 @@
     "Addon requires application version": "Addon memerlukan versi aplikasi",
     "Current version": "Versi saat ini",
     "ContinuingEducation": "Pendidikan Lanjutan",
-    "Vacancy":"Lowongan",
-    "Vacancy List" : "Daftar Lowongan",
-    "Create Vacancy" : "Buat Lowongan",
+    "Vacancy": "Lowongan",
+    "Vacancy List": "Daftar Lowongan",
+    "Create Vacancy": "Buat Lowongan",
     "Vacancy Delete Confirmation": "Konfirmasi Penghapusan Lowongan",
     "Background": "Latar Belakang",
     "Course Price": "Harga Pelatihan",
@@ -1944,5 +1944,4 @@
     "Course Outcome": "Outcome Pelatihan",
     "Course Form": "Bentuk Pelatihan",
     "Number of Participants": "Jumlah Peserta"
-
 }

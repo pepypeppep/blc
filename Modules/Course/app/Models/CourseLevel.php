@@ -17,6 +17,10 @@ class CourseLevel extends Model
      */
     protected $fillable = ['slug', 'status'];
 
+    public function scopeActive()
+    {
+        return $this->where('status', 1);
+    }
 
     public function getTranslation($code): ?CourseLevelTranslation
     {
@@ -30,6 +34,4 @@ class CourseLevel extends Model
     {
         return $this->hasMany(CourseLevelTranslation::class, 'course_level_id');
     }
-
-
 }

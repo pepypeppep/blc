@@ -26,8 +26,8 @@ class SeoInfoSeeder extends Seeder
 
         $item2 = new SeoSetting();
         $item2->page_name = 'course_page';
-        $item2->seo_title = 'Kursus || LMS Kabupaten Bantul';
-        $item2->seo_description = 'Kursus || LMS Kabupaten Bantul';
+        $item2->seo_title = 'Pelatihan || LMS Kabupaten Bantul';
+        $item2->seo_description = 'Pelatihan || LMS Kabupaten Bantul';
         $item2->save();
 
         $item2 = new SeoSetting();

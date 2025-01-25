@@ -500,7 +500,7 @@
                             @else
                                 <h2 class="title">{{ currency($course->price) }}</h2>
                             @endif --}}
-                            <span>Jenis Kursus:</span>
+                            <span>Jenis Pelatihan:</span>
                             <h2 class="title">{{ $course->category->parentCategory->translation->name }}</h2>
 
                         </div>
@@ -576,7 +576,7 @@
                             <div class="tg-button-wrap">
                                 <a href="{{ route('student.enrolled-courses') }}"
                                     class="btn btn-two arrow-btn already-enrolled-btn" data-id="">
-                                    <span class="text">Mulai Kursus</span>
+                                    <span class="text">Mulai Pelatihan</span>
                                     <i class="flaticon-arrow-right"></i>
                                 </a>
                                 {{-- @if (in_array($course->id, session('enrollments') ?? []))

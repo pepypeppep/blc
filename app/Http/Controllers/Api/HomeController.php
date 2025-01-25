@@ -26,10 +26,10 @@ class HomeController extends Controller
 
             $sections = [];
             foreach ($section_data as $key => $section) {
-                $sections[$section->name] = $section->content;
+                $sections[str_replace('_section', '', $section->name)] = $section->content;
             }
             $contactSection = ContactSection::first();
-            $sections['contact_us_section'] = json_decode(json_encode([
+            $sections['contact_us'] = json_decode(json_encode([
                 'address' => $contactSection->address,
                 'phone_one' => $contactSection->phone_one,
                 'phone_two' => $contactSection->phone_two,
@@ -37,7 +37,6 @@ class HomeController extends Controller
                 'email_two' => $contactSection->email_two,
                 'map' => $contactSection->map,
             ]));
-            dd($sections);
 
             $faqs = Faq::with('translation')->where('status', 1)->get();
 
@@ -77,6 +76,7 @@ class HomeController extends Controller
                 'status' => 'success',
                 'data' => [
                     'users' => $users,
+                    'sections' => $sections,
                     'faqs' => $faqs,
                     'trendingCategories' => $trendingCategories,
                     'brands' => $brands,

@@ -30,5 +30,6 @@
     "ContactSetting": false,
     "Menubuilder": true,
     "Installer": true,
-    "PendidikanLanjutan": true
+    "PendidikanLanjutan": true,
+    "Article": true
 }

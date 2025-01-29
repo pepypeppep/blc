@@ -27,16 +27,32 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <form action="{{ route('admin.blogs.store') }}" method="POST"
+                                <form action="{{ route('admin.vacancies.store') }}" method="POST"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="row mb-3">
+                                        <div class="form-group col-md-8 offset-md-2">
+                                            <label for="year">{{ __('Tahun') }} <span class="text-danger">*</span></label>
+                                            <input type="number" name="year" id="year" class="form-control" value="{{ old('year', date('Y')) }}">
+                                            @error('year')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group col-md-8 offset-md-2">
+                                            <label>{{ __('Nama Lowongan') }} <span class="text-danger">*</span></label>
+                                            <input type="text" id="name" class="form-control" name="name"
+                                                value="{{ old('name') }}">
+                                            @error('name')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
 
                                         <div class="form-group col-md-8 offset-md-2">
                                             <label>{{ __('Unit Organisasi') }} <span class="text-danger">*</span></label>
-                                            <input type="text" id="unor" class="form-control" name="unor"
-                                                value="{{ old('unor') }}">
-                                            @error('unor')
+                                            <input type="text" id="unor_ids" class="form-control" name="unor_ids"
+                                                value="{{ old('unor_ids') }}">
+                                            @error('unor_ids')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>

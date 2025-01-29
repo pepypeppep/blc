@@ -15,7 +15,7 @@ class VacancyDetail extends Model
         'name',
         'category',
         'type',
-        'type_value',
+        'value_type',
         'description',
     ];
 

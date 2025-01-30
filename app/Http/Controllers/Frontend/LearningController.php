@@ -195,21 +195,82 @@ class LearningController extends Controller
         }
     }
 
-    function makeLessonComplete(Request $request)
+    // function makeLessonComplete(Request $request)
+    // {
+
+    //     $progress = CourseProgress::where(['lesson_id' => $request->lessonId, 'user_id' => userAuth()->id, 'type' => $request->type])->first();
+    //     if ($progress) {
+    //         $progress->watched = $request->status;
+    //         $progress->save();
+    //         return response()->json(['status' => 'success', 'message' => __('Updated successfully.')]);
+    //     } else {
+    //         if ($request->status == 0) {
+    //             return;
+    //         }
+
+    //         return response()->json(['status' => 'error', 'message' => __('You didnt watched this lesson')]);
+    //     }
+    // }
+    public function makeLessonComplete(Request $request)
     {
-        $progress = CourseProgress::where(['lesson_id' => $request->lessonId, 'user_id' => userAuth()->id, 'type' => $request->type])->first();
+        // Cari progress untuk lesson yang dimaksud
+        $progress = CourseProgress::where([
+            'lesson_id' => $request->lessonId,
+            'user_id' => userAuth()->id,
+            'type' => $request->type
+        ])->first();
+
+        // Jika progress ditemukan
         if ($progress) {
+            // Cek apakah lesson sebelumnya sudah selesai jika ini adalah lesson
+            if ($request->type == 'lesson') {
+                // Cari lesson sebelumnya yang lebih kecil dari lesson_id saat ini
+                $previousLesson = CourseProgress::where([
+                    'user_id' => userAuth()->id,
+                    'course_id' => $progress->course_id,
+                    'type' => 'lesson',
+                ])
+                    ->where('lesson_id', '<', $request->lessonId) // lesson_id lebih kecil
+                    ->orderBy('lesson_id', 'desc') // Urutkan berdasarkan lesson_id terbesar
+                    ->first(); // Ambil yang paling besar yang lebih kecil dari lesson_id
+
+                // Jika ada lesson sebelumnya dan status watched-nya masih 0
+                if ($previousLesson && $previousLesson->watched == 0) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => __('Please finish the previous lesson first.')
+                    ]);
+                }
+            }
+
+            // Update status watched berdasarkan request status
+            if ($progress->watched  == 1) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => __('You already watched this lesson')
+                ]);
+            }
+
             $progress->watched = $request->status;
             $progress->save();
-            return response()->json(['status' => 'success', 'message' => __('Updated successfully.')]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('Updated successfully.')
+            ]);
         } else {
+            // Jika tidak ada progress yang ditemukan dan status = 1
             if ($request->status == 0) {
                 return;
             }
 
-            return response()->json(['status' => 'error', 'message' => __('You didnt watched this lesson')]);
+            return response()->json([
+                'status' => 'error',
+                'message' => __('You didnt watch this lesson')
+            ]);
         }
     }
+
 
     function downloadResource(string $lessonId)
     {
@@ -400,7 +461,7 @@ class LearningController extends Controller
                 $query->where('name', 'like', '%' . $request->q . '%')
                     ->orWhere('email', 'like', '%' . $request->q . '%');
             })
-            ->where('id', '!=', auth()->id())
+            ->where('id', '!=', userAuth()->id)
             ->get();
         return response()->json($students);
     }

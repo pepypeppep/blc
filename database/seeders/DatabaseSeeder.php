@@ -59,7 +59,8 @@ class DatabaseSeeder extends Seeder
             SocialLinkSeeder::class,
             InstructorRequestSeeder::class,
             BadgeSeeder::class,
-            // CourseSeeder::class,
+            CourseCategorySeeder::class,
+            CourseSeeder::class,
             FaqSeeder::class,
             CustomPageSeeder::class,
             FooterSettingSeeder::class,
@@ -68,7 +69,7 @@ class DatabaseSeeder extends Seeder
             VacancySeeder::class,
             VacancyDetailSeeder::class,
             VacancyUserSeeder::class,
-            VacancyDetailUserAttachmentSeeder::class,
+            VacancyDetailUserAttachmentSeeder::class
         ]);
     }
 }

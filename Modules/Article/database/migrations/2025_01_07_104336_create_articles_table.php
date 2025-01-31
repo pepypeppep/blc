@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('thumbnail')->nullable();
             $table->string('title')->nullable(false);
             $table->string('slug')->unique();
+            $table->string('category')->nullable();
             $table->longText('content');
             $table->text('description');
             $table->string('status')->default('draft');

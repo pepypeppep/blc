@@ -2,45 +2,24 @@
 
 namespace Modules\Article\app\Models;
 
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class ArticleCategory extends Model
+class ArticleTag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['slug', 'status'];
+    protected $fillable = ['article_id', 'tag_id'];
 
-    // make a accessor for translation
-    public function getTitleAttribute(): ?string
+    public function article(): ?BelongsTo
     {
-        return $this->translation->title;
+        return $this->belongsTo(Article::class);
     }
 
-    public function getShortDescriptionAttribute(): ?string
+    public function tag(): ?BelongsTo
     {
-        return $this->translation->short_description;
-    }
-
-    public function translation(): ?HasOne
-    {
-        return $this->hasOne(ArticleCategoryTranslation::class)->where('lang_code', getSessionLanguage());
-    }
-
-    public function getTranslation($code): ?ArticleCategoryTranslation
-    {
-        return $this->hasOne(ArticleCategoryTranslation::class)->where('lang_code', $code)->first();
-    }
-
-    public function translations(): ?HasMany
-    {
-        return $this->hasMany(ArticleCategoryTranslation::class, 'article_category_id');
-    }
-
-    public function posts()
-    {
-        return $this->hasMany(Article::class, 'article_category_id');
+        return $this->belongsTo(Tag::class);
     }
 }

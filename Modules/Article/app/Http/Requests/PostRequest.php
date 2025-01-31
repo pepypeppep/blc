@@ -13,6 +13,7 @@ class PostRequest extends FormRequest
             'title' => 'required|string|max:255',
             'thumbnail' => 'required|image|max:10240',
             'content' => 'required',
+            'category' => 'required',
             'description' => 'required',
             'allow_comments' => 'required',
             'tags' => 'nullable|array|max:5',
@@ -51,6 +52,8 @@ class PostRequest extends FormRequest
             'description.required' => __('The description is required and must be a string with a maximum length of 65535 characters.'),
 
             'allow_comments.required' => __('The allow comments is required.'),
+
+            'category.required' => __('The category is required.'),
         ];
     }
 }

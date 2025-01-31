@@ -13,12 +13,17 @@ return new class extends Migration
     {
         Schema::create('vacancies', function (Blueprint $table) {
             $table->id();
-            $table->string('periode_id');
-            $table->string('name');
+            $table->unsignedBigInteger('study_id');
+            $table->string('level');
+            $table->string('grade');
+            $table->string('employment_status');
+            $table->string('type');
+            $table->integer('formation');
+            $table->integer('age_limit');
             $table->text('description')->nullable();
-            $table->timestamp('start_at')->nullable();
-            $table->timestamp('end_at')->nullable();
             $table->year('year');
+            $table->timestamp('open_at')->nullable();
+            $table->timestamp('close_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

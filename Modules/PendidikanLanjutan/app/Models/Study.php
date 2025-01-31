@@ -2,14 +2,13 @@
 
 namespace Modules\PendidikanLanjutan\app\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\Pivot;
+use Modules\PendidikanLanjutan\Database\factories\StudyFactory;
 
-class VacancyUser extends Pivot
+class Study extends Model
 {
     use HasFactory;
-
-    protected $table = 'vacancy_users';
 
     protected $guarded = ['id'];
 }

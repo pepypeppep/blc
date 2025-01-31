@@ -1,7 +1,5 @@
 <?php
 
-use Modules\PendidikanLanjutan\app\Models\Vacancy;
-use Modules\PendidikanLanjutan\app\Models\Unor;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vacancy_unors', function (Blueprint $table) {
+        Schema::create('vacancy_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Vacancy::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Unor::class)->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('vacancy_id')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->onDelete('cascade');
+            $table->string('name');
+            $table->longText('description')->nullable();
+            $table->string('status');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vacancy_unors');
+        Schema::dropIfExists('vacancy_logs');
     }
 };

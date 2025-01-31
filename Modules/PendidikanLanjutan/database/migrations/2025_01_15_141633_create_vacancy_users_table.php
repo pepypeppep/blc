@@ -15,10 +15,9 @@ return new class extends Migration
     {
         Schema::create('vacancy_users', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Vacancy::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->string('status')->default('active');
-            $table->text('sk_file')->nullable();
+            $table->unsignedBigInteger('vacancy_id')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id')->onDelete('cascade');
+            $table->string('status')->default('verification');
             $table->timestamps();
         });
     }

@@ -12,14 +12,24 @@
                         <tbody>
                             <tr>
                                 <td>{{ __('Program Studi') }}</td>
-                                <td>Informatika</td>
+                                <td>
+                                    @php
+                                        $studyProgram = $vacancy->details->firstWhere('type', 'study_program');
+                                    @endphp
+                                    {{ $studyProgram ? $studyProgram->value_type : '-' }}
+                                </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Jenjang Pendidikan') }}</td>
-                                <td>Strata 1</td>
+                                <td>
+                                    @php
+                                        $educationLevel = $vacancy->details->firstWhere('type', 'education_level');
+                                    @endphp
+                                    {{ $educationLevel ? $educationLevel->value_type : '-' }}
+                                </td>
                                 <td class="text-center">
                                     <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
                                 </td>
@@ -27,35 +37,60 @@
                             </tr>
                             <tr>
                                 <td>{{ __('Syarat Minimal Pangkat/Golongan') }}</td>
-                                <td>Penata Muda Tingkat 1 (III/A)</td>
+                                <td>
+                                    @php
+                                        $minimumRank = $vacancy->details->firstWhere('type', 'minimum_rank');
+                                    @endphp
+                                    {{ $minimumRank ? $minimumRank->value_type : '-' }}
+                                </td>
                                 <td class="text-center">
                                     <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Status Kepegawaian') }}</td>
-                                <td>Tidak Diberhentikan Dari Jabatan</td>
+                                <td>
+                                    @php
+                                        $employmentStatus = $vacancy->details->firstWhere('type', 'employment_status');
+                                    @endphp
+                                    {{ $employmentStatus ? $employmentStatus->value_type : '-' }}
+                                </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Pembiayaan') }}</td>
-                                <td>Non APBD</td>
+                                <td>
+                                    @php
+                                        $fundingSource = $vacancy->details->firstWhere('type', 'funding_source');
+                                    @endphp
+                                    {{ $fundingSource ? $fundingSource->value_type : '-' }}
+                                </td>
                                 <td class="text-center">
                                     <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Jumlah Formasi') }}</td>
-                                <td>1</td>
+                                <td>
+                                    @php
+                                        $formasiCount = $vacancy->details->firstWhere('type', 'formasi_count');
+                                    @endphp
+                                    {{ $formasiCount ? $formasiCount->value_type : '-' }}
+                                </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Batas Usia Pensiun') }}</td>
-                                <td>3</td>
+                                <td>
+                                    @php
+                                        $retirementAge = $vacancy->details->firstWhere('type', 'retirement_age');
+                                    @endphp
+                                    {{ $retirementAge ? $retirementAge->value_type : '-' }}
+                                </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
                                 </td>
@@ -99,9 +134,13 @@
         </div>
         <div class="row">
             <div class="col-12 text-end">
-                <a href="{{ route('student.continuing-education') }}" class="btn mt-4 mb-3">
-                    {{ __('Ajukan Pendaftaran') }} <i class="fa fa-arrow-right"></i>
-                </a>
+                <form action="{{ route('vacancies-participant.register', $vacancy->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('POST')
+                    <button type="submit" class="btn mt-4 mb-3">
+                        {{ __('Ajukan Pendaftaran') }} <i class="fa fa-arrow-right"></i>
+                    </button>
+                </form>
             </div>
         </div>
 

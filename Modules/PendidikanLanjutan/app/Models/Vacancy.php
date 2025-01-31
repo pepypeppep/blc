@@ -37,4 +37,8 @@ class Vacancy extends Model
                     ->withTimestamps();
     }
 
+    public function scopePublished($query){
+        return $query->whereNotNull('published_at');
+    }
+
 }

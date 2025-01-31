@@ -16,7 +16,7 @@ class VacancyController extends Controller
      */
     public function index()
     {
-        $vacancies = Vacancy::all();
+        $vacancies = Vacancy::orderByDesc('updated_at')->get();
 
         return view('pendidikanlanjutan::Vacancy.index', compact('vacancies'));
     }
@@ -207,6 +207,23 @@ class VacancyController extends Controller
         $vacancy = Vacancy::findOrFail($id);
         $vacancy->delete();
 
-        return redirect()->route('vacancies.index');
+        return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy deleted successfully.');
     }
+
+    public function updatePublicationStatus($id)
+    {
+        $vacancy = Vacancy::findOrFail($id);
+
+        if ($vacancy->published_at === null) {
+            $vacancy->published_at = now();
+            $message = 'Vacancy published successfully.';
+        } else {
+            $vacancy->published_at = null;
+            $message = 'Vacancy unpublished successfully.';
+        }
+
+        $vacancy->save();
+
+        return redirect()->route('admin.vacancies.index')->with('success', $message);
+    } 
 }

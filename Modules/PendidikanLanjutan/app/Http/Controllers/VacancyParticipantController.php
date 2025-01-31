@@ -19,15 +19,9 @@ class VacancyParticipantController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $vacancies = Vacancy::paginate($perPage);
+        $vacancies = Vacancy::published()->paginate($perPage);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Vacancies successfully rendered.',
-            'data' => $vacancies,
-        ], 200);
-
-        // return view('pendidikanlanjutan::index');
+        return view('frontend.student-dashboard.continuing-education.index', compact('vacancies'));
     }
 
     /**
@@ -40,22 +34,13 @@ class VacancyParticipantController extends Controller
 
     public function register(Request $request, $vacancyId)
     {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-        ]);
+        $vacancy = Vacancy::published()->findOrFail($vacancyId);
 
-        $vacancy = Vacancy::findOrFail($vacancyId);
-        $user = User::findOrFail($validated['user_id']);
-
-        $vacancy->users()->attach($user->id, [
+        $vacancy->users()->attach(userAuth()->id, [
             'status' => 'registered',
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Participant successfully registered to the vacancy.',
-            'data' => $user,
-        ], 200);
+        return redirect()->route('vacancies-participant.index')->with('success', 'Register successfully!');
     }
 
     /**
@@ -71,15 +56,9 @@ class VacancyParticipantController extends Controller
      */
     public function show($id)
     {
-        $vacancy = Vacancy::with('details', 'unors')->findOrFail($id);
+        $vacancy = Vacancy::published()->with('details', 'unors')->findOrFail($id);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Vacancy details successfully rendered.',
-            'data' => $vacancy,
-        ], 200);
-
-        // return view('pendidikanlanjutan::show');
+        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy'));
     }
 
     public function uploadFile(Request $request, $vacancyDetailId, $vacancyUserId){

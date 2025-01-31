@@ -124,19 +124,33 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $vacancy->name }}</td>
-                                                    <td>{{ $vacancy->description }}</td>
+                                                    <td>{!! $vacancy->description !!}</td>
                                                     <td>{{ \Carbon\Carbon::parse($vacancy->start_at)->format('d F Y') }}
                                                     </td>
                                                     <td>{{ \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') }}</td>
-                                                    <td>{{ $vacancy->status }}</td>
+                                                    <td>
+                                                        @if($vacancy->published_at)
+                                                            <span class="badge badge-success">Ditampilkan</span>
+                                                        @else
+                                                            <span class="badge badge-dark">Diarsipkan</span>
+                                                        @endif
+                                                    </td>
+
                                                     <td>
                                                         <a href="{{ route('admin.vacancies.edit', $vacancy->id) }}"
-                                                            class="btn btn-warning btn-sm m-1">
+                                                            class="btn btn-warning btn-sm m-1" title="Ubah Lowongan">
                                                             <i class="fa fa-edit" aria-hidden="true"></i>
                                                         </a>
-                                                        <a href="javascript:;" data-toggle="modal"
-                                                            data-target="#deleteModal" class="btn btn-danger btn-sm m-1"
-                                                            onclick="deleteVacancy({{ $vacancy->id }})">
+                                                        <form action="{{ route('admin.vacancies.update-status', $vacancy->id) }}" method="POST" style="display:inline;">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <button type="submit" class="btn {{ $vacancy->published_at ? 'btn-primary' : 'btn-info' }} btn-sm m-1" title="{{ $vacancy->published_at ? 'Arsipkan Lowongan' : 'Tampilkan Lowongan' }}">
+                                                                <i class="fa {{ $vacancy->published_at ? 'fa-eye-slash' : 'fa-eye' }}" aria-hidden="true"></i> 
+                                                            </button>
+                                                        </form>
+                                                        <a href="#" class="btn btn-danger btn-sm m-1"
+                                                            data-toggle="modal" data-target="#deleteModal" title="Hapus Lowongan"
+                                                            onclick="setModalData('{{ route('admin.vacancies.destroy', $vacancy->id) }}', '{{ $vacancy->name }}')">
                                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                                         </a>
                                                     </td>
@@ -166,7 +180,30 @@
 @endsection
 
 @push('js')
+    @if (session('success'))
+        <script>
+            toastr.success("{{ session('success') }}", "Success", {
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
     <script>
+        toastr.error("{{ session('error') }}", "Error", {
+            "positionClass": "toast-top-right",
+            "timeOut": "5000",
+        });
+    </script>
+    @endif
+
+    <script>
+        function setModalData(url, itemName) {
+            document.getElementById('deleteForm').action = url;
+            document.getElementById('modal-item-name').textContent = 'Lowongan '+itemName;
+        }
+
         "use strict"
 
         function deleteData(id) {

@@ -36,7 +36,7 @@
                                     <td>{{ $vacancy->end_at ? \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') : '-' }}
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('student.continuing-education.show', $vacancy->id) }}"
+                                        <a href="{{ route('vacancies-participant.show', $vacancy->id) }}"
                                             class="align-middle" data-bs-toggle="tooltip" title="Lihat selengkapnya">
                                             <i class="fas fa-eye"></i> {{ __('View') }}
                                         </a>

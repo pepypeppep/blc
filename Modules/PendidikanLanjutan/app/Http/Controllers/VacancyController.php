@@ -5,6 +5,8 @@ namespace Modules\PendidikanLanjutan\app\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Imports\VacanciesImport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\RedirectResponse;
 use Modules\PendidikanLanjutan\app\Models\Unor;
 use Modules\PendidikanLanjutan\app\Models\Study;
@@ -190,6 +192,14 @@ class VacancyController extends Controller
         $vacancy->delete();
 
         return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy deleted successfully.');
+    }
+
+
+    public function import(Request $request)
+    {
+        Excel::import(new VacanciesImport, $request->file('vacancies'));
+
+        return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy imported successfully.');
     }
 
     public function updatePublicationStatus($id)

@@ -197,15 +197,20 @@
                 </div>
                 <div class="modal-body">
                     <div class="d-flex justify-content-center align-items:center p-3">
-                        <div class="form-group">
-                            <label for="image" class="text-danger">({{ __('only .xlsx') }})</label>
-                            <input type="file" name="image" class="form-control" id="image" accept=".xlsx">
-                            <a href="{{ asset('template/Template Import Lowongan Pendidikan Lanjutan.xlsx') }}">Unduh
-                                Template</a>
-                            @error('image')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
+                        <form action="{{ route('admin.vacancies.import') }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-group">
+                                <label for="vacancies" class="text-danger">({{ __('only .xlsx') }})</label>
+                                <input type="file" name="vacancies" class="form-control" id="vacancies"
+                                    accept=".xlsx" onchange="event.target.form.submit()">
+                                <a href="{{ asset('template/Template Import Lowongan Pendidikan Lanjutan.xlsx') }}">Unduh
+                                    Template</a>
+                                @error('vacancies')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

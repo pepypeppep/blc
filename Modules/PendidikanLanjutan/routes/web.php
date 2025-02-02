@@ -32,6 +32,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         Route::get('{id}/edit', [VacancyController::class, 'edit'])->name('vacancies.edit');
         Route::put('{id}', [VacancyController::class, 'update'])->name('vacancies.update');
         Route::delete('{id}', [VacancyController::class, 'destroy'])->name('vacancies.destroy');
+        Route::post('/import', [VacancyController::class, 'import'])->name('vacancies.import');
         Route::put('{id}/update-status', [VacancyController::class, 'updatePublicationStatus'])->name('vacancies.update-status');
     });
 });

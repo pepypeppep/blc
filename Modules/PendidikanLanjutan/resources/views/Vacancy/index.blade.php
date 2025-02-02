@@ -121,6 +121,7 @@
                                                 <th width="10%">{{ __('Cost Type') }}</th>
                                                 <th width="10%">{{ __('Age Limit') }}</th>
                                                 <th width="20%">{{ __('Notes') }}</th>
+                                                <th width="5%">{{ __('Number of Participants') }}</th>
                                                 <th width="5%">{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
@@ -135,6 +136,7 @@
                                                     <td>{{ $vacancy->cost_type }}</td>
                                                     <td>{{ $vacancy->age_limit }}</td>
                                                     <td>{!! $vacancy->description !!}</td>
+                                                    <td>{{ $vacancy->users()->count() }}</td>
                                                     <td>
                                                         <a href="{{ route('admin.vacancies.edit', $vacancy->id) }}"
                                                             class="btn btn-warning btn-sm m-1" title="Ubah Lowongan">

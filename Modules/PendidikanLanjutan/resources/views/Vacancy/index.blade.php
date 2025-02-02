@@ -101,6 +101,9 @@
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('Vacancy List') }} {{ now()->year }}</h4>
                                 <div>
+                                    <button type="button" class="btn btn-info" data-toggle="modal"
+                                        data-target="#exampleModalCenter"> <i class="fa fa-upload"></i> Impor Data
+                                    </button>
                                     <a href="{{ route('admin.vacancies.create') }}" class="btn btn-primary"><i
                                             class="fa fa-plus"></i>{{ __('Add New') }}</a>
                                 </div>
@@ -180,6 +183,34 @@
         </section>
     </div>
     <x-admin.delete-modal />
+
+    <!-- Modal -->
+    <div class="modal fade dynamic-modal" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop='static'>
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title ml-4" id="exampleModalCenterTitle">Impor Lowongan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center align-items:center p-3">
+                        <div class="form-group">
+                            <label for="image" class="text-danger">({{ __('only .xlsx') }})</label>
+                            <input type="file" name="image" class="form-control" id="image" accept=".xlsx">
+                            <a href="{{ asset('template/Template Import Lowongan Pendidikan Lanjutan.xlsx') }}">Unduh
+                                Template</a>
+                            @error('image')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('js')

@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('vacancies', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('study_id');
-            $table->string('level');
-            $table->string('grade');
+            $table->string('education_level');
+            $table->string('employment_grade');
             $table->string('employment_status');
-            $table->string('type');
+            $table->string('cost_type');
             $table->integer('formation');
             $table->integer('age_limit');
             $table->text('description')->nullable();

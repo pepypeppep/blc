@@ -99,7 +99,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Vacancy List') }}</h4>
+                                <h4>{{ __('Vacancy List') }} {{ now()->year }}</h4>
                                 <div>
                                     <a href="{{ route('admin.vacancies.create') }}" class="btn btn-primary"><i
                                             class="fa fa-plus"></i>{{ __('Add New') }}</a>
@@ -111,45 +111,47 @@
                                         <thead>
                                             <tr>
                                                 <th width="5%">{{ __('#') }}</th>
-                                                <th width="30%" class="course-table-title">{{ __('Name') }}</th>
-                                                <th width="15%">{{ __('Description') }}</th>
-                                                <th width="15%">{{ __('Start Date') }}</th>
-                                                <th width="15%">{{ __('End Date') }}</th>
-                                                <th width="10%">{{ __('Status') }}</th>
-                                                <th width="10%">{{ __('Action') }}</th>
+                                                <th width="10%">{{ __('Level') }}</th>
+                                                <th width="20%" class="course-table-title">{{ __('Study') }}</th>
+                                                <th width="10%">{{ __('Employment Grade') }}</th>
+                                                <th width="10%">{{ __('Employment Status') }}</th>
+                                                <th width="10%">{{ __('Cost Type') }}</th>
+                                                <th width="10%">{{ __('Age Limit') }}</th>
+                                                <th width="20%">{{ __('Notes') }}</th>
+                                                <th width="5%">{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse ($vacancies as $vacancy)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $vacancy->name }}</td>
+                                                    <td>{{ $vacancy->educationLevel() }}</td>
+                                                    <td>{{ $vacancy->study->name }}</td>
+                                                    <td>{{ $vacancy->employment_grade }}</td>
+                                                    <td>{{ $vacancy->employmentStatus() }}</td>
+                                                    <td>{{ $vacancy->cost_type }}</td>
+                                                    <td>{{ $vacancy->age_limit }}</td>
                                                     <td>{!! $vacancy->description !!}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($vacancy->start_at)->format('d F Y') }}
-                                                    </td>
-                                                    <td>{{ \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') }}</td>
-                                                    <td>
-                                                        @if($vacancy->published_at)
-                                                            <span class="badge badge-success">Ditampilkan</span>
-                                                        @else
-                                                            <span class="badge badge-dark">Diarsipkan</span>
-                                                        @endif
-                                                    </td>
-
                                                     <td>
                                                         <a href="{{ route('admin.vacancies.edit', $vacancy->id) }}"
                                                             class="btn btn-warning btn-sm m-1" title="Ubah Lowongan">
                                                             <i class="fa fa-edit" aria-hidden="true"></i>
                                                         </a>
-                                                        <form action="{{ route('admin.vacancies.update-status', $vacancy->id) }}" method="POST" style="display:inline;">
+                                                        {{-- <form
+                                                            action="{{ route('admin.vacancies.update-status', $vacancy->id) }}"
+                                                            method="POST" style="display:inline;">
                                                             @csrf
                                                             @method('PUT')
-                                                            <button type="submit" class="btn {{ $vacancy->published_at ? 'btn-primary' : 'btn-info' }} btn-sm m-1" title="{{ $vacancy->published_at ? 'Arsipkan Lowongan' : 'Tampilkan Lowongan' }}">
-                                                                <i class="fa {{ $vacancy->published_at ? 'fa-eye-slash' : 'fa-eye' }}" aria-hidden="true"></i> 
+                                                            <button type="submit"
+                                                                class="btn {{ $vacancy->published_at ? 'btn-primary' : 'btn-info' }} btn-sm m-1"
+                                                                title="{{ $vacancy->published_at ? 'Arsipkan Lowongan' : 'Tampilkan Lowongan' }}">
+                                                                <i class="fa {{ $vacancy->published_at ? 'fa-eye-slash' : 'fa-eye' }}"
+                                                                    aria-hidden="true"></i>
                                                             </button>
-                                                        </form>
+                                                        </form> --}}
                                                         <a href="#" class="btn btn-danger btn-sm m-1"
-                                                            data-toggle="modal" data-target="#deleteModal" title="Hapus Lowongan"
+                                                            data-toggle="modal" data-target="#deleteModal"
+                                                            title="Hapus Lowongan"
                                                             onclick="setModalData('{{ route('admin.vacancies.destroy', $vacancy->id) }}', '{{ $vacancy->name }}')">
                                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                                         </a>
@@ -157,7 +159,8 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="7" class="text-center">{{ __('No vacancies found!') }}
+                                                    <td colspan="7" class="text-center">
+                                                        {{ __('No vacancies found!') }}
                                                     </td>
                                                 </tr>
                                             @endforelse
@@ -190,18 +193,18 @@
     @endif
 
     @if (session('error'))
-    <script>
-        toastr.error("{{ session('error') }}", "Error", {
-            "positionClass": "toast-top-right",
-            "timeOut": "5000",
-        });
-    </script>
+        <script>
+            toastr.error("{{ session('error') }}", "Error", {
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+            });
+        </script>
     @endif
 
     <script>
         function setModalData(url, itemName) {
             document.getElementById('deleteForm').action = url;
-            document.getElementById('modal-item-name').textContent = 'Lowongan '+itemName;
+            document.getElementById('modal-item-name').textContent = 'Lowongan ' + itemName;
         }
 
         "use strict"

@@ -3,41 +3,64 @@
 namespace Modules\PendidikanLanjutan\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\PendidikanLanjutan\app\Models\Study;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 
 class VacancySeeder extends Seeder
 {
     public function run()
     {
+        $studies = [
+            'Magister Teknologi Informasi - Universitas Gajah Mada',
+            'Magister Teknologi Informasi - Universitas Amikom Yogyakarta',
+            'Informatika - Universitas Amikom Yogyakarta',
+            'Sarjana Teknologi Informasi - Universitas Amikom Yogyakarta',
+            'Manajemen Informatika - Politeknik Negeri Jakarta',
+        ];
+
+        foreach ($studies as $key => $std) {
+            Study::create([
+                'name' => $std
+            ]);
+        }
+
         $data = [
             [
-                'name' => 'Magister Teknologi Informasi - Universitas Gajah Mada',
-                'description' => 'Program magister untuk teknologi informasi di Universitas Gajah Mada.',
-                'start_at' => now(),
-                'end_at' => now()->addDays(30),
+                'study_id' => 1,
+                'education_level' => 'Strata I',
+                'employment_grade' => 'IIIb',
+                'employment_status' => 'tidak_diberhentikan_dari_jabatan',
+                'cost_type' => 'Non APBD',
+                'formation' => 3,
+                'age_limit' => 50,
                 'year' => 2025,
+                'open_at' => now(),
+                'close_at' => now()->addDays(30),
             ],
             [
-                'name' => 'Magister Teknologi Informasi - Universitas Amikom Yogyakarta',
-                'description' => 'Program magister teknologi informasi di Universitas Amikom Yogyakarta.',
-                'start_at' => now(),
-                'end_at' => now()->addDays(25),
+                'study_id' => 2,
+                'education_level' => 'Strata II',
+                'employment_grade' => 'IIIb',
+                'employment_status' => 'tidak_diberhentikan_dari_jabatan',
+                'cost_type' => 'APBD',
+                'formation' => 2,
+                'age_limit' => 40,
                 'year' => 2025,
+                'open_at' => now(),
+                'close_at' => now()->addDays(30),
             ],
             [
-                'name' => 'Informatika - Universitas Amikom Yogyakarta',
-                'description' => 'Program sarjana informatika di Universitas Amikom Yogyakarta.',
-                'start_at' => now(),
-                'end_at' => now()->addDays(20),
+                'study_id' => 3,
+                'education_level' => 'Strata III',
+                'employment_grade' => 'IIIb',
+                'employment_status' => 'tidak_diberhentikan_dari_jabatan',
+                'cost_type' => 'Mandiri',
+                'formation' => 1,
+                'age_limit' => 45,
                 'year' => 2025,
-            ],
-            [
-                'name' => 'Manajemen Informatika - Politeknik Negeri Jakarta',
-                'description' => 'Program diploma manajemen informatika di Politeknik Negeri Jakarta.',
-                'start_at' => now(),
-                'end_at' => now()->addDays(15),
-                'year' => 2025,
-            ],
+                'open_at' => now(),
+                'close_at' => now()->addDays(30),
+            ]
         ];
 
         foreach ($data as $item) {

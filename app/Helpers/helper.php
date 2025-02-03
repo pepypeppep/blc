@@ -22,7 +22,9 @@ use Modules\Currency\app\Models\MultiCurrency;
 use Modules\GlobalSetting\app\Models\CustomCode;
 use Modules\BasicPayment\app\Models\BasicPayment;
 use App\Exceptions\AccessPermissionDeniedException;
+use Illuminate\Http\Request;
 use Modules\BasicPayment\app\Models\PaymentGateway;
+use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
 
 function file_upload(UploadedFile $file, string $path = 'uploads/custom-images/', string | null $oldFile = '', bool $optimize = false)
@@ -817,5 +819,16 @@ if (!function_exists('generateUniqueSlug')) {
             $slug = $baseSlug . '-' . $counter++;
         }
         return $slug;
+    }
+}
+if (!function_exists('vacancyLog')) {
+    function vacancyLog(Request $request)
+    {
+        VacancyLogs::create([
+            'vacancy_user_id' => $request->vacancy_user_id,
+            'name' => $request->name,
+            'status' => $request->status,
+            'description' => $request->message
+        ]);
     }
 }

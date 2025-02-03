@@ -1935,6 +1935,7 @@
     "Vacancy": "Lowongan",
     "Vacancy List": "Daftar Lowongan",
     "Create Vacancy": "Buat Lowongan",
+    "Update Vacancy": "Ubah Lowongan",
     "Vacancy Delete Confirmation": "Konfirmasi Penghapusan Lowongan",
     "Background": "Latar Belakang",
     "Course Price": "Harga Pelatihan",
@@ -1943,5 +1944,13 @@
     "Course Output": "Output Pelatihan",
     "Course Outcome": "Outcome Pelatihan",
     "Course Form": "Bentuk Pelatihan",
-    "Number of Participants": "Jumlah Peserta"
+    "Number of Participants": "Jumlah Peserta",
+    "Study": "Program Studi",
+    "Employment Grade": "Pangkat/Golongan",
+    "Employment Status": "Status Kepegawaian",
+    "Cost Type": "Jenis Biaya",
+    "Age Limit": "Batas Usia",
+    "Notes": "Catatan",
+    "Education Level": "Jenjang Pendidikan",
+    "Formation": "Formasi"
 }

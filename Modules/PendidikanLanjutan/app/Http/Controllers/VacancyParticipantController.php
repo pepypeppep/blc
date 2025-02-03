@@ -2,149 +2,103 @@
 
 namespace Modules\PendidikanLanjutan\app\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyDetailUserAttachment;
 
 class VacancyParticipantController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+    public function updateStatus(Request $request, $vacancyId, $userId)
     {
-        $perPage = $request->get('per_page', 10);
-        $vacancies = Vacancy::published()->paginate($perPage);
-
-        return view('frontend.student-dashboard.continuing-education.index', compact('vacancies'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        // return view('pendidikanlanjutan::create');
-    }
-
-    public function register(Request $request, $vacancyId)
-    {
-        $vacancy = Vacancy::published()->findOrFail($vacancyId);
-
-        $vacancy->users()->attach(userAuth()->id, [
-            'status' => 'registered',
-        ]);
-
-        return redirect()->route('vacancies-participant.index')->with('success', 'Register successfully!');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        $vacancy = Vacancy::published()->with('details', 'unors')->findOrFail($id);
-
-        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy'));
-    }
-
-    public function uploadFile(Request $request, $vacancyDetailId, $vacancyUserId){
-        
-        if (!$request->hasFile('file')) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No file uploaded.',
-            ], 400);
-        }
-
-        $file = $request->file('file');
-
-        $validator = Validator::make(['file' => $file], [
-            'file' => 'required|file|mimes:pdf,docx,jpg,png|max:3000',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid file upload.',
-                'errors' => $validator->errors(),
-            ], 400);
-        }
-
-        $fileName = time().'_'.$file->getClientOriginalName();
+        // Start transaction
+        DB::beginTransaction();
 
         try {
-            $filePath = $file->storeAs(
-                'vacancy_attachment', 
-                $fileName,
-                'public'
-            );
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to upload the file.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+            // Get vacancy data
+            $vacancy = Vacancy::findOrFail($vacancyId);
 
-        try {
-            $attachment = VacancyDetailUserAttachment::create([
-                'vacancy_detail_id' => $vacancyDetailId,
-                'vacancy_user_id' => $vacancyUserId,
-                'file' => $filePath,
+            // Get vacancy user data
+            $vacancyUser = $vacancy->users()->where('user_id', $userId)->firstOrFail();
+
+            // Update Vacancy Status
+            $vacancyUser->update([
+                'status' => $request->status
             ]);
-        } catch (\Exception $e) {
 
-            Storage::disk('public')->delete($filePath);
+            // Update Vacancy Log
+            $request->merge([
+                'vacancy_user_id' => $vacancyUser->id,
+            ]);
+            vacancyLog($request);
 
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Failed to save attachment information.',
-                'error' => $e->getMessage(),
-            ], 500);
+            // Commit transaction
+            DB::commit();
+
+            return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy status updated successfully.');
+        } catch (\Throwable $th) {
+            // Rollback transaction
+            DB::rollBack();
+
+            return redirect()->route('admin.vacancies.index')->with('error', $th->getMessage());
         }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'File uploaded successfully.',
-            'file_path' => Storage::url($filePath),
-        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function uploadFile(Request $request, $vacancyId, $userId)
     {
-        return view('pendidikanlanjutan::edit');
+        try {
+            // Start transaction
+            DB::beginTransaction();
+
+            // Get vacancy data
+            $vacancy = Vacancy::findOrFail($vacancyId);
+
+            // Get vacancy user data
+            $vacancyUser = $vacancy->users()->where('user_id', $userId)->firstOrFail();
+
+            // Get vacancy attachment data
+            $vacancyAttachment = $vacancy->vacancyAttachments()->where('name', 'SK')->where('is_active', true)->firstOrFail();
+
+            // Upload file
+            $file = $request->file('file');
+            $fileName = "perjanjian_kerja/" . now()->year . "/" . now()->month . "/perjanjian_kerja_" . $vacancyId . "_" . $vacancyUser->name . ".pdf";
+            Storage::disk('private')->put($fileName, $file);
+            // Storage::disk('private')->putFileAs('vacancies', $file, $fileName);
+            // Storage::disk('private')->put($fileName, file_get_contents($file));
+
+            // Create Vacancy User Attachment
+            $vacancyUserAttachment = VacancyUserAttachment::create([
+                'vacancy_user_id' => $vacancyUser->id,
+                'vacancy_attachment_id' => $vacancyAttachment->id,
+                'file' => $fileName,
+                'category' => $vacancyAttachment->category
+            ]);
+
+            // Commit transaction
+            DB::commit();
+
+            // Redirect with success message
+            return redirect()->route('admin.vacancies.index')->with('success', 'File uploaded successfully.');
+        } catch (\Throwable $th) {
+            // Rollback transaction
+            DB::rollBack();
+
+            // Redirect with error message
+            return redirect()->route('admin.vacancies.index')->with('error', $th->getMessage());
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
+    public function getFile($vacancyAttachmentId, $userId)
     {
-        //
-    }
+        $VacancyUserAttachment = VacancyUserAttachment::where('vacancy_user_id', $userId)
+            ->where('vacancy_attachment_id', $vacancyAttachmentId)->first();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        return Storage::disk('private')->response($VacancyUserAttachment->file);
     }
 }

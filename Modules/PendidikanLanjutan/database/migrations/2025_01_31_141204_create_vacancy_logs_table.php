@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('vacancy_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('vacancy_id')->onDelete('cascade');
-            $table->unsignedBigInteger('user_id')->onDelete('cascade');
+            $table->unsignedBigInteger('vacancy_user_id')->onDelete('cascade');
             $table->string('name');
             $table->longText('description')->nullable();
             $table->string('status');

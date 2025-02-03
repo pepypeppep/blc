@@ -35,11 +35,11 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         Route::post('/import', [VacancyController::class, 'import'])->name('vacancies.import');
         Route::put('{id}/update-status', [VacancyController::class, 'updatePublicationStatus'])->name('vacancies.update-status');
     });
+
+    Route::prefix('vacancies-participant')->group(function () {
+        Route::put('/update-status/{vacancyId}/{userId}', [VacancyParticipantController::class, 'updateStatus'])->name('vacancies-participant.update.status');
+        Route::post('/upload-file/{vacancyId}/{userId}', [VacancyParticipantController::class, 'uploadFile'])->name('vacancies-participant.upload.file');
+    });
 });
 
-Route::prefix('vacancies-participant')->group(function () {
-    Route::get('/', [VacancyParticipantController::class, 'index'])->name('vacancies-participant.index');
-    Route::post('{id}/register', [VacancyParticipantController::class, 'register'])->name('vacancies-participant.register');
-    Route::get('{id}', [VacancyParticipantController::class, 'show'])->name('vacancies-participant.show');
-    Route::post('{$vacancyDetailId}/upload-file/{$vacancyUserId}', [VacancyParticipantController::class, 'uploadFile'])->name('vacancies-participant.upload-file');
-});
+Route::post('/get-file/{vacancyAttachmentId}/{userId}', [VacancyParticipantController::class, 'getFile'])->name('vacancies-participant.get.file');

@@ -2,11 +2,15 @@
 
 namespace Modules\PendidikanLanjutan\app\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Imports\VacanciesImport;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Modules\PendidikanLanjutan\app\Models\Unor;
+use Modules\PendidikanLanjutan\app\Models\Study;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 
 class VacancyController extends Controller
@@ -16,13 +20,7 @@ class VacancyController extends Controller
      */
     public function index()
     {
-        $vacancies = Vacancy::all();
-
-        // return response()->json([
-        //     'status' => 'success',
-        //     'message' => 'Vacancy successfully rendered.',
-        //     'data' => $vacancies,
-        // ], 200);
+        $vacancies = Vacancy::orderByDesc('updated_at')->paginate();
 
         return view('pendidikanlanjutan::Vacancy.index', compact('vacancies'));
     }
@@ -32,7 +30,9 @@ class VacancyController extends Controller
      */
     public function create()
     {
-        return view('pendidikanlanjutan::Vacancy.create');
+        $studies = Study::all();
+
+        return view('pendidikanlanjutan::Vacancy.create', compact('studies'));
     }
 
     /**
@@ -42,55 +42,71 @@ class VacancyController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'study_id' => 'required|integer|exists:studies,id',
+            'education_level' => 'required|string',
+            'employment_grade' => 'required|string',
+            'employment_status' => 'required|string',
+            'cost_type' => 'required|string',
+            'formation' => 'required|integer',
+            'age_limit' => 'required|integer',
             'description' => 'nullable|string',
-            'start_at' => 'nullable|date|before:end_at',
-            'end_at' => 'nullable|date|after:start_at',
-            'year' => 'required|digits:4|integer|between:1900,'.date('Y'),
-            'vacancy_details' => 'required|array|min:1',
-            'vacancy_details.*.name' => 'required|string|max:255',
-            'vacancy_details.*.category' => 'required|string|max:255',
-            'vacancy_details.*.type' => 'nullable|string|max:255',
-            'vacancy_details.*.type_value' => 'nullable|string|max:255',
-            'vacancy_details.*.description' => 'nullable|string',
-            'unor_ids.*' => 'required|exists:unors,id',
+            'year' => 'required|digits:4|integer|between:1900,' . date('Y'),
+
+            // 'start_at' => 'nullable|date|before:end_at',
+            // 'end_at' => 'nullable|date|after:start_at',
         ], [
-            'name.required' => 'Nama lowongan wajib diisi.',
-            'start_at.before' => 'Tanggal mulai harus sebelum tanggal berakhir.',
-            'end_at.after' => 'Tanggal berakhir harus setelah tanggal mulai.',
+            'study_id.required' => 'Program studi wajib diisi.',
+            'study_id.exists' => 'Program studi yang dipilih tidak valid.',
+            'education_level.required' => 'Jenjang pendidikan wajib diisi.',
+            'employment_grade.required' => 'Pangkat/Golongan pekerjaan wajib diisi.',
+            'employment_status.required' => 'Status pekerjaan wajib diisi.',
+            'cost_type.required' => 'Jenis biaya wajib diisi.',
+            'formation.required' => 'Formasi wajib diisi.',
+            'age_limit.required' => 'Umur wajib diisi.',
             'year.required' => 'Tahun wajib diisi.',
             'year.digits' => 'Tahun harus terdiri dari 4 digit.',
-            'year.between' => 'Tahun harus antara 1900 hingga '.date('Y').'.',
-            'vacancy_details.required' => 'Detail lowongan wajib diisi.',
-            'unor_ids.*.required' => 'ID Unor wajib diisi.',
-            'unor_ids.*.exists' => 'ID Unor yang dipilih tidak valid.',
+            'year.between' => 'Tahun harus antara 2024 hingga ' . date('Y') . '.',
         ]);
 
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($request, $validated) {
             // Membuat vacancy baru
             $vacancy = Vacancy::create($request->only([
-                'name',
+                'study_id',
+                'education_level',
+                'employment_grade',
+                'employment_status',
+                'cost_type',
+                'formation',
+                'age_limit',
                 'description',
-                'start_at',
-                'end_at',
                 'year',
             ]));
 
             // Menambahkan Vacancy Details
-            foreach ($request->vacancy_details as $vacancy_detail) {
-                $vacancy->details()->create($vacancy_detail);
-            }
+            // $details = [
+            //     'education_level' => $validated['education_level'],
+            //     'study_program' => $validated['study_program'],
+            //     'minimum_rank' => $validated['minimum_rank'],
+            //     'employment_status' => $validated['employment_status'],
+            //     'funding_source' => $validated['funding_source'],
+            //     'formasi_count' => $validated['formasi_count'],
+            //     'retirement_age' => $validated['retirement_age'],
+            // ];
 
-            // Menambahkan Unor terkait dengan Vacancy
-            $vacancy->unors()->attach($request->unor_ids);
+            // foreach ($details as $name => $value) {
+            //     $vacancy->details()->create([
+            //         'name' => $name,
+            //         'category' => 'syarat',
+            //         'type' => $name,
+            //         'value_type' => $value,
+            //     ]);
+            // }
+
+            // // Menambahkan Unor terkait dengan Vacancy
+            // $vacancy->unors()->attach($request->unor_ids);
         });
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Vacancy created successfully.',
-        ], 200);
-
-        // return redirect()->route('vacancies.index')->with('success', 'Vacancy created successfully.');
+        return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy created successfully.');
     }
 
     /**
@@ -109,8 +125,9 @@ class VacancyController extends Controller
     public function edit($id)
     {
         $vacancy = Vacancy::findOrFail($id);
+        $studies = Study::all();
 
-        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy'));
+        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy', 'studies'));
     }
 
     /**
@@ -120,65 +137,48 @@ class VacancyController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'study_id' => 'required|integer|exists:studies,id',
+            'education_level' => 'required|string',
+            'employment_grade' => 'required|string',
+            'employment_status' => 'required|string',
+            'cost_type' => 'required|string',
+            'formation' => 'required|integer',
+            'age_limit' => 'required|integer',
             'description' => 'nullable|string',
-            'start_at' => 'nullable|date|before:end_at',
-            'end_at' => 'nullable|date|after:start_at',
-            'year' => 'required|digits:4|integer|between:1900,'.date('Y'),
-            'vacancy_details' => 'required|array|min:1',
-            'vacancy_details.*.name' => 'required|string|max:255',
-            'vacancy_details.*.category' => 'required|string|max:255',
-            'vacancy_details.*.type' => 'nullable|string|max:255',
-            'vacancy_details.*.type_value' => 'nullable|string|max:255',
-            'vacancy_details.*.description' => 'nullable|string',
-            'unor_ids.*' => 'required|exists:unors,id',
+            'year' => 'required|digits:4|integer|between:1900,' . date('Y'),
+
+            // 'start_at' => 'nullable|date|before:end_at',
+            // 'end_at' => 'nullable|date|after:start_at',
         ], [
-            'name.required' => 'Nama lowongan wajib diisi.',
-            'start_at.before' => 'Tanggal mulai harus sebelum tanggal berakhir.',
-            'end_at.after' => 'Tanggal berakhir harus setelah tanggal mulai.',
+            'study_id.required' => 'Program studi wajib diisi.',
+            'study_id.exists' => 'Program studi yang dipilih tidak valid.',
+            'education_level.required' => 'Jenjang pendidikan wajib diisi.',
+            'employment_grade.required' => 'Pangkat/Golongan pekerjaan wajib diisi.',
+            'employment_status.required' => 'Status pekerjaan wajib diisi.',
+            'cost_type.required' => 'Jenis biaya wajib diisi.',
+            'formation.required' => 'Formasi wajib diisi.',
+            'age_limit.required' => 'Umur wajib diisi.',
             'year.required' => 'Tahun wajib diisi.',
             'year.digits' => 'Tahun harus terdiri dari 4 digit.',
-            'year.between' => 'Tahun harus antara 1900 hingga '.date('Y').'.',
-            'vacancy_details.required' => 'Detail lowongan wajib diisi.',
-            'unor_ids.*.required' => 'ID Unor wajib diisi.',
-            'unor_ids.*.exists' => 'ID Unor yang dipilih tidak valid.',
+            'year.between' => 'Tahun harus antara 2024 hingga ' . date('Y') . '.',
         ]);
 
         DB::transaction(function () use ($request, $id) {
-            // Mencari vacancy yang akan diupdate
             $vacancy = Vacancy::findOrFail($id);
-
-            // Memperbarui data Vacancy
             $vacancy->update($request->only([
-                'name',
+                'study_id',
+                'education_level',
+                'employment_grade',
+                'employment_status',
+                'cost_type',
+                'formation',
+                'age_limit',
                 'description',
-                'start_at',
-                'end_at',
                 'year',
             ]));
-
-            // Memperbarui Vacancy Details tanpa menghapus
-            foreach ($request->vacancy_details as $vacancy_detail) {
-                // Cek jika detail sudah ada, maka update, jika tidak ada buat baru
-                if (isset($vacancy_detail['id']) && $vacancy_detail['id']) {
-                    $existingDetail = $vacancy->details()->find($vacancy_detail['id']);
-                    if ($existingDetail) {
-                        $existingDetail->update($vacancy_detail);
-                    }
-                } else {
-                    // Jika belum ada id, buat detail baru
-                    $vacancy->details()->create($vacancy_detail);
-                }
-            }
-
-            // Mengupdate Unor terkait dengan Vacancy
-            $vacancy->unors()->sync($request->unor_ids);
         });
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Vacancy updated successfully.',
-        ], 200);
+        return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy updated successfully.');
     }
 
     /**
@@ -186,9 +186,37 @@ class VacancyController extends Controller
      */
     public function destroy($id)
     {
-        $vacancy = Vacancy::findOrFail($id);
+        $vacancy = Vacancy::with('users')->findOrFail($id);
+        if ($vacancy->users()->exists()) {
+            return redirect()->route('admin.vacancies.index')->with('error', 'Vacancy cannot be deleted because it has participants.');
+        }
         $vacancy->delete();
 
-        return redirect()->route('vacancies.index');
+        return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy deleted successfully.');
+    }
+
+
+    public function import(Request $request)
+    {
+        Excel::import(new VacanciesImport, $request->file('vacancies'));
+
+        return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy imported successfully.');
+    }
+
+    public function updatePublicationStatus($id)
+    {
+        $vacancy = Vacancy::findOrFail($id);
+
+        if ($vacancy->published_at === null) {
+            $vacancy->published_at = now();
+            $message = 'Vacancy published successfully.';
+        } else {
+            $vacancy->published_at = null;
+            $message = 'Vacancy unpublished successfully.';
+        }
+
+        $vacancy->save();
+
+        return redirect()->route('admin.vacancies.index')->with('success', $message);
     }
 }

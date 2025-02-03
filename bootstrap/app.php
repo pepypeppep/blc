@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'role' => \App\Http\Middleware\Role::class,
+            'role.admin' => \App\Http\Middleware\RoleAdmin::class,
             'auth' => \App\Http\Middleware\Authenticate::class,
             'translation' => \App\Http\Middleware\SetLocaleMiddleware::class,
             'approved.instructor' => \App\Http\Middleware\ApprovedInstructorMiddleware::class

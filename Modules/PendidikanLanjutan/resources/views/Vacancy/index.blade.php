@@ -99,8 +99,11 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Vacancy List') }}</h4>
+                                <h4>{{ __('Vacancy List') }} {{ now()->year }}</h4>
                                 <div>
+                                    <button type="button" class="btn btn-info" data-toggle="modal"
+                                        data-target="#exampleModalCenter"> <i class="fa fa-upload"></i> Impor Data
+                                    </button>
                                     <a href="{{ route('admin.vacancies.create') }}" class="btn btn-primary"><i
                                             class="fa fa-plus"></i>{{ __('Add New') }}</a>
                                 </div>
@@ -111,39 +114,58 @@
                                         <thead>
                                             <tr>
                                                 <th width="5%">{{ __('#') }}</th>
-                                                <th width="30%" class="course-table-title">{{ __('Name') }}</th>
-                                                <th width="15%">{{ __('Description') }}</th>
-                                                <th width="15%">{{ __('Start Date') }}</th>
-                                                <th width="15%">{{ __('End Date') }}</th>
-                                                <th width="10%">{{ __('Status') }}</th>
-                                                <th width="10%">{{ __('Action') }}</th>
+                                                <th width="10%">{{ __('Level') }}</th>
+                                                <th width="20%" class="course-table-title">{{ __('Study') }}</th>
+                                                <th width="10%">{{ __('Employment Grade') }}</th>
+                                                <th width="10%">{{ __('Employment Status') }}</th>
+                                                <th width="10%">{{ __('Cost Type') }}</th>
+                                                <th width="10%">{{ __('Age Limit') }}</th>
+                                                <th width="20%">{{ __('Notes') }}</th>
+                                                <th width="5%">{{ __('Number of Participants') }}</th>
+                                                <th width="5%">{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse ($vacancies as $vacancy)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $vacancy->name }}</td>
-                                                    <td>{{ $vacancy->description }}</td>
-                                                    <td>{{ \Carbon\Carbon::parse($vacancy->start_at)->format('d F Y') }}
-                                                    </td>
-                                                    <td>{{ \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') }}</td>
-                                                    <td>{{ $vacancy->status }}</td>
+                                                    <td>{{ $vacancy->educationLevel() }}</td>
+                                                    <td>{{ $vacancy->study->name }}</td>
+                                                    <td>{{ $vacancy->employment_grade }}</td>
+                                                    <td>{{ $vacancy->employmentStatus() }}</td>
+                                                    <td>{{ $vacancy->cost_type }}</td>
+                                                    <td>{{ $vacancy->age_limit }}</td>
+                                                    <td>{!! $vacancy->description !!}</td>
+                                                    <td>{{ $vacancy->users()->count() }}</td>
                                                     <td>
                                                         <a href="{{ route('admin.vacancies.edit', $vacancy->id) }}"
-                                                            class="btn btn-warning btn-sm m-1">
+                                                            class="btn btn-warning btn-sm m-1" title="Ubah Lowongan">
                                                             <i class="fa fa-edit" aria-hidden="true"></i>
                                                         </a>
-                                                        <a href="javascript:;" data-toggle="modal"
-                                                            data-target="#deleteModal" class="btn btn-danger btn-sm m-1"
-                                                            onclick="deleteVacancy({{ $vacancy->id }})">
+                                                        {{-- <form
+                                                            action="{{ route('admin.vacancies.update-status', $vacancy->id) }}"
+                                                            method="POST" style="display:inline;">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <button type="submit"
+                                                                class="btn {{ $vacancy->published_at ? 'btn-primary' : 'btn-info' }} btn-sm m-1"
+                                                                title="{{ $vacancy->published_at ? 'Arsipkan Lowongan' : 'Tampilkan Lowongan' }}">
+                                                                <i class="fa {{ $vacancy->published_at ? 'fa-eye-slash' : 'fa-eye' }}"
+                                                                    aria-hidden="true"></i>
+                                                            </button>
+                                                        </form> --}}
+                                                        <a href="#" class="btn btn-danger btn-sm m-1"
+                                                            data-toggle="modal" data-target="#deleteModal"
+                                                            title="Hapus Lowongan"
+                                                            onclick="setModalData('{{ route('admin.vacancies.destroy', $vacancy->id) }}', '{{ $vacancy->name }}')">
                                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                                         </a>
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="7" class="text-center">{{ __('No vacancies found!') }}
+                                                    <td colspan="7" class="text-center">
+                                                        {{ __('No vacancies found!') }}
                                                     </td>
                                                 </tr>
                                             @endforelse
@@ -163,10 +185,66 @@
         </section>
     </div>
     <x-admin.delete-modal />
+
+    <!-- Modal -->
+    <div class="modal fade dynamic-modal" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop='static'>
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title ml-4" id="exampleModalCenterTitle">Impor Lowongan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-center align-items:center p-3">
+                        <form action="{{ route('admin.vacancies.import') }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="form-group">
+                                <label for="vacancies" class="text-danger">({{ __('only .xlsx') }})</label>
+                                <input type="file" name="vacancies" class="form-control" id="vacancies"
+                                    accept=".xlsx" onchange="event.target.form.submit()">
+                                <a href="{{ asset('template/Template Import Lowongan Pendidikan Lanjutan.xlsx') }}">Unduh
+                                    Template</a>
+                                @error('vacancies')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('js')
+    @if (session('success'))
+        <script>
+            toastr.success("{{ session('success') }}", "Success", {
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            toastr.error("{{ session('error') }}", "Error", {
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+            });
+        </script>
+    @endif
+
     <script>
+        function setModalData(url, itemName) {
+            document.getElementById('deleteForm').action = url;
+            document.getElementById('modal-item-name').textContent = 'Lowongan ' + itemName;
+        }
+
         "use strict"
 
         function deleteData(id) {

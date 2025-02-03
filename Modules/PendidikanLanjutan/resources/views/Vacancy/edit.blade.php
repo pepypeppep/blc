@@ -1,19 +1,19 @@
 @extends('admin.master_layout')
 @section('title')
-    <title>{{ __('Create Vacancy') }}</title>
+    <title>{{ __('Update Vacancy') }}</title>
 @endsection
 @section('admin-content')
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>{{ __('Create Vacancy') }}</h1>
+                <h1>{{ __('Update Vacancy') }}</h1>
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
                     </div>
                     <div class="breadcrumb-item active"><a
                             href="{{ route('admin.pendidikanlanjutan.index') }}">{{ __('Vacancy List') }}</a>
                     </div>
-                    <div class="breadcrumb-item">{{ __('Create Vacancy') }}</div>
+                    <div class="breadcrumb-item">{{ __('Update Vacancy') }}</div>
                 </div>
             </div>
             <div class="section-body">
@@ -21,22 +21,22 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Create Vacancy') }}</h4>
+                                <h4>{{ __('Update Vacancy') }}</h4>
                                 <div>
                                     <a href="{{ route('admin.pendidikanlanjutan.index') }}" class="btn btn-primary"><i
                                             class="fa fa-arrow-left"></i>{{ __('Back') }}</a>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <form action="{{ route('admin.vacancies.store') }}" method="POST"
-                                    enctype="multipart/form-data">
+                                <form action="{{ route('admin.vacancies.update', $vacancy->id) }}" method="POST">
                                     @csrf
+                                    @method('PUT')
                                     <div class="row mb-3">
                                         <div class="form-group col-md-8 offset-md-2">
                                             <label for="year">{{ __('Tahun') }} <span
                                                     class="text-danger">*</span></label>
                                             <input type="number" name="year" id="year" class="form-control"
-                                                value="{{ old('year', date('Y')) }}">
+                                                value="{{ $vacancy->year }}">
                                             @error('year')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
@@ -47,7 +47,9 @@
                                             <select name="study_id" class="form-control select2" id="study_id">
                                                 <option value="">Pilih Program Studi</option>
                                                 @foreach ($studies as $study)
-                                                    <option value="{{ $study->id }}">{{ $study->name }}</option>
+                                                    <option value="{{ $study->id }}"
+                                                        {{ $study->id == $vacancy->study_id ? 'selected' : '' }}>
+                                                        {{ $study->name }}</option>
                                                 @endforeach
                                             </select>
                                             @error('study_id')
@@ -60,12 +62,22 @@
                                                     class="text-danger">*</span></label>
                                             <select name="education_level" class="form-control select2"
                                                 id="education_level">
-                                                <option value="strata_1">{{ __('Strata I') }}</option>
-                                                <option value="strata_2">{{ __('Strata II') }}</option>
-                                                <option value="strata_3">{{ __('Strata III') }}</option>
-                                                <option value="profesi_ppds">{{ __('Profesi, PPDS (Dokter Spesialis)') }}
+                                                <option value="strata_1"
+                                                    {{ $vacancy->education_level == 'strata_1' ? 'selected' : '' }}>
+                                                    {{ __('Strata I') }}</option>
+                                                <option value="strata_2"
+                                                    {{ $vacancy->education_level == 'strata_2' ? 'selected' : '' }}>
+                                                    {{ __('Strata II') }}</option>
+                                                <option value="strata_3"
+                                                    {{ $vacancy->education_level == 'strata_3' ? 'selected' : '' }}>
+                                                    {{ __('Strata III') }}</option>
+                                                <option value="profesi_ppds"
+                                                    {{ $vacancy->education_level == 'profesi_ppds' ? 'selected' : '' }}>
+                                                    {{ __('Profesi, PPDS (Dokter Spesialis)') }}
                                                 </option>
-                                                <option value="ppds_subspesialis">{{ __('PPDS (Dokter Subspesialis)') }}
+                                                <option value="ppds_subspesialis"
+                                                    {{ $vacancy->education_level == 'ppds_subspesialis' ? 'selected' : '' }}>
+                                                    {{ __('PPDS (Dokter Subspesialis)') }}
                                                 </option>
                                             </select>
                                             @error('education_level')
@@ -114,9 +126,11 @@
                                                     class="text-danger">*</span></label>
                                             <select name="employment_status" class="form-control select2"
                                                 id="employment_status">
-                                                <option value="diberhentikan_dari_jabatan">
+                                                <option value="diberhentikan_dari_jabatan"
+                                                    {{ $vacancy->employment_status == 'diberhentikan_dari_jabatan' ? 'selected' : '' }}>
                                                     {{ __('Diberhentikan dari Jabatan') }}</option>
-                                                <option value="tidak_diberhentikan_dari_jabatan">
+                                                <option value="tidak_diberhentikan_dari_jabatan"
+                                                    {{ $vacancy->employment_status == 'tidak_diberhentikan_dari_jabatan' ? 'selected' : '' }}>
                                                     {{ __('Tidak Diberhentikan dari Jabatan') }}</option>
                                             </select>
                                             @error('employment_status')
@@ -128,9 +142,15 @@
                                             <label for="cost_type">{{ __('Cost Type') }} <span
                                                     class="text-danger">*</span></label>
                                             <select name="cost_type" class="form-control select2" id="cost_type">
-                                                <option value="apbd">{{ __('APBD') }}</option>
-                                                <option value="non_apbd">{{ __('Non APBD') }}</option>
-                                                <option value="mandiri">{{ __('Mandiri') }}</option>
+                                                <option value="apbd"
+                                                    {{ $vacancy->cost_type == 'apbd' ? 'selected' : '' }}>
+                                                    {{ __('APBD') }}</option>
+                                                <option value="non_apbd"
+                                                    {{ $vacancy->cost_type == 'non_apbd' ? 'selected' : '' }}>
+                                                    {{ __('Non APBD') }}</option>
+                                                <option value="mandiri"
+                                                    {{ $vacancy->cost_type == 'mandiri' ? 'selected' : '' }}>
+                                                    {{ __('Mandiri') }}</option>
                                             </select>
                                             @error('cost_type')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -143,7 +163,7 @@
                                                 <label for="formation">{{ __('Formation') }} <span
                                                         class="text-danger">*</span></label>
                                                 <input type="text" id="formation" class="form-control" name="formation"
-                                                    value="{{ old('formation') }}">
+                                                    value="{{ $vacancy->formation }}">
                                                 @error('formation')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -152,7 +172,7 @@
                                             <div class="form-group col-md-6">
                                                 <label>{{ __('Age Limit') }} <span class="text-danger">*</span></label>
                                                 <input type="text" id="age_limit" class="form-control"
-                                                    name="age_limit" value="{{ old('age_limit') }}">
+                                                    name="age_limit" value="{{ $vacancy->age_limit }}">
                                                 @error('age_limit')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -161,7 +181,7 @@
 
                                         <div class="form-group col-md-8 offset-md-2">
                                             <label>{{ __('Description') }} <span class="text-danger">*</span></label>
-                                            <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('description') }}</textarea>
+                                            <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ $vacancy->description }}</textarea>
                                             @error('description')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror

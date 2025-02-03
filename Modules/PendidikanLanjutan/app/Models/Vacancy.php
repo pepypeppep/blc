@@ -2,38 +2,47 @@
 
 namespace Modules\PendidikanLanjutan\app\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 
 class Vacancy extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'description',
-        'start_at',
-        'end_at',
-        'year',
-    ];
+    protected $guarded = ['id'];
 
-    public function details(){
-        return $this->hasMany(VacancyDetail::class);
-    }
-
-    public function unors()
+    /**
+     * Get the study that owns the Vacancy
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function study(): BelongsTo
     {
-        return $this->belongsToMany(Unor::class, 'vacancy_unors', 'vacancy_id', 'unor_id');
+        return $this->belongsTo(Study::class);
     }
 
-    public function users(){
-        return $this->belongsToMany(User::class, 'vacancy_users')
-                    ->using(VacancyUser::class)
-                    ->withPivot('status', 'sk_file')
-                    ->withTimestamps();
+    /**
+     * Get all of the users for the Vacancy
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function users(): HasMany
+    {
+        return $this->hasMany(VacancyUser::class);
     }
 
+    public function educationLevel()
+    {
+        return ucwords(str_replace('_', ' ', $this->education_level));
+    }
+
+    public function employmentStatus()
+    {
+        return $this->employment_status == 'tidak_diberhentikan_dari_jabatan' ? 'tidak diberhentikan dari jabatan' : 'diberhentikan dari jabatan';
+    }
 }

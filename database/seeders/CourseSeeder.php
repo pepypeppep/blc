@@ -411,12 +411,12 @@ class CourseSeeder extends Seeder
             ),
         );
         
-        $instructorList = array(1001, 1002, 1003, 1004, 1005, 1006, 1009, 1011, 1012);
+        $instructorList = array(1001, 1002, 1003, 1004, 1005);
         foreach ($coursesNames as $courseName) {
             // create course
             $course = new Course();
             $course->instructor_id = $instructorList[array_rand($instructorList, 1)];
-            $course->category_id = rand(9, 43);
+            $course->category_id = 2;
             $course->type = "course";
             $course->title = $courseName;
             $course->slug = \Str::slug($courseName);
@@ -452,7 +452,7 @@ class CourseSeeder extends Seeder
             foreach($course_chapters as $chapterIndex => $chapter) {
                 $courseChapter = new CourseChapter();
                 $courseChapter->title = $chapter['title'];
-                $courseChapter->instructor_id = $course->instructor_id;
+                $courseChapter->instructor_id = 1002;
                 $courseChapter->course_id = $course->id;
                 $courseChapter->order = $chapter['order'];
                 $courseChapter->status = "active";
@@ -460,7 +460,7 @@ class CourseSeeder extends Seeder
 
                 foreach($course_chapter_items as $index => $chapterItem) {
                     $courseChapterItem = new CourseChapterItem();
-                    $courseChapterItem->instructor_id = $course->instructor_id;
+                    $courseChapterItem->instructor_id = 1002;
                     $courseChapterItem->chapter_id = $courseChapter->id;
                     $courseChapterItem->type = $chapterItem['type'];
                     $courseChapterItem->order = $chapterItem['order'];
@@ -475,7 +475,7 @@ class CourseSeeder extends Seeder
                             $courseLesson->title = $course_chapter_lessons[$index]['title'];
                             $courseLesson->slug = $course_chapter_lessons[$index]['slug'];
                             $courseLesson->description = $course_chapter_lessons[$index]['description'];
-                            $courseLesson->instructor_id = $course->instructor_id;
+                            $courseLesson->instructor_id = 1002;
                             $courseLesson->course_id = $course->id;
                             $courseLesson->chapter_id = $courseChapter->id;
                             $courseLesson->chapter_item_id = $courseChapterItem->id;
@@ -496,9 +496,9 @@ class CourseSeeder extends Seeder
                            
                            foreach($quizzes as $quiz) {
                                $courseQuiz = new Quiz();
-                               $courseQuiz->instructor_id = $course->instructor_id;
+                               $courseQuiz->instructor_id = 1002;
                                $courseQuiz->chapter_item_id = $courseChapterItem->id;
-                               $courseQuiz->instructor_id = $course->instructor_id;
+                               $courseQuiz->instructor_id = 1002;
                                $courseQuiz->chapter_id = $courseChapter->id;
                                $courseQuiz->course_id = $course->id;
                                $courseQuiz->title = $quiz['title'];
@@ -533,7 +533,7 @@ class CourseSeeder extends Seeder
                             $courseLesson->title = fake()->sentence();
                             $courseLesson->slug = fake()->slug();
                             $courseLesson->description = $course_chapter_lessons[$index]['description'];
-                            $courseLesson->instructor_id = $course->instructor_id;
+                            $courseLesson->instructor_id = 1002;
                             $courseLesson->course_id = $course->id;
                             $courseLesson->chapter_id = $courseChapter->id;
                             $courseLesson->chapter_item_id = $courseChapterItem->id;
@@ -554,9 +554,9 @@ class CourseSeeder extends Seeder
                            
                            foreach($quizzes as $quiz) {
                                $courseQuiz = new Quiz();
-                               $courseQuiz->instructor_id = $course->instructor_id;
+                               $courseQuiz->instructor_id = 1002;
                                $courseQuiz->chapter_item_id = $courseChapterItem->id;
-                               $courseQuiz->instructor_id = $course->instructor_id;
+                               $courseQuiz->instructor_id = 1002;
                                $courseQuiz->chapter_id = $courseChapter->id;
                                $courseQuiz->course_id = $course->id;
                                $courseQuiz->title = fake()->sentence(5);

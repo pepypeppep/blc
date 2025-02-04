@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('file');
             $table->string('status')->default('review');
-            $table->string('notes')->nullable();
+            $table->string('note')->nullable();
             $table->timestamps();
         });
     }

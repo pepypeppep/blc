@@ -10,7 +10,7 @@ use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 class VacancyReport extends Model
 {
     use HasFactory;
-    protected $fillable = ['vacancy_user_id', 'semester', 'judul', 'berkas'];
+    protected $fillable = ['vacancy_user_id', 'name', 'file', 'status', 'note'];
 
     function vacancyUser(): BelongsTo
     {

@@ -22,12 +22,8 @@
                 <a href="{{ route('student.quiz-attempts') }}">
                     <img src="{{ asset('uploads/website-images/quiz.svg') }}">{{ __('My Quiz Attempts') }}</a>
             </li>
-            <!-- <li class="{{ Route::is('student.continuing-education') ? 'active' : '' }}">
+            <li class="{{ Route::is('student.continuing-education') ? 'active' : '' }}">
                 <a href="{{ route('student.continuing-education') }}">
-                    <img src="{{ asset('uploads/website-images/announcement.svg') }}">{{ __('ContinuingEducation') }}</a>
-            </li> -->
-            <li class="{{ Route::is('vacancies-participant.index') ? 'active' : '' }}">
-                <a href="{{ route('vacancies-participant.index') }}">
                     <img src="{{ asset('uploads/website-images/announcement.svg') }}">{{ __('ContinuingEducation') }}</a>
             </li>
         </ul>

@@ -13,7 +13,6 @@ use App\Http\Controllers\Frontend\LearningController;
 use App\Http\Controllers\Frontend\AboutPageController;
 use App\Http\Controllers\Frontend\CoursePageController;
 use App\Http\Controllers\Global\CloudStorageController;
-use App\Http\Controllers\Frontend\StudentOrderController;
 use App\Http\Controllers\Frontend\CourseContentController;
 use App\Http\Controllers\Frontend\StudentReviewController;
 use App\Http\Controllers\Frontend\BecomeInstructorController;
@@ -23,10 +22,8 @@ use App\Http\Controllers\Frontend\StudentDashboardController;
 use App\Http\Controllers\Frontend\TinymceImageUploadController;
 use App\Http\Controllers\Frontend\InstructorDashboardController;
 use App\Http\Controllers\Frontend\InstructorLessonQnaController;
-use App\Http\Controllers\Frontend\StudentProfileSettingController;
 use App\Http\Controllers\Frontend\InstructorAnnouncementController;
-use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
-use App\Http\Controllers\Frontend\InstructorProfileSettingController;
+use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -127,9 +124,11 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('enrolled-courses', [StudentDashboardController::class, 'enrolledCourses'])->name('enrolled-courses');
         Route::get('quiz-attempts', [StudentDashboardController::class, 'quizAttempts'])->name('quiz-attempts');
 
-        Route::get('continuing-education', [StudentDashboardController::class, 'continuingEducation'])->name('continuing-education');
-        Route::get('continuing-education/{id}', [StudentDashboardController::class, 'continuingEducationDetail'])->name('continuing-education.show');
-        Route::get('continuing-education-attachment/{id}', [StudentDashboardController::class, 'continuingEducationAttachment'])->name('continuing-education.attachment');
+        Route::get('continuing-education', [StudentPendidikanLanjutanController::class, 'index'])->name('continuing-education');
+        Route::get('continuing-education/{id}', [StudentPendidikanLanjutanController::class, 'continuingEducationDetail'])->name('continuing-education.show');
+        Route::post('continuing-education/{id}/register', [StudentPendidikanLanjutanController::class, 'register'])->name('continuing-education.register');
+        Route::post('continuing-education/{id}/report', [StudentPendidikanLanjutanController::class, 'vacancyReportSubmit'])->name('continuing-education.report');
+        Route::post('continuing-education/attachment', [StudentPendidikanLanjutanController::class, 'uploadRequirementFile'])->name('continuing-education.attachment');
 
         /** learning routes */
         Route::get('learning/{slug}', [LearningController::class, 'index'])->name('learning.index');

@@ -14,9 +14,9 @@
                                 <td>{{ __('Program Studi') }}</td>
                                 <td>
                                     @php
-                                        $studyProgram = $vacancy->details->firstWhere('type', 'study_program');
+                                        $studyProgram = $vacancy->study->name;
                                     @endphp
-                                    {{ $studyProgram ? $studyProgram->value_type : '-' }}
+                                    {{ $studyProgram ? $studyProgram : '-' }}
                                 </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
@@ -26,12 +26,13 @@
                                 <td>{{ __('Jenjang Pendidikan') }}</td>
                                 <td>
                                     @php
-                                        $educationLevel = $vacancy->details->firstWhere('type', 'education_level');
+                                        $educationLevel = $vacancy->educationLevel();
                                     @endphp
-                                    {{ $educationLevel ? $educationLevel->value_type : '-' }}
+                                    {{ $educationLevel ? $educationLevel : '-' }}
                                 </td>
                                 <td class="text-center">
-                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        style="width: 24px; height: 24px; font-size: 16px;"></i>
                                 </td>
 
                             </tr>
@@ -39,21 +40,22 @@
                                 <td>{{ __('Syarat Minimal Pangkat/Golongan') }}</td>
                                 <td>
                                     @php
-                                        $minimumRank = $vacancy->details->firstWhere('type', 'minimum_rank');
+                                        $minimumRank = $vacancy->employment_grade;
                                     @endphp
-                                    {{ $minimumRank ? $minimumRank->value_type : '-' }}
+                                    {{ $minimumRank ? $minimumRank : '-' }}
                                 </td>
                                 <td class="text-center">
-                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        style="width: 24px; height: 24px; font-size: 16px;"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Status Kepegawaian') }}</td>
                                 <td>
                                     @php
-                                        $employmentStatus = $vacancy->details->firstWhere('type', 'employment_status');
+                                        $employmentStatus = $vacancy->employmentStatus();
                                     @endphp
-                                    {{ $employmentStatus ? $employmentStatus->value_type : '-' }}
+                                    {{ $employmentStatus ? $employmentStatus : '-' }}
                                 </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
@@ -63,21 +65,22 @@
                                 <td>{{ __('Pembiayaan') }}</td>
                                 <td>
                                     @php
-                                        $fundingSource = $vacancy->details->firstWhere('type', 'funding_source');
+                                        $fundingSource = $vacancy->cost_type;
                                     @endphp
-                                    {{ $fundingSource ? $fundingSource->value_type : '-' }}
+                                    {{ $fundingSource ? $fundingSource : '-' }}
                                 </td>
                                 <td class="text-center">
-                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        style="width: 24px; height: 24px; font-size: 16px;"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Jumlah Formasi') }}</td>
                                 <td>
                                     @php
-                                        $formasiCount = $vacancy->details->firstWhere('type', 'formasi_count');
+                                        $formasiCount = $vacancy->formation;
                                     @endphp
-                                    {{ $formasiCount ? $formasiCount->value_type : '-' }}
+                                    {{ $formasiCount ? $formasiCount : '-' }}
                                 </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
@@ -87,9 +90,9 @@
                                 <td>{{ __('Batas Usia Pensiun') }}</td>
                                 <td>
                                     @php
-                                        $retirementAge = $vacancy->details->firstWhere('type', 'retirement_age');
+                                        $retirementAge = $vacancy->age_limit;
                                     @endphp
-                                    {{ $retirementAge ? $retirementAge->value_type : '-' }}
+                                    {{ $retirementAge ? $retirementAge : '-' }}
                                 </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
@@ -97,16 +100,19 @@
                             </tr>
                             <tr>
                                 <td>{{ __('Tanggal Mulai Pendaftaran') }}</td>
-                                <td>{{ $vacancy->start_at ? \Carbon\Carbon::parse($vacancy->start_at)->format('d F Y') : '-' }}</td>
+                                <td>{{ $vacancy->open_at ? \Carbon\Carbon::parse($vacancy->open_at)->format('d F Y') : '-' }}
+                                </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Tanggal Selesai Pendaftaran') }}</td>
-                                <td>{{ $vacancy->end_at ? \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') : '-' }}</td>
+                                <td>{{ $vacancy->close_at ? \Carbon\Carbon::parse($vacancy->close_at)->format('d F Y') : '-' }}
+                                </td>
                                 <td class="text-center">
-                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        style="width: 24px; height: 24px; font-size: 16px;"></i>
                                 </td>
                             </tr>
                         </tbody>
@@ -132,23 +138,11 @@
 
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 text-end">
-                <form action="{{ route('vacancies-participant.register', $vacancy->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('POST')
-                    <button type="submit" class="btn mt-4 mb-3">
-                        {{ __('Ajukan Pendaftaran') }} <i class="fa fa-arrow-right"></i>
-                    </button>
-                </form>
-            </div>
-        </div>
-
 
         <div class="row">
             <div class="col-12">
+                <h5 class="title">{{ __('Lampiran yang Diperlukan') }}</h5>
                 <div class="dashboard__review-table table-responsive mt-4">
-                    <h5 class="title">{{ __('Lampiran yang Diperlukan') }}</h5>
                     <table class="table">
                         <thead>
                             <tr>
@@ -160,64 +154,70 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>{{ __('Surat Pernyataan') }}</td>
-                                <td>
-                                    <span class="badge bg-success">{{ __('Lengkap') }}</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
+                            @foreach ($vacancyConditions as $condition)
+                                <tr>
+                                    <form id="{{ $condition->id }}_form"
+                                        action="{{ route('student.continuing-education.attachment') }}" method="POST"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $condition->name }}</td>
+                                        <td>
+                                            @if (count($condition->attachment) == 0)
+                                                <span class="badge bg-warning">{{ __('Belum Lengkap') }}</span>
+                                            @else
+                                                <span class="badge bg-success">{{ __('Lengkap') }}</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <input type="text" name="attachment_id" value="{{ $condition->id }}"
+                                                    hidden />
+                                                @if (count($condition->attachment) > 0)
+                                                    <input type="text" @if (count($condition->attachment) != 0) disabled @endif
+                                                        class="form-control me-2"
+                                                        value="{{ $condition->attachment[0]->file }}" />
+                                                @else
+                                                    <input type="file" name="file"
+                                                        @if ($condition->type == 'pdf') accept="application/pdf" @endif
+                                                        @if (count($condition->attachment) != 0) disabled @endif
+                                                        class="form-control me-2"
+                                                        onchange="$('#{{ $condition->id }}_form').trigger('submit')" />
+                                                @endif
 
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>{{ __('SK Pangkat Terakhir') }}</td>
-                                <td>
-                                    <span class="badge bg-warning">{{ __('Belum Lengkap') }}</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>{{ __('Ijazah Terakhir') }}</td>
-                                <td>
-                                    <span class="badge bg-success">{{ __('Lengkap') }}</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle " data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-times"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (count($condition->attachment) > 0)
+                                                <a target="_blank"
+                                                    href="{{ route('vacancies-participant.get.file', [$condition->attachment[0]->vacancy_attachment_id, auth()->user()->id]) }}"
+                                                    class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
+                                                    <i class="fas fa-eye"></i> {{ __('View') }}
+                                                </a>
+                                            @else
+                                                <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                                    style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                            @endif
+                                        </td>
+                                    </form>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 text-end">
+                <form action="{{ route('student.continuing-education.register', $vacancy->id) }}" method="POST"
+                    class="d-inline">
+                    @csrf
+                    @method('POST')
+                    <button type="submit" class="btn mt-4 mb-3">
+                        {{ __('Ajukan Pendaftaran') }} <i class="fa fa-arrow-right"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

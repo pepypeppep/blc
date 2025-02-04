@@ -23,20 +23,20 @@
                             @forelse ($vacancies as $key => $vacancy)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $vacancy->name }}</td>
-                                    <td>
-                                        @if ($vacancy->details->isNotEmpty())
+                                    <td>{{ $vacancy->study->name }}</td>
+                                    <td>{{ $vacancy->employment_grade }}
+                                        {{-- @if ($vacancy->details->isNotEmpty())
                                             {{ $vacancy->details->first()->value_type ?? '-' }}
                                         @else
                                             {{ '-' }}
-                                        @endif
+                                        @endif --}}
                                     </td>
-                                    <td>{{ $vacancy->start_at ? \Carbon\Carbon::parse($vacancy->start_at)->format('d F Y') : '-' }}
+                                    <td>{{ $vacancy->open_at ? \Carbon\Carbon::parse($vacancy->open_at)->format('d F Y') : '-' }}
                                     </td>
-                                    <td>{{ $vacancy->end_at ? \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') : '-' }}
+                                    <td>{{ $vacancy->close_at ? \Carbon\Carbon::parse($vacancy->close_at)->format('d F Y') : '-' }}
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('vacancies-participant.show', $vacancy->id) }}"
+                                        <a href="{{ route('student.continuing-education.show', $vacancy->id) }}"
                                             class="align-middle" data-bs-toggle="tooltip" title="Lihat selengkapnya">
                                             <i class="fas fa-eye"></i> {{ __('View') }}
                                         </a>

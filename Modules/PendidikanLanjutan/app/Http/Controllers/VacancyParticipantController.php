@@ -62,7 +62,7 @@ class VacancyParticipantController extends Controller
     }
 
     public function uploadFile(Request $request, $vacancyDetailId, $vacancyUserId){
-        
+
         if (!$request->hasFile('file')) {
             return response()->json([
                 'status' => 'error',
@@ -88,7 +88,7 @@ class VacancyParticipantController extends Controller
 
         try {
             $filePath = $file->storeAs(
-                'vacancy_attachment', 
+                'vacancy_attachment',
                 $fileName,
                 'public'
             );

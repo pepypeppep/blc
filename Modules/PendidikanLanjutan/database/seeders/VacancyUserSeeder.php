@@ -13,9 +13,7 @@ class VacancyUserSeeder extends Seeder
         for ($i = 1000; $i <= 1006; $i++) {
             $data[] = [
                 'vacancy_id' => rand(1, 4),
-                'user_id' => $i,
-                'status' => 'active',
-                'sk_file' => null,
+                'user_id' => $i
             ];
         }
 

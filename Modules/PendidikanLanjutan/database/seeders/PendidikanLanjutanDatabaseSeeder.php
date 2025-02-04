@@ -3,9 +3,8 @@
 namespace Modules\PendidikanLanjutan\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\PendidikanLanjutan\database\seeders\VacancyAttachmentSeeder;
 use Modules\PendidikanLanjutan\database\seeders\VacancySeeder;
-use Modules\PendidikanLanjutan\database\seeders\VacancyDetailSeeder;
-use Modules\PendidikanLanjutan\database\seeders\VacancyDetailUserAttachmentSeeder;
 use Modules\PendidikanLanjutan\database\seeders\VacancyUserSeeder;
 
 class PendidikanLanjutanDatabaseSeeder extends Seeder
@@ -17,9 +16,9 @@ class PendidikanLanjutanDatabaseSeeder extends Seeder
     {
         $this->call([
             VacancySeeder::class,
-            VacancyDetailSeeder::class,
+            VacancyAttachmentSeeder::class,
             VacancyUserSeeder::class,
-            VacancyDetailUserAttachmentSeeder::class,
+            VacancyUserAttachmentSeeder::class
         ]);
     }
 }

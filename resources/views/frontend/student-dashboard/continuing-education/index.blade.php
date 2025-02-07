@@ -14,8 +14,8 @@
                                 <th>{{ __('#') }}</th>
                                 <th width="30%">{{ __('Program Studi Pendidikan Lanjutan') }}</th>
                                 <th>{{ __('Syarat Minimal Pangkat/Golongan') }}</th>
-                                <th width="20%">{{ __('Tanggal mulai') }}</th>
-                                <th width="20%">{{ __('Tanggal selesai') }}</th>
+                                <th width="20%">{{ __('Tanggal Mulai Pendaftaran') }}</th>
+                                <th width="20%">{{ __('Tanggal Penutupan Pendaftaran') }}</th>
                                 <th>{{ __('Action') }}</th>
                             </tr>
                         </thead>

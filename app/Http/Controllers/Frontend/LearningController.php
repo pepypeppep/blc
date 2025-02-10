@@ -283,10 +283,54 @@ class LearningController extends Controller
 
     function quizIndex(string $id)
     {
+
         $attempt = QuizResult::where('user_id', userAuth()->id)->where('quiz_id', $id)->count();
+
+        // $quiz = Quiz::query()
+        //     ->with([
+        //         'questions' => function ($query) {
+        //             $query->inRandomOrder()->with([
+        //                 'answers' => function ($query) {
+        //                     $query->inRandomOrder();
+        //                 }
+        //             ]);
+        //         }
+        //     ])
+        //     ->withCount('questions')
+        //     ->findOrFail($id);
+
+
+        $userId = userAuth()->id;
+        // $numberOfQuestions = 20;
         $quiz = Quiz::withCount('questions')->findOrFail($id);
+
+        // Cek apakah user sudah memiliki soal tersimpan di session
+        if (session()->has("quiz_$id" . "_user_$userId")) {
+            $questions = session("quiz_$id" . "_user_$userId");
+        } else {
+
+            // Ambil soal secara acak
+            $questions = $quiz->questions()
+                ->inRandomOrder()
+                // ->limit($numberOfQuestions)
+                ->with(['answers' => function ($query) {
+                    $query->inRandomOrder();
+                }])
+                ->get();
+
+            // Simpan ke session agar tidak berubah-ubah
+            session(["quiz_$id" . "_user_$userId" => $questions]);
+        }
+
+        // Ambil quiz lagi untuk dikirim ke view
+        $quiz = Quiz::withCount('questions')->findOrFail($id);
+        $quiz->setRelation('questions', $questions);
+
         if ($attempt >= $quiz->attempt) {
-            return redirect()->route('student.learning.index', Session::get('course_slug'))->with(['alert-type' => 'error', 'messege' => __('You reached maximum attempt')]);
+            return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
+                'alert-type' => 'error',
+                'messege' => __('You reached maximum attempt')
+            ]);
         }
 
         return view('frontend.pages.learning-player.quiz-index', compact('quiz', 'attempt'));
@@ -305,17 +349,17 @@ class LearningController extends Controller
                 $grad += $question->grade;
             }
             $result[$key] = [
-                "answer"  => $questionAns,
+                "answer" => $questionAns,
                 "correct" => in_array($questionAns, $answer),
             ];
         }
 
         $quizResult = QuizResult::create([
-            'user_id'    => userAuth()->id,
-            'quiz_id'    => $id,
-            'result'     => json_encode($result),
+            'user_id' => userAuth()->id,
+            'quiz_id' => $id,
+            'result' => json_encode($result),
             'user_grade' => $grad,
-            'status'     => $grad >= $quiz->pass_mark ? 'pass' : 'failed',
+            'status' => $grad >= $quiz->pass_mark ? 'pass' : 'failed',
         ]);
         return redirect()->route('student.quiz.result', ['id' => $id, 'result_id' => $quizResult->id]);
     }
@@ -332,14 +376,15 @@ class LearningController extends Controller
     function addReview(Request $request)
     {
         $request->validate([
-            'course_id'            => ['required', 'exists:courses,id'],
-            'rating'               => ['required', 'integer', 'min:1', 'max:5'],
-            'review'               => ['required', 'max: 1000', 'string'],
-            'g-recaptcha-response' => Cache::get('setting')->recaptcha_status === 'active' ? ['required', new CustomRecaptcha()] : 'nullable',
+            'course_id' => ['required', 'exists:courses,id'],
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'review' => ['required', 'max: 1000', 'string'],
+            'g-recaptcha-response' => Cache::get('setting')->recaptcha_status === 'active' ? ['required', new CustomRecaptcha()] :
+                'nullable',
         ], [
-            'rating.required'               => __('rating filed is required'),
-            'rating.integer'                => __('rating have to be an integer'),
-            'review.required'               => __('review filed is required'),
+            'rating.required' => __('rating filed is required'),
+            'rating.integer' => __('rating have to be an integer'),
+            'review.required' => __('review filed is required'),
             'g-recaptcha-response.required' => __('Please complete the recaptcha to submit the form'),
         ]);
 
@@ -350,9 +395,9 @@ class LearningController extends Controller
 
         CourseReview::create([
             'course_id' => $request->course_id,
-            'user_id'   => userAuth()->id,
-            'rating'    => $request->rating,
-            'review'    => $request->review,
+            'user_id' => userAuth()->id,
+            'rating' => $request->rating,
+            'review' => $request->review,
         ]);
 
         return redirect()->back()->with(['alert-type' => 'success', 'messege' => __('Review added successfully')]);
@@ -360,11 +405,12 @@ class LearningController extends Controller
 
     function fetchReviews(Request $request, string $courseId)
     {
-        $reviews = CourseReview::where(['course_id' => $courseId, 'status' => 1])->whereHas('course')->whereHas('user')->orderBy('id', 'desc')->paginate(8, ['*'], 'page', $request->page ?? 1);
+        $reviews = CourseReview::where(['course_id' => $courseId, 'status' =>
+        1])->whereHas('course')->whereHas('user')->orderBy('id', 'desc')->paginate(8, ['*'], 'page', $request->page ?? 1);
         return response()->json([
-            'view'       => view('frontend.pages.learning-player.partials.review-card', compact('reviews'))->render(),
-            'page'       => $request->page,
-            'last_page'  => $reviews->lastPage(),
+            'view' => view('frontend.pages.learning-player.partials.review-card', compact('reviews'))->render(),
+            'page' => $request->page,
+            'last_page' => $reviews->lastPage(),
             'data_count' => $reviews->count(),
         ]);
     }
@@ -411,7 +457,7 @@ class LearningController extends Controller
         $instructor = $jitsi_credential->instructor_id == $user->id;
 
         $api_key = $jitsi_credential->api_key;
-        $app_id =  $jitsi_credential->app_id; // Your AppID (previously tenant)
+        $app_id = $jitsi_credential->app_id; // Your AppID (previously tenant)
         $user_email = $user->name;
         $user_name = $user->name;
         $user_is_moderator = $instructor;
@@ -428,22 +474,22 @@ class LearningController extends Controller
         $private_key = file_get_contents(storage_path("app/user_{$jitsi_credential->instructor_id}/rsb_private_key.pk"));
 
         $payload = [
-            'iss'     => 'chat',
-            'aud'     => 'jitsi',
-            'exp'     => time() + $exp_delay,
-            'nbf'     => time() - $nbf_delay,
-            'room'    => '*',
-            'sub'     => $app_id,
+            'iss' => 'chat',
+            'aud' => 'jitsi',
+            'exp' => time() + $exp_delay,
+            'nbf' => time() - $nbf_delay,
+            'room' => '*',
+            'sub' => $app_id,
             'context' => [
-                'user'     => [
+                'user' => [
                     'moderator' => $user_is_moderator ? "true" : "false",
-                    'email'     => $user_email,
-                    'name'      => $user_name,
-                    'avatar'    => $user_avatar_url,
-                    'id'        => $user_id,
+                    'email' => $user_email,
+                    'name' => $user_name,
+                    'avatar' => $user_avatar_url,
+                    'id' => $user_id,
                 ],
                 'features' => [
-                    'recording'     => $recording_enabled ? "true" : "false",
+                    'recording' => $recording_enabled ? "true" : "false",
                     'livestreaming' => $live_streaming_enabled ? "true" : "false",
                     'transcription' => $transcription_enabled ? "true" : "false",
                     'outbound-call' => $outbound_enabled ? "true" : "false",

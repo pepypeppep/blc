@@ -73,6 +73,17 @@ class StudentDashboardController extends Controller {
         return view('frontend.student-dashboard.continuing-education.attachment', compact('vacancy', 'attachment'));
     }
 
+    public function continuingEducationRegistration() {
+
+        return view('frontend.student-dashboard.continuing-education.registration.index');
+    }
+
+    public function continuingEducationRegistrationDetail($id) {
+
+        return view('frontend.student-dashboard.continuing-education.registration.show');
+    }
+
+
     function downloadCertificate(string $id) {
         $certificate = CertificateBuilder::first();
         $certificateItems = CertificateBuilderItem::all();

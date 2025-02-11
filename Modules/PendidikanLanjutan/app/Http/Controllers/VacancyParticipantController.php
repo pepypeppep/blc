@@ -10,8 +10,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
-use Modules\PendidikanLanjutan\app\Models\VacancyDetailUserAttachment;
 
 class VacancyParticipantController extends Controller
 {

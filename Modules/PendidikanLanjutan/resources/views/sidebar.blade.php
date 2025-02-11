@@ -11,6 +11,31 @@
                         {{ __('Vacancy') }}
                     </a>
                 </li>
+                <li class="{{ isRoute('admin.verifikasi.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.verification.index') }}">
+                        {{ __('Verification') }}
+                    </a>
+                </li>
+                <li class="{{ isRoute('admin.assesment.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.assesment.index') }}">
+                        {{ __('Assesment') }}
+                    </a>
+                </li>
+                <li class="{{ isRoute('admin.sk.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.sk.index') }}">
+                        {{ __('Draft SK') }}
+                    </a>
+                </li>
+                <li class="{{ isRoute('admin.report.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.report.index') }}">
+                        {{ __('Report') }}
+                    </a>
+                </li>
+                <li class="{{ isRoute('admin.extension.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.extension.index') }}">
+                        {{ __('Extension') }}
+                    </a>
+                </li>
             @endadminCan
         </ul>
     </li>

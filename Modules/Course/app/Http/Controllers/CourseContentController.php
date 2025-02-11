@@ -4,6 +4,7 @@ namespace Modules\Course\app\Http\Controllers;
 
 use App\Models\Quiz;
 use App\Models\Course;
+use Illuminate\Support\Str;
 use App\Models\QuizQuestion;
 use Illuminate\Http\Request;
 use App\Models\CourseChapter;
@@ -109,7 +110,7 @@ class CourseContentController extends Controller
                 'chapters' => $chapters,
                 'type' => $type
             ])->render();
-        }elseif ($request->type == 'document') {
+        } elseif ($request->type == 'document') {
             return view('course::course.partials.document-create-modal', [
                 'courseId' => $courseId,
                 'chapterId' => $chapterId,
@@ -129,7 +130,7 @@ class CourseContentController extends Controller
     function lessonStore(ChapterLessonRequest $request)
     {
         $chapterItem = CourseChapterItem::create([
-            'instructor_id' => Course::find(session()->get('course_create'))->instructor_id,    
+            'instructor_id' => Course::find(session()->get('course_create'))->instructor_id,
             'chapter_id' => $request->chapter_id,
             'type' => $request->type,
             'order' => CourseChapterItem::whereChapterId($request->chapter_id)->count() + 1,
@@ -138,19 +139,27 @@ class CourseContentController extends Controller
         if ($request->type == 'lesson') {
             CourseChapterLesson::create([
                 'title' => $request->title,
+                'slug' => Str::slug($request->title),
                 'description' => $request->description,
                 'instructor_id' =>  $chapterItem->instructor_id,
                 'course_id' => $request->course_id,
                 'chapter_id' => $request->chapter_id,
                 'chapter_item_id' => $chapterItem->id,
-                'file_path' => $request->source == 'upload' ? $request->upload_path : $request->link_path,
-                'storage' => $request->source,
-                'file_type' => $request->file_type,
+                'file_path' => $request->link_path,
+                'storage' => "youtube",
+                'file_type' => "video",
                 'volume' => $request->volume,
                 'duration' => $request->duration,
                 'is_free' => $request->is_free,
             ]);
-        }elseif ($request->type == 'document') {
+        } elseif ($request->type == 'document') {
+            $file = $request->file('file_path');
+            $year = now()->year;
+            $month = now()->month;
+            $fileName = Str::slug($request->title) . '-' . strtotime('now') . '.pdf';
+            $path = "course/$year/$month/$chapterItem->course_id/lesson/$fileName";
+            Storage::disk('private')->put($path, file_get_contents($file));
+
             CourseChapterLesson::create([
                 'title' => $request->title,
                 'description' => $request->description,
@@ -158,8 +167,8 @@ class CourseContentController extends Controller
                 'course_id' => $request->course_id,
                 'chapter_id' => $request->chapter_id,
                 'chapter_item_id' => $chapterItem->id,
-                'file_path' => $request->upload_path,
-                'file_type' => $request->file_type,
+                'file_path' => $path,
+                'file_type' => "pdf",
             ]);
         } elseif ($request->type == 'quiz') {
             Quiz::create([
@@ -190,7 +199,7 @@ class CourseContentController extends Controller
                 'courseId' => $courseId,
                 'chapterItem' => $chapterItem
             ])->render();
-        }elseif ($request->type == 'document') {
+        } elseif ($request->type == 'document') {
             return view('course::course.partials.document-edit-modal', [
                 'chapters' => $chapters,
                 'courseId' => $courseId,
@@ -230,22 +239,34 @@ class CourseContentController extends Controller
                 'course_id' => $chapterItem->course_id,
                 'chapter_id' => $chapterItem->chapter_id,
                 'chapter_item_id' => $chapterItem->id,
-                'file_path' => $request->source == 'upload' ? $request->upload_path : $request->link_path,
-                'storage' => $request->source,
-                'file_type' => $request->file_type,
+                'file_path' => $request->link_path,
+                'storage' => "youtube",
+                'file_type' => "video",
                 'volume' => $request->volume,
                 'duration' => $request->duration,
             ]);
-        }elseif($request->type == 'document') {
+        } elseif ($request->type == 'document') {
             $courseChapterLesson = CourseChapterLesson::where('chapter_item_id', $chapterItem->id)->first();
+
+            $file = $request->file('file_path');
+            if ($file) {
+                $year = now()->year;
+                $month = now()->month;
+                $fileName = Str::slug($request->title) . '-' . strtotime('now') . '.pdf';
+                $path = "course/$year/$month/$chapterItem->course_id/lesson/$fileName";
+                Storage::disk('private')->put($path, file_get_contents($file));
+            } else {
+                $path = $courseChapterLesson->file_path;
+            }
+
             $courseChapterLesson->update([
                 'title' => $request->title,
                 'description' => $request->description,
                 'course_id' => $chapterItem->course_id,
                 'chapter_id' => $chapterItem->chapter_id,
                 'chapter_item_id' => $chapterItem->id,
-                'file_path' => $request->upload_path,
-                'file_type' => $request->file_type,
+                'file_path' => $path,
+                'file_type' => "pdf",
             ]);
         } else {
             $quiz = Quiz::where('chapter_item_id', $chapterItem->id)->first();

@@ -84,7 +84,6 @@ $(document).ready(function () {
     //     }
     // });
 
-
     // get instructor profiles for select2
     $(".partner_instructor_select").select2({
         ajax: {
@@ -152,19 +151,19 @@ $(document).ready(function () {
 
         var $container = $(
             "<div class='select2-result-repository clearfix'>" +
-            "<div class='select2-result-repository__avatar'><img src='" +
-            "/" +
-            repo.image +
-            "' /></div>" +
-            "<div class='select2-result-repository__meta'>" +
-            "<div class='select2-result-repository__title'>" +
-            repo.name +
-            "</div>" +
-            "<div class='select2-result-repository__description'>" +
-            repo.email +
-            "</div>" +
-            "</div>" +
-            "</div>"
+                "<div class='select2-result-repository__avatar'><img src='" +
+                "/" +
+                repo.image +
+                "' /></div>" +
+                "<div class='select2-result-repository__meta'>" +
+                "<div class='select2-result-repository__title'>" +
+                repo.name +
+                "</div>" +
+                "<div class='select2-result-repository__description'>" +
+                repo.email +
+                "</div>" +
+                "</div>" +
+                "</div>"
         );
 
         return $container;
@@ -244,8 +243,8 @@ $(document).ready(function () {
     $("body").on("change", "#source", function () {
         const select_source = $(this).val();
         const isUpload = select_source === "upload";
-        const isCloud = (select_source == "wasabi" || select_source == "aws");
-        const isMediaSource = ['youtube', 'vimeo'].includes(select_source);
+        const isCloud = select_source == "wasabi" || select_source == "aws";
+        const isMediaSource = ["youtube", "vimeo"].includes(select_source);
 
         // Reset file type options visibility
         $("#file_type option").show();
@@ -266,18 +265,17 @@ $(document).ready(function () {
         $("#file_type").val("");
     });
 
-    $('body').on("change", "#file_type", function () {
+    $("body").on("change", "#file_type", function () {
         let filetype = $(this).val();
-        if (filetype != 'video') {
+        if (filetype != "video") {
             $("#duration").val(0);
             $("#duration").attr("readonly", true);
             $(".is_free_wrapper").addClass("d-none");
         } else {
-            $("#duration").val('');
+            $("#duration").val("");
             $("#duration").attr("readonly", false);
             $(".is_free_wrapper").removeClass("d-none");
         }
-
     });
 
     /** load edit chapter modal */
@@ -318,7 +316,9 @@ $(document).ready(function () {
             },
             success: function (data) {
                 dynamicModalContent.html(data);
-                $(".file-manager").filemanager("file", { prefix: base_url + '/laravel-filemanager' });
+                $(".file-manager").filemanager("file", {
+                    prefix: base_url + "/laravel-filemanager",
+                });
             },
             error: function (xhr, status, error) {
                 toastr(error);
@@ -330,23 +330,23 @@ $(document).ready(function () {
         e.preventDefault();
         $(".progress").removeClass("d-none");
         $("body .dynamic-modal .submit-btn").prop("disabled", true);
-        var fileInput = $('#file-input')[0];
+        var fileInput = $("#file-input")[0];
 
         // Check if files are selected
         if (fileInput.files.length === 0) {
-            toastr.error('Please select a file.');
+            toastr.error("Please select a file.");
             $(".progress").addClass("d-none");
             $("body .dynamic-modal .submit-btn").prop("disabled", false);
             return;
         }
         var formData = new FormData();
-        formData.append('_token', $('meta[name="csrf-token"]').attr("content"));
-        formData.append('file', fileInput.files[0]);
-        formData.append('source', $("#source").val());
+        formData.append("_token", $('meta[name="csrf-token"]').attr("content"));
+        formData.append("file", fileInput.files[0]);
+        formData.append("source", $("#source").val());
 
         $.ajax({
-            url: base_url + '/admin/cloud/store',
-            type: 'POST',
+            url: base_url + "/admin/cloud/store",
+            type: "POST",
             data: formData,
             contentType: false,
             processData: false,
@@ -373,13 +373,44 @@ $(document).ready(function () {
     });
 
     /** create new lesson */
+    // $("body").on("submit", ".add_lesson_form", function (e) {
+    //     e.preventDefault();
+    //     let url = $(this).attr("action");
+    //     $.ajax({
+    //         method: "POST",
+    //         url: url,
+    //         data: $(this).serialize(),
+    //         beforeSend: function () {
+    //             $("body .dynamic-modal .submit-btn")
+    //                 .prop("disabled", true)
+    //                 .text("loading...");
+    //         },
+    //         success: function (data) {
+    //             $(".dynamic-modal").modal("hide");
+    //             toastr.success(data.status);
+    //             window.location.reload();
+    //         },
+    //         error: function (xhr, status, error) {
+    //             let errors = xhr.responseJSON.errors;
+    //             $.each(errors, function (key, value) {
+    //                 toastr.error(value);
+    //             });
+    //             $("body .dynamic-modal .submit-btn")
+    //                 .prop("disabled", false)
+    //                 .text("Create");
+    //         },
+    //     });
+    // });
     $("body").on("submit", ".add_lesson_form", function (e) {
         e.preventDefault();
         let url = $(this).attr("action");
+        var formData = new FormData(this);
         $.ajax({
-            method: "POST",
             url: url,
-            data: $(this).serialize(),
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
             beforeSend: function () {
                 $("body .dynamic-modal .submit-btn")
                     .prop("disabled", true)
@@ -423,7 +454,9 @@ $(document).ready(function () {
             },
             success: function (data) {
                 dynamicModalContent.html(data);
-                $(".file-manager").filemanager("file", { prefix: base_url + '/laravel-filemanager' });
+                $(".file-manager").filemanager("file", {
+                    prefix: base_url + "/laravel-filemanager",
+                });
             },
             error: function (xhr, status, error) {
                 toastr(error);
@@ -432,13 +465,44 @@ $(document).ready(function () {
     });
 
     // update lesson
+    // $("body").on("submit", ".update_lesson_form", function (e) {
+    //     e.preventDefault();
+    //     let url = $(this).attr("action");
+    //     $.ajax({
+    //         method: "POST",
+    //         url: url,
+    //         data: $(this).serialize(),
+    //         beforeSend: function () {
+    //             $("body .dynamic-modal .submit-btn")
+    //                 .prop("disabled", true)
+    //                 .text("loading...");
+    //         },
+    //         success: function (data) {
+    //             $(".dynamic-modal").modal("hide");
+    //             toastr.success(data.message);
+    //             window.location.reload();
+    //         },
+    //         error: function (xhr, status, error) {
+    //             let errors = xhr.responseJSON.errors;
+    //             $.each(errors, function (key, value) {
+    //                 toastr.error(value);
+    //             });
+    //             $("body .dynamic-modal .submit-btn")
+    //                 .prop("disabled", false)
+    //                 .text("Create");
+    //         },
+    //     });
+    // });
     $("body").on("submit", ".update_lesson_form", function (e) {
         e.preventDefault();
         let url = $(this).attr("action");
+        var formData = new FormData(this);
         $.ajax({
-            method: "POST",
             url: url,
-            data: $(this).serialize(),
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
             beforeSend: function () {
                 $("body .dynamic-modal .submit-btn")
                     .prop("disabled", true)
@@ -467,7 +531,10 @@ $(document).ready(function () {
         let quizId = $(this).data("quiz-id");
         $.ajax({
             method: "GET",
-            url: base_url + "/admin/course-chapter/quiz-question/create/" + quizId,
+            url:
+                base_url +
+                "/admin/course-chapter/quiz-question/create/" +
+                quizId,
             data: {},
             beforeSend: function () {
                 dynamicModalContent.html(loader);
@@ -487,7 +554,10 @@ $(document).ready(function () {
         let questionId = $(this).data("question-id");
         $.ajax({
             method: "GET",
-            url: base_url + "/admin/course-chapter/quiz-question/edit/" + questionId,
+            url:
+                base_url +
+                "/admin/course-chapter/quiz-question/edit/" +
+                questionId,
             data: {},
             beforeSend: function () {
                 dynamicModalContent.html(loader);
@@ -549,7 +619,7 @@ $(document).ready(function () {
                     data: {
                         _token: $('meta[name="csrf-token"]').attr("content"),
                     },
-                    beforeSend: function () { },
+                    beforeSend: function () {},
                     success: function (data) {
                         if (data.status == "success") {
                             Swal.fire({
@@ -570,16 +640,16 @@ $(document).ready(function () {
 
     /** update approve status */
 
-    $('.course-change-status').on('change', function (e) {
+    $(".course-change-status").on("change", function (e) {
         e.preventDefault();
-        let id = $(this).data('id');
+        let id = $(this).data("id");
         let status = $(this).val();
         $.ajax({
             method: "post",
             url: base_url + "/admin/courses/status-update/" + id,
             data: {
                 _token: csrf_token,
-                status: status
+                status: status,
             },
             success: function (data) {
                 if (data.status == "success") {
@@ -590,8 +660,8 @@ $(document).ready(function () {
                 let errors = xhr.responseJSON.errors;
                 $.each(errors, function (key, value) {
                     toastr.error(value);
-                })
-            }
-        })
-    })
+                });
+            },
+        });
+    });
 });

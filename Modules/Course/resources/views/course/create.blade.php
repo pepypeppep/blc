@@ -31,7 +31,7 @@
                                                 value="{{ isset($editMode) && $editMode == true ? true : false }}">
 
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                {{-- <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label for="instructor">{{ __('Instructor') }}
                                                             <code>*</code></label>
@@ -46,7 +46,7 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                </div>
+                                                </div> --}}
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">
@@ -55,37 +55,27 @@
                                                             class="form-control" value="{{ @$course?->title }}">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
                                                     <div class="from-group mb-3">
                                                         <label class="form-file-manager-label"
                                                             for="">{{ __('Thumbnail') }}
                                                             <code>*</code></label>
                                                         <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon1">
-                                                                <a data-input="thumbnail" data-preview="holder"
-                                                                    class="file-manager-image">
+                                                            <span class="input-group-text" id="basic-addon1"
+                                                                onclick="$('#thumbnail').trigger('click');">
+                                                                <a data-input="thumbnail" data-preview="holder">
                                                                     <i class="fa fa-picture-o"></i> {{ __('Choose') }}
                                                                 </a>
                                                             </span>
-                                                            <input id="thumbnail" readonly
-                                                                class="form-control file-manager-input" type="text"
-                                                                name="thumbnail" value="{{ @$course?->thumbnail }}">
+                                                            <input id="thumbnail_name" readonly class="form-control"
+                                                                type="text" name="thumbnail_name"
+                                                                value="{{ @$course?->thumbnail }}"
+                                                                onclick="$('#thumbnail').trigger('click');">
+                                                            <input id="thumbnail" class="form-control d-none" type="file"
+                                                                onchange="$('#thumbnail_name').val(this.files[0].name)"
+                                                                name="thumbnail" value="{{ @$course?->thumbnail }}"
+                                                                accept=".jpg, .jpeg, .png">
                                                         </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="course_type">{{ __('Course Form') }}
-                                                            <code>*</code></label>
-                                                        <select name="course_type" id="demo_video_storage"
-                                                            class="form-control">
-                                                            <option @selected(@$course?->course_type == 'video') value="video">
-                                                                VIDEO
-                                                            </option>
-                                                            <option @selected(@$course?->course_type == 'pdf') value="pdf">
-                                                                PDF</option>
-                                                        </select>
                                                     </div>
                                                 </div>
 

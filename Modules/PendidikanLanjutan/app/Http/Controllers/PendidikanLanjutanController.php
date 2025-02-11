@@ -75,11 +75,56 @@ class PendidikanLanjutanController extends Controller
         //
     }
 
+    public function indexVerif()
+    {
+        $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'verification')->paginate(10);
+        $submenu = 'Verifikasi';
+
+        return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers','submenu'));
+    }
+
+    public function showVerif($id)
+    {
+        $vacancyUser = VacancyUser::with(['user'])->where('status', 'verification')
+                        ->where('id', $id)
+                        ->first();
+
+        $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment')
+                                    ->where('vacancy_user_id', $vacancyUser->user_id)
+                                    ->where('category', 'syarat')
+                                    ->get();
+
+        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'vacancyUserAttachments'));
+    }
+
+    public function indexAssesment()
+    {
+        $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'assesment')->paginate(10);
+        $submenu = 'Assesment';
+
+        return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers', 'submenu'));
+    }
+
+    public function showAssesment($id)
+    {
+        $vacancyUser = VacancyUser::with(['user'])->where('status', 'assesment')
+                        ->where('id', $id)
+                        ->first();
+
+        $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment')
+                                    ->where('vacancy_user_id', $vacancyUser->user_id)
+                                    ->where('category', 'syarat')
+                                    ->get();
+
+        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'vacancyUserAttachments'));
+    }
+
     public function indexSK()
     {
         $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'passed')->paginate(10);
+        $submenu = 'Surat Keputusan';
 
-        return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers'));
+        return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers', 'submenu'));
     }
 
     public function showSK($id)

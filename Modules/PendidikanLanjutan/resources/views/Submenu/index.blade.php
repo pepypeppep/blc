@@ -1,16 +1,16 @@
 @extends('admin.master_layout')
 @section('title')
-    <title>{{ __('Verification') }}</title>
+    <title>{{ $submenu }}</title>
 @endsection
 @section('admin-content')
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>{{ __('Verification') }}</h1>
+                <h1>{{ $submenu }}</h1>
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
                     </div>
-                    <div class="breadcrumb-item">{{ __('Verification') }}</div>
+                    <div class="breadcrumb-item">{{ $submenu }}</div>
                 </div>
             </div>
             <div class="section-body">

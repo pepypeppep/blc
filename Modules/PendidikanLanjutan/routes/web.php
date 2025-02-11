@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Route;
 use Modules\PendidikanLanjutan\app\Http\Controllers\PendidikanLanjutanController;
 use Modules\PendidikanLanjutan\app\Http\Controllers\VacancyController;
 use Modules\PendidikanLanjutan\app\Http\Controllers\VacancyParticipantController;
-use Modules\PendidikanLanjutan\app\Http\Controllers\VerificationController;
-use Modules\PendidikanLanjutan\app\Http\Controllers\AssesmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,13 +42,13 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     });
 
     Route::prefix('verification')->group(function () {
-        Route::get('/', [VerificationController::class, 'index'])->name('verification.index');
-        Route::get('{id}', [VerificationController::class, 'show'])->name('verification.show');
+        Route::get('/', [PendidikanLanjutanController::class, 'indexVerif'])->name('verification.index');
+        Route::get('{id}', [PendidikanLanjutanController::class, 'showVerif'])->name('verification.show');
     });
 
     Route::prefix('assesment')->group(function () {
-        Route::get('/', [AssesmentController::class, 'index'])->name('assesment.index');
-        Route::get('{id}', [AssesmentController::class, 'show'])->name('assesment.show');
+        Route::get('/', [PendidikanLanjutanController::class, 'indexAssesment'])->name('assesment.index');
+        Route::get('{id}', [PendidikanLanjutanController::class, 'showAssesment'])->name('assesment.show');
     });
 
     Route::prefix('sk')->group(function () {

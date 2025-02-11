@@ -24,7 +24,13 @@
             </li>
             <li class="{{ Route::is('student.continuing-education') ? 'active' : '' }}">
                 <a href="{{ route('student.continuing-education') }}">
-                    <img src="{{ asset('uploads/website-images/announcement.svg') }}">{{ __('ContinuingEducation') }}</a>
+                    <img
+                        src="{{ asset('uploads/website-images/announcement.svg') }}">{{ __('ContinuingEducation') }}</a>
+            </li>
+            <li class="{{ Route::is('student.continuing-education-mine') ? 'active' : '' }}">
+                <a href="{{ route('student.continuing-education-mine') }}">
+                    <img
+                        src="{{ asset('uploads/website-images/announcement.svg') }}">{{ __('ContinuingEducation') }}</a>
             </li>
         </ul>
     </nav>

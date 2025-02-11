@@ -28,7 +28,7 @@ class StudentPendidikanLanjutanController extends Controller
     }
 
     // list pendidikan yang sudah diambil
-    function vacancyTaken()
+    function mine()
     {
         $vacancies = Vacancy::whereHas('users', function ($query) {
             $query->where('user_id', userAuth()->id); // next update with value_type, unor, dll

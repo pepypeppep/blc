@@ -125,6 +125,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('quiz-attempts', [StudentDashboardController::class, 'quizAttempts'])->name('quiz-attempts');
 
         Route::get('continuing-education', [StudentPendidikanLanjutanController::class, 'index'])->name('continuing-education');
+        Route::get('continuing-education-mine', [StudentPendidikanLanjutanController::class, 'mine'])->name('continuing-education-mine');
         Route::get('continuing-education/{id}', [StudentPendidikanLanjutanController::class, 'continuingEducationDetail'])->name('continuing-education.show');
         Route::post('continuing-education/{id}/register', [StudentPendidikanLanjutanController::class, 'register'])->name('continuing-education.register');
         Route::post('continuing-education/{id}/report', [StudentPendidikanLanjutanController::class, 'vacancyReportSubmit'])->name('continuing-education.report');

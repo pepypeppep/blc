@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\InstructorRequest\app\Models\InstructorRequest;
+use Modules\PendidikanLanjutan\app\Models\Unor;
 
 class User extends Authenticatable
 {
@@ -107,6 +108,10 @@ class User extends Authenticatable
     }
     function jitsi_credential(): HasOne {
         return $this->hasOne(JitsiSetting::class, 'instructor_id', 'id');
+    }
+
+    function unor(): HasOne {
+        return $this->hasOne(Unor::class, 'id', 'unor_id');
     }
 
     /**

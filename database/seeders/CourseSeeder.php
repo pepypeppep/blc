@@ -11,8 +11,12 @@ use App\Models\CourseSelectedLevel;
 use App\Models\Quiz;
 use App\Models\QuizQuestion;
 use App\Models\QuizQuestionAnswer;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
+
 
 class CourseSeeder extends Seeder
 {
@@ -22,17 +26,17 @@ class CourseSeeder extends Seeder
     public function run(): void
     {
         // truncate tables
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('course_chapter_lessons')->truncate();
-        \DB::table('course_chapter_items')->truncate();
-        \DB::table('course_chapters')->truncate();
-        \DB::table('courses')->truncate();
-        \DB::table('course_selected_languages')->truncate();
-        \DB::table('course_selected_levels')->truncate();
-        \DB::table('quizzes')->truncate();
-        \DB::table('quiz_questions')->truncate();
-        \DB::table('quiz_question_answers')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('course_chapter_lessons')->truncate();
+        DB::table('course_chapter_items')->truncate();
+        DB::table('course_chapters')->truncate();
+        DB::table('courses')->truncate();
+        DB::table('course_selected_languages')->truncate();
+        DB::table('course_selected_levels')->truncate();
+        DB::table('quizzes')->truncate();
+        DB::table('quiz_questions')->truncate();
+        DB::table('quiz_question_answers')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
 
         $coursesNames = array(
@@ -410,16 +414,16 @@ class CourseSeeder extends Seeder
                 "updated_at" => "2024-06-04 05:31:32",
             ),
         );
-        
-        $instructorList = array(1001, 1002, 1003, 1004, 1005, 1006, 1009, 1011, 1012);
+
+        $instructorList = array(1001, 1002, 1003, 1004, 1005, 1006, 1007);
         foreach ($coursesNames as $courseName) {
             // create course
             $course = new Course();
             $course->instructor_id = $instructorList[array_rand($instructorList, 1)];
-            $course->category_id = rand(9, 43);
+            $course->category_id = 2;
             $course->type = "course";
             $course->title = $courseName;
-            $course->slug = \Str::slug($courseName);
+            $course->slug = Str::slug($courseName);
             $course->seo_description = $courseName;
             $course->duration = "3000";
             $course->timezone = NULL;
@@ -449,33 +453,33 @@ class CourseSeeder extends Seeder
                 'language_id' => rand(1, 5)
             ]);
 
-            foreach($course_chapters as $chapterIndex => $chapter) {
+            foreach ($course_chapters as $chapterIndex => $chapter) {
                 $courseChapter = new CourseChapter();
                 $courseChapter->title = $chapter['title'];
-                $courseChapter->instructor_id = $course->instructor_id;
+                $courseChapter->instructor_id = 1002;
                 $courseChapter->course_id = $course->id;
                 $courseChapter->order = $chapter['order'];
                 $courseChapter->status = "active";
                 $courseChapter->save();
 
-                foreach($course_chapter_items as $index => $chapterItem) {
+                foreach ($course_chapter_items as $index => $chapterItem) {
                     $courseChapterItem = new CourseChapterItem();
-                    $courseChapterItem->instructor_id = $course->instructor_id;
+                    $courseChapterItem->instructor_id = 1002;
                     $courseChapterItem->chapter_id = $courseChapter->id;
                     $courseChapterItem->type = $chapterItem['type'];
                     $courseChapterItem->order = $chapterItem['order'];
                     $courseChapterItem->save();
 
 
-                    if($chapterIndex == 0) {
-                        
-                        if($chapterItem['type'] == "lesson") {
-                            
+                    if ($chapterIndex == 0) {
+
+                        if ($chapterItem['type'] == "lesson") {
+
                             $courseLesson = new CourseChapterLesson();
                             $courseLesson->title = $course_chapter_lessons[$index]['title'];
                             $courseLesson->slug = $course_chapter_lessons[$index]['slug'];
                             $courseLesson->description = $course_chapter_lessons[$index]['description'];
-                            $courseLesson->instructor_id = $course->instructor_id;
+                            $courseLesson->instructor_id = 1002;
                             $courseLesson->course_id = $course->id;
                             $courseLesson->chapter_id = $courseChapter->id;
                             $courseLesson->chapter_item_id = $courseChapterItem->id;
@@ -488,52 +492,52 @@ class CourseSeeder extends Seeder
                             $courseLesson->order = $course_chapter_lessons[$index]['order'];
                             $courseLesson->is_free = $course_chapter_lessons[$index]['is_free'];
                             $courseLesson->status = $course_chapter_lessons[$index]['status'];
-                            
+
                             $courseLesson->save();
                         }
-    
-                       if($chapterItem['type'] == "quiz") {
-                           
-                           foreach($quizzes as $quiz) {
-                               $courseQuiz = new Quiz();
-                               $courseQuiz->instructor_id = $course->instructor_id;
-                               $courseQuiz->chapter_item_id = $courseChapterItem->id;
-                               $courseQuiz->instructor_id = $course->instructor_id;
-                               $courseQuiz->chapter_id = $courseChapter->id;
-                               $courseQuiz->course_id = $course->id;
-                               $courseQuiz->title = $quiz['title'];
-                               $courseQuiz->time = $quiz['time'];
-                               $courseQuiz->attempt = $quiz['attempt'];
-                               $courseQuiz->pass_mark = $quiz['pass_mark'];
-                               $courseQuiz->total_mark = $quiz['total_mark'];
-                               $courseQuiz->status = $quiz['status'];
-                               $courseQuiz->save();
-    
-                               foreach($quiz_questions as $question) {
-                                   $courseQuizQuestion = new QuizQuestion();
-                                   $courseQuizQuestion->quiz_id = $courseQuiz->id;
-                                   $courseQuizQuestion->title = $question['title'];
-                                   $courseQuizQuestion->type = $question['type'];
-                                   $courseQuizQuestion->grade = $question['grade'];
-                                   $courseQuizQuestion->save();
-                                   foreach($quiz_question_answers as $answer) {
-                                       $courseQuizQuestionAnswer = new QuizQuestionAnswer();
-                                       $courseQuizQuestionAnswer->title = $answer['title'];
-                                       $courseQuizQuestionAnswer->question_id = $courseQuizQuestion->id;
-                                       $courseQuizQuestionAnswer->correct = $answer['correct'];
-                                       $courseQuizQuestionAnswer->save();
-                                   }
-                               }
-                           }
-                       }
-                    }else {
-                        if($chapterItem['type'] == "lesson") {
-                            
+
+                        if ($chapterItem['type'] == "quiz") {
+
+                            foreach ($quizzes as $quiz) {
+                                $courseQuiz = new Quiz();
+                                $courseQuiz->instructor_id = $course->instructor_id;
+                                $courseQuiz->chapter_item_id = $courseChapterItem->id;
+                                $courseQuiz->instructor_id = $course->instructor_id;
+                                $courseQuiz->chapter_id = $courseChapter->id;
+                                $courseQuiz->course_id = $course->id;
+                                $courseQuiz->title = $quiz['title'];
+                                $courseQuiz->time = $quiz['time'];
+                                $courseQuiz->attempt = $quiz['attempt'];
+                                $courseQuiz->pass_mark = $quiz['pass_mark'];
+                                $courseQuiz->total_mark = $quiz['total_mark'];
+                                $courseQuiz->status = $quiz['status'];
+                                $courseQuiz->save();
+
+                                foreach ($quiz_questions as $question) {
+                                    $courseQuizQuestion = new QuizQuestion();
+                                    $courseQuizQuestion->quiz_id = $courseQuiz->id;
+                                    $courseQuizQuestion->title = $question['title'];
+                                    $courseQuizQuestion->type = $question['type'];
+                                    $courseQuizQuestion->grade = $question['grade'];
+                                    $courseQuizQuestion->save();
+                                    foreach ($quiz_question_answers as $answer) {
+                                        $courseQuizQuestionAnswer = new QuizQuestionAnswer();
+                                        $courseQuizQuestionAnswer->title = $answer['title'];
+                                        $courseQuizQuestionAnswer->question_id = $courseQuizQuestion->id;
+                                        $courseQuizQuestionAnswer->correct = $answer['correct'];
+                                        $courseQuizQuestionAnswer->save();
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if ($chapterItem['type'] == "lesson") {
+
                             $courseLesson = new CourseChapterLesson();
                             $courseLesson->title = fake()->sentence();
                             $courseLesson->slug = fake()->slug();
                             $courseLesson->description = $course_chapter_lessons[$index]['description'];
-                            $courseLesson->instructor_id = $course->instructor_id;
+                            $courseLesson->instructor_id = 1002;
                             $courseLesson->course_id = $course->id;
                             $courseLesson->chapter_id = $courseChapter->id;
                             $courseLesson->chapter_item_id = $courseChapterItem->id;
@@ -546,57 +550,53 @@ class CourseSeeder extends Seeder
                             $courseLesson->order = $course_chapter_lessons[$index]['order'];
                             $courseLesson->is_free = $course_chapter_lessons[$index]['is_free'];
                             $courseLesson->status = $course_chapter_lessons[$index]['status'];
-                            
+
                             $courseLesson->save();
                         }
-    
-                       if($chapterItem['type'] == "quiz") {
-                           
-                           foreach($quizzes as $quiz) {
-                               $courseQuiz = new Quiz();
-                               $courseQuiz->instructor_id = $course->instructor_id;
-                               $courseQuiz->chapter_item_id = $courseChapterItem->id;
-                               $courseQuiz->instructor_id = $course->instructor_id;
-                               $courseQuiz->chapter_id = $courseChapter->id;
-                               $courseQuiz->course_id = $course->id;
-                               $courseQuiz->title = fake()->sentence(5);
-                               $courseQuiz->time = $quiz['time'];
-                               $courseQuiz->attempt = $quiz['attempt'];
-                               $courseQuiz->pass_mark = $quiz['pass_mark'];
-                               $courseQuiz->total_mark = $quiz['total_mark'];
-                               $courseQuiz->status = $quiz['status'];
-                               $courseQuiz->save();
-    
-                               foreach($quiz_questions as $question) {
-                                   $courseQuizQuestion = new QuizQuestion();
-                                   $courseQuizQuestion->quiz_id = $courseQuiz->id;
-                                   $courseQuizQuestion->title = $question['title'];
-                                   $courseQuizQuestion->type = $question['type'];
-                                   $courseQuizQuestion->grade = $question['grade'];
-                                   $courseQuizQuestion->save();
-                                   foreach($quiz_question_answers as $answer) {
-                                       $courseQuizQuestionAnswer = new QuizQuestionAnswer();
-                                       $courseQuizQuestionAnswer->title = $answer['title'];
-                                       $courseQuizQuestionAnswer->question_id = $courseQuizQuestion->id;
-                                       $courseQuizQuestionAnswer->correct = $answer['correct'];
-                                       $courseQuizQuestionAnswer->save();
-                                   }
-                               }
-                           }
-                       }
+
+                        if ($chapterItem['type'] == "quiz") {
+
+                            foreach ($quizzes as $quiz) {
+                                $courseQuiz = new Quiz();
+                                $courseQuiz->instructor_id = $course->instructor_id;
+                                $courseQuiz->chapter_item_id = $courseChapterItem->id;
+                                $courseQuiz->instructor_id = $course->instructor_id;
+                                $courseQuiz->chapter_id = $courseChapter->id;
+                                $courseQuiz->course_id = $course->id;
+                                $courseQuiz->title = fake()->sentence(5);
+                                $courseQuiz->time = $quiz['time'];
+                                $courseQuiz->attempt = $quiz['attempt'];
+                                $courseQuiz->pass_mark = $quiz['pass_mark'];
+                                $courseQuiz->total_mark = $quiz['total_mark'];
+                                $courseQuiz->status = $quiz['status'];
+                                $courseQuiz->save();
+
+                                foreach ($quiz_questions as $question) {
+                                    $courseQuizQuestion = new QuizQuestion();
+                                    $courseQuizQuestion->quiz_id = $courseQuiz->id;
+                                    $courseQuizQuestion->title = $question['title'];
+                                    $courseQuizQuestion->type = $question['type'];
+                                    $courseQuizQuestion->grade = $question['grade'];
+                                    $courseQuizQuestion->save();
+                                    foreach ($quiz_question_answers as $answer) {
+                                        $courseQuizQuestionAnswer = new QuizQuestionAnswer();
+                                        $courseQuizQuestionAnswer->title = $answer['title'];
+                                        $courseQuizQuestionAnswer->question_id = $courseQuizQuestion->id;
+                                        $courseQuizQuestionAnswer->correct = $answer['correct'];
+                                        $courseQuizQuestionAnswer->save();
+                                    }
+                                }
+                            }
+                        }
                     }
-
-
                 }
             }
         }
-
-
     }
 
     public function getRandomFilename()
     {
-        $files = \File::files(public_path('/uploads/store/files/1001/my course images/'));  // Get all files from the path
+        $files = File::files(public_path('/uploads/store/files/1001/my course images/'));  // Get all files from the path
 
         if (empty($files)) {
             return null; // Return null if no files found
@@ -606,6 +606,6 @@ class CourseSeeder extends Seeder
         $randomIndex = shuffle($files);
 
         $fileInfo = pathinfo($files[$randomIndex]);  // Get info of selected file
-        return "/uploads/store/files/1001/my course images/".$fileInfo['filename'] . '.' . $fileInfo['extension']; // Build filename
+        return "/uploads/store/files/1001/my course images/" . $fileInfo['filename'] . '.' . $fileInfo['extension']; // Build filename
     }
 }

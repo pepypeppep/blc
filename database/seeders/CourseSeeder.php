@@ -415,7 +415,7 @@ class CourseSeeder extends Seeder
             ),
         );
 
-        $instructorList = array(1001, 1002, 1003, 1004, 1005, 1006, 1009, 1011, 1012);
+        $instructorList = array(1001, 1002, 1003, 1004, 1005, 1006, 1007);
         foreach ($coursesNames as $courseName) {
             // create course
             $course = new Course();

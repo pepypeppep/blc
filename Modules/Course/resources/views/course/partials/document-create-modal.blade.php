@@ -4,7 +4,7 @@
 
 <div class="">
     <form action="{{ route('admin.course-chapter.lesson.store') }}" method="POST"
-        class="add_lesson_form instructor__profile-form">
+        class="add_lesson_form instructor__profile-form" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="course_id" value="{{ $courseId }}">
         <input type="hidden" name="chapter_id" value="{{ $chapterId }}">
@@ -29,36 +29,25 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-8 upload">
+        <div class="row mt-3">
+            <div class="col-md-12 upload">
                 <div class="from-group mb-3">
                     <label class="form-file-manager-label" for="">{{ __('Path') }}
                         <code>*</code></label>
                     <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1">
-                            <a data-input="path" data-preview="holder" class="file-manager">
+                        <span class="input-group-text" id="basic-addon1"
+                            onclick="document.getElementById('path').click()">
+                            <a data-input="path" data-preview="holder">
                                 <i class="fa fa-picture-o"></i> {{ __('Choose') }}
                             </a>
                         </span>
-                        <input id="path" readonly class="form-control file-manager-input" type="text"
-                            name="upload_path" value="">
+                        <input id="path" class="form-control d-none" type="file" name="file_path" value=""
+                            onchange="document.getElementById('path_name').value = this.files[0].name" accept=".pdf">
+                        <input id="path_name" readonly class="form-control" type="text" name="upload_path_name"
+                            value="" onclick="document.getElementById('path').click()">
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-grp">
-                    <label for="file_type_select">{{ __('File Type') }} <code>*</code></label>
-                    <select name="file_type" id="file_type_select" class="file_type form-control">
-                        <option value="">{{ __('Select') }}</option>
-                        @foreach (config('course.file_types') as $key => $value)
-                        @if (in_array($key, ['pdf', 'txt', 'docx']))
-                                <option value="{{ $key }}">{{ $value }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            
         </div>
 
         <div class="">

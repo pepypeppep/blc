@@ -2,27 +2,28 @@
 
 namespace Modules\Course\app\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Quiz;
+use App\Models\User;
 use App\Models\Course;
-use Modules\Order\app\Models\Enrollment;
+use Illuminate\View\View;
+use App\Models\QuizQuestion;
+use Illuminate\Http\Request;
 use App\Models\CourseChapter;
 use App\Models\CourseChapterItem;
 use App\Models\CourseChapterLesson;
-use App\Models\CoursePartnerInstructor;
-use App\Models\CourseSelectedFilterOption;
-use App\Models\CourseSelectedLanguage;
 use App\Models\CourseSelectedLevel;
-use App\Models\Quiz;
-use App\Models\QuizQuestion;
-use App\Models\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use App\Models\CourseSelectedLanguage;
+use App\Models\CoursePartnerInstructor;
 use Illuminate\Support\Facades\Session;
-use Illuminate\View\View;
-use Modules\Course\app\Http\Requests\CourseStoreRequest;
+use Illuminate\Support\Facades\Storage;
+use Modules\Order\app\Models\Enrollment;
+use App\Models\CourseSelectedFilterOption;
+use Modules\Course\app\Models\CourseLevel;
 use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
-use Modules\Course\app\Models\CourseLevel;
+use Modules\Course\app\Http\Requests\CourseStoreRequest;
 
 class CourseController extends Controller
 {
@@ -77,17 +78,29 @@ class CourseController extends Controller
             $course->slug = $slug;
         }
 
+        $file = $request->file('thumbnail');
+        if ($file) {
+            $path = 'course/' . now()->year . '/' . now()->month . '/thumbnail/';
+            $filename = $course->slug . '_' . time() . '.png';
+            Storage::disk('private')->put($path . $filename, file_get_contents($file));
+
+            $course->thumbnail = $path . $filename;
+        } else {
+            $course->thumbnail = $course->thumbnail;
+        }
+
         $course->title = $request->title;
         $course->seo_description = $request->seo_description;
-        $course->thumbnail = $request->thumbnail;
         $course->demo_video_storage = 'upload';
         $course->demo_video_source = $request->demo_video_storage == 'upload' ? $request->upload_path : $request->external_path;
         $course->price = $request->price;
         $course->discount = $request->discount_price;
         $course->description = $request->description;
         $course->background = $request->background;
-        $course->course_type = $request->course_type;
-        $course->instructor_id = $request->instructor;
+        $course->course_type = "pdf";
+        // $course->course_type = $request->course_type;
+        // $course->instructor_id = $request->instructor;
+        $course->instructor_id = 1001;
         $course->save();
 
         // save course id in session
@@ -149,7 +162,34 @@ class CourseController extends Controller
             case '2':
                 $request->validate([
                     'course_duration' => ['required', 'numeric', 'min:0'],
-                    'category' => ['required']
+                    'category' => ['required'],
+                    'start_date' => ['required', 'date', 'before:end_date'],
+                    'end_date' => ['required', 'date', 'after:start_date'],
+                    'output' => ['required'],
+                    'outcome' => ['required'],
+                    'levels' => ['required', 'min:1', function ($attribute, $value, $fail) {
+                        $ids = CourseLevel::pluck('id')->toArray();
+                        foreach ($value as $level) {
+                            if (!in_array($level, $ids)) {
+                                $fail(__('The selected levels is invalid.'));
+                            }
+                        }
+                    }],
+                ], [
+                    'course_duration.required' => __('Course duration is required'),
+                    'course_duration.numeric' => __('Course duration must be a number'),
+                    'course_duration.min' => __('Course duration must be greater than or equal to 0'),
+                    'category.required' => __('Category is required'),
+                    'start_date.required' => __('Start date is required'),
+                    'start_date.date' => __('Start date must be a date'),
+                    'start_date.before' => __('Start date must be before end date'),
+                    'end_date.required' => __('End date is required'),
+                    'end_date.date' => __('End date must be a date'),
+                    'end_date.after' => __('End date must be after start date'),
+                    'output.required' => __('Output is required'),
+                    'outcome.required' => __('Outcome is required'),
+                    'levels.required' => __('Levels is required'),
+                    'levels.min' => __('Levels must have at least one level'),
                 ]);
                 $this->storeMoreInfo($request);
                 return response()->json([
@@ -193,8 +233,8 @@ class CourseController extends Controller
         $course->downloadable = $request->downloadable;
         $course->certificate = $request->certificate;
         $course->partner_instructor = $request->partner_instructor;
-        $course->start_date = $request->from_date;
-        $course->end_date = $request->to_date;
+        $course->start_date = $request->start_date;
+        $course->end_date = $request->end_date;
         $course->output = $request->output;
         $course->outcome = $request->outcome;
         $course->save();
@@ -221,14 +261,14 @@ class CourseController extends Controller
         }
 
         //insert languages
-        CourseSelectedLanguage::where('course_id', $course->id)
-            ->whereNotIn('language_id', $request->languages ?? [])->delete();
+        // CourseSelectedLanguage::where('course_id', $course->id)
+        //     ->whereNotIn('language_id', $request->languages ?? [])->delete();
 
-        foreach ($request->languages ?? [] as $language) {
-            CourseSelectedLanguage::updateOrCreate(
-                ['course_id' => $course->id, 'language_id' => $language],
-            );
-        }
+        // foreach ($request->languages ?? [] as $language) {
+        //     CourseSelectedLanguage::updateOrCreate(
+        //         ['course_id' => $course->id, 'language_id' => $language],
+        //     );
+        // }
     }
 
     function storeFinish(Request $request)

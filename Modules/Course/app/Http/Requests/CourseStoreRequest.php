@@ -17,13 +17,13 @@ class CourseStoreRequest extends FormRequest
         $rules = [
             'title' => ['required', 'max:255'],
             'seo_description' => ['nullable', 'string', 'max:255'],
-            'thumbnail' => ['required', 'max:255'],
+            'thumbnail' => $this->edit_mode == 1 ? ['nullable', 'mimes:jpg,jpeg,png', 'max:5120'] : ['required', 'mimes:jpg,jpeg,png', 'max:5120'],
             'demo_video_source' => ['nullable', 'string'],
             'path' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
             'discount_price' => ['nullable', 'numeric', new ValidateDiscountRule()],
             'description' => ['required', 'string', 'max:5000'],
-            'instructor' => ['required', 'numeric'],
+            'instructor' => ['nullable', 'numeric'],
         ];
 
         return $rules;
@@ -37,7 +37,8 @@ class CourseStoreRequest extends FormRequest
             'seo_description.string' => __('Seo description must be a string'),
             'seo_description.max' => __('Seo description must be less than 255 characters long'),
             'thumbnail.required' => __('Thumbnail is required'),
-            'thumbnail.max' => __('Thumbnail must be less than 255 characters long'),
+            'thumbnail.mimes' => __('Thumbnail must be a file of type: :values'),
+            'thumbnail.max' => __('Thumbnail must be less than :value MB'),
             'demo_video_source.string' => __('Demo video source must be a string'),
             'path.string' => __('Path must be a string'),
             'price.required' => __('Price is required'),

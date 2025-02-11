@@ -29,83 +29,24 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-grp">
-                    <label for="source">{{ __('Source') }} <code>*</code></label>
-                    <select name="source" id="source" class="source form-control">
-                        <option value="">{{ __('Select') }}</option>
-                        @if($setting?->aws_status == 'active')
-                            <option value="aws">{{ config('course.storage_source.aws') }}</option>
-                        @endif
-                        @foreach (config('course.storage_source') as $key => $value)
-                            @if($key != 'aws' && $key != 'wasabi')
-                                <option value="{{ $key }}">{{ $value }}</option>
-                            @endif
-                        @endforeach
-                        @if($setting?->wasabi_status == 'active')
-                            <option value="wasabi">{{ config('course.storage_source.wasabi') }}</option>
-                        @endif
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-grp">
-                    <label for="file_type">{{ __('File Type') }} <code>*</code></label>
-                    <select name="file_type" id="file_type" class="file_type form-control">
-                        <option value="">{{ __('Select') }}</option>
-                        @foreach (config('course.file_types') as $key => $value)
-                            @if (in_array($key, ['video', 'file', 'other']))
-                                <option value="{{ $key }}">{{ $value }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-md-8 upload">
-                <div class="from-group mb-3">
-                    <label class="form-file-manager-label" for="">{{ __('Path') }}
-                        <code>*</code></label>
-                    <div class="input-group">
-                        <span class="input-group-text" id="basic-addon1">
-                            <a data-input="path" data-preview="holder" class="file-manager">
-                                <i class="fa fa-picture-o"></i> {{ __('Choose') }}
-                            </a>
-                        </span>
-                        <input id="path" readonly class="form-control file-manager-input" type="text"
-                            name="upload_path" value="">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 cloud_storage d-none">
-                <div class="from-group mb-3">
-                    <label class="form-file-manager-label" for="">{{ __('Upload') }}</label>
-                    <div class="input-group">
-                        <div class="input-group">
-                            <input id="file-input" type="file" class="form-control">
-                            <button type="button" id="cloud-btn" class="input-group-text" id="basic-addon1"><i class="fas fa-upload"></i></button>
-                        </div>
-                    </div>
-                    <div class="progress d-none">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-8 link_path d-none">
+        <div class="row mt-3">
+            <div class="col-md-8 link_path">
                 <div class="form-grp">
                     <label for="meta_description">{{ __('Path') }} <code></code></label>
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1"><i class="fas fa-link"></i></span>
                         <input type="text" class="form-control" id="input_link" name="link_path"
-                            placeholder="{{ __('pest source url') }}" value="">
+                            placeholder="{{ __('Youtube source url') }}" value="">
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="duration">{{ __('Duration') }} <code>* ({{ __('in minutes') }})</code></label>
-                    <input class="form-control" id="duration" name="duration" type="text" value="">
+                    <label for="duration">{{ __('Duration') }} <code>*
+                            <small>({{ __('in minutes') }})</small></code></label>
+                    <input class="form-control" id="duration" name="duration" type="number" value=""
+                        pattern="^(?!0)\d+$" title="{{ __('Cannot input 0 infront') }}"
+                        oninput="this.value = this.value.replace(/^0/, '')">
                 </div>
             </div>
         </div>

@@ -68,4 +68,4 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
 
 });
 
-Route::post('/get-file/{vacancyAttachmentId}/{userId}', [VacancyParticipantController::class, 'getFile'])->name('vacancies-participant.get.file');
+Route::get('/get-file/{vacancyAttachmentId}/{userId}', [VacancyParticipantController::class, 'getFile'])->name('vacancies-participant.get.file');

@@ -30,6 +30,6 @@ class VacancyUserAttachment extends Model
      */
     public function vacancyattachment(): BelongsTo
     {
-        return $this->belongsTo(VacancyAttachment::class);
+        return $this->belongsTo(VacancyAttachment::class, 'vacancy_attachment_id', 'id');
     }
 }

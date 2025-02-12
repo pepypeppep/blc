@@ -702,7 +702,7 @@
     "The sub title must be a string with a maximum of 255 characters.": "Sub judul harus berupa string dengan maksimal 255 karakter.",
     "The description must be a string with a maximum of 600 characters.": "Deskripsi harus berupa string dengan maksimal 600 karakter.",
     "Certificate Builder": "Pembuat Sertifikat",
-    "There are bunch of handy tags you can use, like [student_name], [platform_name], [course], [date], [instructor_name]. Feel free to use them anywhere in your titles, subtitles or description": "Ada banyak tag berguna yang dapat Anda gunakan, seperti [nama_siswa], [nama_platform], [pelatihan], [tanggal], [nama_instruktur]. Jangan ragu untuk menggunakannya di mana saja dalam judul, subjudul, atau deskripsi Anda",
+    "There are bunch of handy tags you can use, like [student_name], [platform_name], [course], [date], [instructor_name]. Feel free to use them anywhere in your titles, subtitles or description": "Ada banyak tag berguna yang dapat Anda gunakan, seperti [student_name], [platform_name], [course], [date], [instructor_name]. Jangan ragu untuk menggunakannya di mana saja dalam judul, subjudul, atau deskripsi Anda",
     "Certificate Details": "Detail Sertifikat",
     "Background Image": "Gambar Latar Belakang",
     "Sub Title": "Sub Judul",

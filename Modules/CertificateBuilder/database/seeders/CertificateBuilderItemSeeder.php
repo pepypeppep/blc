@@ -13,6 +13,7 @@ class CertificateBuilderItemSeeder extends Seeder
     {
         $certificate_builder_items = array(
             array(
+                "certificate_builder_id" => 1,
                 "id" => 1,
                 "element_id" => "title",
                 "x_position" => "326.99993896484375",
@@ -21,6 +22,7 @@ class CertificateBuilderItemSeeder extends Seeder
                 "updated_at" => "2024-05-16 05:00:14",
             ),
             array(
+                "certificate_builder_id" => 1,
                 "id" => 2,
                 "element_id" => "sub_title",
                 "x_position" => "377.00006103515625",
@@ -29,6 +31,7 @@ class CertificateBuilderItemSeeder extends Seeder
                 "updated_at" => "2024-05-16 10:05:19",
             ),
             array(
+                "certificate_builder_id" => 1,
                 "id" => 3,
                 "element_id" => "description",
                 "x_position" => "25",
@@ -37,6 +40,7 @@ class CertificateBuilderItemSeeder extends Seeder
                 "updated_at" => "2024-05-16 10:45:02",
             ),
             array(
+                "certificate_builder_id" => 1,
                 "id" => 4,
                 "element_id" => "signature",
                 "x_position" => "401",
@@ -45,7 +49,7 @@ class CertificateBuilderItemSeeder extends Seeder
                 "updated_at" => "2024-05-16 10:14:05",
             ),
         );
-    
+
         \DB::table('certificate_builder_items')->insert($certificate_builder_items);
     }
 }

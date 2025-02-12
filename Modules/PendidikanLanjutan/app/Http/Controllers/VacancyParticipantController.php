@@ -11,21 +11,19 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 
 class VacancyParticipantController extends Controller
 {
-    public function updateStatus(Request $request, $vacancyId, $userId)
+    public function updateStatus(Request $request, $vacancyUserId)
     {
         // Start transaction
         DB::beginTransaction();
 
         try {
-            // Get vacancy data
-            $vacancy = Vacancy::findOrFail($vacancyId);
-
             // Get vacancy user data
-            $vacancyUser = $vacancy->users()->where('user_id', $userId)->firstOrFail();
+            $vacancyUser = VacancyUser::findOrFail($vacancyUserId);
 
             // Update Vacancy Status
             $vacancyUser->update([
@@ -35,6 +33,8 @@ class VacancyParticipantController extends Controller
             // Update Vacancy Log
             $request->merge([
                 'vacancy_user_id' => $vacancyUser->id,
+                'name' => 'Verifikasi Berkas',
+                'description' => $request->description
             ]);
             vacancyLog($request);
 

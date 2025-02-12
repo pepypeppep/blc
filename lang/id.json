@@ -1976,5 +1976,7 @@
     "The duration must be at least 1 minute.": "Durasi harus setidaknya 1 menit.",
     "The upload path must be a file.": "Jalur unggahan harus berupa file.",
     "The upload path must be a file of type: .pdf": "Jalur unggahan harus berupa file jenis: .pdf",
-    "The upload path may not be greater than 10240 kilobytes (10 MB).": "Jalur unggahan tidak boleh lebih dari 10240 kilobytes (10 MB)."
+    "The upload path may not be greater than 10240 kilobytes (10 MB).": "Jalur unggahan tidak boleh lebih dari 10240 kilobytes (10 MB).",
+    "Choose Certificate": "Pilih Sertifikat",
+    "Certificate does not exist": "Sertifikat tidak ada"
 }

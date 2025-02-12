@@ -85,7 +85,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6 my-4">
+                                            <div class="col-md-3 my-4">
                                                 <div class="form-group">
                                                     <label for="level">{{ __('Level') }}
                                                         <code>*</code></label>
@@ -101,6 +101,21 @@
                                                             </option>
                                                         @endforeach
                                                     </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 my-4">
+                                                <div class="form-group">
+                                                    <label for="level">{{ __('Certificate') }}
+                                                        <code>*</code></label>
+                                                    <div>
+                                                        <div id="certificateBg"></div>
+                                                        <input type="hidden" name="certificate"
+                                                            value="{{ $course?->certificate_id }}" class="form-control">
+                                                        <!-- Button trigger modal -->
+                                                        <button type="button" class="btn btn-primary mt-3"
+                                                            data-toggle="modal"
+                                                            data-target="#certificateModal">{{ __('Choose Certificate') }}</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -129,9 +144,32 @@
                     </div>
                 </div>
             </div>
+        </section>
     </div>
-    </div>
-    </section>
+    <!-- Modal -->
+    <div class="modal fade" id="certificateModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 25px 25px 0px 25px;">
+                    <h5 class="modal-title" id="certificateModalLabel">
+                        {{ __('Choose Certificate') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body row">
+                    @foreach ($certificates as $certificate)
+                        <div class="col-md-3 d-flex flex-column">
+                            <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}" alt=""
+                                style="width: 100%; height: auto;">
+                            <button class="btn btn-primary mt-auto"
+                                onclick="chooseCertificate({{ $certificate->id }})">{{ __('Choose') }}</button>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -161,6 +199,22 @@
             autoclose: false,
             format: "yyyy-mm-dd"
         });
+
+        @if ($course?->certificate_id != null)
+            $('#certificateBg').html(
+                '<img src="{{ route('admin.certificate-builder.getBg', $course->certificate_id) }}" alt="" style="width: 100%; height: auto;" />'
+            );
+        @endif
+
+
+        function chooseCertificate(id) {
+            $('#certificateModal').modal('hide')
+            $('input[name="certificate"]').val(id);
+
+            $('#certificateBg').html(
+                '<img src="{{ route('admin.certificate-builder.getBg', ':id') }}" alt="" style="width: 100%; height: auto;" />'
+                .replace(':id', id));
+        }
     </script>
 @endpush
 

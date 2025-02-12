@@ -26,6 +26,7 @@ use App\Http\Controllers\Frontend\StudentProfileSettingController;
 use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
+use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -126,11 +127,13 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('enrolled-courses', [StudentDashboardController::class, 'enrolledCourses'])->name('enrolled-courses');
         Route::get('quiz-attempts', [StudentDashboardController::class, 'quizAttempts'])->name('quiz-attempts');
 
-        Route::get('continuing-education', [StudentDashboardController::class, 'continuingEducation'])->name('continuing-education');
-        Route::get('continuing-education/{id}', [StudentDashboardController::class, 'continuingEducationDetail'])->name('continuing-education.show');
+        Route::get('continuing-education', [StudentPendidikanLanjutanController::class, 'index'])->name('continuing-education');
+        Route::get('continuing-education/{id}', [StudentPendidikanLanjutanController::class, 'continuingEducationDetail'])->name('continuing-education.show');
+        Route::post('continuing-education/{id}/register', [StudentPendidikanLanjutanController::class, 'register'])->name('continuing-education.register');
         Route::get('continuing-education-attachment/{id}', [StudentDashboardController::class, 'continuingEducationAttachment'])->name('continuing-education.attachment');
-        Route::get('continuing-education-registration', [StudentDashboardController::class, 'continuingEducationRegistration'])->name('continuing-education.registration');
-        Route::get('continuing-education-registration/{id}', [StudentDashboardController::class, 'continuingEducationRegistrationDetail'])->name('continuing-education.registration.show');
+        Route::get('continuing-education-registration', [StudentPendidikanLanjutanController::class, 'registered'])->name('continuing-education.registration');
+        Route::get('continuing-education-registration/{id}', [StudentPendidikanLanjutanController::class, 'registeredDetail'])->name('continuing-education.registration.show');
+        Route::post('continuing-education-registration/{id}/report', [StudentPendidikanLanjutanController::class, 'vacancyReportSubmit'])->name('continuing-education.registration.report');
 
         /** learning routes */
         Route::get('learning/{slug}', [LearningController::class, 'index'])->name('learning.index');

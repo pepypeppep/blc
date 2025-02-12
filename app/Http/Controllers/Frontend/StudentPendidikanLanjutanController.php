@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 
@@ -28,13 +29,26 @@ class StudentPendidikanLanjutanController extends Controller
     }
 
     // list pendidikan yang sudah diambil
-    function mine()
+    function registered()
     {
         $vacancies = Vacancy::whereHas('users', function ($query) {
             $query->where('user_id', userAuth()->id); // next update with value_type, unor, dll
-        })->with(['users'])->paginate(10);
+        })->with(['users', 'study'])->paginate(10);
 
-        return view('frontend.student-dashboard.continuing-education.index', compact('vacancies'));
+        // dd($vacancies->first());
+
+        return view('frontend.student-dashboard.continuing-education.registration.index', compact('vacancies'));
+    }
+
+    function registeredDetail($id)
+    {
+        $vacancy = VacancyUser::with(['vacancy', 'user'])->findOrFail($id);
+        $logs = VacancyLogs::where('vacancy_user_id', $id)->get();
+        $attachments = VacancyUserAttachment::with('vacancyattachment')->where('vacancy_user_id', $vacancy->user_id)->get();
+        $reports = VacancyReport::where('vacancy_user_id', $vacancy->id)->get();
+
+        // dd($attachments);
+        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancy', 'logs', 'attachments', 'reports'));
     }
 
     // detail pendidikan
@@ -84,6 +98,13 @@ class StudentPendidikanLanjutanController extends Controller
             'vacancy_user_id' => $vacancyUser->user->id,
             'file' => $fileName,
             'category' => $attachment->category
+        ]);
+
+        VacancyLogs::create([
+            'vacancy_user_id' => $vacancyUser->id,
+            'name' => 'Upload file requirement',
+            'description' => 'Mengupload file requirement ' . $attachment->name,
+            'status' => 'success',
         ]);
 
         if (!$result) {
@@ -139,6 +160,13 @@ class StudentPendidikanLanjutanController extends Controller
             'name' => $validated['name'],
             'file' => $fileName,
             'status' => 'pending',
+        ]);
+
+        VacancyLogs::create([
+            'vacancy_user_id' => $vacancyUser->id,
+            'name' => $validated['name'],
+            'description' => 'Telah mengirim laporan',
+            'status' => 'success',
         ]);
 
         if (!$result) {

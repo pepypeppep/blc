@@ -25,6 +25,31 @@ Route::middleware(['auth:admin', 'translation'])
 
 Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::prefix('vacancies')->group(function () {
+        Route::prefix('verification')->group(function () {
+            Route::get('/', [PendidikanLanjutanController::class, 'indexVerif'])->name('verification.index');
+            Route::get('{id}', [PendidikanLanjutanController::class, 'showVerif'])->name('verification.show');
+        });
+
+        Route::prefix('assesment')->group(function () {
+            Route::get('/', [PendidikanLanjutanController::class, 'indexAssesment'])->name('assesment.index');
+            Route::get('{id}', [PendidikanLanjutanController::class, 'showAssesment'])->name('assesment.show');
+        });
+
+        Route::prefix('sk')->group(function () {
+            Route::get('/', [PendidikanLanjutanController::class, 'indexSK'])->name('sk.index');
+            Route::get('{id}', [PendidikanLanjutanController::class, 'showSK'])->name('sk.show');
+        });
+
+        Route::prefix('report')->group(function () {
+            Route::get('/', [AssesmentController::class, 'index'])->name('report.index');
+            Route::get('{id}', [AssesmentController::class, 'show'])->name('report.show');
+        });
+
+        Route::prefix('extension')->group(function () {
+            Route::get('/', [AssesmentController::class, 'index'])->name('extension.index');
+            Route::get('{id}', [AssesmentController::class, 'show'])->name('extension.show');
+        });
+
         Route::get('/', [VacancyController::class, 'index'])->name('vacancies.index');
         Route::get('create', [VacancyController::class, 'create'])->name('vacancies.create');
         Route::post('/', [VacancyController::class, 'store'])->name('vacancies.store');
@@ -37,35 +62,9 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     });
 
     Route::prefix('vacancies-participant')->group(function () {
-        Route::put('/update-status/{vacancyId}/{userId}', [VacancyParticipantController::class, 'updateStatus'])->name('vacancies-participant.update.status');
-        Route::post('/upload-file/{vacancyId}/{userId}', [VacancyParticipantController::class, 'uploadFile'])->name('vacancies-participant.upload.file');
+        Route::put('/update-status/{vacancyUserId}', [VacancyParticipantController::class, 'updateStatus'])->name('vacancies-participant.update.status');
+        Route::post('/upload-file/{vacancyUserId}', [VacancyParticipantController::class, 'uploadFile'])->name('vacancies-participant.upload.file');
     });
-
-    Route::prefix('verification')->group(function () {
-        Route::get('/', [PendidikanLanjutanController::class, 'indexVerif'])->name('verification.index');
-        Route::get('{id}', [PendidikanLanjutanController::class, 'showVerif'])->name('verification.show');
-    });
-
-    Route::prefix('assesment')->group(function () {
-        Route::get('/', [PendidikanLanjutanController::class, 'indexAssesment'])->name('assesment.index');
-        Route::get('{id}', [PendidikanLanjutanController::class, 'showAssesment'])->name('assesment.show');
-    });
-
-    Route::prefix('sk')->group(function () {
-        Route::get('/', [PendidikanLanjutanController::class, 'indexSK'])->name('sk.index');
-        Route::get('{id}', [PendidikanLanjutanController::class, 'showSK'])->name('sk.show');
-    });
-
-    Route::prefix('report')->group(function () {
-        Route::get('/', [AssesmentController::class, 'index'])->name('report.index');
-        Route::get('{id}', [AssesmentController::class, 'show'])->name('report.show');
-    });
-
-    Route::prefix('extension')->group(function () {
-        Route::get('/', [AssesmentController::class, 'index'])->name('extension.index');
-        Route::get('{id}', [AssesmentController::class, 'show'])->name('extension.show');
-    });
-
 });
 
 Route::get('/get-file/{vacancyAttachmentId}/{userId}', [VacancyParticipantController::class, 'getFile'])->name('vacancies-participant.get.file');

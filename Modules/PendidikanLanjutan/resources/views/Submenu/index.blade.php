@@ -110,7 +110,8 @@
                                         <thead>
                                             <tr>
                                                 <th width="5%">{{ __('#') }}</th>
-                                                <th width="30%" class="course-table-title">{{ __('Employee Id') }} / {{ __('Name') }}</th>
+                                                <th width="30%" class="course-table-title">{{ __('Employee Id') }} /
+                                                    {{ __('Name') }}</th>
                                                 <th width="15%">{{ __('Employment Position') }}</th>
                                                 <th width="15%">{{ __('Employment Level') }}</th>
                                                 <th width="15%">{{ __('Employment Unit') }}</th>
@@ -125,50 +126,61 @@
                                             @forelse ($vacancyUsers as $vacancyUser)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $vacancyUser->user->nip }} / {{ $vacancyUser->user->name }}</td>
+                                                    <td>{{ $vacancyUser->user->nip }} / {{ $vacancyUser->user->name }}
+                                                    </td>
                                                     <td>Jabatan/Pangkat</td>
-                                                    <td>{{ $vacancyUser->vacancy->employment_grade }}</td>
+                                                    <td>{{ optional($vacancyUser->vacancy)->employment_grade }}</td>
                                                     <td>Unit Kerja</td>
-                                                    <td>{{ $vacancyUser->vacancy->education_level }} / {{ $vacancyUser->vacancy->study->name }}</td>
-                                                    <td>{{ $vacancyUser->vacancy->year }}</td>
-                                                    <td>{{ $vacancyUser->vacancy->cost_type }}</td>
+                                                    <td>{{ optional($vacancyUser->vacancy)->education_level }} /
+                                                        {{ optional(optional($vacancyUser->vacancy)->study)->name }}</td>
+                                                    <td>{{ optional($vacancyUser->vacancy)->year }}</td>
+                                                    <td>{{ optional($vacancyUser->vacancy)->cost_type }}</td>
                                                     <td>
-                                                        @if($vacancyUser->status === 'created')
-                                                            <span class="badge badge-warning">{{ $vacancyUser->status }}</span>
+                                                        @if ($vacancyUser->status === 'created')
+                                                            <span
+                                                                class="badge badge-warning">{{ $vacancyUser->status }}</span>
                                                         @elseif($vacancyUser->status === 'verification')
-                                                            <span class="badge badge-info">{{ $vacancyUser->status }}</span>
+                                                            <span
+                                                                class="badge badge-info">{{ $vacancyUser->status }}</span>
                                                         @elseif($vacancyUser->status === 'assesment')
-                                                            <span class="badge badge-primary">{{ $vacancyUser->status }}</span>
+                                                            <span
+                                                                class="badge badge-primary">{{ $vacancyUser->status }}</span>
                                                         @elseif($vacancyUser->status === 'passed')
-                                                            <span class="badge badge-success">{{ $vacancyUser->status }}</span>
+                                                            <span
+                                                                class="badge badge-success">{{ $vacancyUser->status }}</span>
                                                         @elseif($vacancyUser->status === 'rejected')
-                                                            <span class="badge badge-danger">{{ $vacancyUser->status }}</span>
+                                                            <span
+                                                                class="badge badge-danger">{{ $vacancyUser->status }}</span>
                                                         @else
-                                                            <span class="badge badge-secondary">{{ $vacancyUser->status }}</span>
+                                                            <span
+                                                                class="badge badge-secondary">{{ $vacancyUser->status }}</span>
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        @if($vacancyUser->status === 'verification')
-                                                        <a href="{{ route('admin.verification.show', $vacancyUser->id) }}"
-                                                            class="btn btn-primary btn-sm m-1" title="Verifikasi Pendaftar">
-                                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                                        </a>
+                                                        @if ($vacancyUser->status === 'verification')
+                                                            <a href="{{ route('admin.verification.show', $vacancyUser->id) }}"
+                                                                class="btn btn-primary btn-sm m-1"
+                                                                title="Verifikasi Pendaftar">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
                                                         @elseif($vacancyUser->status === 'assesment')
-                                                        <a href="{{ route('admin.assesment.show', $vacancyUser->id) }}"
-                                                            class="btn btn-primary btn-sm m-1" title="Assesment Pendaftar">
-                                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                                        </a>
+                                                            <a href="{{ route('admin.assesment.show', $vacancyUser->id) }}"
+                                                                class="btn btn-primary btn-sm m-1"
+                                                                title="Assesment Pendaftar">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
                                                         @elseif($vacancyUser->status === 'passed')
-                                                        <a href="{{ route('admin.sk.show', $vacancyUser->id) }}"
-                                                            class="btn btn-primary btn-sm m-1" title="SK Pendaftar">
-                                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                                        </a>
+                                                            <a href="{{ route('admin.sk.show', $vacancyUser->id) }}"
+                                                                class="btn btn-primary btn-sm m-1" title="SK Pendaftar">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
                                                         @endif
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="7" class="text-center">{{ __('No vacancies found!') }}
+                                                    <td colspan="7" class="text-center">
+                                                        {{ __('No vacancies found!') }}
                                                     </td>
                                                 </tr>
                                             @endforelse
@@ -201,18 +213,18 @@
     @endif
 
     @if (session('error'))
-    <script>
-        toastr.error("{{ session('error') }}", "Error", {
-            "positionClass": "toast-top-right",
-            "timeOut": "5000",
-        });
-    </script>
+        <script>
+            toastr.error("{{ session('error') }}", "Error", {
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+            });
+        </script>
     @endif
 
     <script>
         function setModalData(url, itemName) {
             document.getElementById('deleteForm').action = url;
-            document.getElementById('modal-item-name').textContent = 'Lowongan '+itemName;
+            document.getElementById('modal-item-name').textContent = 'Lowongan ' + itemName;
         }
 
         "use strict"

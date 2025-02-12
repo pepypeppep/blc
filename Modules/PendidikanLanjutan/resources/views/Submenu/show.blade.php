@@ -16,42 +16,42 @@
 
             <div class="section-header-menu">
                 <a href="#detail" class="btn btn-link " role="button">
-                    <i class="fa fa-user" style="font-size: 18px;"></i> <br/> Detail
+                    <i class="fa fa-user" style="font-size: 18px;"></i> <br/> {{ __('Details') }}
                 </a>
                 <span class="separator"> > </span> 
-                <a href="#verif" class="btn btn-link {{ $vacancyUser->status === 'verification' ? '' : 'disabled' }}" role="button">
-                    <i class="fa fa-clipboard-check" style="font-size: 18px;"></i>  <br/> Verifikasi
+                <a href="#verif" class="btn btn-link" role="button">
+                    <i class="fa fa-clipboard-check" style="font-size: 18px;"></i>  <br/> {{ __('Verification') }}
                 </a>
                 <span class="separator"> > </span> 
-                <a href="#verif" class="btn btn-link {{ $vacancyUser->status === 'assesment' ? '' : 'disabled' }}" role="button">
-                    <i class="fa fa-tasks" style="font-size: 18px;"></i>  <br/> Penilaian
+                <a href="#assesment" class="btn btn-link {{ $vacancyUser->status === 'assesment' || $vacancyUser->status === 'passed' ? '' : 'disabled' }}" role="button">
+                    <i class="fa fa-tasks" style="font-size: 18px;"></i>  <br/> {{ __('Assesment') }}
                 </a>
                 <span class="separator"> > </span> 
-                <a href="#ptb" class="btn btn-link {{ $vacancyUser->status !== 'verification' ? 'disabled' : '' }}" role="button">
-                    <i class="fa fa-file-contract" style="font-size: 18px;"></i> <br/> Perjanjian Tubel
+                <a href="#ptb" class="btn btn-link {{ $vacancyUser->status !== 'passed' ? 'disabled' : '' }}" role="button">
+                    <i class="fa fa-file-contract" style="font-size: 18px;"></i> <br/> {{ __('Contract') }}
                 </a>
                 <span class="separator"> > </span> 
                 <a href="#sk" class="btn btn-link {{ $vacancyUser->status !== 'passed' ? 'disabled' : '' }}" role="button">
-                    <i class="fa fa-file-alt" style="font-size: 18px;"></i> <br/> Surat Keputusan
+                    <i class="fa fa-file-alt" style="font-size: 18px;"></i> <br/> {{ __('SK') }}
                 </a>
                 <span class="separator"> > </span> 
                 <a href="#laporan" class="btn btn-link {{ $vacancyUser->status !== 'passed' ? 'disabled' : '' }}" role="button">
-                    <i class="fa fa-file-invoice" style="font-size: 18px;"></i>  <br/> Laporan
+                    <i class="fa fa-file-invoice" style="font-size: 18px;"></i>  <br/> {{ __('Report') }}
                 </a>
                 <span class="separator"> > </span> 
-                <a href="#perpanjangan" class="btn btn-link {{ $vacancyUser->status !== 'passed' ? 'disabled' : '' }}" role="button">
-                    <i class="fa fa-calendar-check" style="font-size: 18px;"></i>  <br/> Perpanjangan
+                <a href="#perpanjang" class="btn btn-link {{ $vacancyUser->status !== 'passed' ? 'disabled' : '' }}" role="button">
+                    <i class="fa fa-calendar-check" style="font-size: 18px;"></i>  <br/> {{ __('Extension') }}
                 </a>
             </div>
 
-            <div class="section-body">
-                <div id="detail" class="row mt-4">
+            <div id="detail" class="section-body">
+                <div class="row mt-4">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
                                 <div class="section-title">{{ __('Registrant Details') }}</div>
                                 <hr>
-                                <div class="registrant-info-header">{{ __('Registrant Information') }}</div>
+                                <div class="registrant-info-header ml-2">{{ __('Registrant Information') }}</div>
                                 <table class="table table-bordered table-striped table-hover">
                                     <tr>
                                         <td>
@@ -154,7 +154,7 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <div class="registrant-info-header">{{ __('Requirements Document') }}</div>
+                                <div class="registrant-info-header ml-2">{{ __('Requirements Document') }}</div>
                                 <table class="table table-striped table-hover table-md">
                                     <tr>
                                         <th data-width="40">#</th>
@@ -181,14 +181,14 @@
                 </div>
             </div>
 
-            @if($vacancyUser->status === 'verification')
-            <div class="section-body">
-                <div id="verif" class="row mt-2">
+            <div id="verif" class="section-body">
+                <div class="row mt-2">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
                                 <div class="section-title">{{ __('Verification') }}</div>
                                 <hr>
+                                @if($vacancyUser->status === 'verification')
                                 <div class="col-md-12 mb-2">
                                     <label>{{ __('Reason') }} <span class="text-danger">*</span></label>
                                     <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('reason') }}</textarea>
@@ -202,21 +202,31 @@
                                     <a target="_blank" href="" class="btn btn-primary btn-icon icon-left print-btn"><i class="fas fa-check"></i>
                                         {{ __('Verification') }}</a>
                                 </div>
+                                @else
+                                <div class="col-md-12 mb-2">
+                                    <div class="alert alert-success alert-has-icon alert-dismissible" id="verifiedAlert">
+                                        <div class="alert-icon"><i class="far fa-check-circle"></i></div>
+                                        <div class="alert-body">
+                                            <div class="alert-title">Lolos Verifikasi!</div>
+                                            Pendaftar telah lolos tahap verifikasi dan akan melanjutkan ke tahap assessment.
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @endif
 
-            @if($vacancyUser->status === 'assesment')
-            <div class="section-body">
-                <div id="assesment" class="row mt-2">
+            <div id="assesment" class="section-body">
+                <div class="row mt-2">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
                                 <div class="section-title">{{ __('Assesment') }}</div>
                                 <hr>
+                                @if($vacancyUser->status === 'assesment')
                                 <div class="col-md-12 mb-2">
                                     <label>{{ __('Reason') }} <span class="text-danger">*</span></label>
                                     <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('reason') }}</textarea>
@@ -230,16 +240,26 @@
                                     <a target="_blank" href="" class="btn btn-primary btn-icon icon-left print-btn"><i class="fas fa-check"></i>
                                         {{ __('Approve') }}</a>
                                 </div>
+                                @else
+                                <div class="col-md-12 mb-2">
+                                    <div class="alert alert-success alert-has-icon alert-dismissible" id="verifiedAlert">
+                                        <div class="alert-icon"><i class="far fa-check-circle"></i></div>
+                                        <div class="alert-body">
+                                            <div class="alert-title">Lolos Assesment!</div>
+                                            Pendaftar telah lolos tahap assesment dan akan melanjutkan ke tahap selanjutnya.
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @endif
             
             @if($vacancyUser->status === 'passed')
-            <div class="section-body">
-                <div id="ptb" class="row mt-2">
+            <div id="ptb" class="section-body">
+                <div class="row mt-2">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
@@ -269,8 +289,8 @@
                 </div>
             </div>
 
-            <div class="section-body">
-                <div id="sk" class="row mt-2">
+            <div id="sk" class="section-body">
+                <div class="row mt-2">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
@@ -301,6 +321,9 @@
                                                     title="Lihat Berkas" onclick="setPDF('{{ asset('storage/'.$attachment->file) }}')">
                                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                                 </button>
+                                                <a href="javascript:void(0);" class="btn btn-success btn-sm m-1" title="Kirim SK">
+                                                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -338,11 +361,12 @@
                                         <td>xx</td>
                                         <td>Created</td>
                                         <td>
-                                            <button class="btn btn-info btn-sm m-1" data-toggle="modal" data-target="#pdfModal" onclick="setPDF('{{ asset('template/template.pdf') }}')">
-                                                <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ __('See') }}
+                                            <button class="btn btn-info btn-sm m-1" data-toggle="modal" data-target="#pdfModal" 
+                                                title="Lihat Laporan" onclick="setPDF('{{ asset('template/template.pdf') }}')">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
                                             </button>
                                             <a href="javascript:void(0);" class="btn btn-success btn-sm m-1" title="Verifikasi Laporan" id="verifyButton">
-                                                <i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;{{ __('Verify') }}
+                                                <i class="fa fa-check-circle" aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -352,29 +376,30 @@
                                         <td>xx</td>
                                         <td>Approved</td>
                                         <td>
-                                            <button class="btn btn-info btn-sm m-1" data-toggle="modal" data-target="#pdfModal" onclick="setPDF('{{ asset('template/template.pdf') }}')">
+                                            <button class="btn btn-info btn-sm m-1" data-toggle="modal" data-target="#pdfModal"
+                                                title="Lihat Laporan" onclick="setPDF('{{ asset('template/template.pdf') }}')">
                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                             </button>
                                             <a href=""
                                                 class="btn btn-success btn-sm m-1" title="Verifikasi Laporan">
-                                                <i class="fa fa-check-circle" aria-hidden="true"></i>&nbsp;{{ __('Verify') }}
+                                                <i class="fa fa-check-circle" aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
                                 </table>
                                 <hr>
                                 <div class="col-md-12 mb-2">
-                                    <div class="alert alert-primary alert-has-icon alert-dismissible" id="studyCompletionAlert">
+                                    <div class="alert alert-warning alert-has-icon alert-dismissible" id="studyCompletionAlert">
                                         <div class="alert-icon"><i class="far fa-check-circle"></i></div>
                                         <div class="alert-body">
                                             <div class="alert-title">Konfirmasi Penyelesaian Tugas Belajar</div>
-                                            Pastikan laporan telah lengkap dan syarat lainnya telah dipenuhi oleh peserta sebelum konfirmasi bahwa tugas belajar telah selesai dilakukan.
+                                            Pastikan laporan telah lengkap dan syarat lainnya telah dipenuhi oleh peserta sebelum melakukan konfirmasi bahwa tugas belajar telah selesai dilakukan. Setelah tugas belajar selesai dan konfirmasi diterima, status PNS pegawai akan kembali diaktifkan.
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mt-3 text-md-center">
                                     <a target="_blank" href="" class="btn btn-primary btn-icon icon-left print-btn"><i class="fas fa-check"></i>
-                                        {{ __('Approve') }}</a>
+                                        {{ __('Confirm') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -382,8 +407,8 @@
                 </div>
             </div>
 
-            <div class="section-body">
-                <div id="ptb" class="row mt-2">
+            <div id="perpanjang" class="section-body">
+                <div class="row mt-2">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
@@ -440,7 +465,7 @@
 
                             <div id="pdf-preview" class="mt-3" style="display: none;">
                                 <label>{{ __('Preview PDF') }}</label><br>
-                                <embed id="pdf-preview-embed" src="" type="application/pdf" width="100%" height="400px" />
+                                <embed id="pdf-preview-upload" src="" type="application/pdf" width="100%" height="400px" />
                             </div>
 
                             <div class="mt-3">
@@ -470,7 +495,7 @@
         </div>
 
         <!-- Modal Konfirmasi -->
-        <div class="modal" id="verifyModal" tabindex="-1" aria-labelledby="verifyModalLabel" aria-hidden="true">
+        <div class="modal fade" id="verifyModal" tabindex="-1" aria-labelledby="verifyModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -481,6 +506,9 @@
                     </div>
                     <div class="modal-body">
                         <!-- <p></p> -->
+                        <div id="error-message" class="alert alert-danger" style="display: none;">
+                            <strong>Kesalahan!</strong> Alasan penolakan wajib diisi.
+                        </div>
                         <div class="mb-3">
                             <label for="verificationMessage" class="form-label">Pesan</label>
                             <textarea class="form-control" id="verificationMessage" rows="4" placeholder="Tuliskan pesan Anda di sini"></textarea>
@@ -518,6 +546,7 @@
             text-decoration: none;
             transition: background-color 0.3s ease, color 0.3s ease;
             display: inline-block;
+            background-color: transparent;
         }
 
         .section-header-menu a.disabled {
@@ -531,7 +560,7 @@
         }
 
         .section-header-menu a:hover {
-            background-color: #0069d9;
+            background-color: white;
             color: #8c9bfe;
             border-radius: 5px;
         }
@@ -540,9 +569,22 @@
             color: #8c9bfe;
         }
 
+        .section-header-menu a:active {
+            background-color: white;
+            color: #8c9bfe;
+        }
+
+        .section-header-menu a:active i {
+            color: #8c9bfe;
+        }
+
         .section-header-menu .active {
-            font-weight: bold;
-            color: #007bff; /* blue color for active link */
+            background-color: white;
+            color: #8c9bfe;
+        }
+
+        .section-header-menu .active i {
+            color: #8c9bfe;
         }
 
         .separator {
@@ -563,14 +605,31 @@
 
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
+    <script>
+        $('a[href^="#"]').on('click', function(event) {
+            event.preventDefault();
+            var target = $(this).attr('href');
+
+            $('html, body').animate({
+                scrollTop: $(target).offset().top - 100
+            }, 1000);
+        });
+        
+        $('.section-header-menu a').click(function() {
+            $('.section-header-menu a').removeClass('active'); 
+            $(this).addClass('active');
+        });
+    </script>
+
     <script>
         document.getElementById('pdf_upload').addEventListener('change', function(e) {
             var file = e.target.files[0];
             if (file) {
                 var reader = new FileReader();
                 reader.onload = function(event) {
-                    var pdfEmbed = document.getElementById('pdf-preview-embed');
+                    var pdfEmbed = document.getElementById('pdf-preview-upload');
                     pdfEmbed.src = event.target.result;
                     document.getElementById('pdf-preview').style.display = 'block';
                 };
@@ -578,46 +637,32 @@
             }
         });
     </script>
+
     <script>
-        document.getElementById('verifyButton').addEventListener('click', function (e) {
-            e.preventDefault();
+         $(document).ready(function () {
+            $('#verifyButton').click(function () {
+                $('#verifyModal').modal('show');
+            });
 
-            var verifyModal = new bootstrap.Modal(document.getElementById('verifyModal'));
-            verifyModal.show();
-        });
+            $('#rejectButton').click(function () {
+                var message = $('#verificationMessage').val().trim(); 
 
-        document.getElementById('acceptButton').addEventListener('click', function () {
-            var message = document.getElementById('verificationMessage').value;
-
-            Swal.fire('Berhasil!', 'Laporan berhasil diverifikasi.', 'success');
-            var verifyModal = bootstrap.Modal.getInstance(document.getElementById('verifyModal'));
-            verifyModal.hide();
-        });
-
-        document.getElementById('rejectButton').addEventListener('click', function () {
-            var message = document.getElementById('verificationMessage').value;
-
-            if (message.trim() === "") {
-                Swal.fire('Perhatian!', 'Pesan harus diisi sebelum menolak laporan.', 'error');
-                return;
-            }
-
-            Swal.fire({
-                title: 'Konfirmasi Penolakan',
-                text: 'Anda yakin ingin menolak laporan ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Tolak!',
-                cancelButtonText: 'Batal',
-            }).then((result) => {
-                if (result.isConfirmed) {
+                if (message === '') {
+                    $('#error-message').show();
+                } else {
+                    $('#error-message').hide();
+                    $('#verifyModal').modal('hide');
                     Swal.fire('Berhasil!', 'Laporan berhasil ditolak.', 'success');
-                    var verifyModal = bootstrap.Modal.getInstance(document.getElementById('verifyModal'));
-                    verifyModal.hide();
                 }
+            });
+
+            $('#acceptButton').click(function () {
+                $('#verifyModal').modal('hide');
+                Swal.fire('Berhasil!', 'Laporan berhasil diverifikasi.', 'success');
             });
         });
     </script>
+
     <script>
         function setPDF(pdfUrl) {
             document.getElementById('pdfObject').setAttribute('data', pdfUrl);

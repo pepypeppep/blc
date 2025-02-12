@@ -1,16 +1,16 @@
 @extends('admin.master_layout')
 @section('title')
-    <title>{{ $submenu }}</title>
+    <title>{{ __($submenu) }}</title>
 @endsection
 @section('admin-content')
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>{{ $submenu }}</h1>
+                <h1>{{ __($submenu) }}</h1>
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
                     </div>
-                    <div class="breadcrumb-item">{{ $submenu }}</div>
+                    <div class="breadcrumb-item">{{ __($submenu) }}</div>
                 </div>
             </div>
             <div class="section-body">
@@ -132,7 +132,20 @@
                                                     <td>{{ $vacancyUser->vacancy->education_level }} / {{ $vacancyUser->vacancy->study->name }}</td>
                                                     <td>{{ $vacancyUser->vacancy->year }}</td>
                                                     <td>{{ $vacancyUser->vacancy->cost_type }}</td>
-                                                    <td>{{ $vacancyUser->status }}
+                                                    <td>
+                                                        @if($vacancyUser->status === 'created')
+                                                            <span class="badge badge-warning">{{ $vacancyUser->status }}</span>
+                                                        @elseif($vacancyUser->status === 'verification')
+                                                            <span class="badge badge-info">{{ $vacancyUser->status }}</span>
+                                                        @elseif($vacancyUser->status === 'assesment')
+                                                            <span class="badge badge-primary">{{ $vacancyUser->status }}</span>
+                                                        @elseif($vacancyUser->status === 'passed')
+                                                            <span class="badge badge-success">{{ $vacancyUser->status }}</span>
+                                                        @elseif($vacancyUser->status === 'rejected')
+                                                            <span class="badge badge-danger">{{ $vacancyUser->status }}</span>
+                                                        @else
+                                                            <span class="badge badge-secondary">{{ $vacancyUser->status }}</span>
+                                                        @endif
                                                     </td>
                                                     <td>
                                                         @if($vacancyUser->status === 'verification')

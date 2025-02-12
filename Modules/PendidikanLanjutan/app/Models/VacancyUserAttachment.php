@@ -28,8 +28,8 @@ class VacancyUserAttachment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function vacancyattachment(): BelongsTo
+    public function vacancyAttachment(): BelongsTo
     {
-        return $this->belongsTo(VacancyAttachment::class);
+        return $this->belongsTo(VacancyAttachment::class, 'vacancy_attachment_id', 'id');
     }
 }

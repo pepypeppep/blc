@@ -14,18 +14,18 @@
                                 <td>{{ __('Program Studi') }}</td>
                                 <td>
                                     @php
-                                        $studyProgram = $vacancy->details->firstWhere('type', 'study_program');
+                                        $studyProgram = $vacancy->study->name;
                                     @endphp
-                                    {{ $studyProgram ? $studyProgram->value_type : '-' }}
+                                    {{ $studyProgram ? $studyProgram : '-' }}
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Jenjang Pendidikan') }}</td>
                                 <td>
                                     @php
-                                        $educationLevel = $vacancy->details->firstWhere('type', 'education_level');
+                                        $educationLevel = $vacancy->educationLevel();
                                     @endphp
-                                    {{ $educationLevel ? $educationLevel->value_type : '-' }}
+                                    {{ $educationLevel ? $educationLevel : '-' }}
                                 </td>
 
                             </tr>
@@ -33,21 +33,22 @@
                                 <td>{{ __('Syarat Minimal Pangkat/Golongan') }}</td>
                                 <td>
                                     @php
-                                        $minimumRank = $vacancy->details->firstWhere('type', 'minimum_rank');
+                                        $minimumRank = $vacancy->employment_grade;
                                     @endphp
-                                    {{ $minimumRank ? $minimumRank->value_type : '-' }}
+                                    {{ $minimumRank ? $minimumRank : '-' }}
                                 </td>
                                 <td class="text-center">
-                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        style="width: 24px; height: 24px; font-size: 16px;"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Status Kepegawaian') }}</td>
                                 <td>
                                     @php
-                                        $employmentStatus = $vacancy->details->firstWhere('type', 'employment_status');
+                                        $employmentStatus = $vacancy->employmentStatus();
                                     @endphp
-                                    {{ $employmentStatus ? $employmentStatus->value_type : '-' }}
+                                    {{ $employmentStatus ? $employmentStatus : '-' }}
                                 </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
@@ -57,21 +58,22 @@
                                 <td>{{ __('Pembiayaan') }}</td>
                                 <td>
                                     @php
-                                        $fundingSource = $vacancy->details->firstWhere('type', 'funding_source');
+                                        $fundingSource = $vacancy->cost_type;
                                     @endphp
-                                    {{ $fundingSource ? $fundingSource->value_type : '-' }}
+                                    {{ $fundingSource ? $fundingSource : '-' }}
                                 </td>
                                 <td class="text-center">
-                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                    <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        style="width: 24px; height: 24px; font-size: 16px;"></i>
                                 </td>
                             </tr>
                             <tr>
                                 <td>{{ __('Jumlah Formasi') }}</td>
                                 <td>
                                     @php
-                                        $formasiCount = $vacancy->details->firstWhere('type', 'formasi_count');
+                                        $formasiCount = $vacancy->formation;
                                     @endphp
-                                    {{ $formasiCount ? $formasiCount->value_type : '-' }}
+                                    {{ $formasiCount ? $formasiCount : '-' }}
                                 </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
@@ -81,9 +83,9 @@
                                 <td>{{ __('Batas Usia') }}</td>
                                 <td>
                                     @php
-                                        $retirementAge = $vacancy->details->firstWhere('type', 'retirement_age');
+                                        $retirementAge = $vacancy->age_limit;
                                     @endphp
-                                    {{ $retirementAge ? $retirementAge->value_type : '-' }}
+                                    {{ $retirementAge ? $retirementAge : '-' }}
                                 </td>
                                 <td class="text-center">
                                     <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
@@ -91,12 +93,14 @@
                             </tr>
                             <tr>
                                 <td>{{ __('Tanggal Mulai Pendaftaran') }}</td>
-                                <td>{{ $vacancy->start_at ? \Carbon\Carbon::parse($vacancy->start_at)->format('d F Y') : '-' }}</td>
+                                <td>{{ $vacancy->open_at ? \Carbon\Carbon::parse($vacancy->open_at)->format('d F Y') : '-' }}
+                                </td>
 
                             </tr>
                             <tr>
                                 <td>{{ __('Tanggal Penutupan Pendaftaran') }}</td>
-                                <td>{{ $vacancy->end_at ? \Carbon\Carbon::parse($vacancy->end_at)->format('d F Y') : '-' }}</td>
+                                <td>{{ $vacancy->close_at ? \Carbon\Carbon::parse($vacancy->close_at)->format('d F Y') : '-' }}
+                                </td>
 
                             </tr>
                         </tbody>
@@ -120,127 +124,47 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>{{ __('Surat Pernyataan Kesanggupan Biaya Mandiri (Mandiri) atau SK Penerima Beasiswa (APBD/Non APBD)') }}  <small class="text-danger fw-sm font-size-sm">*wajib</small></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
+                            @foreach ($vacancyConditions as $condition)
+                                <tr>
+                                    <form id="{{ $condition->id }}_form"
+                                        action="{{ route('student.continuing-education.attachment', $condition->id) }}"
+                                        method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $condition->name }} <span class="text-danger">*</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <input type="text" name="attachment_id" value="{{ $condition->id }}"
+                                                    hidden />
+                                                @if (count($condition->attachment) > 0)
+                                                    <input type="text" @if (count($condition->attachment) != 0) disabled @endif
+                                                        class="form-control me-2"
+                                                        value="{{ $condition->attachment[0]->file }}" />
+                                                @else
+                                                    <input type="file" name="file"
+                                                        @if ($condition->type == 'pdf') accept="application/pdf" @endif
+                                                        @if (count($condition->attachment) != 0) disabled @endif
+                                                        class="form-control me-2"
+                                                        onchange="$('#{{ $condition->id }}_form').trigger('submit')" />
+                                                @endif
 
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>{{ __('Scan Ijazah Terakhir') }}   <small class="text-danger fw-sm font-size-sm">*wajib</small></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>{{ __('Letter of Acceptance (LoA)') }} <small class="text-danger fw-sm font-size-sm">*wajib</small></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle " data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>{{ __('Surat Usulan Dari Perangkat Daerah') }} <small class="text-danger fw-sm font-size-sm">*wajib</small></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle " data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>{{ __('SK Akreditasi Program Studi') }} <small class="text-danger fw-sm font-size-sm">*wajib</small></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle " data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>{{ __('Jadwal Perkuliahan') }} <small class="text-danger fw-sm font-size-sm">*wajib</small></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle " data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>{{ __('Surat Keterangan Sehat') }} <small class="text-danger fw-sm font-size-sm">*wajib</small></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle " data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>{{ __('Surat Keterangan ') }} <small class="text-danger fw-sm font-size-sm">*wajib</small></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="file" name="attachment[sk_pangkat]" class="form-control me-2" />
-                                    </div>
-                                </td>
-                                <td class="text-center">
-                                    <a href="#"
-                                        class="align-middle " data-bs-toggle="tooltip" title="Lihat Berkas">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (count($condition->attachment) > 0)
+                                                <a target="_blank"
+                                                    href="{{ route('vacancies-participant.get.file', [$condition->attachment[0]->vacancy_attachment_id, auth()->user()->id]) }}"
+                                                    class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
+                                                    <i class="fas fa-eye"></i> {{ __('View') }}
+                                                </a>
+                                            @else
+                                                <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                                    style="width: 24px; height: 24px; font-size: 16px;"></i>
+                                            @endif
+                                        </td>
+                                    </form>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -250,17 +174,12 @@
         <div class="row">
             <div class="col-12 mt-4">
                 <div class="p-3">
-                    <div style="background: #EFEFF2;" class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4">
-                         {{-- @if ($vacancy->status) --}}
-                            <p class="mb-0 fs-5 text-dark fw-bold text-center">
-                                Anda memenuhi semua syarat Pendidikan Lanjutan
-                            </p>
-                        {{-- @else
-                            <p class="mb-0 fs-5 text-dark fw-bold text-center">
-                            Anda tidak memenuhi semua syarat untuk Pendidikan Lanjutan
-                            </p>
-                        @endif --}}
-
+                    <div style="background: #EFEFF2;"
+                        class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4">
+                        {{-- @if ($vacancy->status) --}}
+                        <p class="mb-0 fs-5 text-dark fw-bold text-center">
+                            Anda memenuhi semua syarat Pendidikan Lanjutan
+                        </p>
                     </div>
                 </div>
             </div>
@@ -268,7 +187,8 @@
 
         <div class="row">
             <div class="col-12 text-end">
-                <form action="{{ route('vacancies-participant.register', $vacancy->id) }}" method="POST" class="d-inline">
+                <form action="{{ route('student.continuing-education.register', $vacancy->id) }}" method="POST"
+                    class="d-inline">
                     @csrf
                     @method('POST')
                     <button type="submit" class="btn mt-4 mb-3">

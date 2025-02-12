@@ -12,45 +12,38 @@
                         <thead>
                             <tr>
                                 <th>{{ __('#') }}</th>
-                                <th>{{ __('NIP') }}</th>
-                                <th>{{ __('Nama Pegawai') }}</th>
-                                <th>{{ __('Jabatan / Pangkat') }}</th>
-                                <th>{{ __('Gol') }}</th>
-                                <th>{{ __('Unit Kerja') }}</th>
                                 <th>{{ __('Jenjang/Program Studi') }}</th>
                                 <th>{{ __('Tahun Tubel') }}</th>
+                                <th>{{ __('Mulai') }}</th>
+                                <th>{{ __('Berakhir') }}</th>
                                 <th>{{ __('Proses') }}</th>
                                 <th>{{ __('Aksi') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @forelse  --}}
-                            <tr>
-                                <td>1</td>
-                                <td>199308172019022001</td>
-                                <td>Nabila Sholihah, S.Kom</td>
-                                <td>Pranata Komputer Pertama / Penata Muda </td>
-                                <td>III/b</td>
-                                <td>Dinas Komunikasi dan Informatika Kabupaten Bantul</td>
-                                <td>S2/Informatika</td>
-                                <td>2025</td>
-                                <td>
-                                    <div class="badge bg-warning">{{ __('Pending') }}</div>
-                                </td>
+                            @forelse ($vacancies as $key => $vacancy)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $vacancy->education_level }}/{{ $vacancy->study->name }}</td>
+                                    <td>{{ $vacancy->year }}</td>
+                                    <td>{{ formatDate($vacancy->open_at) }}</td>
+                                    <td>{{ formatDate($vacancy->close_at) }}</td>
+                                    <td>
+                                        <div class="badge bg-warning">{{ $vacancy->users()->first()->status }}</div>
+                                    </td>
 
-                                <td class="text-center">
-                                    @php
-                                        $id = 1;
-                                    @endphp
-                                    <a href="{{ route('student.continuing-education.registration.show', $id) }}"
-                                        class="align-middle" data-bs-toggle="tooltip" title="Lihat selengkapnya">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
+                                    <td class="text-center">
+                                        <a href="{{ route('student.continuing-education.registration.show', $vacancy->users()->first()->id) }}"
+                                            class="align-middle" data-bs-toggle="tooltip" title="Lihat selengkapnya">
+                                            <i class="fas fa-eye"></i> {{ __('View') }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                            @endforelse
                         </tbody>
                     </table>
-                    
+
                 </div>
                 {{-- {{ $vacancies->links() }} --}}
             </div>

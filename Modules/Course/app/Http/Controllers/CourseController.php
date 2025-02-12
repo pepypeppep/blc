@@ -229,9 +229,9 @@ class CourseController extends Controller
         $course->capacity = $request->capacity;
         $course->duration = $request->course_duration;
         $course->category_id = $request->category;
-        $course->qna = $request->qna;
+        $course->qna = 1;
         $course->downloadable = $request->downloadable;
-        $course->certificate = $request->certificate;
+        $course->certificate = 1;
         $course->partner_instructor = $request->partner_instructor;
         $course->start_date = $request->start_date;
         $course->end_date = $request->end_date;

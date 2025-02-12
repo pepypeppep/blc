@@ -22,16 +22,41 @@
                 <a href="{{ route('student.quiz-attempts') }}">
                     <img src="{{ asset('uploads/website-images/quiz.svg') }}">{{ __('My Quiz Attempts') }}</a>
             </li>
+            {{-- <li class="{{ Route::is('vacancies-participant.index') ? 'active' : '' }}">
+                <a href="{{ route('vacancies-participant.index') }}">
+                    <img src="{{ asset('uploads/website-images/announcement.svg') }}">{{ __('ContinuingEducation') }}</a>
+            </li> --}}
             <li class="{{ Route::is('student.continuing-education') ? 'active' : '' }}">
-                <a href="{{ route('student.continuing-education') }}">
-                    <img
-                        src="{{ asset('uploads/website-images/announcement.svg') }}">{{ __('ContinuingEducation') }}</a>
+                <a class="d-flex align-items-center text-decoration-none" data-bs-toggle="collapse"
+                   href="#continuingEducationMenu" role="button"
+                   aria-expanded="false" aria-controls="continuingEducationMenu"
+                   id="continuingEducationToggle">
+                    <img src="{{ asset('uploads/website-images/announcement.svg') }}"
+                         width="16" height="16">
+                    {{ __('ContinuingEducation') }}
+                    <i class="fa fa-chevron-down ms-auto collapse-icon " style="font-size: 10px;"></i>
+                </a>
+                <ul class="collapse list-unstyled mt-2 ps-4" id="continuingEducationMenu">
+                    <li class="list-group-item ps-3 text-sm {{ Route::is('student.continuing-education') ? 'active' : '' }}">
+                        <a href="{{ route('student.continuing-education') }}">
+                            <span class="ps-2">
+                                - </i> {{ __('Lowongan') }}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="collapse list-unstyled mt-2 ps-4" id="continuingEducationMenu">
+                    <li class="list-group-item ps-3 text-sm {{ Route::is('student.continuing-education.registration') ? 'active' : '' }}">
+                        <a href="{{ route('student.continuing-education.registration') }}">
+                            <span class="ps-2">
+                                - {{ __('Pendaftaran') }}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
             </li>
-            <li class="{{ Route::is('student.continuing-education-mine') ? 'active' : '' }}">
-                <a href="{{ route('student.continuing-education-mine') }}">
-                    <img
-                        src="{{ asset('uploads/website-images/announcement.svg') }}">{{ __('ContinuingEducation') }}</a>
-            </li>
+
+
         </ul>
     </nav>
     <div class="dashboard__sidebar-title mt-30 mb-20">

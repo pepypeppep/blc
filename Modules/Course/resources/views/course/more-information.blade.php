@@ -42,18 +42,21 @@
                                                     <label for="course_duration">{{ __('Course Duration (Minutes)') }}
                                                         <code>*</code></label>
                                                     <input id="course_duration" name="course_duration" class="form-control"
-                                                        type="text" value="{{ $course?->duration }}">
+                                                        type="number" value="{{ $course?->duration }}"
+                                                        oninput="this.value = Math.max(this.value, 1); this.value = (this.value < 1) ? 1 : this.value;"
+                                                        min="1" step="1" pattern="[0-9]*"
+                                                        title="{{ __('Only allow numbers') }}" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-12 my-4">
                                                 <label for="from_date_start">Pelaksanaan Pembelajaran
                                                     <code>*</code></label>
                                                 <div class="input-group input-daterange">
-                                                    <input type="text" name="from_date" class="form-control"
-                                                        value="2012-04-05">
+                                                    <input type="text" name="start_date" class="form-control"
+                                                        value="{{ $course?->start_date }}">
                                                     <span class="input-group-text mx-2">{{ __('Sampai') }}</span>
-                                                    <input type="text" name="to_date" class="form-control"
-                                                        value="2012-04-19">
+                                                    <input type="text" name="end_date" class="form-control"
+                                                        value="{{ $course?->end_date }}">
                                                 </div>
 
                                             </div>
@@ -129,66 +132,29 @@
                                                     <textarea name="outcome" class="text-editor form-control summernote">{!! clean(@$course?->outcome) !!}</textarea>
                                                 </div>
                                             </div>
-
-                                            <div class="filter-holder col-md-12">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <div class="card">
-                                                            <div class="card-body">
-                                                                <h5 class="card-title">{{ __('Level') }}</h5>
-                                                                @php
-                                                                    $courseLevel = $course->levels
-                                                                        ->pluck('level_id')
-                                                                        ->toArray();
-                                                                    $courseLanguage = $course->languages
-                                                                        ->pluck('language_id')
-                                                                        ->toArray();
-                                                                    $courseFilterOption = $course->filtersOptions
-                                                                        ->pluck('filter_option_id')
-                                                                        ->toArray();
-                                                                @endphp
-                                                                @foreach ($levels as $level)
-                                                                    <div class="form-group">
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input"
-                                                                                {{ in_array($level->id, $courseLevel) ? 'checked' : '' }}
-                                                                                name="levels[]" type="checkbox"
-                                                                                value="{{ $level->id }}"
-                                                                                id="language-{{ $level->id }}">
-                                                                            <label class="form-check-label"
-                                                                                for="language-{{ $level->id }}">
-                                                                                {{ $level->translation?->name }}
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="level">{{ __('Level') }}
+                                                        <code>*</code></label>
+                                                    @php
+                                                        $courseLevel = $course->levels->pluck('level_id')->toArray();
+                                                    @endphp
+                                                    @foreach ($levels as $level)
+                                                        <div class="form-group">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input"
+                                                                    {{ in_array($level->id, $courseLevel) ? 'checked' : '' }}
+                                                                    name="levels[]" type="checkbox"
+                                                                    value="{{ $level->id }}"
+                                                                    id="language-{{ $level->id }}">
+                                                                <label class="form-check-label"
+                                                                    for="language-{{ $level->id }}">
+                                                                    {{ $level->translation?->name }}
+                                                                </label>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="card">
-                                                            <div class="card-body">
-                                                                <h5 class="card-title">{{ __('Language') }}</h5>
-                                                                @foreach ($languages as $language)
-                                                                    <div class="form-group">
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input"
-                                                                                {{ in_array($language->id, $courseLanguage) ? 'checked' : '' }}
-                                                                                name="languages[]" type="checkbox"
-                                                                                value="{{ $language->id }}"
-                                                                                id="checkbox{{ $language->id }}">
-                                                                            <label class="form-check-label"
-                                                                                for="checkbox{{ $language->id }}">
-                                                                                {{ $language->name }}
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    @endforeach
                                                 </div>
-
                                             </div>
 
                                         </div>

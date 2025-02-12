@@ -22,8 +22,10 @@ use App\Http\Controllers\Frontend\StudentDashboardController;
 use App\Http\Controllers\Frontend\TinymceImageUploadController;
 use App\Http\Controllers\Frontend\InstructorDashboardController;
 use App\Http\Controllers\Frontend\InstructorLessonQnaController;
+use App\Http\Controllers\Frontend\StudentProfileSettingController;
 use App\Http\Controllers\Frontend\InstructorAnnouncementController;
-use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
+use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
+use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -124,12 +126,11 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('enrolled-courses', [StudentDashboardController::class, 'enrolledCourses'])->name('enrolled-courses');
         Route::get('quiz-attempts', [StudentDashboardController::class, 'quizAttempts'])->name('quiz-attempts');
 
-        Route::get('continuing-education', [StudentPendidikanLanjutanController::class, 'index'])->name('continuing-education');
-        Route::get('continuing-education-mine', [StudentPendidikanLanjutanController::class, 'mine'])->name('continuing-education-mine');
-        Route::get('continuing-education/{id}', [StudentPendidikanLanjutanController::class, 'continuingEducationDetail'])->name('continuing-education.show');
-        Route::post('continuing-education/{id}/register', [StudentPendidikanLanjutanController::class, 'register'])->name('continuing-education.register');
-        Route::post('continuing-education/{id}/report', [StudentPendidikanLanjutanController::class, 'vacancyReportSubmit'])->name('continuing-education.report');
-        Route::post('continuing-education/attachment', [StudentPendidikanLanjutanController::class, 'uploadRequirementFile'])->name('continuing-education.attachment');
+        Route::get('continuing-education', [StudentDashboardController::class, 'continuingEducation'])->name('continuing-education');
+        Route::get('continuing-education/{id}', [StudentDashboardController::class, 'continuingEducationDetail'])->name('continuing-education.show');
+        Route::get('continuing-education-attachment/{id}', [StudentDashboardController::class, 'continuingEducationAttachment'])->name('continuing-education.attachment');
+        Route::get('continuing-education-registration', [StudentDashboardController::class, 'continuingEducationRegistration'])->name('continuing-education.registration');
+        Route::get('continuing-education-registration/{id}', [StudentDashboardController::class, 'continuingEducationRegistrationDetail'])->name('continuing-education.registration.show');
 
         /** learning routes */
         Route::get('learning/{slug}', [LearningController::class, 'index'])->name('learning.index');

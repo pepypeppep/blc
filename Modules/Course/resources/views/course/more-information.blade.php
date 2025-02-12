@@ -29,16 +29,16 @@
                                         <input type="hidden" name="next_step" value="3">
 
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="from-group">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
                                                     <label for="capacity">{{ __('Capacity') }} <code></code></label>
                                                     <input id="capacity" name="capacity" class="form-control"
                                                         type="text" value="{{ $course?->capacity }}">
                                                     <code>{{ __('leave blank for unlimited') }}</code>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="from-group">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
                                                     <label for="course_duration">{{ __('Course Duration (Minutes)') }}
                                                         <code>*</code></label>
                                                     <input id="course_duration" name="course_duration" class="form-control"
@@ -48,53 +48,8 @@
                                                         title="{{ __('Only allow numbers') }}" required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 my-4">
-                                                <label for="from_date_start">Pelaksanaan Pembelajaran
-                                                    <code>*</code></label>
-                                                <div class="input-group input-daterange">
-                                                    <input type="text" name="start_date" class="form-control"
-                                                        value="{{ $course?->start_date }}">
-                                                    <span class="input-group-text mx-2">{{ __('Sampai') }}</span>
-                                                    <input type="text" name="end_date" class="form-control"
-                                                        value="{{ $course?->end_date }}">
-                                                </div>
-
-                                            </div>
-
-                                            <div class="col-12 my-2">
-
-                                                <div class="row w-100">
-                                                    <div class="col-md-6">
-                                                        <p>{{ __('Q&A') }}</p>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="switcher ms-3">
-                                                            <label for="toggle-0">
-                                                                <input type="checkbox" @checked($course?->qna == 1)
-                                                                    id="toggle-0" value="1" name="qna" />
-                                                                <span><small></small></span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row w-100">
-                                                    <div class="col-md-6">
-                                                        <p>{{ __('Completion Certificate') }}</p>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="switcher ms-3">
-                                                            <label for="toggle-1">
-                                                                <input type="checkbox" @checked($course?->certificate == 1)
-                                                                    id="toggle-1" value="1" name="certificate" />
-                                                                <span><small></small></span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12 mt-2">
-                                                <div class="from-group">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
                                                     <label for="category">{{ __('Category') }}<span
                                                             class="text-danger">*</span></label>
                                                     <select class="select2 form-group category" name="category">
@@ -117,8 +72,53 @@
                                                     @enderror
                                                 </div>
                                             </div>
-
-                                            <div class="col-md-12 mt-4">
+                                            <div class="col-md-6 my-4">
+                                                <div class="form-group">
+                                                    <label for="from_date_start">Pelaksanaan Pembelajaran
+                                                        <code>*</code></label>
+                                                    <div class="input-group input-daterange">
+                                                        <input type="text" name="start_date" class="form-control"
+                                                            value="{{ $course?->start_date }}">
+                                                        <span class="input-group-text mx-2">{{ __('Sampai') }}</span>
+                                                        <input type="text" name="end_date" class="form-control"
+                                                            value="{{ $course?->end_date }}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 my-4">
+                                                <div class="form-group">
+                                                    <label for="level">{{ __('Level') }}
+                                                        <code>*</code></label>
+                                                    @php
+                                                        $courseLevel = $course->levels->pluck('level_id')->toArray();
+                                                    @endphp
+                                                    <select class="select2 form-group" name="levels[]">
+                                                        <option value="">{{ __('Select') }}</option>
+                                                        @foreach ($levels as $level)
+                                                            <option @selected(in_array($level->id, $courseLevel))
+                                                                value="{{ $level->id }}">
+                                                                {{ $level->translation?->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 my-4">
+                                                <div class="form-group">
+                                                    <label for="level">{{ __('Certificate') }}
+                                                        <code>*</code></label>
+                                                    <div>
+                                                        <div id="certificateBg"></div>
+                                                        <input type="hidden" name="certificate"
+                                                            value="{{ $course?->certificate_id }}" class="form-control">
+                                                        <!-- Button trigger modal -->
+                                                        <button type="button" class="btn btn-primary mt-3"
+                                                            data-toggle="modal"
+                                                            data-target="#certificateModal">{{ __('Choose Certificate') }}</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="output">{{ __('Course Output') }}
                                                         <code>*</code></label>
@@ -132,31 +132,6 @@
                                                     <textarea name="outcome" class="text-editor form-control summernote">{!! clean(@$course?->outcome) !!}</textarea>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="level">{{ __('Level') }}
-                                                        <code>*</code></label>
-                                                    @php
-                                                        $courseLevel = $course->levels->pluck('level_id')->toArray();
-                                                    @endphp
-                                                    @foreach ($levels as $level)
-                                                        <div class="form-group">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input"
-                                                                    {{ in_array($level->id, $courseLevel) ? 'checked' : '' }}
-                                                                    name="levels[]" type="checkbox"
-                                                                    value="{{ $level->id }}"
-                                                                    id="language-{{ $level->id }}">
-                                                                <label class="form-check-label"
-                                                                    for="language-{{ $level->id }}">
-                                                                    {{ $level->translation?->name }}
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-
                                         </div>
                                 </div>
 
@@ -169,9 +144,32 @@
                     </div>
                 </div>
             </div>
+        </section>
     </div>
-    </div>
-    </section>
+    <!-- Modal -->
+    <div class="modal fade" id="certificateModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="padding: 25px 25px 0px 25px;">
+                    <h5 class="modal-title" id="certificateModalLabel">
+                        {{ __('Choose Certificate') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body row">
+                    @foreach ($certificates as $certificate)
+                        <div class="col-md-3 d-flex flex-column">
+                            <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}" alt=""
+                                style="width: 100%; height: auto;">
+                            <button class="btn btn-primary mt-auto"
+                                onclick="chooseCertificate({{ $certificate->id }})">{{ __('Choose') }}</button>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -201,6 +199,22 @@
             autoclose: false,
             format: "yyyy-mm-dd"
         });
+
+        @if ($course?->certificate_id != null)
+            $('#certificateBg').html(
+                '<img src="{{ route('admin.certificate-builder.getBg', $course->certificate_id) }}" alt="" style="width: 100%; height: auto;" />'
+            );
+        @endif
+
+
+        function chooseCertificate(id) {
+            $('#certificateModal').modal('hide')
+            $('input[name="certificate"]').val(id);
+
+            $('#certificateBg').html(
+                '<img src="{{ route('admin.certificate-builder.getBg', ':id') }}" alt="" style="width: 100%; height: auto;" />'
+                .replace(':id', id));
+        }
     </script>
 @endpush
 

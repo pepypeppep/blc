@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('certificate_builder_items', function (Blueprint $table) {
             $table->id();
-            $table->string('element_id')->nullable(); 
-            $table->string('x_position')->nullable(); 
-            $table->string('y_position')->nullable(); 
+            $table->foreignId('certificate_builder_id')->constrained('certificate_builders')->onDelete('cascade');
+            $table->string('element_id')->nullable();
+            $table->string('x_position')->nullable();
+            $table->string('y_position')->nullable();
             $table->timestamps();
         });
     }

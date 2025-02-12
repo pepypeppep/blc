@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('instructor_id');
             $table->foreignId('category_id')->nullable();
+            $table->foreignId('certificate_id')->nullable();
             $table->enum('type', ['course', 'webinar'])->default('course');
             $table->string('title');
             $table->string('slug');

@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Modules\Order\app\Models\Enrollment;
 use App\Models\CourseSelectedFilterOption;
+use Modules\CertificateBuilder\app\Models\CertificateBuilder;
 use Modules\Course\app\Models\CourseLevel;
 use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
@@ -90,7 +91,7 @@ class CourseController extends Controller
         }
 
         $course->title = $request->title;
-        $course->seo_description = $request->seo_description;
+        $course->seo_description = $request->title;
         $course->demo_video_storage = 'upload';
         $course->demo_video_source = $request->demo_video_storage == 'upload' ? $request->upload_path : $request->external_path;
         $course->price = $request->price;
@@ -133,13 +134,15 @@ class CourseController extends Controller
                 $levels = CourseLevel::with(['translation'])->where('status', 1)->get();
                 $category = CourseCategory::find($course->category_id);
                 $languages = CourseLanguage::where('status', 1)->get();
+                $certificates = CertificateBuilder::get();
                 return view('course::course.more-information', compact(
                     'categories',
                     'courseId',
                     'course',
                     'levels',
                     'category',
-                    'languages'
+                    'languages',
+                    'certificates'
                 ));
                 break;
             case '3':
@@ -167,6 +170,7 @@ class CourseController extends Controller
                     'end_date' => ['required', 'date', 'after:start_date'],
                     'output' => ['required'],
                     'outcome' => ['required'],
+                    'certificate' => ['required', 'exists:certificate_builders,id'],
                     'levels' => ['required', 'min:1', function ($attribute, $value, $fail) {
                         $ids = CourseLevel::pluck('id')->toArray();
                         foreach ($value as $level) {
@@ -188,6 +192,8 @@ class CourseController extends Controller
                     'end_date.after' => __('End date must be after start date'),
                     'output.required' => __('Output is required'),
                     'outcome.required' => __('Outcome is required'),
+                    'certificate.required' => __('Certificate is required'),
+                    'certificate.exists' => __('Certificate does not exist'),
                     'levels.required' => __('Levels is required'),
                     'levels.min' => __('Levels must have at least one level'),
                 ]);
@@ -229,9 +235,10 @@ class CourseController extends Controller
         $course->capacity = $request->capacity;
         $course->duration = $request->course_duration;
         $course->category_id = $request->category;
-        $course->qna = $request->qna;
+        $course->qna = 1;
         $course->downloadable = $request->downloadable;
-        $course->certificate = $request->certificate;
+        $course->certificate = 1;
+        $course->certificate_id = $request->certificate;
         $course->partner_instructor = $request->partner_instructor;
         $course->start_date = $request->start_date;
         $course->end_date = $request->end_date;

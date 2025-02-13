@@ -1,6 +1,9 @@
 @extends('frontend.student-dashboard.layouts.master')
 
 @section('dashboard-contents')
+    @php
+        $isExist = count($vacancy->users) > 0;
+    @endphp
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title">
             <h4 class="title">{{ __('Detail Program Pendidikan Lanjutan') }}</h4>
@@ -120,49 +123,69 @@
                                 <th>{{ __('#') }}</th>
                                 <th>{{ __('Jenis Lampiran') }}</th>
                                 <th>{{ __('Unggah Berkas') }}</th>
-                                <th class="text-center">{{ __('Lihat Berkas') }}</th>
+                                <th class="text-center">{{ __('Aksi') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($vacancyConditions as $condition)
                                 <tr>
-                                    <form id="{{ $condition->id }}_form"
-                                        action="{{ route('student.continuing-education.attachment', $condition->id) }}"
-                                        method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $condition->name }} <span class="text-danger">*</span></td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <input type="text" name="attachment_id" value="{{ $condition->id }}"
-                                                    hidden />
-                                                @if (count($condition->attachment) > 0)
-                                                    <input type="text" @if (count($condition->attachment) != 0) disabled @endif
-                                                        class="form-control me-2"
-                                                        value="{{ $condition->attachment[0]->file }}" />
-                                                @else
+
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $condition->name }} <span class="text-danger">*</span></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <input type="text" name="attachment_id" value="{{ $condition->id }}"
+                                                hidden />
+                                            @if (count($condition->attachment) > 0)
+                                                <input type="text" @if (count($condition->attachment) != 0) disabled @endif
+                                                    class="form-control me-2"
+                                                    value="{{ $condition->attachment[0]->file }}" />
+                                            @elseif (!$isExist)
+                                                <form id="{{ $condition->id }}_form"
+                                                    action="{{ route('student.continuing-education.attachment', $condition->id) }}"
+                                                    method="POST" enctype="multipart/form-data">
+                                                    @csrf
                                                     <input type="file" name="file"
                                                         @if ($condition->type == 'pdf') accept="application/pdf" @endif
                                                         @if (count($condition->attachment) != 0) disabled @endif
                                                         class="form-control me-2"
                                                         onchange="$('#{{ $condition->id }}_form').trigger('submit')" />
-                                                @endif
+                                                </form>
+                                            @else
+                                                <input type="text" class="form-control me-2" disabled />
+                                            @endif
 
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            @if (!$isExist && count($condition->attachment) != 0)
+                                                <form id="{{ $condition->id }}_form_action"
+                                                    action="{{ route('student.continuing-education.attachment', $condition->id) }}"
+                                                    method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <input id="{{ $condition->id }}_file" type="file" name="file"
+                                                        @if ($condition->type == 'pdf') accept="application/pdf" @endif
+                                                        @if (count($condition->attachment) == 0) disabled @endif
+                                                        class="form-control me-2"
+                                                        onchange="$('#{{ $condition->id }}_form_action').trigger('submit')"
+                                                        hidden />
+                                                    <a onclick="$('#{{ $condition->id }}_file').click()"
+                                                        class="align-middle cursor-pointer" data-bs-toggle="tooltip"
+                                                        title="Unggah Ulang Berkas">
+                                                        <i class="fas fa-pencil-alt"></i>
+                                                    </a>
+                                                </form>
+                                            @endif
                                             @if (count($condition->attachment) > 0)
                                                 <a target="_blank"
                                                     href="{{ route('vacancies-participant.get.file', [$condition->attachment[0]->vacancy_attachment_id, auth()->user()->id]) }}"
                                                     class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
-                                                    <i class="fas fa-eye"></i> {{ __('View') }}
+                                                    <i class="fas fa-eye"></i>
                                                 </a>
-                                            @else
-                                                <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
-                                                    style="width: 24px; height: 24px; font-size: 16px;"></i>
                                             @endif
-                                        </td>
-                                    </form>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -174,27 +197,38 @@
         <div class="row">
             <div class="col-12 mt-4">
                 <div class="p-3">
-                    <div style="background: #EFEFF2;"
-                        class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4">
-                        {{-- @if ($vacancy->status) --}}
-                        <p class="mb-0 fs-5 text-dark fw-bold text-center">
-                            Anda memenuhi semua syarat Pendidikan Lanjutan
-                        </p>
-                    </div>
+                    @if (!$isExist && $meetCondition)
+                        <div style="background: #EFEFF2;"
+                            class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4">
+                            {{-- @if ($vacancy->status) --}}
+                            <p class="mb-0 fs-5 text-dark fw-bold text-center">
+                                Anda memenuhi semua syarat Pendidikan Lanjutan
+                            </p>
+                        </div>
+                    @elseif($isExist)
+                        <div style="background: #ffc224"
+                            class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4">
+                            <p class="mb-0 fs-5 text-dark fw-bold text-center">
+                                Anda telah mendaftar pada Pendidikan Lanjutan
+                            </p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-12 text-end">
-                <form action="{{ route('student.continuing-education.register', $vacancy->id) }}" method="POST"
-                    class="d-inline">
-                    @csrf
-                    @method('POST')
-                    <button type="submit" class="btn mt-4 mb-3">
-                        {{ __('Ajukan Pendaftaran') }} <i class="fa fa-arrow-right"></i>
-                    </button>
-                </form>
+                @if (!$isExist && $meetCondition)
+                    <form action="{{ route('student.continuing-education.register', $vacancy->id) }}" method="POST"
+                        class="d-inline">
+                        @csrf
+                        @method('POST')
+                        <button type="submit" class="btn mt-4 mb-3">
+                            {{ __('Ajukan Pendaftaran') }} <i class="fa fa-arrow-right"></i>
+                        </button>
+                    </form>
+                @endif
             </div>
         </div>
 

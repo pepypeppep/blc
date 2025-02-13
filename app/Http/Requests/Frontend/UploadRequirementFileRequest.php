@@ -9,7 +9,7 @@ class UploadRequirementFileRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'attachment_id' => 'required',
+            // 'attachment_id' => 'required',
             'file' => 'required|mimes:pdf|max:10240',
         ];
 
@@ -19,8 +19,8 @@ class UploadRequirementFileRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'vacancy_id.required' => __('The vacancy id field is required'),
-            'attachment_id.required' => __('The attachment id field is required'),
+            // 'vacancy_id.required' => __('The vacancy id field is required'),
+            // 'attachment_id.required' => __('The attachment id field is required'),
             'file.required' => __('The file field is required'),
         ];
     }

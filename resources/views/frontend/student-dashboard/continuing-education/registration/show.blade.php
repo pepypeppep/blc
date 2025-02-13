@@ -240,7 +240,7 @@
                                                     <div class="form-grp">
                                                         <label for="file">File Laporan</label>
                                                         <input id="file" name="file" type="file"
-                                                            value="">
+                                                            accept=".pdf" value="">
                                                     </div>
                                                 </div>
 

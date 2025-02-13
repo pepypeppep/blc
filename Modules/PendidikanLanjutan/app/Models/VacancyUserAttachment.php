@@ -28,8 +28,18 @@ class VacancyUserAttachment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function vacancyAttachment(): BelongsTo
+    public function vacancyattachment(): BelongsTo
     {
         return $this->belongsTo(VacancyAttachment::class, 'vacancy_attachment_id', 'id');
+    }
+
+    public function scopeSyarat()
+    {
+        return $this->where('category', 'syarat');
+    }
+
+    public function scopeLampiran()
+    {
+        return $this->where('category', 'lampiran');
     }
 }

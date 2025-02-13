@@ -23,23 +23,26 @@ class Quiz extends Model
         'pass_mark',
         'total_mark',
         'status',
+        'due_date',
     ];
 
-    function questions() : HasMany
+    function questions(): HasMany
     {
         return $this->hasMany(QuizQuestion::class, 'quiz_id', 'id');
     }
 
-    function lessonProgress() : HasOne
+    function lessonProgress(): HasOne
     {
         return $this->hasOne(CourseProgress::class, 'lesson_id', 'id');
     }
 
-    function instructor() : BelongsTo{
-       return $this->belongsTo(User::class, 'instructor_id', 'id'); 
+    function instructor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'instructor_id', 'id');
     }
-    function course() : BelongsTo{
-        return $this->belongsTo(Course::class, 'course_id', 'id')->withTrashed(); 
+    function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class, 'course_id', 'id')->withTrashed();
     }
     /**
      * Boot method to handle model events.

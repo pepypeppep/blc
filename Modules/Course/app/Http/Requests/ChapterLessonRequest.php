@@ -52,6 +52,7 @@ class ChapterLessonRequest extends FormRequest
             'title'      => ['required', 'max:255', 'string'],
             'time_limit' => ['nullable', 'numeric', 'min:1'],
             'attempts'   => ['nullable', 'numeric', 'min:1'],
+            'due_date'  => ['required', 'date'],
             'pass_mark'  => ['required', 'numeric', 'min:1'],
             'total_mark' => ['required', 'numeric', 'min:1'],
         ];
@@ -88,6 +89,8 @@ class ChapterLessonRequest extends FormRequest
             'duration.required' => trans('The duration field is required.'),
             'duration.numeric' => trans('The duration must be a number.'),
             'duration.min' => trans('The duration must be at least 1 minute.'),
+            'due_date.required' => trans('The due date field is required.'),
+            'due_date.date' => trans('The due date must be a valid date.'),
         ];
 
         return $messages;

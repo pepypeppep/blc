@@ -828,7 +828,7 @@ if (!function_exists('vacancyLog')) {
             'vacancy_user_id' => $request->vacancy_user_id,
             'name' => $request->name,
             'status' => $request->status,
-            'description' => $request->message
+            'description' => $request->description
         ]);
     }
 }

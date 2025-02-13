@@ -22,7 +22,7 @@ class VacancyUserAttachmentSeeder extends Seeder
 
             foreach ($vacancyAttachments as $key => $attachment) {
                 VacancyUserAttachment::create([
-                    'vacancy_user_id' => $vacancy->user_id,
+                    'vacancy_user_id' => $vacancy->id,
                     'vacancy_attachment_id' => $attachment->id,
                     'file' => "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
                     'category' => $attachment->category

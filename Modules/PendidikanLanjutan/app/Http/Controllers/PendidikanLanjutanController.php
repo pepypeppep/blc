@@ -3,6 +3,7 @@
 namespace Modules\PendidikanLanjutan\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\VacancyReport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -86,11 +87,10 @@ class PendidikanLanjutanController extends Controller
     public function showVerif($id)
     {
         $vacancyUser = VacancyUser::with(['user'])->where('status', 'verification')
-            ->where('id', $id)
-            ->first();
+            ->findOrFail($id);
 
         $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment')
-            ->where('vacancy_user_id', $vacancyUser->user_id)
+            ->where('vacancy_user_id', $vacancyUser->id)
             ->where('category', 'syarat')
             ->get();
 
@@ -112,7 +112,7 @@ class PendidikanLanjutanController extends Controller
             ->first();
 
         $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment')
-            ->where('vacancy_user_id', $vacancyUser->user_id)
+            ->where('vacancy_user_id', $vacancyUser->id)
             ->where('category', 'syarat')
             ->get();
 
@@ -121,7 +121,7 @@ class PendidikanLanjutanController extends Controller
 
     public function indexSK()
     {
-        $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'passed')->paginate(10);
+        $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'eligible')->paginate(10);
         $submenu = 'Surat Keputusan';
 
         return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers', 'submenu'));
@@ -129,23 +129,27 @@ class PendidikanLanjutanController extends Controller
 
     public function showSK($id)
     {
-        $vacancyUser = VacancyUser::with(['user'])->where('status', 'passed')
+        $vacancyUser = VacancyUser::with(['user'])->where('status', 'eligible')
             ->where('id', $id)
             ->first();
 
         $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment')
-            ->where('vacancy_user_id', $vacancyUser->user_id)
+            ->where('vacancy_user_id', $vacancyUser->id)
             ->where('category', 'syarat')
             ->get();
 
         $vacancyUserAttachmentSK = VacancyUserAttachment::with('vacancyAttachment')
-            ->where('vacancy_user_id', $vacancyUser->user_id)
+            ->where('vacancy_user_id', $vacancyUser->id)
             ->where('category', 'lampiran')
             ->whereHas('vacancyAttachment', function ($query) {
                 $query->whereIn('name', ['SK', 'Petikan']);
             })
             ->get();
 
-        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'vacancyUserAttachments', 'vacancyUserAttachmentSK'));
+        $vacancyReports = VacancyReport::with('vacancyuser')
+            ->where('vacancy_user_id', $vacancyUser->id)
+            ->get();
+
+        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'vacancyUserAttachments', 'vacancyUserAttachmentSK', 'vacancyReports'));
     }
 }

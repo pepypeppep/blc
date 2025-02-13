@@ -145,7 +145,7 @@
                                                         @elseif($vacancyUser->status === 'assesment')
                                                             <span
                                                                 class="badge badge-primary">{{ $vacancyUser->status }}</span>
-                                                        @elseif($vacancyUser->status === 'passed')
+                                                        @elseif($vacancyUser->status === 'eligible')
                                                             <span
                                                                 class="badge badge-success">{{ $vacancyUser->status }}</span>
                                                         @elseif($vacancyUser->status === 'rejected')
@@ -169,7 +169,7 @@
                                                                 title="Assesment Pendaftar">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             </a>
-                                                        @elseif($vacancyUser->status === 'passed')
+                                                        @elseif($vacancyUser->status === 'eligible')
                                                             <a href="{{ route('admin.sk.show', $vacancyUser->id) }}"
                                                                 class="btn btn-primary btn-sm m-1" title="SK Pendaftar">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>

@@ -18,6 +18,11 @@ class VacancyParticipantController extends Controller
 {
     public function updateStatus(Request $request, $vacancyUserId)
     {
+        $request->validate([
+            'status' => 'required|in:rejected,assesment,eligible,ineligible',
+            'description' => 'nullable'
+        ]);
+
         // Start transaction
         DB::beginTransaction();
 
@@ -30,10 +35,16 @@ class VacancyParticipantController extends Controller
                 'status' => $request->status
             ]);
 
+            if ($request->status === 'rejected' || $request->status === 'assesment') {
+                $name = "Verifikasi Berkas";
+            } elseif ($request->status === 'eligible' || $request->status === 'ineligible') {
+                $name = "Asessment";
+            }
+
             // Update Vacancy Log
             $request->merge([
                 'vacancy_user_id' => $vacancyUser->id,
-                'name' => 'Verifikasi Berkas',
+                'name' => $name,
                 'description' => $request->description
             ]);
             vacancyLog($request);

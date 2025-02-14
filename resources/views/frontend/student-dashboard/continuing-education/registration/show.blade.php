@@ -148,12 +148,12 @@
                                         <table class="table table-borderless">
                                             <div class="blog__details-bottom">
                                                 <div class="row">
-                                                    <div class="col-xl-6 col-md-7">
+                                                    <div class="col-8">
                                                         <div class="tg-post-tag">
                                                             <h5 class="tag-title">Status Assesment :</h5>
                                                             <ul class="list-wrap p-0 mb-0">
-                                                                <li><a class="bg-danger text-white " href="javascript:;">
-                                                                        <strong>Ditolak</strong> </a></li>
+                                                                <li><a class="bg-warning text-white " href="javascript:;">
+                                                                        <strong>Belum assesmen</strong> </a></li>
                                                                 <li>
                                                                     <span tabindex="0"
                                                                         class="fa fa-info-circle text-dark"
@@ -176,35 +176,105 @@
                                     aria-labelledby="itemSix-tab" tabindex="0">
                                     {{-- <div class="faq__wrap "> --}}
                                     <div class="accordion" id="accordionExample">
-                                        @foreach ($attachments as $attachment)
-                                            @if ($attachment->category == 'lampiran')
-                                                <div class="accordion-item">
-                                                    <h2 class="accordion-header">
-                                                        <button class="accordion-button" type="button"
-                                                            data-bs-toggle="collapse"
-                                                            data-bs-target={{ '#collapse' . $attachment->id }}
-                                                            aria-expanded="false"
-                                                            aria-controls={{ '#collapse' . $attachment->id }}>
-                                                            {{ $attachment->vacancyattachment->name }}
-                                                        </button>
-                                                    </h2>
-                                                    <div id={{ 'collapse' . $attachment->id }}
-                                                        class="accordion-collapse collapse"
-                                                        data-bs-parent="#accordionExample" style="">
-                                                        <div class="accordion-body">
-                                                            <object
-                                                                data={{ Route('vacancies-participant.get.file', [$attachment->vacancyattachment->id, auth()->user()->id]) }}
-                                                                width="100%" height="500px">
-                                                                <span
-                                                                    class="full-width rounded p-2 bg-danger text-white">Dokumen
-                                                                    Tidak Ditemukan</span>
-                                                            </object>
+                                        @if ($lampirans->isEmpty())
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target={{ '#collapse' . 1 }}
+                                                        aria-expanded="false" aria-controls={{ '#collapse' . 1 }}>
+                                                        Perjanjian Kinerja
+                                                    </button>
+                                                </h2>
+                                                <div id={{ 'collapse' . 1 }} class="accordion-collapse collapse"
+                                                    data-bs-parent="#accordionExample" style="">
+                                                    <div class="accordion-body">
+                                                        <object
+                                                            data={{ Route('vacancies-participant.get.file', [1, auth()->user()->id]) }}
+                                                            width="100%" height="500px">
+                                                            <span
+                                                                class="full-width rounded p-2 bg-danger text-white">Dokumen
+                                                                Tidak Ditemukan</span>
+                                                        </object>
 
-                                                        </div>
                                                     </div>
                                                 </div>
-                                            @endif
-                                        @endforeach
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target={{ '#collapse' . 2 }}
+                                                        aria-expanded="false" aria-controls={{ '#collapse' . 2 }}>
+                                                        SK
+                                                    </button>
+                                                </h2>
+                                                <div id={{ 'collapse' . 2 }} class="accordion-collapse collapse"
+                                                    data-bs-parent="#accordionExample" style="">
+                                                    <div class="accordion-body">
+                                                        <object
+                                                            data={{ Route('vacancies-participant.get.file', [2, auth()->user()->id]) }}
+                                                            width="100%" height="500px">
+                                                            <span
+                                                                class="full-width rounded p-2 bg-danger text-white">Dokumen
+                                                                Tidak Ditemukan</span>
+                                                        </object>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target={{ '#collapse' . 3 }}
+                                                        aria-expanded="false" aria-controls={{ '#collapse' . 3 }}>
+                                                        Petikan
+                                                    </button>
+                                                </h2>
+                                                <div id={{ 'collapse' . 3 }} class="accordion-collapse collapse"
+                                                    data-bs-parent="#accordionExample" style="">
+                                                    <div class="accordion-body">
+                                                        <object
+                                                            data={{ Route('vacancies-participant.get.file', [3, auth()->user()->id]) }}
+                                                            width="100%" height="500px">
+                                                            <span
+                                                                class="full-width rounded p-2 bg-danger text-white">Dokumen
+                                                                Tidak Ditemukan</span>
+                                                        </object>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @else
+                                            @foreach ($lampirans as $lampiran)
+                                                @if ($lampiran->category == 'lampiran')
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header">
+                                                            <button class="accordion-button" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target={{ '#collapse' . $lampiran->id }}
+                                                                aria-expanded="false"
+                                                                aria-controls={{ '#collapse' . $lampiran->id }}>
+                                                                {{ $lampiran->name }}
+                                                            </button>
+                                                        </h2>
+                                                        <div id={{ 'collapse' . $lampiran->id }}
+                                                            class="accordion-collapse collapse"
+                                                            data-bs-parent="#accordionExample" style="">
+                                                            <div class="accordion-body">
+                                                                <object
+                                                                    data={{ Route('vacancies-participant.get.file', [$lampiran->id, auth()->user()->id]) }}
+                                                                    width="100%" height="500px">
+                                                                    <span
+                                                                        class="full-width rounded p-2 bg-danger text-white">Dokumen
+                                                                        Tidak Ditemukan</span>
+                                                                </object>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        @endif
+
                                     </div>
                                     {{-- </div> --}}
 
@@ -221,7 +291,7 @@
 
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <div class="form-grp">
+                                                    <div class="form-group">
                                                         <label for="name">Pilih Semester</label>
                                                         <select name="name" id="name" class="form-select">
                                                             <option value="Semester 1">Semester 1</option>
@@ -237,17 +307,15 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <div class="form-grp">
+                                                    <div class="form-group">
                                                         <label for="file">File Laporan</label>
                                                         <input id="file" name="file" type="file"
-                                                            accept=".pdf" value="">
+                                                            accept=".pdf" class="form-control" value="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-1">
-                                                    <label for="age"></label>
-
-                                                    <div class="submit-btn">
+                                                    <div class="submit-btn my-3">
                                                         <button type="submit" class="btn"><i
                                                                 class="fa fa-upload"></i></button>
                                                     </div>

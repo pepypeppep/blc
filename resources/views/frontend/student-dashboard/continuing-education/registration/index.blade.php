@@ -21,26 +21,27 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($vacancies as $key => $vacancy)
+                            @foreach ($vacancies as $vacancy)
                                 <tr>
-                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $vacancy->education_level }}/{{ $vacancy->study->name }}</td>
                                     <td>{{ $vacancy->year }}</td>
                                     <td>{{ formatDate($vacancy->open_at) }}</td>
                                     <td>{{ formatDate($vacancy->close_at) }}</td>
                                     <td>
-                                        <div class="badge bg-warning">{{ $vacancy->users()->first()->status }}</div>
+                                        <div class="badge bg-warning">
+                                            {{ optional($vacancy->users()->first())->status }}
+                                        </div>
                                     </td>
 
                                     <td class="text-center">
-                                        <a href="{{ route('student.continuing-education.registration.show', $vacancy->users()->first()->id) }}"
+                                        <a href="{{ route('student.continuing-education.registration.show', $vacancy->users->first()->id) }}"
                                             class="align-middle" data-bs-toggle="tooltip" title="Lihat selengkapnya">
                                             <i class="fas fa-eye"></i> {{ __('View') }}
                                         </a>
                                     </td>
                                 </tr>
-                            @empty
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
 

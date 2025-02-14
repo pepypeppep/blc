@@ -170,11 +170,11 @@
                                                         class="form-control me-2"
                                                         onchange="$('#{{ $condition->id }}_form_action').trigger('submit')"
                                                         hidden />
-                                                    <a onclick="$('#{{ $condition->id }}_file').click()"
-                                                        class="align-middle cursor-pointer" data-bs-toggle="tooltip"
-                                                        title="Unggah Ulang Berkas">
+                                                    <button onclick="$('#{{ $condition->id }}_file').click()"
+                                                        type="button" class="align-middle border-0 bg-transparent"
+                                                        data-bs-toggle="tooltip" title="Unggah Ulang Berkas">
                                                         <i class="fas fa-pencil-alt"></i>
-                                                    </a>
+                                                    </button>
                                                 </form>
                                             @endif
                                             @if (count($condition->attachment) > 0)

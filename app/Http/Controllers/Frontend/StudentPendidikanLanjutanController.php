@@ -31,25 +31,24 @@ class StudentPendidikanLanjutanController extends Controller
     // list pendidikan yang sudah diambil
     function registered()
     {
-        $vacancies = Vacancy::whereHas('users', function ($query) {
-            $query->where('user_id', userAuth()->id); // next update with value_type, unor, dll
-        })->with(['users', 'study'])->paginate(10);
-
-        // dd($vacancies->first());
-
+        $vacancies = Vacancy::with(['users' => function ($query) {
+            $query->where('user_id', userAuth()->id);
+        }, 'study'])->whereHas('users', function ($query) {
+            $query->where('user_id', userAuth()->id);
+        })->paginate(10);
         return view('frontend.student-dashboard.continuing-education.registration.index', compact('vacancies'));
     }
 
     function registeredDetail($id)
     {
         $vacancy = VacancyUser::with(['vacancy', 'user'])->findOrFail($id);
-        $logs = VacancyLogs::where('vacancy_user_id', $id)->get();
-        $userId = userAuth()->id;
-        $attachments = VacancyUserAttachment::whereHas('vacancyattachment', function ($query) use ($userId) {
-            $query->where('vacancy_id', $userId);
+        $logs = VacancyLogs::where('vacancy_user_id', $vacancy->id)->get();
+        $attachments = VacancyUserAttachment::whereHas('vacancyattachment', function ($query) use ($vacancy) {
+            $query->where('vacancy_id', $vacancy->vacancy_id);
         })->where('vacancy_user_id', $vacancy->id)->get();
-        $reports = VacancyReport::where('vacancy_user_id', $vacancy->id)->get();
-        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancy', 'logs', 'attachments', 'reports'));
+        $lampirans = VacancyAttachment::lampiran()->where('vacancy_id', $vacancy->vacancy_id)->get();
+        $reports = VacancyReport::where('vacancy_user_id', $vacancy->id)->orderBy('name')->get();
+        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancy', 'logs', 'attachments', 'lampirans', 'reports'));
     }
 
     // detail pendidikan
@@ -82,6 +81,19 @@ class StudentPendidikanLanjutanController extends Controller
         if (!$attachment) {
             return redirect()->back()->with(['messege' => __('Attachment not found'), 'alert-type' => 'error']);
         }
+        DB::beginTransaction();
+
+        VacancyUser::firstOrCreate([
+            'user_id' => userAuth()->id,
+            'vacancy_id' => $attachment->vacancy_id
+        ], [
+            'status' => 'register',
+            'user_id' => userAuth()->id,
+            'vacancy_id' => $attachment->vacancy_id,
+        ]);
+
+        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $attachment->vacancy_id)->first();
+        $vacancyUserAttachment = VacancyUserAttachment::where('vacancy_attachment_id', $attachment->id)->where('vacancy_user_id', $vacancyUser->id)->first();
 
         $file = $request->file('file');
 
@@ -90,6 +102,7 @@ class StudentPendidikanLanjutanController extends Controller
         ]);
 
         if ($validator->fails()) {
+            DB::rollBack();
             return redirect()->back()->with(['messege' => $validator->errors()->first(), 'alert-type' => 'error']);
         }
 
@@ -98,30 +111,43 @@ class StudentPendidikanLanjutanController extends Controller
 
         $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->first();
 
-        $result = VacancyUserAttachment::create([
-            'vacancy_attachment_id' => $attachment->id,
+        $request->merge([
             'vacancy_user_id' => $vacancyUser->id,
-            'file' => $fileName,
-            'category' => $attachment->category
+            'name' => 'Upload Berkas',
+            'status' => $vacancyUser->status,
+            'description' => 'File ' . $attachment->name . ' telah diupload',
         ]);
 
-        VacancyLogs::create([
-            'vacancy_user_id' => $vacancyUser->id,
-            'name' => 'Upload file requirement',
-            'description' => 'Mengupload file requirement ' . $attachment->name,
-            'status' => 'success',
-        ]);
+        if ($vacancyUserAttachment) {
+            $result = $vacancyUserAttachment->update([
+                'file' => $fileName
+            ]);
+            $request->merge([
+                'name' => $vacancyUserAttachment->name,
+            ]);
+        } else {
+            $result = VacancyUserAttachment::create([
+                'vacancy_attachment_id' => $attachment->id,
+                'vacancy_user_id' => $vacancyUser->id,
+                'file' => $fileName,
+                'category' => $attachment->category
+            ]);
+        }
+
+        vacancyLog($request);
 
         if (!$result) {
+            DB::rollBack();
             return redirect()->back()->with(['messege' => __('Upload file requirement failed'), 'alert-type' => 'error']);
         }
 
 
+        DB::commit();
         return redirect()->back()->with(['messege' => __('Upload file requirement successfully'), 'alert-type' => 'success']);
     }
 
     // pengajuan pendaftaran
-    public function register($vacancyId)
+    public function register(Request $request, $vacancyId)
     {
         $vacancy = Vacancy::findOrFail($vacancyId);
 
@@ -129,14 +155,14 @@ class StudentPendidikanLanjutanController extends Controller
             return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
         }
 
-        $vacancyAttachments = VacancyAttachment::syarat()->where('vacancy_id', $vacancyId)->where('is_active', 1)->get();
+        $vacancyAttachments = VacancyAttachment::syarat()->where('vacancy_id', $vacancy->id)->where('is_active', 1)->get();
 
         if (!$vacancyAttachments) {
             return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
         }
 
-        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->first();
-        $base = VacancyAttachment::syarat()->where('vacancy_id', $vacancyId)->where('is_active', 1);
+        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $vacancy->id)->first();
+        $base = VacancyAttachment::syarat()->where('vacancy_id', $vacancy->id)->where('is_active', 1);
         $vacancyConditions = $base->with('attachment')->get();
         $vacancyTakeConditions = $base->whereHas('attachment', function ($query) use ($vacancyUser) {
             $query->where('vacancy_user_id', $vacancyUser->id);
@@ -154,25 +180,24 @@ class StudentPendidikanLanjutanController extends Controller
             return redirect()->back()->with(['messege' => 'Pendaftaran sudah ditutup', 'alert-type' => 'error']);
         }
 
-        if ($vacancy->users()->where('user_id', userAuth()->id)->exists()) {
+        if ($vacancy->users()->where('user_id', userAuth()->id)->whereNotIn('status', ['register'])->exists()) {
             return redirect()->back()->with(['messege' => 'Anda sudah terdaftar', 'alert-type' => 'error']);
         }
 
         DB::beginTransaction();
-        $vacancyUser = VacancyUser::create([
-            'vacancy_id' => $vacancyId,
-            'user_id' => userAuth()->id,
-            'status' => 'verification',
+
+        $vacancyUser->update([
+            'status' => 'verification'
         ]);
 
-        $vacancyId = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $vacancyId)->first()->id;
-
-        VacancyLogs::create([
-            'vacancy_user_id' => $vacancyId,
+        $request->merge([
+            'vacancy_user_id' => $vacancy->id,
             'name' => 'Pendaftaran',
+            'status' => $vacancyUser->status,
             'description' => 'Telah melakukan pendaftaran',
-            'status' => 'success',
         ]);
+
+        vacancyLog($request);
 
         if (!$vacancyUser) {
             DB::rollBack();
@@ -180,7 +205,7 @@ class StudentPendidikanLanjutanController extends Controller
         }
 
         DB::commit();
-        return redirect('student/continuing-education-registration/' . $vacancyId)->with(['message' => 'Pendaftaran berhasil', 'alert-type' => 'success']);
+        return redirect('student/continuing-education-registration/' . $vacancy->id)->with(['message' => 'Pendaftaran berhasil', 'alert-type' => 'success']);
     }
 
     public function vacancyReportSubmit(StudentVacancyReportRequest $request)
@@ -223,11 +248,5 @@ class StudentPendidikanLanjutanController extends Controller
 
         DB::commit();
         return redirect()->back()->with(['messege' => __('Create vacancy report successfully'), 'alert-type' => 'success']);
-    }
-
-    public function checkProgramStudy(int $vacancyId)
-    {
-        $vacancy = Vacancy::findOrFail($vacancyId);
-        $checking = [];
     }
 }

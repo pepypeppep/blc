@@ -16,9 +16,9 @@
 @section('meta_title', $setting->app_name . ' | ' . $blog->title)
 @section('contents')
     <!-- breadcrumb-area -->
-    <x-frontend.breadcrumb :title="__('Blog Details')" :links="[
+    <x-frontend.breadcrumb :title="__('Detail Pengetahuan')" :links="[
         ['url' => route('home'), 'text' => __('Home')],
-        ['url' => route('blogs'), 'text' => __('Blogs')],
+        ['url' => route('blogs'), 'text' => __('Pengetahuan')],
         ['url' => '', 'text' => $blog->title],
     ]" />
     <!-- breadcrumb-area-end -->
@@ -43,6 +43,8 @@
                                     </li>
                                     <li><i class="far fa-comment-alt"></i> {{ count($comments) }} {{ __('Comments') }}
                                     </li>
+                                    <li><i class="fas fa-star"></i> 5.0 </li>
+                                    <li><i class="far fa-eye"></i> {{ __('654') }}
                                 </ul>
                             </div>
                             <h3 class="title">{{ $blog->translation->title }}</h3>
@@ -129,8 +131,20 @@
                                 <form action="{{ route('blog.submit-comment') }}" class="comment-form" method="post">
                                     @csrf
                                     <input type="hidden" name="blog_id" value="{{ $blog->id }}">
+                                    <div class="form-grp mb-3">
+                                        <label for="">Rating</label>
+                                        <select name="rating" id="" required="">
+                                            <option value="5">5</option>
+                                            <option value="4">4</option>
+                                            <option value="3">3</option>
+                                            <option value="2">2</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
                                     <div class="comment-field">
-                                        <textarea placeholder="{{ __('Comment') }}" name="comment"></textarea>
+                                        <label for="">Komentar</label>
+
+                                        <textarea placeholder="{{ __('Tulis Komentar') }}" name="comment"></textarea>
                                     </div>
                                     <!-- g-recaptcha -->
                                     @if (Cache::get('setting')->recaptcha_status === 'active')

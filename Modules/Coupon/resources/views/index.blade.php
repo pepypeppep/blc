@@ -11,10 +11,10 @@
 
             <div class="section-body">
                 <div class="text-right">
- <a href="javascript:;" data-toggle="modal" data-target="#create_coupon_id" class="btn btn-primary"><i
-                        class="fas fa-plus"></i> {{ __('Add New') }}</a>
+                    <a href="javascript:;" data-toggle="modal" data-target="#create_coupon_id" class="btn btn-primary"><i
+                            class="fas fa-plus"></i> {{ __('Add New') }}</a>
                 </div>
-               
+
                 <div class="row mt-sm-4">
                     <div class="col-12">
                         <div class="card ">

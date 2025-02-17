@@ -27,8 +27,9 @@
                                                 class="form-control" placeholder="{{ __('Search') }}">
                                         </div>
                                         <div class="col-md-3 form-group">
-                                            <input type="text" autocomplete="off" name="date" value="{{ request()->get('date') }}"
-                                                class="form-control datepicker" placeholder="{{ __('Date') }}">
+                                            <input type="text" autocomplete="off" name="date"
+                                                value="{{ request()->get('date') }}" class="form-control datepicker"
+                                                placeholder="{{ __('Date') }}">
                                         </div>
                                         <div class="col-md-3">
                                             <div class="from-group">
@@ -52,9 +53,10 @@
 
                                                 <option value="">{{ __('Instructor') }}</option>
                                                 @foreach ($instructors as $instructor)
-                                                    <option value="{{ $instructor->id }}" {{ request()->get('instructor') == $instructor->id ? 'selected' : '' }}>
+                                                    <option value="{{ $instructor->id }}"
+                                                        {{ request()->get('instructor') == $instructor->id ? 'selected' : '' }}>
                                                         {{ $instructor->name }} ({{ $instructor->email }})</option>
-                                                @endforeach                                                
+                                                @endforeach
                                             </select>
                                         </div>
 
@@ -196,11 +198,13 @@
                                                         <div>
                                                             <div class="dropdown">
                                                                 <button class="btn btn-primary dropdown-toggle"
-                                                                    type="button" id="dropdownMenu2" data-toggle="dropdown"
-                                                                    aria-haspopup="true" aria-expanded="false">
+                                                                    type="button" id="dropdownMenu2"
+                                                                    data-toggle="dropdown" aria-haspopup="true"
+                                                                    aria-expanded="false">
                                                                     <i class="fa fa-ellipsis-v"></i>
                                                                 </button>
-                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                                                <div class="dropdown-menu"
+                                                                    aria-labelledby="dropdownMenu2">
                                                                     <a href="{{ route('admin.courses.edit-view', $course->id) }}"
                                                                         class="dropdown-item"
                                                                         target="_blank">{{ __('Edit') }}</a>
@@ -235,4 +239,6 @@
     <script src="{{ asset('global/js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('backend/js/default/courses.js') }}"></script>
     <script src="{{ asset('backend/js/sweetalert.js') }}"></script>
+
+    
 @endpush

@@ -28,6 +28,7 @@ class LearningController extends Controller
     use GenerateSecureLinkTrait;
     function index(string $slug)
     {
+
         $course = Course::active()->with([
             'chapters',
             'chapters.chapterItems',
@@ -284,6 +285,7 @@ class LearningController extends Controller
     function quizIndex(string $id)
     {
 
+
         $attempt = QuizResult::where('user_id', userAuth()->id)->where('quiz_id', $id)->count();
 
         // $quiz = Quiz::query()
@@ -330,6 +332,15 @@ class LearningController extends Controller
             return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
                 'alert-type' => 'error',
                 'messege' => __('You reached maximum attempt')
+            ]);
+        }
+
+        //if due data lebih dari hari ini
+        if (Carbon::parse($quiz->due_date)->isPast()) {
+            return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
+                'alert-type' => 'error',
+                // 'message'    => __('Due date expired on :date', ['date' => Carbon::parse($quiz->due_date)->toFormattedDateString()]),
+                'message'    => __('Batas waktu telah berakhir pada tanggal :date', ['date' => Carbon::parse($quiz->due_date)->toFormattedDateString()]),
             ]);
         }
 

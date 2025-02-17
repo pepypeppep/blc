@@ -179,6 +179,7 @@ class CourseContentController extends Controller
                 'title' => $request->title,
                 'time' => $request->time_limit,
                 'attempt' => $request->attempts,
+                'due_date' => $request->due_date,
                 'pass_mark' => $request->pass_mark,
                 'total_mark' => $request->total_mark,
             ]);
@@ -216,6 +217,7 @@ class CourseContentController extends Controller
 
     function lessonUpdate(ChapterLessonRequest $request)
     {
+        
         checkAdminHasPermissionAndThrowException('course.management');
 
         $chapterItem = CourseChapterItem::findOrFail($request->chapter_item_id);
@@ -275,6 +277,7 @@ class CourseContentController extends Controller
                 'title' => $request->title,
                 'time' => $request->time_limit,
                 'attempt' => $request->attempts,
+                'due_date' => $request->due_date,
                 'pass_mark' => $request->pass_mark,
                 'total_mark' => $request->total_mark,
             ]);

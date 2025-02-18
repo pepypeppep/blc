@@ -31,9 +31,7 @@ class StudentPendidikanLanjutanController extends Controller
     // list pendidikan yang sudah diambil
     function registered()
     {
-        $vacancies = Vacancy::with(['users' => function ($query) {
-            $query->where('user_id', userAuth()->id);
-        }, 'study'])->whereHas('users', function ($query) {
+        $vacancies = Vacancy::whereHas('users', function ($query) {
             $query->where('user_id', userAuth()->id);
         })->paginate(10);
         return view('frontend.student-dashboard.continuing-education.registration.index', compact('vacancies'));
@@ -88,13 +86,10 @@ class StudentPendidikanLanjutanController extends Controller
             'vacancy_id' => $attachment->vacancy_id
         ], [
             'status' => 'register',
-            'user_id' => userAuth()->id,
-            'vacancy_id' => $attachment->vacancy_id,
         ]);
 
         $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $attachment->vacancy_id)->first();
-        $vacancyUserAttachment = VacancyUserAttachment::where('vacancy_attachment_id', $attachment->id)->where('vacancy_user_id', $vacancyUser->id)->first();
-
+        $vacancyUserAttachment = VacancyUserAttachment::with('vacancyattachment')->where('vacancy_attachment_id', $attachment->id)->where('vacancy_user_id', $vacancyUser->id)->first();
         $file = $request->file('file');
 
         $validator = Validator::make(['file' => $file], [
@@ -109,21 +104,18 @@ class StudentPendidikanLanjutanController extends Controller
         $fileName = "vacancy/" . now()->year . "/attachments" . "/" . str_replace([' ', '/'], '_', $attachment->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
         Storage::disk('private')->put($fileName, file_get_contents($file));
 
-        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->first();
-
         $request->merge([
             'vacancy_user_id' => $vacancyUser->id,
             'name' => 'Upload Berkas',
             'status' => $vacancyUser->status,
             'description' => 'File ' . $attachment->name . ' telah diupload',
         ]);
-
         if ($vacancyUserAttachment) {
             $result = $vacancyUserAttachment->update([
                 'file' => $fileName
             ]);
             $request->merge([
-                'name' => $vacancyUserAttachment->name,
+                'name' => $vacancyUserAttachment->vacancyattachment->name,
             ]);
         } else {
             $result = VacancyUserAttachment::create([
@@ -191,7 +183,7 @@ class StudentPendidikanLanjutanController extends Controller
         ]);
 
         $request->merge([
-            'vacancy_user_id' => $vacancy->id,
+            'vacancy_user_id' => $vacancyUser->id,
             'name' => 'Pendaftaran',
             'status' => $vacancyUser->status,
             'description' => 'Telah melakukan pendaftaran',
@@ -205,7 +197,7 @@ class StudentPendidikanLanjutanController extends Controller
         }
 
         DB::commit();
-        return redirect('student/continuing-education-registration/' . $vacancy->id)->with(['message' => 'Pendaftaran berhasil', 'alert-type' => 'success']);
+        return redirect('student/continuing-education-registration/' . $vacancyUser->id)->with(['message' => 'Pendaftaran berhasil', 'alert-type' => 'success']);
     }
 
     public function vacancyReportSubmit(StudentVacancyReportRequest $request)

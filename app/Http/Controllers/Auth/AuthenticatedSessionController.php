@@ -83,13 +83,16 @@ class AuthenticatedSessionController extends Controller
         // Authenticate user
         Auth::guard('web')->attempt($credential, $request->remember);
 
+        // Store detail data into session
+        session()->put('employee_detail', employee_detail($user));
+
         // Redirect user to dashboard based on role
         $notification = __('Logged in successfully.');
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
 
         $intendedUrl = session()->get('url.intended');
         if ($intendedUrl && \Str::contains($intendedUrl, '/admin')) {
-            if($user->role == 'instructor')  return redirect()->route('instructor.dashboard') ;
+            if ($user->role == 'instructor')  return redirect()->route('instructor.dashboard');
             return redirect()->route('student.dashboard');
         }
 

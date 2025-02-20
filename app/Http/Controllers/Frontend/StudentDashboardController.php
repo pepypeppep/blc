@@ -19,8 +19,10 @@ use Modules\Order\app\Models\Order;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use App\Models\User;
 
-class StudentDashboardController extends Controller {
-    public function index(): View {
+class StudentDashboardController extends Controller
+{
+    public function index(): View
+    {
         $totalEnrolledCourses = Enrollment::where('user_id', userAuth()->id)->count();
         $totalQuizAttempts = QuizResult::where('user_id', userAuth()->id)->count();
         $totalReviews = CourseReview::where('user_id', userAuth()->id)->count();
@@ -33,21 +35,24 @@ class StudentDashboardController extends Controller {
         ));
     }
 
-    function enrolledCourses() {
+    function enrolledCourses()
+    {
         $enrolls = Enrollment::with(['course' => function ($q) {
             $q->withTrashed();
         }])->where('user_id', userAuth()->id)->orderByDesc('id')->paginate(10);
         return view('frontend.student-dashboard.enrolled-courses.index', compact('enrolls'));
     }
 
-    function quizAttempts() {
+    function quizAttempts()
+    {
         Session::forget('course_slug');
         $quizAttempts = QuizResult::with(['quiz'])->where('user_id', userAuth()->id)->orderByDesc('id')->paginate(10);
 
         return view('frontend.student-dashboard.quiz-attempts.index', compact('quizAttempts'));
     }
 
-    function continuingEducation() {
+    function continuingEducation()
+    {
         $vacancies = Vacancy::whereHas('users', function ($query) {
             $query->where('user_id', userAuth()->id); // next update with value_type, unor, dll
         })->with(['details', 'unors', 'users'])->paginate(10);
@@ -55,13 +60,15 @@ class StudentDashboardController extends Controller {
         return view('frontend.student-dashboard.continuing-education.index', compact('vacancies'));
     }
 
-    function continuingEducationDetail($id) {
+    function continuingEducationDetail($id)
+    {
         $vacancy = Vacancy::with('details')->findOrFail($id);
 
         return view('frontend.student-dashboard.continuing-education.show', compact('vacancy'));
     }
 
-    public function continuingEducationAttachment($id) {
+    public function continuingEducationAttachment($id)
+    {
         $vacancy = Vacancy::with('users', 'details')->findOrFail($id);
 
         $attachment = $vacancy->users->firstWhere('id', auth()->id())?->pivot->sk_file;
@@ -73,18 +80,21 @@ class StudentDashboardController extends Controller {
         return view('frontend.student-dashboard.continuing-education.attachment', compact('vacancy', 'attachment'));
     }
 
-    public function continuingEducationRegistration() {
+    public function continuingEducationRegistration()
+    {
 
         return view('frontend.student-dashboard.continuing-education.registration.index');
     }
 
-    public function continuingEducationRegistrationDetail($id) {
+    public function continuingEducationRegistrationDetail($id)
+    {
 
         return view('frontend.student-dashboard.continuing-education.registration.show');
     }
 
 
-    function downloadCertificate(string $id) {
+    function downloadCertificate(string $id)
+    {
         $certificate = CertificateBuilder::first();
         $certificateItems = CertificateBuilderItem::all();
         $course = Course::withTrashed()->find($id);

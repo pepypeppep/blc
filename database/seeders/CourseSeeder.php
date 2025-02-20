@@ -115,7 +115,7 @@ class CourseSeeder extends Seeder
         $course_chapters = array(
             array(
                 "title" => "Introduction",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "order" => 1,
                 "status" => "active",
@@ -124,7 +124,7 @@ class CourseSeeder extends Seeder
             ),
             array(
                 "title" => "Data Structures and Algorithms in Python",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "order" => 3,
                 "status" => "active",
@@ -133,7 +133,7 @@ class CourseSeeder extends Seeder
             ),
             array(
                 "title" => "Data Analysis with Pandas",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "order" => 4,
                 "status" => "active",
@@ -142,7 +142,7 @@ class CourseSeeder extends Seeder
             ),
             array(
                 "title" => "Data Visualization with Matplotlib and Seaborn",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "order" => 5,
                 "status" => "active",
@@ -151,7 +151,7 @@ class CourseSeeder extends Seeder
             ),
             array(
                 "title" => "Statistical Analysis and Hypothesis Testing",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "order" => 6,
                 "status" => "active",
@@ -160,7 +160,7 @@ class CourseSeeder extends Seeder
             ),
             array(
                 "title" => "Introduction to Machine Learning",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "order" => 7,
                 "status" => "active",
@@ -169,7 +169,7 @@ class CourseSeeder extends Seeder
             ),
             array(
                 "title" => "Advanced Machine Learning Techniques",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "order" => 8,
                 "status" => "active",
@@ -180,7 +180,7 @@ class CourseSeeder extends Seeder
 
         $course_chapter_items = array(
             array(
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "chapter_id" => 1,
                 "type" => "lesson",
                 "order" => 1,
@@ -188,7 +188,7 @@ class CourseSeeder extends Seeder
                 "updated_at" => "2024-06-04 05:05:26",
             ),
             array(
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "chapter_id" => 1,
                 "type" => "lesson",
                 "order" => 2,
@@ -196,7 +196,7 @@ class CourseSeeder extends Seeder
                 "updated_at" => "2024-06-04 05:10:16",
             ),
             array(
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "chapter_id" => 1,
                 "type" => "lesson",
                 "order" => 3,
@@ -204,7 +204,7 @@ class CourseSeeder extends Seeder
                 "updated_at" => "2024-06-04 05:16:11",
             ),
             array(
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "chapter_id" => 1,
                 "type" => "quiz",
                 "order" => 5,
@@ -212,7 +212,7 @@ class CourseSeeder extends Seeder
                 "updated_at" => "2024-06-04 07:02:07",
             ),
             array(
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "chapter_id" => 1,
                 "type" => "lesson",
                 "order" => 4,
@@ -227,7 +227,7 @@ class CourseSeeder extends Seeder
                 "title" => "Youtube Source",
                 "slug" => NULL,
                 "description" => "Unlock the full potential of Python in the realms of data science and machine learning with this comprehensive course. Designed for aspiring data scientists, machine learning engineers, and anyone eager to dive into the world of data, this course takes you from foundational concepts to advanced techniques, ensuring a thorough understanding and hands-on experience with the latest tools and methodologies",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "chapter_id" => 1,
                 "chapter_item_id" => 1,
@@ -248,7 +248,7 @@ class CourseSeeder extends Seeder
                 "title" => "Vimeo Source",
                 "slug" => NULL,
                 "description" => "Unlock the full potential of Python in the realms of data science and machine learning with this comprehensive course. Designed for aspiring data scientists, machine learning engineers, and anyone eager to dive into the world of data, this course takes you from foundational concepts to advanced techniques, ensuring a thorough understanding and hands-on experience with the latest tools and methodologies",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 0,
                 "chapter_id" => 1,
                 "chapter_item_id" => 2,
@@ -269,7 +269,7 @@ class CourseSeeder extends Seeder
                 "title" => "Google Drive Source",
                 "slug" => NULL,
                 "description" => "Unlock the full potential of Python in the realms of data science and machine learning with this comprehensive course. Designed for aspiring data scientists, machine learning engineers, and anyone eager to dive into the world of data, this course takes you from foundational concepts to advanced techniques, ensuring a thorough understanding and hands-on experience with the latest tools and methodologies",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 0,
                 "chapter_id" => 1,
                 "chapter_item_id" => 3,
@@ -290,7 +290,7 @@ class CourseSeeder extends Seeder
                 "title" => "Case Studies in Machine Learning",
                 "slug" => NULL,
                 "description" => "Unlock the full potential of Python in the realms of data science and machine learning with this comprehensive course. Designed for aspiring data scientists, machine learning engineers, and anyone eager to dive into the world of data, this course takes you from foundational concepts to advanced techniques, ensuring a thorough understanding and hands-on experience with the latest tools and methodologies",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "chapter_id" => 2,
                 "chapter_item_id" => 5,
@@ -311,7 +311,7 @@ class CourseSeeder extends Seeder
                 "title" => "Feature Engineering and Selection",
                 "slug" => NULL,
                 "description" => "Unlock the full potential of Python in the realms of data science and machine learning with this comprehensive course. Designed for aspiring data scientists, machine learning engineers, and anyone eager to dive into the world of data, this course takes you from foundational concepts to advanced techniques, ensuring a thorough understanding and hands-on experience with the latest tools and methodologies",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "chapter_id" => 3,
                 "chapter_item_id" => 10,
@@ -332,11 +332,11 @@ class CourseSeeder extends Seeder
                 "title" => "File Source",
                 "slug" => NULL,
                 "description" => "Unlock the full potential of Python in the realms of data science and machine learning with this comprehensive course. Designed for aspiring data scientists, machine learning engineers, and anyone eager to dive into the world of data, this course takes you from foundational concepts to advanced techniques, ensuring a thorough understanding and hands-on experience with the latest tools and methodologies",
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "course_id" => 1,
                 "chapter_id" => 1,
                 "chapter_item_id" => 11,
-                "file_path" => "/uploads/store/files/1001/certificate-22.pdf",
+                "file_path" => "/uploads/store/files/1/certificate-22.pdf",
                 "storage" => "upload",
                 "volume" => NULL,
                 "duration" => "1",
@@ -354,7 +354,7 @@ class CourseSeeder extends Seeder
             array(
                 "id" => 1,
                 "chapter_item_id" => 4,
-                "instructor_id" => 1001,
+                "instructor_id" => 1,
                 "chapter_id" => 1,
                 "course_id" => 1,
                 "title" => "QUIZ: This is a demo quiz test",
@@ -415,7 +415,7 @@ class CourseSeeder extends Seeder
             ),
         );
 
-        $instructorList = array(1001, 1002, 1003, 1004, 1005, 1006, 1007);
+        $instructorList = array(1, 2, 3, 4, 5, 6, 7);
         foreach ($coursesNames as $courseName) {
             // create course
             $course = new Course();
@@ -456,7 +456,7 @@ class CourseSeeder extends Seeder
             foreach ($course_chapters as $chapterIndex => $chapter) {
                 $courseChapter = new CourseChapter();
                 $courseChapter->title = $chapter['title'];
-                $courseChapter->instructor_id = 1002;
+                $courseChapter->instructor_id = 2;
                 $courseChapter->course_id = $course->id;
                 $courseChapter->order = $chapter['order'];
                 $courseChapter->status = "active";
@@ -464,7 +464,7 @@ class CourseSeeder extends Seeder
 
                 foreach ($course_chapter_items as $index => $chapterItem) {
                     $courseChapterItem = new CourseChapterItem();
-                    $courseChapterItem->instructor_id = 1002;
+                    $courseChapterItem->instructor_id = 2;
                     $courseChapterItem->chapter_id = $courseChapter->id;
                     $courseChapterItem->type = $chapterItem['type'];
                     $courseChapterItem->order = $chapterItem['order'];
@@ -479,7 +479,7 @@ class CourseSeeder extends Seeder
                             $courseLesson->title = $course_chapter_lessons[$index]['title'];
                             $courseLesson->slug = $course_chapter_lessons[$index]['slug'];
                             $courseLesson->description = $course_chapter_lessons[$index]['description'];
-                            $courseLesson->instructor_id = 1002;
+                            $courseLesson->instructor_id = 2;
                             $courseLesson->course_id = $course->id;
                             $courseLesson->chapter_id = $courseChapter->id;
                             $courseLesson->chapter_item_id = $courseChapterItem->id;
@@ -537,7 +537,7 @@ class CourseSeeder extends Seeder
                             $courseLesson->title = fake()->sentence();
                             $courseLesson->slug = fake()->slug();
                             $courseLesson->description = $course_chapter_lessons[$index]['description'];
-                            $courseLesson->instructor_id = 1002;
+                            $courseLesson->instructor_id = 2;
                             $courseLesson->course_id = $course->id;
                             $courseLesson->chapter_id = $courseChapter->id;
                             $courseLesson->chapter_item_id = $courseChapterItem->id;

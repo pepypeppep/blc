@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\InstructorRequest\app\Models\InstructorRequest;
-use Modules\PendidikanLanjutan\app\Models\Unor;
 
 class User extends Authenticatable
 {
@@ -127,6 +126,16 @@ class User extends Authenticatable
     function unor(): HasOne
     {
         return $this->hasOne(Unor::class, 'id', 'unor_id');
+    }
+
+    /**
+     * Get the instansi associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function instansi(): HasOne
+    {
+        return $this->hasOne(Unor::class, 'id', 'instansi_id');
     }
 
     /**

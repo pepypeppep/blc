@@ -3,12 +3,14 @@
 use App\Models\Course;
 use App\Enums\ThemeList;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -22,7 +24,6 @@ use Modules\Currency\app\Models\MultiCurrency;
 use Modules\GlobalSetting\app\Models\CustomCode;
 use Modules\BasicPayment\app\Models\BasicPayment;
 use App\Exceptions\AccessPermissionDeniedException;
-use Illuminate\Http\Request;
 use Modules\BasicPayment\app\Models\PaymentGateway;
 use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
@@ -156,6 +157,13 @@ function currency($price)
 if (!function_exists('userAuth')) {
     function userAuth()
     {
+        $data = Auth::guard('web')->user();
+        if (Session::has('employee_detail')) {
+            foreach (Session::get('employee_detail') as $key => $value) {
+                $data->{$key} = $value;
+            }
+        }
+
         return Auth::guard('web')->user();
     }
 }
@@ -830,5 +838,53 @@ if (!function_exists('vacancyLog')) {
             'status' => $request->status,
             'description' => $request->description
         ]);
+    }
+}
+if (!function_exists('employee_detail')) {
+    function employee_detail($employee)
+    {
+        if ($employee->nip) {
+            $request = Http::withHeaders([
+                'Authorization' => 'Basic ' . base64_encode(env('SAPA_USERNAME') . ':' . env('SAPA_PASSWORD')),
+            ])
+                ->get("https://asn.bantulkab.go.id/ws/showpegalldatariwayat.php?nip=" . $employee->nip);
+            $response = json_decode(json_encode($request->json(), true));
+
+            $data = $response->data_utama;
+
+            return (object) [
+                'jenis_kelamin' => $data->JenisKelamin,
+                'tempat_lahir' => $data->TmptLahir,
+                'tanggal_lahir' => $data->TglLahir,
+                'agama' => $data->Agama,
+                'alamat' => $data->alamat,
+                'tingkat_pendidikan' => $data->TingkatPendidikan,
+                'pendidikan' => $data->Pendidikan,
+                'golongan' => $data->Golongan,
+                'pangkat' => $data->Pangkat,
+                'tmt_golongan' => $data->TmtGolongan,
+                'jabatan' => $data->Jabatan,
+                'tmt_jabatan' => $data->TmtJabatan,
+                'eselon' => $data->Eselon,
+                'bup' => $data->bup
+            ];
+        } else {
+            return (object) [
+                'jenis_kelamin' => null,
+                'tempat_lahir' => null,
+                'tanggal_lahir' => null,
+                'agama' => null,
+                'alamat' => null,
+                'tingkat_pendidikan' => null,
+                'pendidikan' => null,
+                'golongan' => null,
+                'pangkat' => null,
+                'tmt_golongan' => null,
+                'jabatan' => null,
+                'tmt_jabatan' => null,
+                'eselon' => null,
+                'bup' => null
+            ];
+        }
     }
 }

@@ -10,7 +10,7 @@ class VacancyUserSeeder extends Seeder
     public function run()
     {
         $data = [];
-        for ($i = 1000; $i <= 1006; $i++) {
+        for ($i = 1; $i <= 7; $i++) {
             $data[] = [
                 'vacancy_id' => rand(1, 4),
                 'user_id' => $i

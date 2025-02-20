@@ -33,8 +33,7 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'id' => 1000,
-            'unor_id' => 1,
+            'id' => 1,
             'name' => 'Jhon Doe',
             'email' => 'student@gmail.com',
             'password' => bcrypt('1234'),
@@ -43,8 +42,7 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'id' => 1001,
-            'unor_id' => 1,
+            'id' => 2,
             'name' => 'Jason Thorne',
             'email' => 'instructor@gmail.com',
             'password' => bcrypt('1234'),
@@ -66,8 +64,7 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'id' => 1002,
-            'unor_id' => 1,
+            'id' => 3,
             'name' => 'Mark Davenport',
             'email' => 'instructortwo@gmail.com',
             'password' => bcrypt('1234'),
@@ -89,8 +86,7 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'id' => 1003,
-            'unor_id' => 1,
+            'id' => 4,
             'name' => 'Ethan Granger',
             'email' => 'instructortrhee@gmail.com',
             'password' => bcrypt('1234'),
@@ -112,8 +108,7 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'id' => 1004,
-            'unor_id' => 1,
+            'id' => 5,
             'name' => 'Lucas Hale',
             'email' => 'instructorfour@gmail.com',
             'password' => bcrypt('1234'),
@@ -135,8 +130,7 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'id' => 1005,
-            'unor_id' => 1,
+            'id' => 6,
             'name' => 'Nathaniel Cross',
             'email' => 'instructorfive@gmail.com',
             'password' => bcrypt('1234'),
@@ -158,15 +152,14 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'id' => 1006,
-            'unor_id' => 1,
+            'id' => 7,
             'name' => 'Adrian Pierce',
             'email' => 'instructorsix@gmail.com',
             'password' => bcrypt('1234'),
             'role' => 'instructor',
             'email_verified_at' => now(),
-        
-            
+
+
             // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
             // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
 
@@ -183,15 +176,14 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'id' => 1007,
-            'unor_id' => 1,
+            'id' => 8,
             'name' => 'Laire Kaira Nayadita',
             'email' => 'studenttwo@gmail.com',
             'password' => bcrypt('1234'),
             'role' => 'student',
             'email_verified_at' => now(),
-        
-            
+
+
             // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
             // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
 

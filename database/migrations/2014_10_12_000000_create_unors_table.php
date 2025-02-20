@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('unors', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->longText('name');
             $table->timestamps();
         });
     }

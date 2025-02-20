@@ -14,12 +14,13 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('unor_id');
+            $table->unsignedBigInteger('instansi_id')->nullable();
+            $table->unsignedBigInteger('unor_id')->nullable();
             $table->string('nip')->unique()->nullable();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->enum('role', ['instructor', 'student'])->default('student');
             $table->string('status')->default('active');
             $table->rememberToken();
@@ -35,7 +36,7 @@ return new class extends Migration
             $table->integer('last_activity')->index();
         });
 
-        DB::statement('ALTER TABLE users AUTO_INCREMENT = 1000;');
+        // DB::statement('ALTER TABLE users AUTO_INCREMENT = 1000;');
     }
 
     /**

@@ -2003,5 +2003,6 @@
     "The upload path may not be greater than 10240 kilobytes (10 MB).": "Jalur unggahan tidak boleh lebih dari 10240 kilobytes (10 MB).",
     "Choose Certificate": "Pilih Sertifikat",
     "Certificate does not exist": "Sertifikat tidak ada",
-    "Reject": "Tolak"
+    "Reject": "Tolak",
+    "Manage ContinuingEducation": "Kelola Pendidikan Lanjutan"
 }

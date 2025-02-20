@@ -242,58 +242,73 @@
                 </div>
             </div>
 
-            <div id="assesment" class="section-body">
-                <div class="row mt-2">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="section-title">{{ __('Assesment') }}</div>
-                                <hr>
-                                @if ($vacancyUser->status === 'assesment')
-                                    <form
-                                        action="{{ route('admin.vacancies-participant.update.status', $vacancyUser->id) }}"
-                                        method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        <input type="hidden" name="status" id="status">
+            @if ($vacancyUser->status == 'assesment' || $vacancyUser->status == 'eligible' || $vacancyUser->status == 'ineligible')
+                <div id="assesment" class="section-body">
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">{{ __('Assesment') }}</div>
+                                    <hr>
+                                    @if ($vacancyUser->status === 'assesment')
+                                        <form
+                                            action="{{ route('admin.vacancies-participant.update.status', $vacancyUser->id) }}"
+                                            method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="status" id="status">
+                                            <div class="col-md-12 mb-2">
+                                                <label>{{ __('Reason') }} <span class="text-danger">*</span></label>
+                                                <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('reason') }}</textarea>
+                                                @error('reason')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                            <div class="mt-3 text-md-center">
+                                                <button type="submit" class="btn btn-danger btn-icon icon-left print-btn"
+                                                    onclick="document.getElementById('status').value='ineligible'"><i
+                                                        class="fas fa-times"></i>
+                                                    {{ __('Reject') }}</button>
+                                                <button type="submit"class="btn btn-primary btn-icon icon-left print-btn"
+                                                    onclick="document.getElementById('status').value='eligible'"><i
+                                                        class="fas fa-check"></i>
+                                                    {{ __('Verification') }}</button>
+                                            </div>
+                                        </form>
+                                    @elseif ($vacancyUser->status === 'eligible')
                                         <div class="col-md-12 mb-2">
-                                            <label>{{ __('Reason') }} <span class="text-danger">*</span></label>
-                                            <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('reason') }}</textarea>
-                                            @error('reason')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        <div class="mt-3 text-md-center">
-                                            <button type="submit" class="btn btn-danger btn-icon icon-left print-btn"
-                                                onclick="document.getElementById('status').value='rejected'"><i
-                                                    class="fas fa-times"></i>
-                                                {{ __('Reject') }}</button>
-                                            <button type="submit"class="btn btn-primary btn-icon icon-left print-btn"
-                                                onclick="document.getElementById('status').value='passed'"><i
-                                                    class="fas fa-check"></i>
-                                                {{ __('Verification') }}</button>
-                                        </div>
-                                    </form>
-                                @else
-                                    <div class="col-md-12 mb-2">
-                                        <div class="alert alert-success alert-has-icon alert-dismissible"
-                                            id="verifiedAlert">
-                                            <div class="alert-icon"><i class="far fa-check-circle"></i></div>
-                                            <div class="alert-body">
-                                                <div class="alert-title">Lolos Assesment!</div>
-                                                Pendaftar telah lolos tahap assesment dan akan melanjutkan ke tahap
-                                                selanjutnya.
+                                            <div class="alert alert-success alert-has-icon alert-dismissible"
+                                                id="verifiedAlert">
+                                                <div class="alert-icon"><i class="far fa-check-circle"></i></div>
+                                                <div class="alert-body">
+                                                    <div class="alert-title">Lolos Assesment!</div>
+                                                    Pendaftar telah lolos tahap assesment dan akan melanjutkan ke tahap
+                                                    selanjutnya.
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endif
+                                    @elseif ($vacancyUser->status === 'ineligible')
+                                        <div class="col-md-12 mb-2">
+                                            <div class="alert alert-danger alert-has-icon alert-dismissible"
+                                                id="verifiedAlert">
+                                                <div class="alert-icon"><i class="far fa-check-circle"></i></div>
+                                                <div class="alert-body">
+                                                    <div class="alert-title">Lolos Assesment!</div>
+                                                    Pendaftar dinyatakan tidak lolos tahap assesment dan tidak dapat
+                                                    melanjutkan ke tahap
+                                                    selanjutnya.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
-            @if ($vacancyUser->status === 'passed')
+            @if ($vacancyUser->status === 'eligible')
                 <div id="ptb" class="section-body">
                     <div class="row mt-2">
                         <div class="col-12">
@@ -392,44 +407,27 @@
                                         <tr>
                                             <th data-width="40">#</th>
                                             <th>{{ __('Semester') }}</th>
-                                            <th>{{ __('Category') }}</th>
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Action') }}</th>
                                         </tr>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>1</td>
-                                            <td>xx</td>
-                                            <td>Created</td>
-                                            <td>
-                                                <button class="btn btn-info btn-sm m-1" data-toggle="modal"
-                                                    data-target="#pdfModal" title="Lihat Laporan"
-                                                    onclick="setPDF('{{ asset('template/template.pdf') }}')">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                                </button>
-                                                <a href="javascript:void(0);" class="btn btn-success btn-sm m-1"
-                                                    title="Verifikasi Laporan" id="verifyButton">
-                                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>5</td>
-                                            <td>Final</td>
-                                            <td>xx</td>
-                                            <td>Approved</td>
-                                            <td>
-                                                <button class="btn btn-info btn-sm m-1" data-toggle="modal"
-                                                    data-target="#pdfModal" title="Lihat Laporan"
-                                                    onclick="setPDF('{{ asset('template/template.pdf') }}')">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                                </button>
-                                                <a href="" class="btn btn-success btn-sm m-1"
-                                                    title="Verifikasi Laporan">
-                                                    <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        @foreach ($vacancyReports as $report)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $report->name }}</td>
+                                                <td>{{ $report->status }}</td>
+                                                <td>
+                                                    <button class="btn btn-info btn-sm m-1" data-toggle="modal"
+                                                        data-target="#pdfModal" title="Lihat Laporan"
+                                                        onclick="setPDF('{{ asset('template/template.pdf') }}')">
+                                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </button>
+                                                    <a href="javascript:void(0);" class="btn btn-success btn-sm m-1"
+                                                        title="Verifikasi Laporan" id="verifyButton">
+                                                        <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </table>
                                     <hr>
                                     <div class="col-md-12 mb-2">
@@ -450,7 +448,7 @@
                                         <a target="_blank" href=""
                                             class="btn btn-primary btn-icon icon-left print-btn"><i
                                                 class="fas fa-check"></i>
-                                            {{ __('Confirm') }}</a>
+                                            {{ __('Finish') }}</a>
                                     </div>
                                 </div>
                             </div>

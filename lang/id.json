@@ -1963,7 +1963,7 @@
     "Employee Id": "NIP",
     "Employee Name": "Nama dan Gelar",
     "Registrant Details": "Detail Pendaftar",
-    "Registrant Information" : "Data Diri Pendaftar",
+    "Registrant Information": "Data Diri Pendaftar",
     "Requirements Document": "Dokumen Syarat",
     "File": "Berkas",
     "Reason": "Alasan",
@@ -2004,5 +2004,7 @@
     "The upload path must be a file of type: .pdf": "Jalur unggahan harus berupa file jenis: .pdf",
     "The upload path may not be greater than 10240 kilobytes (10 MB).": "Jalur unggahan tidak boleh lebih dari 10240 kilobytes (10 MB).",
     "Choose Certificate": "Pilih Sertifikat",
-    "Certificate does not exist": "Sertifikat tidak ada"
+    "Certificate does not exist": "Sertifikat tidak ada",
+    "Reject": "Tolak",
+    "Manage ContinuingEducation": "Kelola Pendidikan Lanjutan"
 }

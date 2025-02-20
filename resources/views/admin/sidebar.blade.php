@@ -23,7 +23,7 @@
                     checkAdminHasPermission('course.certificate.management') ||
                     checkAdminHasPermission('badge.management') ||
                     checkAdminHasPermission('pendidikanlanjutan.view'))
-                <li class="menu-header">{{ __('Manage Contents') }}</li>
+                <li class="menu-header">{{ __('Manage Courses') }}</li>
 
                 @if (Module::isEnabled('Course') && checkAdminHasPermission('course.management'))
                     @include('course::sidebar')
@@ -37,11 +37,14 @@
                     @include('badges::sidebar')
                 @endif
 
-                @if (Module::isEnabled('Blog') && (checkAdminHasPermission('blog.view') || checkAdminHasPermission('blog.category.view') || checkAdminHasPermission('blog.comment.view')))
+                {{-- @if (Module::isEnabled('Blog') && (checkAdminHasPermission('blog.view') || checkAdminHasPermission('blog.category.view') || checkAdminHasPermission('blog.comment.view')))
                     @include('blog::sidebar')
-                @endif
+                @endif --}}
+            @endif
 
-                @if (Module::isEnabled('PendidikanLanjutan') && (checkAdminHasPermission('pendidikanlanjutan.view')))
+            @if (checkAdminHasPermission('course.management'))
+                <li class="menu-header">{{ __('Manage ContinuingEducation') }}</li>
+                @if (Module::isEnabled('PendidikanLanjutan') && checkAdminHasPermission('pendidikanlanjutan.view'))
                     @include('pendidikanlanjutan::sidebar')
                 @endif
             @endif

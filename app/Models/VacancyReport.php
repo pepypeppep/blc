@@ -16,4 +16,15 @@ class VacancyReport extends Model
     {
         return $this->belongsTo(VacancyUser::class, 'vacancy_user_id', 'id')->withDefault();
     }
+
+    function getStatusLabel()
+    {
+        if ($this->status == 'accepted') {
+            return "<span class='badge badge-success'>Diterima</span>";
+        } elseif ($this->status == 'rejected') {
+            return "<span class='badge badge-warning'>Ditolak</span>";
+        } else {
+            return "<span class='badge badge-warning'>Menunggu Verifikasi</span>";
+        }
+    }
 }

@@ -12,27 +12,27 @@
                     </a>
                 </li>
                 <li class="{{ isRoute('admin.verifikasi.*', 'active') }}">
-                    <a class="nav-link" href="{{ route('admin.verification.index') }}">
+                    <a class="nav-link" href="{{ route('admin.vacancies.verification.index') }}">
                         {{ __('Verification') }}
                     </a>
                 </li>
                 <li class="{{ isRoute('admin.assesment.*', 'active') }}">
-                    <a class="nav-link" href="{{ route('admin.assesment.index') }}">
+                    <a class="nav-link" href="{{ route('admin.vacancies.assesment.index') }}">
                         {{ __('Assesment') }}
                     </a>
                 </li>
                 <li class="{{ isRoute('admin.sk.*', 'active') }}">
-                    <a class="nav-link" href="{{ route('admin.sk.index') }}">
+                    <a class="nav-link" href="{{ route('admin.vacancies.sk.index') }}">
                         {{ __('Draft SK') }}
                     </a>
                 </li>
                 <li class="{{ isRoute('admin.report.*', 'active') }}">
-                    <a class="nav-link" href="{{ route('admin.report.index') }}">
+                    <a class="nav-link" href="{{ route('admin.vacancies.report.index') }}">
                         {{ __('Report') }}
                     </a>
                 </li>
                 <li class="{{ isRoute('admin.extension.*', 'active') }}">
-                    <a class="nav-link" href="{{ route('admin.extension.index') }}">
+                    <a class="nav-link" href="{{ route('admin.vacancies.extension.index') }}">
                         {{ __('Extension') }}
                     </a>
                 </li>

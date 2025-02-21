@@ -1,6 +1,7 @@
 @extends('admin.master_layout')
 @section('title')
-    <title>{{ __('Registrant Details') }}</title>
+    <title>
+        {{ __('Registrant Details') }}</title>
 @endsection
 @section('admin-content')
     <div class="main-content">
@@ -11,7 +12,7 @@
                     <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
                     </div>
                     <div class="breadcrumb-item active"><a
-                            href="{{ route('admin.verification.index') }}">{{ __('Verification') }}</a></div>
+                            href="{{ route('admin.vacancies.verification.index') }}">{{ __('Verification') }}</a></div>
                     <div class="breadcrumb-item">{{ __('Registrant Details') }}</div>
                 </div>
             </div>
@@ -178,7 +179,7 @@
                                             <td>
                                                 <button class="btn btn-info btn-sm m-1" data-toggle="modal"
                                                     data-target="#pdfModal" title="Lihat Berkas"
-                                                    onclick="setPDF('{{ asset('storage/' . $attachment->file) }}')">
+                                                    onclick="setPDF('{{ $attachment->vacancyAttachment->name }}','{{ route('vacancies-participant.get.file', [$attachment->vacancy_attachment_id, $attachment->vacancyuser->id]) }}')">
                                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                                 </button>
                                             </td>
@@ -230,8 +231,9 @@
                                             <div class="alert-icon"><i class="far fa-check-circle"></i></div>
                                             <div class="alert-body">
                                                 <div class="alert-title">Lolos Verifikasi!</div>
-                                                Pendaftar telah lolos tahap verifikasi berkas dan akan melanjutkan ke tahap
-                                                assessment.
+                                                {!! $sectionLog->verifLogs[0]->description ??
+                                                    'Pendaftar telah lolos tahap verifikasi berkas dan akan melanjutkan ke tahap
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                assessment.' !!}
                                             </div>
                                         </div>
                                     </div>
@@ -282,8 +284,8 @@
                                                 <div class="alert-icon"><i class="far fa-check-circle"></i></div>
                                                 <div class="alert-body">
                                                     <div class="alert-title">Lolos Assesment!</div>
-                                                    Pendaftar telah lolos tahap assesment dan akan melanjutkan ke tahap
-                                                    selanjutnya.
+                                                    {!! $sectionLog->assLogs[0]->description ??
+                                                        'Pendaftar telah lolos tahap assesment dan akan melanjutkan ke tahap selanjutnya.' !!}
                                                 </div>
                                             </div>
                                         </div>
@@ -293,10 +295,9 @@
                                                 id="verifiedAlert">
                                                 <div class="alert-icon"><i class="far fa-check-circle"></i></div>
                                                 <div class="alert-body">
-                                                    <div class="alert-title">Lolos Assesment!</div>
-                                                    Pendaftar dinyatakan tidak lolos tahap assesment dan tidak dapat
-                                                    melanjutkan ke tahap
-                                                    selanjutnya.
+                                                    <div class="alert-title">Tidak Lolos Assesment!</div>
+                                                    {!! $sectionLog->assLogs[0]->description ??
+                                                        'Pendaftar dinyatakan tidak lolos tahap assesment dan tidak dapat melanjutkan ke tahap selanjutnya.' !!}
                                                 </div>
                                             </div>
                                         </div>
@@ -309,39 +310,6 @@
             @endif
 
             @if ($vacancyUser->status === 'eligible')
-                <div id="ptb" class="section-body">
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="section-title">
-                                        <div class="d-flex justify-content-between">
-                                            {{ __('Study Assignment Agreement') }}
-                                            <div>
-                                                <a href="{{ asset('template/template.pdf') }}" class="btn btn-warning">
-                                                    <i class="fa fa-download"></i> {{ __('Download PK') }}
-                                                </a>
-                                                <button class="btn btn-primary" data-toggle="modal"
-                                                    data-target="#uploadModal">
-                                                    <i class="fa fa-upload"></i> {{ __('Upload PDF') }}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div id="uploaded-file-info" class="mt-3" style="display: block;">
-                                        <strong>{{ __('Uploaded File:') }}</strong>
-                                        <span id="file-name">test.pdf</span>
-                                        <br>
-                                        <embed id="pdf-preview-embed" src="{{ asset('template/template.pdf') }}"
-                                            type="application/pdf" width="100%" height="400px" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="sk" class="section-body">
                     <div class="row mt-2">
                         <div class="col-12">
@@ -356,33 +324,59 @@
                                     </div>
                                     <hr>
                                     <table class="table table-striped table-hover table-md">
-                                        <tr>
-                                            <th data-width="40">#</th>
-                                            <th>{{ __('File') }}</th>
-                                            <th>{{ __('Category') }}</th>
-                                            <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Action') }}</th>
-                                        </tr>
-                                        @foreach ($vacancyUserAttachmentSK as $attachment)
+                                        <thead>
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $attachment->vacancyAttachment->name }}</td>
-                                                <td>{{ $attachment->category }}</td>
-                                                <td>{{ $attachment->vacancyAttachment->is_active === 1 ? 'true' : 'false' }}
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-info btn-sm m-1" data-toggle="modal"
-                                                        data-target="#pdfModal" title="Lihat Berkas"
-                                                        onclick="setPDF('{{ asset('storage/' . $attachment->file) }}')">
-                                                        <i class="fa fa-eye" aria-hidden="true"></i>
-                                                    </button>
-                                                    <a href="javascript:void(0);" class="btn btn-success btn-sm m-1"
-                                                        title="Kirim SK">
-                                                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
-                                                    </a>
-                                                </td>
+                                                <th data-width="40">#</th>
+                                                <th>{{ __('File') }}</th>
+                                                <th>{{ __('Status') }}</th>
+                                                <th>{{ __('Action') }}</th>
                                             </tr>
-                                        @endforeach
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($vacancyAttachments as $attachment)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $attachment->name }}</td>
+                                                    <td>{{ $attachment->is_active === 1 ? 'true' : 'false' }}
+                                                    </td>
+                                                    <td>
+                                                        @php
+                                                            $ath = \Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment::where(
+                                                                'vacancy_attachment_id',
+                                                                $attachment->id,
+                                                            )
+                                                                ->where('vacancy_user_id', $vacancyUser->id)
+                                                                ->first();
+                                                        @endphp
+                                                        @if ($ath)
+                                                            <button class="btn btn-danger btn-sm m-1" data-toggle="modal"
+                                                                data-target="#pdfModal"
+                                                                title="Lihat {{ $attachment->name }}"
+                                                                onclick="setPDF('{{ $attachment->name }}','{{ route('vacancies-participant.get.file', [$attachment->id, $ath->vacancy_user_id]) }}')">
+                                                                <i class="fa fa-file-pdf" aria-hidden="true"></i>
+                                                            </button>
+                                                        @endif
+                                                        @if ($attachment->name == 'Perjanjian Kinerja')
+                                                            <a href="javascript:void(0);"
+                                                                class="btn btn-warning btn-sm m-1" title="Unduh Template">
+                                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                                            </a>
+                                                            <button class="btn btn-info btn-sm m-1" data-toggle="modal"
+                                                                data-target="#uploadModal"
+                                                                title="Unggah {{ $attachment->name }}">
+                                                                <i class="fa fa-upload" aria-hidden="true"></i>
+                                                            </button>
+                                                        @else
+                                                            <a href="javascript:void(0);"
+                                                                class="btn btn-success btn-sm m-1"
+                                                                title="Kirim {{ $attachment->name }}">
+                                                                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -414,84 +408,97 @@
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $report->name }}</td>
-                                                <td>{{ $report->status }}</td>
+                                                <td>{!! $report->getStatusLabel() !!}</td>
                                                 <td>
-                                                    <button class="btn btn-info btn-sm m-1" data-toggle="modal"
-                                                        data-target="#pdfModal" title="Lihat Laporan"
-                                                        onclick="setPDF('{{ asset('template/template.pdf') }}')">
-                                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                                    <button type="button" class="btn btn-danger btn-sm m-1"
+                                                        data-toggle="modal" data-target="#pdfModal" title="Lihat Laporan"
+                                                        onclick="setPDF('Laporan {{ $report->name }}','{{ route('vacancies-participant.get.report.file', [$report->id]) }}')">
+                                                        <i class="fa fa-file-pdf" aria-hidden="true"></i>
                                                     </button>
-                                                    <a href="javascript:void(0);" class="btn btn-success btn-sm m-1"
-                                                        title="Verifikasi Laporan" id="verifyButton">
-                                                        <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                                    </a>
+                                                    @if ($report->status == 'pending')
+                                                        <a href="javascript:void(0);" class="btn btn-success btn-sm m-1"
+                                                            title="Verifikasi Laporan" id="verifyButton">
+                                                            <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                                        </a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
                                     </table>
-                                    <hr>
-                                    <div class="col-md-12 mb-2">
-                                        <div class="alert alert-warning alert-has-icon alert-dismissible"
-                                            id="studyCompletionAlert">
-                                            <div class="alert-icon"><i class="far fa-check-circle"></i></div>
-                                            <div class="alert-body">
-                                                <div class="alert-title">Konfirmasi Penyelesaian Tugas Belajar</div>
-                                                Pastikan laporan telah lengkap dan syarat lainnya telah dipenuhi oleh
-                                                peserta sebelum melakukan konfirmasi bahwa tugas belajar telah selesai
-                                                dilakukan. Setelah tugas belajar selesai dan konfirmasi diterima, status
-                                                PNS
-                                                pegawai akan kembali diaktifkan.
+                                    @if ($vacancyUser->status != 'done')
+                                        <hr>
+                                        <div class="col-md-12 mb-2">
+                                            <div class="alert alert-warning alert-has-icon alert-dismissible"
+                                                id="studyCompletionAlert">
+                                                <div class="alert-icon"><i class="far fa-check-circle"></i></div>
+                                                <div class="alert-body">
+                                                    <div class="alert-title">Konfirmasi Penyelesaian Tugas Belajar</div>
+                                                    Pastikan laporan telah lengkap dan syarat lainnya telah dipenuhi oleh
+                                                    peserta sebelum melakukan konfirmasi bahwa tugas belajar telah selesai
+                                                    dilakukan. Setelah tugas belajar selesai dan konfirmasi diterima, status
+                                                    PNS
+                                                    pegawai akan kembali diaktifkan.
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="mt-3 text-md-center">
-                                        <a target="_blank" href=""
-                                            class="btn btn-primary btn-icon icon-left print-btn"><i
-                                                class="fas fa-check"></i>
-                                            {{ __('Finish') }}</a>
-                                    </div>
+                                        <div class="mt-3 text-md-center">
+                                            <form
+                                                action="{{ route('admin.vacancies-participant.update.status', $vacancyUser->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status" value="done">
+                                                <button type="submit" target="_blank" href=""
+                                                    class="btn btn-primary btn-icon icon-left print-btn"><i
+                                                        class="fas fa-check"></i>
+                                                    {{ __('Finish') }}</button>
+                                            </form>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="perpanjang" class="section-body">
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="section-title">
-                                        <div class="d-flex justify-content-between">
-                                            {{ __('Extension') }}
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <form action="" method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="row mb-3">
-                                            <div class="form-group col-md-8 offset-md-2">
-                                                <label>{{ __('Reason') }} <span class="text-danger">*</span></label>
-                                                <textarea name="extension_reason" id="" cols="30" rows="10" class="summernote">{{ old('extension_reason') }}</textarea>
-                                                @error('extension_reason')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
+                @if ($vacancyUser->status != 'done')
+                    <div id="perpanjang" class="section-body">
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="section-title">
+                                            <div class="d-flex justify-content-between">
+                                                {{ __('Extension') }}
                                             </div>
                                         </div>
+                                        <hr>
+                                        <form action="" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row mb-3">
+                                                <div class="form-group col-md-8 offset-md-2">
+                                                    <label>{{ __('Reason') }} <span class="text-danger">*</span></label>
+                                                    <textarea name="extension_reason" id="" cols="30" rows="10" class="summernote">{{ old('extension_reason') }}</textarea>
+                                                    @error('extension_reason')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
 
-                                        <div class="row">
-                                            <div class="text-center col-md-8 offset-md-2">
-                                                <x-admin.save-button :text="__('Save')"></x-admin.save-button>
+                                            <div class="row">
+                                                <div class="text-center col-md-8 offset-md-2">
+                                                    <x-admin.save-button :text="__('Save')"></x-admin.save-button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
+            @endif
         </section>
-        @endif
     </div>
 
     <!-- Modal for PDF upload -->
@@ -505,13 +512,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{-- <form
-                        action="{{ route('admin.vacancies-participant.upload.file', ['vacancyId' => $vacancyUser->vacancy_id, 'userId' => $vacancyUser->user_id]) }}"
+                    <form
+                        action="{{ route('admin.vacancies-participant.upload.file', ['vacancyId' => $vacancyUser->vacancy_id, 'vacancyUserId' => $vacancyUser->id]) }}"
                         method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="pdf_upload">{{ __('Choose PDF to Upload') }}</label>
-                            <input type="file" class="form-control" id="pdf_upload" name="pdf_file" accept=".pdf">
+                            <input type="file" class="form-control" id="pdf_upload" name="file" accept=".pdf">
                         </div>
 
                         <div id="pdf-preview" class="mt-3" style="display: none;">
@@ -520,10 +527,10 @@
                                 height="400px" />
                         </div>
 
-                        <div class="mt-3">
+                        <div class="mt-3 text-center">
                             <button type="submit" class="btn btn-primary">{{ __('Upload PDF') }}</button>
                         </div>
-                    </form> --}}
+                    </form>
                 </div>
             </div>
         </div>
@@ -534,7 +541,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title ml-4" id="uploadModalLabel">{{ __('Preview PDF') }}</h5>
+                    <h5 class="modal-title ml-4" id="pdfModalLabel"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -557,21 +564,29 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <!-- <p></p> -->
-                    <div id="error-message" class="alert alert-danger" style="display: none;">
-                        <strong>Kesalahan!</strong> Alasan penolakan wajib diisi.
+                <form method="POST"
+                    action="{{ route('admin.vacancies-participant.update.report.status', ['vacancyReportId' => $vacancyUser->vacancy_id]) }}">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="status" id="status">
+                    <div class="modal-body">
+                        <!-- <p></p> -->
+                        <div id="error-message" class="alert alert-danger" style="display: none;">
+                            <strong>Kesalahan!</strong> Alasan penolakan wajib diisi.
+                        </div>
+                        <div class="mb-3">
+                            <label for="verificationMessage" class="form-label">Pesan</label>
+                            <textarea class="form-control" id="verificationMessage" name="description" rows="4"
+                                placeholder="Tuliskan pesan Anda di sini"></textarea>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="verificationMessage" class="form-label">Pesan</label>
-                        <textarea class="form-control" id="verificationMessage" rows="4" placeholder="Tuliskan pesan Anda di sini"></textarea>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="submit" class="btn btn-danger" id="rejectButton"
+                            onclick="document.getElementById('status').value='rejected'">Tolak</button>
+                        <button type="submit" class="btn btn-success" id="acceptButton"
+                            onclick="document.getElementById('status').value='accepted'">Terima</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-danger" id="rejectButton">Tolak</button>
-                    <button type="button" class="btn btn-success" id="acceptButton">Terima</button>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -716,7 +731,8 @@
     </script>
 
     <script>
-        function setPDF(pdfUrl) {
+        function setPDF(title, pdfUrl) {
+            document.getElementById('pdfModalLabel').textContent = title;
             document.getElementById('pdfObject').setAttribute('data', pdfUrl);
         }
     </script>

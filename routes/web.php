@@ -130,7 +130,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('continuing-education', [StudentPendidikanLanjutanController::class, 'index'])->name('continuing-education');
         Route::get('continuing-education/{id}', [StudentPendidikanLanjutanController::class, 'continuingEducationDetail'])->name('continuing-education.show');
         Route::post('continuing-education/{id}/register', [StudentPendidikanLanjutanController::class, 'register'])->name('continuing-education.register');
-        Route::get('continuing-education-attachment/{id}', [StudentDashboardController::class, 'continuingEducationAttachment'])->name('continuing-education.attachment');
+        Route::post('continuing-education-attachment/{id}', [StudentPendidikanLanjutanController::class, 'uploadRequirementFile'])->name('continuing-education.attachment');
         Route::get('continuing-education-registration', [StudentPendidikanLanjutanController::class, 'registered'])->name('continuing-education.registration');
         Route::get('continuing-education-registration/{id}', [StudentPendidikanLanjutanController::class, 'registeredDetail'])->name('continuing-education.registration.show');
         Route::post('continuing-education-registration/{id}/report', [StudentPendidikanLanjutanController::class, 'vacancyReportSubmit'])->name('continuing-education.registration.report');

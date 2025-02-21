@@ -7,6 +7,7 @@ use App\Models\VacancyReport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
@@ -157,18 +158,21 @@ class PendidikanLanjutanController extends Controller
             'assLogs' => $assLogs
         ];
 
-        $vacancyUserAttachmentSK = VacancyUserAttachment::with('vacancyAttachment')
-            ->where('vacancy_user_id', $vacancyUser->id)
-            ->where('category', 'lampiran')
-            ->whereHas('vacancyAttachment', function ($query) {
-                $query->whereIn('name', ['SK', 'Petikan']);
-            })
-            ->get();
+        // $vacancyUserAttachmentSK = VacancyUserAttachment::with('vacancyAttachment')
+        //     ->where('vacancy_user_id', $vacancyUser->id)
+        //     ->where('category', 'lampiran')
+        //     ->whereHas('vacancyAttachment', function ($query) {
+        //         $query->whereIn('name', ['SK', 'Petikan']);
+        //     })
+        //     ->get();
+
+        $vacancyAttachments = VacancyAttachment::with('vacancy', 'attachment')->where('vacancy_id', $vacancyUser->vacancy_id)->where('category', 'lampiran')->get();
+        // dd($vacancyAttachments);
 
         $vacancyReports = VacancyReport::with('vacancyuser')
             ->where('vacancy_user_id', $vacancyUser->id)
             ->get();
 
-        return view('pendidikanlanjutan::Submenu.show', compact('logs', 'sectionLog', 'vacancyUser', 'vacancyUserAttachments', 'vacancyUserAttachmentSK', 'vacancyReports'));
+        return view('pendidikanlanjutan::Submenu.show', compact('logs', 'sectionLog', 'vacancyUser', 'vacancyUserAttachments', 'vacancyAttachments', 'vacancyReports'));
     }
 }

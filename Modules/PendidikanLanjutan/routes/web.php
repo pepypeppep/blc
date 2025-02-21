@@ -63,8 +63,10 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
 
     Route::prefix('vacancies-participant')->group(function () {
         Route::put('/update-status/{vacancyUserId}', [VacancyParticipantController::class, 'updateStatus'])->name('vacancies-participant.update.status');
-        Route::post('/upload-file/{vacancyUserId}', [VacancyParticipantController::class, 'uploadFile'])->name('vacancies-participant.upload.file');
+        Route::post('/upload-file/{vacancyId}/{vacancyUserId}', [VacancyParticipantController::class, 'uploadFile'])->name('vacancies-participant.upload.file');
+        Route::put('/update-report-status/{vacancyReportId}', [VacancyParticipantController::class, 'updateReportStatus'])->name('vacancies-participant.update.report.status');
     });
 });
 
 Route::get('/get-file/{vacancyAttachmentId}/{userId}', [VacancyParticipantController::class, 'getFile'])->name('vacancies-participant.get.file');
+Route::get('/get-file/{vacancyReport}', [VacancyParticipantController::class, 'getReportFile'])->name('vacancies-participant.get.report.file');

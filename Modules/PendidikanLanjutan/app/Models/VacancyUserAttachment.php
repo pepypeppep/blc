@@ -20,7 +20,7 @@ class VacancyUserAttachment extends Model
      */
     public function vacancyuser(): BelongsTo
     {
-        return $this->belongsTo(VacancyUser::class);
+        return $this->belongsTo(VacancyUser::class, 'vacancy_user_id', 'id');
     }
 
     /**

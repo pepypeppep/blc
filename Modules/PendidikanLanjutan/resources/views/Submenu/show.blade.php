@@ -11,7 +11,7 @@
                     <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
                     </div>
                     <div class="breadcrumb-item active"><a
-                            href="{{ route('admin.verification.index') }}">{{ __('Verification') }}</a></div>
+                            href="{{ route('admin.vacancies.verification.index') }}">{{ __('Verification') }}</a></div>
                     <div class="breadcrumb-item">{{ __('Registrant Details') }}</div>
                 </div>
             </div>
@@ -178,7 +178,7 @@
                                             <td>
                                                 <button class="btn btn-info btn-sm m-1" data-toggle="modal"
                                                     data-target="#pdfModal" title="Lihat Berkas"
-                                                    onclick="setPDF('{{ asset('storage/' . $attachment->file) }}')">
+                                                    onclick="setPDF('{{ $attachment->vacancyAttachment->name }}','{{ route('vacancies-participant.get.file', [$attachment->vacancy_attachment_id, $attachment->vacancyuser->id]) }}')">
                                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                                 </button>
                                             </td>
@@ -230,8 +230,9 @@
                                             <div class="alert-icon"><i class="far fa-check-circle"></i></div>
                                             <div class="alert-body">
                                                 <div class="alert-title">Lolos Verifikasi!</div>
-                                                Pendaftar telah lolos tahap verifikasi berkas dan akan melanjutkan ke tahap
-                                                assessment.
+                                                {!! $sectionLog->verifLogs[0]->description ??
+                                                    'Pendaftar telah lolos tahap verifikasi berkas dan akan melanjutkan ke tahap
+                                                                                                                                                                                                                                                                                                                                                                                                assessment.' !!}
                                             </div>
                                         </div>
                                     </div>
@@ -282,8 +283,8 @@
                                                 <div class="alert-icon"><i class="far fa-check-circle"></i></div>
                                                 <div class="alert-body">
                                                     <div class="alert-title">Lolos Assesment!</div>
-                                                    Pendaftar telah lolos tahap assesment dan akan melanjutkan ke tahap
-                                                    selanjutnya.
+                                                    {!! $sectionLog->assLogs[0]->description ??
+                                                        'Pendaftar telah lolos tahap assesment dan akan melanjutkan ke tahap selanjutnya.' !!}
                                                 </div>
                                             </div>
                                         </div>
@@ -293,10 +294,9 @@
                                                 id="verifiedAlert">
                                                 <div class="alert-icon"><i class="far fa-check-circle"></i></div>
                                                 <div class="alert-body">
-                                                    <div class="alert-title">Lolos Assesment!</div>
-                                                    Pendaftar dinyatakan tidak lolos tahap assesment dan tidak dapat
-                                                    melanjutkan ke tahap
-                                                    selanjutnya.
+                                                    <div class="alert-title">Tidak Lolos Assesment!</div>
+                                                    {!! $sectionLog->assLogs[0]->description ??
+                                                        'Pendaftar dinyatakan tidak lolos tahap assesment dan tidak dapat melanjutkan ke tahap selanjutnya.' !!}
                                                 </div>
                                             </div>
                                         </div>
@@ -534,7 +534,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title ml-4" id="uploadModalLabel">{{ __('Preview PDF') }}</h5>
+                    <h5 class="modal-title ml-4" id="pdfModalLabel"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -716,7 +716,8 @@
     </script>
 
     <script>
-        function setPDF(pdfUrl) {
+        function setPDF(title, pdfUrl) {
+            document.getElementById('pdfModalLabel').textContent = title;
             document.getElementById('pdfObject').setAttribute('data', pdfUrl);
         }
     </script>

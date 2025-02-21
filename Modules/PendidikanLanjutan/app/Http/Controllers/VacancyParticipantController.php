@@ -52,12 +52,12 @@ class VacancyParticipantController extends Controller
             // Commit transaction
             DB::commit();
 
-            return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy status updated successfully.');
+            return redirect()->route('admin.vacancies.verification.index')->with('success', 'Vacancy status updated successfully.');
         } catch (\Throwable $th) {
             // Rollback transaction
             DB::rollBack();
 
-            return redirect()->route('admin.vacancies.index')->with('error', $th->getMessage());
+            return redirect()->route('admin.vacancies.verification.index')->with('error', $th->getMessage());
         }
     }
 

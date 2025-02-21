@@ -7,6 +7,7 @@ use App\Models\VacancyReport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 
@@ -89,7 +90,7 @@ class PendidikanLanjutanController extends Controller
         $vacancyUser = VacancyUser::with(['user'])->where('status', 'verification')
             ->findOrFail($id);
 
-        $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment')
+        $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment', 'vacancyuser')
             ->where('vacancy_user_id', $vacancyUser->id)
             ->where('category', 'syarat')
             ->get();
@@ -116,7 +117,16 @@ class PendidikanLanjutanController extends Controller
             ->where('category', 'syarat')
             ->get();
 
-        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'vacancyUserAttachments'));
+        $logs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->get();
+        $verifLogs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('name', 'Verifikasi Berkas')->orderByDesc('created_at')->get();
+        $assLogs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('name', 'Asessment')->orderByDesc('created_at')->get();
+
+        $sectionLog = (object) [
+            'verifLogs' => $verifLogs,
+            'assLogs' => $assLogs
+        ];
+
+        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'logs', 'sectionLog', 'vacancyUserAttachments'));
     }
 
     public function indexSK()
@@ -138,6 +148,15 @@ class PendidikanLanjutanController extends Controller
             ->where('category', 'syarat')
             ->get();
 
+        $logs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->get();
+        $verifLogs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('name', 'Verifikasi Berkas')->orderByDesc('created_at')->get();
+        $assLogs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('name', 'Asessment')->orderByDesc('created_at')->get();
+
+        $sectionLog = (object) [
+            'verifLogs' => $verifLogs,
+            'assLogs' => $assLogs
+        ];
+
         $vacancyUserAttachmentSK = VacancyUserAttachment::with('vacancyAttachment')
             ->where('vacancy_user_id', $vacancyUser->id)
             ->where('category', 'lampiran')
@@ -150,6 +169,6 @@ class PendidikanLanjutanController extends Controller
             ->where('vacancy_user_id', $vacancyUser->id)
             ->get();
 
-        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'vacancyUserAttachments', 'vacancyUserAttachmentSK', 'vacancyReports'));
+        return view('pendidikanlanjutan::Submenu.show', compact('logs', 'sectionLog', 'vacancyUser', 'vacancyUserAttachments', 'vacancyUserAttachmentSK', 'vacancyReports'));
     }
 }

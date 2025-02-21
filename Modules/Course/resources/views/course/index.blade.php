@@ -135,10 +135,9 @@
                                                 <th>{{ __('SN') }}</th>
                                                 <th class="course-table-title">{{ __('Title') }}</th>
                                                 <th>{{ __('Instructor') }}</th>
-                                                <th>{{ __('Price') }}</th>
-                                                <th>{{ __('Students') }}</th>
-                                                <th>{{ __('Created Date') }}</th>
-                                                <th>{{ __('Update Date') }}</th>
+                                                <th>{{ __('Lesson Hours') }}</th>
+                                                <th>{{ __('Enrolled Students') }}</th>
+                                                <th>{{ __('Join Request') }}</th>
                                                 <th>{{ __('Status') }}</th>
                                                 <th class="course-table-approve">{{ __('Approve') }}</th>
                                                 <th class="text-center">{{ __('Actions') }}</th>
@@ -154,23 +153,12 @@
                                                         <small>{{ $course->category->translation->name ?? '' }}</small>
                                                     </td>
                                                     <td>{{ $course->instructor->name ?? '' }}</td>
-                                                    <td>
-                                                        @if ($course->price == 0)
-                                                            <span>{{ __('Free') }}</span>
-                                                        @elseif($course->discount > 0)
-                                                            {{ currency($course->discount) }}
-                                                        @else
-                                                            {{ currency($course->price) }}
+                                                    <td class="text-center">{{ $course->price }}</td>
+                                                    <td class="text-center">{{ $course->enrollments_count }}</td>
+                                                    <td class="text-center">{{ $course->enrollments_pending_count }}
+                                                        @if ($course->enrollments_pending_count > 0)
+                                                            <a href="#" class="btn btn-sm btn-primary">Verifikasi</a>
                                                         @endif
-                                                    </td>
-                                                    <td>{{ $course->enrollments_count }}</td>
-                                                    <td><small>{{ formatDate($course->created_at) }}</small>
-                                                        <br>
-                                                        <small>{{ formatDate($course->created_at, 'H:i') }}</small>
-                                                    </td>
-                                                    <td><small>{{ formatDate($course->updated_at) }}</small>
-                                                        <br>
-                                                        <small>{{ formatDate($course->updated_at, 'H:i') }}</small>
                                                     </td>
                                                     <td>
                                                         @if ($course->status == 'active')
@@ -239,6 +227,4 @@
     <script src="{{ asset('global/js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('backend/js/default/courses.js') }}"></script>
     <script src="{{ asset('backend/js/sweetalert.js') }}"></script>
-
-    
 @endpush

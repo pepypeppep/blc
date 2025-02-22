@@ -31,7 +31,7 @@
                                                 value="{{ isset($editMode) && $editMode == true ? true : false }}">
 
                                             <div class="row">
-                                                {{-- <div class="col-md-12">
+                                                <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label for="instructor">{{ __('Instructor') }}
                                                             <code>*</code></label>
@@ -46,7 +46,7 @@
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                </div> --}}
+                                                </div>
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">

@@ -105,8 +105,8 @@ class CourseController extends Controller
         $course->background = $request->background;
         $course->course_type = "pdf";
         // $course->course_type = $request->course_type;
-        // $course->instructor_id = $request->instructor;
-        $course->instructor_id = 1001;
+        $course->instructor_id = $request->instructor;
+        // $course->instructor_id = 1001;
         $course->save();
 
         // save course id in session

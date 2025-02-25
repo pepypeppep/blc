@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('unors', function (Blueprint $table) {
+        Schema::create('vacancy_master_attachments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->longText('name');
-            $table->integer('is_instansi')->default(0);
+            $table->string('name');
+            $table->longText('description')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('unors');
+        Schema::dropIfExists('vacancy_master_attachments');
     }
 };

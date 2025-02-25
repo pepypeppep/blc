@@ -16,6 +16,11 @@
 
     @yield('title')
     <link rel="icon" href="{{ asset($setting->favicon) }}">
+    <style>
+        .cursor-pointer {
+            cursor: pointer;
+        }
+    </style>
     @include('admin.partials.styles')
     @stack('css')
     @yield('vite')
@@ -77,10 +82,10 @@
                     <div id="admin_menu_list" class="position-absolute d-none rounded-2">
                         @foreach (adminSearchRouteList() as $route_item)
                             @if (checkAdminHasPermission($route_item?->permission) || empty($route_item?->permission))
-                                <a @isset($route_item->tab) 
-                                        data-active-tab="{{ $route_item->tab }}" class="border-bottom search-menu-item" 
-                                    @else 
-                                        class="border-bottom" 
+                                <a @isset($route_item->tab)
+                                        data-active-tab="{{ $route_item->tab }}" class="border-bottom search-menu-item"
+                                    @else
+                                        class="border-bottom"
                                     @endisset
                                     href="{{ $route_item?->route }}">{{ $route_item?->name }}</a>
                             @endif

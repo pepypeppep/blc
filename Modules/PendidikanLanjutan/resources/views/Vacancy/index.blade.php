@@ -131,12 +131,16 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $vacancy->educationLevel() }}</td>
                                                     <td>{{ $vacancy->study->name }}</td>
-                                                    <td>{{ $vacancy->employment_grade }}</td>
+                                                    <td class="text-center">{{ $vacancy->employment_grade }}</td>
                                                     <td>{{ $vacancy->employmentStatus() }}</td>
                                                     <td>{{ $vacancy->cost_type }}</td>
-                                                    <td>{{ $vacancy->age_limit }}</td>
+                                                    <td class="text-center">{{ $vacancy->age_limit }}</td>
                                                     <td>{!! $vacancy->description !!}</td>
-                                                    <td>{{ $vacancy->users()->count() }}</td>
+                                                    <td class="text-center">
+                                                        <span
+                                                            class="Jumlah Pendaftar">{{ $vacancy->users()->count() }}</span>/<span
+                                                            title="Jumlah Formasi">{{ $vacancy->formation }}</span>
+                                                    </td>
                                                     <td>
                                                         <a href="{{ route('admin.vacancies.edit', $vacancy->id) }}"
                                                             class="btn btn-warning btn-sm m-1" title="Ubah Lowongan">

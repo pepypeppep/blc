@@ -5,6 +5,7 @@ namespace Modules\PendidikanLanjutan\database\seeders;
 use Illuminate\Database\Seeder;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
 
 class VacancyAttachmentSeeder extends Seeder
 {
@@ -14,6 +15,22 @@ class VacancyAttachmentSeeder extends Seeder
     public function run(): void
     {
         $vacancies = Vacancy::all();
+
+        $attachments = [
+            'Surat Pernyataan Kesanggupan Biaya Mandiri (Mandiri) atau SK Penerima Beasiswa (APBD/Non APBD)',
+            'Scan Ijazah Terakhir',
+            'Letter of Acceptance',
+            'Surat Usulan dari Perangkat Daerah',
+            'SK Akreditasi Program Studi',
+            'Jadwal Perkuliahan',
+            'Surat Keterangan Sehat'
+        ];
+
+        foreach ($attachments as $key => $att) {
+            VacancyMasterAttachment::create([
+                'name' => $att
+            ]);
+        }
 
         foreach ($vacancies as $key => $vacancy) {
             VacancyAttachment::create([

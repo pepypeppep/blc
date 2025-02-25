@@ -187,7 +187,7 @@
                                                                                             <span class="icon-container"><i
                                                                                                     class="fas fa-question"></i></span>
                                                                                             <p class="mb-0 ms-2 bold-text">
-                                                                                                {{ $chapterItem->quiz->title }}
+                                                                                                {!! $chapterItem->quiz->title !!}
                                                                                             </p>
                                                                                         </div>
                                                                                     </div>
@@ -242,7 +242,7 @@
                                                                                                         class="far fa-question-circle"></i></span>
                                                                                                 <p
                                                                                                     class="mb-0 ms-2 bold-text">
-                                                                                                    {{ $question->title }}
+                                                                                                    {!! $question->title !!}
                                                                                                 </p>
                                                                                             </div>
                                                                                             <div class="item-action">
@@ -285,9 +285,31 @@
     </div>
 @endsection
 
+@push('css')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.9.1/summernote.min.css"
+        integrity="sha512-342i6c96DulZwyEUbzx5CToh/lcow8B+AJKxQBix9y7C7fueaL3kMuQAolpHKJ+yUD2uxqyZMsChru+bvZuWUg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+@endpush
+
 @push('js')
     <script src="{{ asset('global/js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('global/js/jquery.ui.touch-punch.min.js') }}"></script>
     <script src="{{ asset('backend/js/default/courses.js') }}?v={{ $setting?->version }}"></script>
     <script src="{{ asset('backend/js/sweetalert.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.9.1/summernote.min.js"
+        integrity="sha512-07bR+AJ2enmNU5RDrZkqMfVq06mQHgFxcmWN/hNSNY4E5SgYNOmTVqo/HCzrSxBhWU8mx3WB3ZJOixA9cRnCdA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $('#exampleModalCenter').on('shown.bs.modal', function() {
+            $('.summernote').summernote({
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['picture']],
+                ],
+            });
+        })
+    </script>
 @endpush

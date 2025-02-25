@@ -216,7 +216,7 @@ class StudentPendidikanLanjutanController extends Controller
 
 
         $file = $request->file('file');
-        $fileName = "laporan_semester/" . now()->year . "/laporan_semester_" . $vacancyUser->vacancy_id . "_" . $vacancyUser->user->name . ".pdf";
+        $fileName = "laporan_semester/" . now()->year . "/" . userAuth()->id . "/laporan_semester_" . $vacancyUser->vacancy_id . "_" . $vacancyUser->user->name . ".pdf";
         Storage::disk('private')->put($fileName, file_get_contents($file));
 
         $result = VacancyReport::create([

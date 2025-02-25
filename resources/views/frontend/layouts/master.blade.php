@@ -32,6 +32,7 @@
         $theme_name = session()->has('demo_theme') ? session()->get('demo_theme') : DEFAULT_HOMEPAGE;
     @endphp
 </head>
+
 <body class="{{ isRoute('home', "home_{$theme_name}") }}">
     @if ($setting->google_tagmanager_status == 'active')
         <!-- Google Tag Manager (noscript) -->

@@ -11,6 +11,7 @@ use Modules\Course\app\Http\Controllers\CourseLanguageController;
 use Modules\Course\app\Http\Controllers\CourseLevelController;
 use Modules\Course\app\Http\Controllers\CourseReviewController;
 use Modules\Course\app\Http\Controllers\CourseSubCategoryController;
+use Modules\Course\app\Http\Controllers\CourseVerificationController;
 use Modules\Course\app\Http\Controllers\ReviewController;
 
 /*
@@ -39,6 +40,10 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         Route::put('course-sub-category/{parent_id}/{sub_category_id}/update', [CourseSubCategoryController::class, 'update'])->name('course-sub-category.update');
         Route::delete('course-sub-category/{parent_id}/{sub_category_id}', [CourseSubCategoryController::class, 'destroy'])->name('course-sub-category.destroy');
         Route::put('course-sub-category/status-update/{id}', [CourseSubCategoryController::class, 'statusUpdate'])->name('course-sub-category.status-update');
+
+        /** Course verification routes */
+        Route::get('/course-verification/{id}', [CourseVerificationController::class, 'index'])->name('course-verification.index');
+        Route::post('/course/update-enrollment-status', [CourseVerificationController::class, 'updateEnrollmentStatus'])->name('course.updateEnrollmentStatus');
     });
 
 

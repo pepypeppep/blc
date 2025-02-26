@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Modules\Order\app\Models\Enrollment;
 use App\Models\CourseSelectedFilterOption;
+use App\Models\Unor;
 use Modules\CertificateBuilder\app\Models\CertificateBuilder;
 use Modules\Course\app\Models\CourseLevel;
 use Modules\Course\app\Models\CourseCategory;
@@ -55,7 +56,8 @@ class CourseController extends Controller
             $query->orderBy('id', $orderBy)->paginate($request->par_page ?? null)->withQueryString();
         $categories = CourseCategory::where('status', 1)->get();
         $instructors = User::where('role', 'instructor')->get();
-        return view('course::course.index', compact('courses', 'categories', 'instructors'));
+        $instansis = Unor::where('is_instansi', 1)->get();
+        return view('course::course.index', compact('courses', 'categories', 'instructors', 'instansis'));
     }
 
     function create()
@@ -69,8 +71,9 @@ class CourseController extends Controller
         Session::put('course_create', $id);
         $course = Course::findOrFail($id);
         $instructors = User::where('role', 'instructor')->get();
+        $instansis = Unor::where('is_instansi', 1)->get();
         $editMode = true;
-        return view('course::course.create', compact('course', 'editMode', 'instructors'));
+        return view('course::course.create', compact('course', 'editMode', 'instructors', 'instansis'));
     }
 
     function store(CourseStoreRequest $request)
@@ -78,6 +81,7 @@ class CourseController extends Controller
         if ($request->edit_mode == 1) {
             $course = Course::findOrFail($request->id);
             $course->instructor_id = $request->instructor;
+            $course->unor_id = $request->instansi;
         } else {
             $course = new Course();
             $slug = generateUniqueSlug(Course::class, $request->title);
@@ -104,9 +108,8 @@ class CourseController extends Controller
         $course->description = $request->description;
         $course->background = $request->background;
         $course->course_type = "pdf";
-        // $course->course_type = $request->course_type;
+        $course->unor_id = $request->instansi;
         $course->instructor_id = $request->instructor;
-        // $course->instructor_id = 1001;
         $course->save();
 
         // save course id in session
@@ -129,8 +132,9 @@ class CourseController extends Controller
             case '1':
                 $course = Course::findOrFail($request->id);
                 $instructors = User::where('role', 'instructor')->get();
+                $instansis = Unor::where('is_instansi', 1)->get();
                 $editMode = true;
-                return view('course::course.create', compact('course', 'editMode', 'instructors'));
+                return view('course::course.create', compact('course', 'editMode', 'instructors', 'instansis'));
                 break;
             case '2':
                 $courseId = request('id');

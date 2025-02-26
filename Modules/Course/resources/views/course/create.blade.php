@@ -47,7 +47,21 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="instansi">instansi
+                                                            <code>*</code></label>
+                                                        <select name="instansi" id="" class="form-control select2">
+                                                            <option value="">{{ __('Select') }}</option>
+                                                            @foreach ($instansis as $instansi)
+                                                                <option value="{{ $instansi->id }}"
+                                                                    @selected($instansi->id == @$course?->unor_id)>{{ $instansi->name }}
+                                                                    ({{ $instansi->name }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label for="title">{{ __('Title') }} <code>*</code></label>

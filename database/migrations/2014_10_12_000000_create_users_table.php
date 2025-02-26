@@ -18,10 +18,13 @@ return new class extends Migration
             $table->unsignedBigInteger('unor_id')->nullable();
             $table->string('nip')->unique()->nullable();
             $table->string('name');
+            $table->string('phone')->nullable();
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->enum('role', ['instructor', 'student'])->default('student');
+            $table->string('place_of_birth')->nullable();
+            $table->date('date_of_birth')->nullable();
             $table->string('status')->default('active');
             $table->rememberToken();
             $table->timestamps();

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('vacancy_user_id')->onDelete('cascade');
             $table->string('name');
             $table->longText('description')->nullable();
+            $table->longText('draft_notes')->nullable();
             $table->string('status');
             $table->timestamps();
         });

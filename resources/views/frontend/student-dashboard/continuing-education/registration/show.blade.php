@@ -75,7 +75,7 @@
                                                                             @elseif($log->status === 'verification')
                                                                                 <span
                                                                                     class="badge bg-info">{{ $log->status }}</span>
-                                                                            @elseif($log->status === 'assesment')
+                                                                            @elseif($log->status === 'assessment')
                                                                                 <span
                                                                                     class="badge bg-primary">{{ $log->status }}</span>
                                                                             @elseif($log->status === 'eligible')

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\StudentVacancyReportRequest;
 use App\Http\Requests\Frontend\UploadRequirementFileRequest;
+use App\Models\Unor;
 use App\Models\VacancyReport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 
 class StudentPendidikanLanjutanController extends Controller
 {
-    // list pendidikan 
+    // list pendidikan
     public function index(Request $request): View
     {
         $perPage = $request->get('per_page', 10);
@@ -178,7 +179,16 @@ class StudentPendidikanLanjutanController extends Controller
 
         DB::beginTransaction();
 
+        $auth = userAuth();
+        $instansi = Unor::where('id', $auth->instansi_id)->first();
+
         $vacancyUser->update([
+            'employment_grade' => $auth->golongan,
+            'last_position' => $auth->jabatan,
+            'instansi' => $instansi->name,
+            'cost_type' => $vacancy->cost_type,
+            'education_level' => $auth->tingkat_pendidikan,
+            'last_education' => $auth->pendidikan,
             'status' => 'verification'
         ]);
 

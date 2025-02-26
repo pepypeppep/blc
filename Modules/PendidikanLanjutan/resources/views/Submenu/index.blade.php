@@ -99,7 +99,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Registrant List') }}</h4>
+                                <h4>{{ __('Participant List') }}</h4>
                                 <div>
                                     <!-- <a href="" class="btn btn-primary"><i class="fa fa-plus"></i>{{ __('Add New') }}</a> -->
                                 </div>
@@ -142,7 +142,7 @@
                                                         @elseif($vacancyUser->status === 'verification')
                                                             <span
                                                                 class="badge badge-info">{{ $vacancyUser->status }}</span>
-                                                        @elseif($vacancyUser->status === 'assesment')
+                                                        @elseif($vacancyUser->status === 'assessment')
                                                             <span
                                                                 class="badge badge-primary">{{ $vacancyUser->status }}</span>
                                                         @elseif($vacancyUser->status === 'eligible')
@@ -163,14 +163,14 @@
                                                                 title="Verifikasi Pendaftar">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             </a>
-                                                        @elseif($vacancyUser->status === 'assesment')
-                                                            <a href="{{ route('admin.vacancies.assesment.show', $vacancyUser->id) }}#assesment"
+                                                        @elseif($vacancyUser->status === 'assessment')
+                                                            <a href="{{ route('admin.vacancies.assessment.show', $vacancyUser->id) }}#assessment"
                                                                 class="btn btn-primary btn-sm m-1"
                                                                 title="Assesment Pendaftar">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             </a>
                                                         @elseif($vacancyUser->status === 'eligible')
-                                                            <a href="{{ route('admin.vacancies.sk.show', $vacancyUser->id) }}#ptb"
+                                                            <a href="{{ route('admin.vacancies.sk.show', $vacancyUser->id) }}#sk"
                                                                 class="btn btn-primary btn-sm m-1" title="SK Pendaftar">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             </a>
@@ -179,8 +179,8 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="7" class="text-center">
-                                                        {{ __('No vacancies found!') }}
+                                                    <td colspan="10" class="text-center">
+                                                        {{ __('No data found!') }}
                                                     </td>
                                                 </tr>
                                             @endforelse

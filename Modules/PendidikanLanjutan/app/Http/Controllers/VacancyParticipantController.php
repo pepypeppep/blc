@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 
 class VacancyParticipantController extends Controller
@@ -20,7 +21,7 @@ class VacancyParticipantController extends Controller
     public function updateStatus(Request $request, $vacancyUserId)
     {
         $request->validate([
-            'status' => 'required|in:rejected,assesment,eligible,ineligible,done',
+            'status' => 'required|in:draft_verification,draft_assessment,rejected,assessment,eligible,ineligible,done',
             'description' => 'nullable'
         ]);
 
@@ -31,12 +32,44 @@ class VacancyParticipantController extends Controller
             // Get vacancy user data
             $vacancyUser = VacancyUser::findOrFail($vacancyUserId);
 
+            if ($request->status == 'draft_verification') {
+                $log = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)
+                    ->where('status', 'verification')->latest()->first();
+
+                if ($log) {
+                    $log->update([
+                        'draft_notes' => $request->description
+                    ]);
+
+                    // Commit transaction
+                    DB::commit();
+
+                    return redirect()->route('admin.vacancies.verification.show', $vacancyUser->id . '#verif')->with('success', 'Draft saved successfully.');
+                }
+            }
+
+            if ($request->status == 'draft_assessment') {
+                $log = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)
+                    ->where('status', 'assessment')->latest()->first();
+
+                if ($log) {
+                    $log->update([
+                        'draft_notes' => $request->description
+                    ]);
+
+                    // Commit transaction
+                    DB::commit();
+
+                    return redirect()->route('admin.vacancies.assessment.show', $vacancyUser->id . '#assessment')->with('success', 'Draft saved successfully.');
+                }
+            }
+
             // Update Vacancy Status
             $vacancyUser->update([
                 'status' => $request->status
             ]);
 
-            if ($request->status === 'rejected' || $request->status === 'assesment') {
+            if ($request->status === 'rejected' || $request->status === 'assessment') {
                 $name = "Verifikasi Berkas";
             } elseif ($request->status === 'eligible' || $request->status === 'ineligible') {
                 $name = "Asessment";
@@ -98,7 +131,7 @@ class VacancyParticipantController extends Controller
             DB::commit();
 
             // Redirect with success message
-            return redirect()->back()->with('success', 'File uploaded successfully.');
+            return redirect()->back()->with('success', 'File uploaded successfully.')->withFragment('sk');
         } catch (\Throwable $th) {
             // Rollback transaction
             DB::rollBack();

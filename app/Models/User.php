@@ -40,6 +40,9 @@ class User extends Authenticatable
         'is_banned',
         'verification_token',
         'forget_password_token',
+        'phone',
+        'place_of_birth',
+        'date_of_birth'
     ];
 
     /**

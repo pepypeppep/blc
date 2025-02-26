@@ -118,6 +118,21 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-md-12 mb-4">
+                                                <div
+                                                    class="partner_instructor_list {{ $course?->instructor_id == 0 ? 'd-none' : '' }}">
+                                                    <label for="cpacity">{{ __('Select a partner instructor') }}
+                                                        <code></code></label>
+                                                    <select class="select2 partner_instructor_select"
+                                                        name="partner_instructors[]" multiple="multiple">
+                                                        @foreach ($course?->partnerInstructors as $instructor)
+                                                            <option value="{{ $instructor->instructor->id }}"
+                                                                selected="selected">
+                                                                {{ $instructor?->instructor->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="output">{{ __('Course Output') }}

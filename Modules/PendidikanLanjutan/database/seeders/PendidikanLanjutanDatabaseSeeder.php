@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\PendidikanLanjutan\Database\Seeders;
+namespace Modules\PendidikanLanjutan\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\PendidikanLanjutan\database\seeders\VacancyAttachmentSeeder;

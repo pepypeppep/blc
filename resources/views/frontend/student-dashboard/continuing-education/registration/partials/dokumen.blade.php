@@ -36,7 +36,7 @@
                         <div class="alert-icon"><i class="bi bi-hourglass-split"></i> Menunggu Verifikasi Berkas</div>
                     </div>
                 </div>
-            @elseif($vacancy->status === 'assesment')
+            @elseif($vacancy->status === 'assessment')
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-primary alert-has-icon">
                         <div class="alert-icon"><i class="bi bi-hourglass-split"></i> Menunggu Assesment Berkas</div>

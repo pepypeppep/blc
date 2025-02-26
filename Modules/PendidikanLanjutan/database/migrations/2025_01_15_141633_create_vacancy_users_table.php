@@ -17,6 +17,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('vacancy_id')->onDelete('cascade');
             $table->unsignedBigInteger('user_id')->onDelete('cascade');
+            $table->string('employment_grade')->nullable();
+            $table->longText('last_position')->nullable();
+            $table->longText('instansi')->nullable();
+            $table->string('cost_type')->nullable();
+            $table->longText('education_level')->nullable();
+            $table->longText('last_education')->nullable();
             $table->string('status')->default('verification');
             $table->timestamps();
         });

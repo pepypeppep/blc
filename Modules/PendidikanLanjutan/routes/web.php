@@ -30,9 +30,9 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
             Route::get('{id}', [PendidikanLanjutanController::class, 'showVerif'])->name('vacancies.verification.show');
         });
 
-        Route::prefix('assesment')->group(function () {
-            Route::get('/', [PendidikanLanjutanController::class, 'indexAssesment'])->name('vacancies.assesment.index');
-            Route::get('{id}', [PendidikanLanjutanController::class, 'showAssesment'])->name('vacancies.assesment.show');
+        Route::prefix('assessment')->group(function () {
+            Route::get('/', [PendidikanLanjutanController::class, 'indexAssesment'])->name('vacancies.assessment.index');
+            Route::get('{id}', [PendidikanLanjutanController::class, 'showAssesment'])->name('vacancies.assessment.show');
         });
 
         Route::prefix('sk')->group(function () {

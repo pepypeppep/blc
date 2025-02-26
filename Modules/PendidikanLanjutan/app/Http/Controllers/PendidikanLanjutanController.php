@@ -101,7 +101,7 @@ class PendidikanLanjutanController extends Controller
 
     public function indexAssesment()
     {
-        $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'assesment')->paginate(10);
+        $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'assessment')->paginate(10);
         $submenu = 'Assesment';
 
         return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers', 'submenu'));
@@ -109,7 +109,7 @@ class PendidikanLanjutanController extends Controller
 
     public function showAssesment($id)
     {
-        $vacancyUser = VacancyUser::with(['user'])->where('status', 'assesment')
+        $vacancyUser = VacancyUser::with(['user'])->where('status', 'assessment')
             ->where('id', $id)
             ->first();
 

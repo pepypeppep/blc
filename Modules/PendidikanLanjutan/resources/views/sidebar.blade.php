@@ -10,8 +10,8 @@
                 <i class="fas fa-book"></i>{{ __('Verification') }}
             </a>
         </li>
-        <li class="{{ isRoute('admin.assesment.*', 'active') }}">
-            <a class="nav-link" href="{{ route('admin.vacancies.assesment.index') }}">
+        <li class="{{ isRoute('admin.assessment.*', 'active') }}">
+            <a class="nav-link" href="{{ route('admin.vacancies.assessment.index') }}">
                 <i class="fas fa-book"></i>{{ __('Assesment') }}
             </a>
         </li>

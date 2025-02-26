@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('max_size');
             $table->string('category'); //syarat, lampiran
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_required')->default(true);
             $table->timestamps();
         });
     }

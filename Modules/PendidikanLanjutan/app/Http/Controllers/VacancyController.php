@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use Modules\PendidikanLanjutan\app\Models\Unor;
 use Modules\PendidikanLanjutan\app\Models\Study;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
 
 class VacancyController extends Controller
 {
@@ -126,8 +128,9 @@ class VacancyController extends Controller
     {
         $vacancy = Vacancy::findOrFail($id);
         $studies = Study::all();
+        $attachments = VacancyMasterAttachment::get();
 
-        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy', 'studies'));
+        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy', 'studies', 'attachments'));
     }
 
     /**
@@ -218,5 +221,40 @@ class VacancyController extends Controller
         $vacancy->save();
 
         return redirect()->route('admin.vacancies.index')->with('success', $message);
+    }
+
+    public function updateAttachments(Request $request, $vacancyId)
+    {
+        $vacancy = Vacancy::findOrFail($vacancyId);
+
+        $request->validate([
+            'attachments.*' => 'required|integer|exists:vacancy_master_attachments,id',
+        ]);
+
+        $vacancyAttachments = VacancyAttachment::where('vacancy_id', $vacancyId)->where('category', 'syarat')->get()->pluck('id')->toArray();
+        $diffs = array_diff($vacancyAttachments, $request->attachments);
+        if (count($diffs) > 0) {
+            foreach ($diffs as $key => $diffId) {
+                VacancyAttachment::where('id', $diffId)->delete();
+            }
+        }
+
+        foreach ($request->attachments as $key => $att) {
+            $attachment = VacancyMasterAttachment::findOrFail($att);
+            $isRequired = $request->is_required[$attachment->id] ?? 0;
+
+            $x = VacancyAttachment::updateOrCreate([
+                'vacancy_id' => $vacancyId,
+                'name' => $attachment->name
+            ], [
+                'type' => 'pdf',
+                'max_size' => 10000,
+                'category' => 'syarat',
+                'is_required' => $isRequired
+            ]);
+            // dd($request->all());
+        }
+
+        return redirect()->back()->with('success', 'Attachment updated successfully.');
     }
 }

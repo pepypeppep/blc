@@ -53,7 +53,7 @@ class Course extends Model {
 
     public function participants()
     {
-        return $this->belongsToMany(User::class, 'course_participants');
+        return $this->belongsToMany(User::class, 'enrollments')->withPivot('has_access')->withTimestamps();
     }
 
     function chapters(): HasMany

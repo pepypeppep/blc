@@ -808,6 +808,8 @@
     "Description must be less than 5000 characters long": "Description must be less than 5000 characters long",
     "Instructor is required": "Instructor is required",
     "Instructor must be a number": "Instructor must be a number",
+    "Instansi is required": "Instansi is required",
+    "Instansi must be a number": "Instansi must be a number",
     "Language code is required.": "Language code is required.",
     "Course Create": "Course Create",
     "Course Filters": "Course Filters",

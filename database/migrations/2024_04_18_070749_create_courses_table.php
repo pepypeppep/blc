@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('instructor_id');
+            $table->foreignId('unor_id');
             $table->foreignId('category_id')->nullable();
             $table->foreignId('certificate_id')->nullable();
             $table->enum('type', ['course', 'webinar'])->default('course');

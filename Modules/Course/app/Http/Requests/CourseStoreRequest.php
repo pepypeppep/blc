@@ -23,7 +23,8 @@ class CourseStoreRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0'],
             'discount_price' => ['nullable', 'numeric', new ValidateDiscountRule()],
             'description' => ['required', 'string', 'max:5000'],
-            'instructor' => ['nullable', 'numeric'],
+            'instructor' => ['required', 'numeric'],
+            'instansi' => ['required', 'numeric'],
         ];
 
         return $rules;
@@ -50,6 +51,8 @@ class CourseStoreRequest extends FormRequest
             'description.max' => __('Description must be less than 5000 characters long'),
             'instructor.required' => __('Instructor is required'),
             'instructor.numeric' => __('Instructor must be a number'),
+            'instansi.required' => __('instansi is required'),
+            'instansi.numeric' => __('instansi must be a number'),
         ];
     }
 }

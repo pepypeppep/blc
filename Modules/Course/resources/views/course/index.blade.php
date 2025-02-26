@@ -157,7 +157,7 @@
                                                     <td class="text-center">{{ $course->enrollments_count }}</td>
                                                     <td class="text-center">{{ $course->enrollments_pending_count }}
                                                         @if ($course->enrollments_pending_count > 0)
-                                                            <a href="#" class="btn btn-sm btn-primary">Verifikasi</a>
+                                                            <a href="{{ route('admin.course-verification.index', $course->id) }}" class="btn btn-sm btn-primary">Verifikasi</a>
                                                         @endif
                                                     </td>
                                                     <td>

@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         Route::delete('{id}', [VacancyController::class, 'destroy'])->name('vacancies.destroy');
         Route::post('/import', [VacancyController::class, 'import'])->name('vacancies.import');
         Route::put('{id}/update-status', [VacancyController::class, 'updatePublicationStatus'])->name('vacancies.update-status');
+        Route::post('{id}/update-attachment', [VacancyController::class, 'updateAttachments'])->name('vacancies.update-attachment');
     });
 
     Route::prefix('vacancies-participant')->group(function () {

@@ -41,13 +41,18 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         });
 
         Route::prefix('report')->group(function () {
-            Route::get('/', [AssesmentController::class, 'index'])->name('vacancies.report.index');
-            Route::get('{id}', [AssesmentController::class, 'show'])->name('vacancies.report.show');
+            Route::get('/', [PendidikanLanjutanController::class, 'indexReport'])->name('vacancies.report.index');
+            Route::get('{id}', [PendidikanLanjutanController::class, 'showReport'])->name('vacancies.report.show');
         });
 
-        Route::prefix('extension')->group(function () {
-            Route::get('/', [AssesmentController::class, 'index'])->name('vacancies.extension.index');
-            Route::get('{id}', [AssesmentController::class, 'show'])->name('vacancies.extension.show');
+        Route::prefix('extend')->group(function () {
+            Route::get('/', [PendidikanLanjutanController::class, 'indexExtend'])->name('vacancies.extend.index');
+            Route::get('{id}', [PendidikanLanjutanController::class, 'showExtend'])->name('vacancies.extend.show');
+        });
+
+        Route::prefix('done')->group(function () {
+            Route::get('/', [PendidikanLanjutanController::class, 'indexDone'])->name('vacancies.done.index');
+            Route::get('{id}', [PendidikanLanjutanController::class, 'showDone'])->name('vacancies.done.show');
         });
 
         Route::get('/', [VacancyController::class, 'index'])->name('vacancies.index');

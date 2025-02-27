@@ -832,11 +832,17 @@ if (!function_exists('generateUniqueSlug')) {
 if (!function_exists('vacancyLog')) {
     function vacancyLog(Request $request)
     {
+        if (!$request->attachment) {
+            $attachment = null;
+        } else {
+            $attachment = $request->attachment;
+        }
         VacancyLogs::create([
             'vacancy_user_id' => $request->vacancy_user_id,
             'name' => $request->name,
             'status' => $request->status,
-            'description' => $request->description
+            'description' => $request->description,
+            'attachment' => $attachment
         ]);
     }
 }

@@ -109,32 +109,32 @@
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th width="5%">{{ __('#') }}</th>
-                                                <th width="30%" class="course-table-title">{{ __('Employee Id') }} /
+                                                <th width="3%">{{ __('#') }}</th>
+                                                <th width="12%">{{ __('Employee Id') }} /
                                                     {{ __('Name') }}</th>
                                                 <th width="15%">{{ __('Employment Position') }}</th>
-                                                <th width="15%">{{ __('Employment Level') }}</th>
                                                 <th width="15%">{{ __('Employment Unit') }}</th>
-                                                <th width="10%">{{ __('Education Level') }} / {{ __('Study') }}</th>
-                                                <th width="10%">{{ __('Year') }}</th>
-                                                <th width="10%">{{ __('Cost Type') }}</th>
-                                                <th width="10%">{{ __('Status') }}</th>
-                                                <th width="10%">{{ __('Action') }}</th>
+                                                <th width="30%">{{ __('Education Level') }} / {{ __('Study') }}</th>
+                                                <th width="5%">{{ __('Year') }}</th>
+                                                <th width="5%">{{ __('Cost Type') }}</th>
+                                                <th width="5%">{{ __('Status') }}</th>
+                                                <th width="5%">{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse ($vacancyUsers as $vacancyUser)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $vacancyUser->user->nip }} / {{ $vacancyUser->user->name }}
+                                                    <td>{{ $vacancyUser->user->nip }}<br>{{ $vacancyUser->user->name }}
                                                     </td>
-                                                    <td>Jabatan/Pangkat</td>
-                                                    <td>{{ optional($vacancyUser->vacancy)->employment_grade }}</td>
-                                                    <td>Unit Kerja</td>
-                                                    <td>{{ optional($vacancyUser->vacancy)->education_level }} /
+                                                    <td>{{ $vacancyUser->last_position }} <br>
+                                                        {{ $vacancyUser->employment_grade }}
+                                                    </td>
+                                                    <td>{{ $vacancyUser->instansi }}</td>
+                                                    <td>{{ optional($vacancyUser->vacancy)->education_level }} <br>
                                                         {{ optional(optional($vacancyUser->vacancy)->study)->name }}</td>
                                                     <td>{{ optional($vacancyUser->vacancy)->year }}</td>
-                                                    <td>{{ optional($vacancyUser->vacancy)->cost_type }}</td>
+                                                    <td>{{ $vacancyUser->cost_type }}</td>
                                                     <td>
                                                         @if ($vacancyUser->status === 'created')
                                                             <span
@@ -149,8 +149,11 @@
                                                             <span
                                                                 class="badge badge-success">{{ $vacancyUser->status }}</span>
                                                         @elseif($vacancyUser->status === 'rejected')
-                                                            <span
-                                                                class="badge badge-danger">{{ $vacancyUser->status }}</span>
+                                                            <span class="badge badge-danger">Ditolak</span>
+                                                        @elseif($vacancyUser->status === 'report')
+                                                            <span class="badge badge-info">Laporan</span>
+                                                        @elseif($vacancyUser->status === 'extend')
+                                                            <span class="badge badge-warning">Perpanjang</span>
                                                         @else
                                                             <span
                                                                 class="badge badge-secondary">{{ $vacancyUser->status }}</span>
@@ -172,6 +175,16 @@
                                                         @elseif($vacancyUser->status === 'eligible')
                                                             <a href="{{ route('admin.vacancies.sk.show', $vacancyUser->id) }}#sk"
                                                                 class="btn btn-primary btn-sm m-1" title="SK Pendaftar">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
+                                                        @elseif($vacancyUser->status === 'report')
+                                                            <a href="{{ route('admin.vacancies.report.show', $vacancyUser->id) }}#laporan"
+                                                                class="btn btn-primary btn-sm m-1" title="Laporan">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
+                                                        @elseif($vacancyUser->status === 'extend')
+                                                            <a href="{{ route('admin.vacancies.extend.show', $vacancyUser->id) }}#perpanjang"
+                                                                class="btn btn-primary btn-sm m-1" title="Perpanjgan">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             </a>
                                                         @endif

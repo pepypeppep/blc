@@ -114,6 +114,7 @@
                                         <thead>
                                             <tr>
                                                 <th width="5%">{{ __('#') }}</th>
+                                                <th width="20%">{{ __('Instansi') }}</th>
                                                 <th width="10%">{{ __('Level') }}</th>
                                                 <th width="20%" class="course-table-title">{{ __('Study') }}</th>
                                                 <th width="10%">{{ __('Employment Grade') }}</th>
@@ -129,6 +130,7 @@
                                             @forelse ($vacancies as $vacancy)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $vacancy->instansi->name ?? '-' }}</td>
                                                     <td>{{ $vacancy->educationLevel() }}</td>
                                                     <td>{{ $vacancy->study->name }}</td>
                                                     <td class="text-center">{{ $vacancy->employment_grade }}</td>

@@ -25,9 +25,14 @@
                 <i class="fas fa-book"></i>{{ __('Report') }}
             </a>
         </li>
-        <li class="{{ isRoute('admin.extension.*', 'active') }}">
-            <a class="nav-link" href="{{ route('admin.vacancies.extension.index') }}">
+        <li class="{{ isRoute('admin.extend.*', 'active') }}">
+            <a class="nav-link" href="{{ route('admin.vacancies.extend.index') }}">
                 <i class="fas fa-book"></i>{{ __('Extension') }}
+            </a>
+        </li>
+        <li class="{{ isRoute('admin.done.*', 'active') }}">
+            <a class="nav-link" href="{{ route('admin.vacancies.done.index') }}">
+                <i class="fas fa-book"></i>{{ __('Done') }}
             </a>
         </li>
     @endadminCan

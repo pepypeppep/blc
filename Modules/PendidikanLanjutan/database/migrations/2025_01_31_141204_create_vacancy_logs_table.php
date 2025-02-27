@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->longText('description')->nullable();
             $table->longText('draft_notes')->nullable();
+            $table->longText('attachment')->nullable();
             $table->string('status');
             $table->timestamps();
         });

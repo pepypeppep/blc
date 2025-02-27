@@ -175,4 +175,115 @@ class PendidikanLanjutanController extends Controller
 
         return view('pendidikanlanjutan::Submenu.show', compact('logs', 'sectionLog', 'vacancyUser', 'vacancyUserAttachments', 'vacancyAttachments', 'vacancyReports'));
     }
+
+    public function indexReport()
+    {
+        $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'report')->paginate(10);
+        $submenu = 'Laporan';
+
+        return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers', 'submenu'));
+    }
+
+    public function showReport($id)
+    {
+        $vacancyUser = VacancyUser::with(['user'])->where('status', 'report')
+            ->where('id', $id)
+            ->first();
+
+        $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment')
+            ->where('vacancy_user_id', $vacancyUser->id)
+            ->where('category', 'syarat')
+            ->get();
+
+        $logs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->get();
+        $verifLogs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('name', 'Verifikasi Berkas')->orderByDesc('created_at')->get();
+        $assLogs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('name', 'Asessment')->orderByDesc('created_at')->get();
+
+        $sectionLog = (object) [
+            'verifLogs' => $verifLogs,
+            'assLogs' => $assLogs
+        ];
+
+        $vacancyAttachments = VacancyAttachment::with('vacancy', 'attachment')->where('vacancy_id', $vacancyUser->vacancy_id)->where('category', 'lampiran')->get();
+
+        $vacancyReports = VacancyReport::with('vacancyuser')
+            ->where('vacancy_user_id', $vacancyUser->id)
+            ->get();
+
+        return view('pendidikanlanjutan::Submenu.show', compact('logs', 'sectionLog', 'vacancyUser', 'vacancyUserAttachments', 'vacancyAttachments', 'vacancyReports'));
+    }
+
+    public function indexExtend()
+    {
+        $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'extend')->paginate(10);
+        $submenu = 'Laporan';
+
+        return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers', 'submenu'));
+    }
+
+    public function showExtend($id)
+    {
+        $vacancyUser = VacancyUser::with(['user'])->where('status', 'extend')
+            ->where('id', $id)
+            ->first();
+
+        $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment')
+            ->where('vacancy_user_id', $vacancyUser->id)
+            ->where('category', 'syarat')
+            ->get();
+
+        $logs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->get();
+        $verifLogs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('name', 'Verifikasi Berkas')->orderByDesc('created_at')->get();
+        $assLogs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('name', 'Asessment')->orderByDesc('created_at')->get();
+
+        $sectionLog = (object) [
+            'verifLogs' => $verifLogs,
+            'assLogs' => $assLogs
+        ];
+
+        $vacancyAttachments = VacancyAttachment::with('vacancy', 'attachment')->where('vacancy_id', $vacancyUser->vacancy_id)->where('category', 'lampiran')->get();
+
+        $vacancyReports = VacancyReport::with('vacancyuser')
+            ->where('vacancy_user_id', $vacancyUser->id)
+            ->get();
+
+        return view('pendidikanlanjutan::Submenu.show', compact('logs', 'sectionLog', 'vacancyUser', 'vacancyUserAttachments', 'vacancyAttachments', 'vacancyReports'));
+    }
+
+    public function indexDone()
+    {
+        $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'done')->paginate(10);
+        $submenu = 'Laporan';
+
+        return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers', 'submenu'));
+    }
+
+    public function showDone($id)
+    {
+        $vacancyUser = VacancyUser::with(['user'])->where('status', 'done')
+            ->where('id', $id)
+            ->first();
+
+        $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment')
+            ->where('vacancy_user_id', $vacancyUser->id)
+            ->where('category', 'syarat')
+            ->get();
+
+        $logs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->get();
+        $verifLogs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('name', 'Verifikasi Berkas')->orderByDesc('created_at')->get();
+        $assLogs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('name', 'Asessment')->orderByDesc('created_at')->get();
+
+        $sectionLog = (object) [
+            'verifLogs' => $verifLogs,
+            'assLogs' => $assLogs
+        ];
+
+        $vacancyAttachments = VacancyAttachment::with('vacancy', 'attachment')->where('vacancy_id', $vacancyUser->vacancy_id)->where('category', 'lampiran')->get();
+
+        $vacancyReports = VacancyReport::with('vacancyuser')
+            ->where('vacancy_user_id', $vacancyUser->id)
+            ->get();
+
+        return view('pendidikanlanjutan::Submenu.show', compact('logs', 'sectionLog', 'vacancyUser', 'vacancyUserAttachments', 'vacancyAttachments', 'vacancyReports'));
+    }
 }

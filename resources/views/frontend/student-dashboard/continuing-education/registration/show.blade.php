@@ -24,7 +24,7 @@
                                             aria-controls="itemFour-tab-pane" aria-selected="false"
                                             tabindex="-1">Dokumen</button>
                                     </li>
-                                    @if ($vacancy->status == 'eligible')
+                                    @if ($vacancy->status == 'eligible' || $vacancy->status == 'done')
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link" id="itemSix-tab" data-bs-toggle="tab"
                                                 data-bs-target="#itemSix-tab-pane" type="button" role="tab"
@@ -43,7 +43,7 @@
                             <div class="tab-content" id="myTabContent">
                                 @include('frontend.student-dashboard.continuing-education.registration.partials.data-peserta')
                                 @include('frontend.student-dashboard.continuing-education.registration.partials.dokumen')
-                                @if ($vacancy->status == 'eligible')
+                                @if ($vacancy->status == 'eligible' || $vacancy->status == 'done')
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.lampiran')
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.laporan')
                                 @endif

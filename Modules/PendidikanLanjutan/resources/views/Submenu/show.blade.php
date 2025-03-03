@@ -26,8 +26,8 @@
                     <i class="fa fa-clipboard-check" style="font-size: 18px;"></i> <br /> {{ __('Verification') }}
                 </a>
                 <span class="separator"> > </span>
-                <a href="#assesment"
-                    class="btn btn-link {{ $vacancyUser->status === 'assesment' || $vacancyUser->status === 'passed' ? '' : 'disabled' }}"
+                <a href="#assessment"
+                    class="btn btn-link {{ $vacancyUser->status === 'assessment' || $vacancyUser->status === 'passed' ? '' : 'disabled' }}"
                     role="button">
                     <i class="fa fa-tasks" style="font-size: 18px;"></i> <br /> {{ __('Assesment') }}
                 </a>
@@ -79,7 +79,8 @@
                                                     {{ __('Date and Place of Birth') }}
                                                 </div>
                                                 <div class="col-md-6">
-                                                    : -
+                                                    : {{ $vacancyUser->user->place_of_birth }},
+                                                    {{ $vacancyUser->user->date_of_birth }}
                                                 </div>
                                             </div>
                                         </td>
@@ -101,7 +102,7 @@
                                                     {{ __('Cost Type') }}
                                                 </div>
                                                 <div class="col-md-6">
-                                                    : -
+                                                    : {{ $vacancyUser->cost_type }}
                                                 </div>
                                             </div>
                                         </td>
@@ -113,7 +114,7 @@
                                                     {{ __('Employment Grade') }}
                                                 </div>
                                                 <div class="col-md-6">
-                                                    : {{ optional($vacancyUser->vacancy)->employment_grade }}
+                                                    : {{ $vacancyUser->employment_grade }}
                                                 </div>
                                             </div>
                                         </td>
@@ -123,7 +124,8 @@
                                                     {{ __('Last Education Level') }}
                                                 </div>
                                                 <div class="col-md-6">
-                                                    : -
+                                                    : {{ $vacancyUser->education_level }},
+                                                    {{ $vacancyUser->last_education }}
                                                 </div>
                                             </div>
                                         </td>
@@ -135,7 +137,7 @@
                                                     {{ __('Last Position') }}
                                                 </div>
                                                 <div class="col-md-6">
-                                                    : -
+                                                    : {{ $vacancyUser->last_position }}
                                                 </div>
                                             </div>
                                         </td>
@@ -145,7 +147,7 @@
                                                     {{ __('Phone Number') }}
                                                 </div>
                                                 <div class="col-md-6">
-                                                    : -
+                                                    : {{ $vacancyUser->user->phone ?? '-' }}
                                                 </div>
                                             </div>
                                         </td>
@@ -157,7 +159,7 @@
                                                     {{ __('Employment Unit') }}
                                                 </div>
                                                 <div class="col-md-6">
-                                                    : -
+                                                    : {{ $vacancyUser->user->instansi->name }}
                                                 </div>
                                             </div>
                                         </td>
@@ -208,18 +210,25 @@
                                         <input type="hidden" name="status" id="status">
                                         <div class="col-md-12 mb-2">
                                             <label>{{ __('Reason') }} <span class="text-danger">*</span></label>
-                                            <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('reason') }}</textarea>
+                                            <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('reason', \Modules\PendidikanLanjutan\app\Models\VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('status', 'verification')->latest()->first()->draft_notes) }}</textarea>
                                             @error('reason')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
-                                        <div class="mt-3 text-md-center">
-                                            <button type="submit" class="btn btn-danger btn-icon icon-left print-btn"
-                                                onclick="document.getElementById('status').value='rejected'"><i
-                                                    class="fas fa-times"></i>
-                                                {{ __('Reject') }}</button>
+                                        <div class="mt-3 d-flex justify-content-between">
+                                            <div>
+                                                <button type="submit" class="btn btn-danger btn-icon icon-left print-btn"
+                                                    onclick="document.getElementById('status').value='rejected'"><i
+                                                        class="fas fa-times"></i>
+                                                    {{ __('Reject') }}</button>
+                                                <button type="submit"
+                                                    class="btn btn-warning btn-icon icon-left print-btn"
+                                                    onclick="document.getElementById('status').value='draft_verification'"><i
+                                                        class="fas fa-hourglass"></i>
+                                                    {{ __('Draft') }}</button>
+                                            </div>
                                             <button type="submit"class="btn btn-primary btn-icon icon-left print-btn"
-                                                onclick="document.getElementById('status').value='assesment'"><i
+                                                onclick="document.getElementById('status').value='assessment'"><i
                                                     class="fas fa-check"></i>
                                                 {{ __('Verification') }}</button>
                                         </div>
@@ -233,7 +242,7 @@
                                                 <div class="alert-title">Lolos Verifikasi!</div>
                                                 {!! $sectionLog->verifLogs[0]->description ??
                                                     'Pendaftar telah lolos tahap verifikasi berkas dan akan melanjutkan ke tahap
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                assessment.' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                assessment.' !!}
                                             </div>
                                         </div>
                                     </div>
@@ -244,15 +253,19 @@
                 </div>
             </div>
 
-            @if ($vacancyUser->status == 'assesment' || $vacancyUser->status == 'eligible' || $vacancyUser->status == 'ineligible')
-                <div id="assesment" class="section-body">
+            @if (
+                $vacancyUser->status == 'assessment' ||
+                    $vacancyUser->status == 'eligible' ||
+                    $vacancyUser->status == 'ineligible' ||
+                    $vacancyUser->status === 'done')
+                <div id="assessment" class="section-body">
                     <div class="row mt-2">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
                                     <div class="section-title">{{ __('Assesment') }}</div>
                                     <hr>
-                                    @if ($vacancyUser->status === 'assesment')
+                                    @if ($vacancyUser->status === 'assessment')
                                         <form
                                             action="{{ route('admin.vacancies-participant.update.status', $vacancyUser->id) }}"
                                             method="POST">
@@ -261,20 +274,28 @@
                                             <input type="hidden" name="status" id="status">
                                             <div class="col-md-12 mb-2">
                                                 <label>{{ __('Reason') }} <span class="text-danger">*</span></label>
-                                                <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('reason') }}</textarea>
+                                                <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('reason', \Modules\PendidikanLanjutan\app\Models\VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('status', 'assessment')->latest()->first()->draft_notes) }}</textarea>
                                                 @error('reason')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                            <div class="mt-3 text-md-center">
-                                                <button type="submit" class="btn btn-danger btn-icon icon-left print-btn"
-                                                    onclick="document.getElementById('status').value='ineligible'"><i
-                                                        class="fas fa-times"></i>
-                                                    {{ __('Reject') }}</button>
+                                            <div class="mt-3 d-flex justify-content-between">
+                                                <div>
+                                                    <button type="submit"
+                                                        class="btn btn-danger btn-icon icon-left print-btn"
+                                                        onclick="document.getElementById('status').value='ineligible'"><i
+                                                            class="fas fa-times"></i>
+                                                        {{ __("Didn't Pass") }}</button>
+                                                    <button type="submit"
+                                                        class="btn btn-warning btn-icon icon-left print-btn"
+                                                        onclick="document.getElementById('status').value='draft_assessment'"><i
+                                                            class="fas fa-hourglass"></i>
+                                                        {{ __('Draft') }}</button>
+                                                </div>
                                                 <button type="submit"class="btn btn-primary btn-icon icon-left print-btn"
                                                     onclick="document.getElementById('status').value='eligible'"><i
                                                         class="fas fa-check"></i>
-                                                    {{ __('Verification') }}</button>
+                                                    {{ __('Pass') }}</button>
                                             </div>
                                         </form>
                                     @elseif ($vacancyUser->status === 'eligible')
@@ -285,7 +306,7 @@
                                                 <div class="alert-body">
                                                     <div class="alert-title">Lolos Assesment!</div>
                                                     {!! $sectionLog->assLogs[0]->description ??
-                                                        'Pendaftar telah lolos tahap assesment dan akan melanjutkan ke tahap selanjutnya.' !!}
+                                                        'Pendaftar telah lolos tahap assessment dan akan melanjutkan ke tahap selanjutnya.' !!}
                                                 </div>
                                             </div>
                                         </div>
@@ -297,7 +318,7 @@
                                                 <div class="alert-body">
                                                     <div class="alert-title">Tidak Lolos Assesment!</div>
                                                     {!! $sectionLog->assLogs[0]->description ??
-                                                        'Pendaftar dinyatakan tidak lolos tahap assesment dan tidak dapat melanjutkan ke tahap selanjutnya.' !!}
+                                                        'Pendaftar dinyatakan tidak lolos tahap assessment dan tidak dapat melanjutkan ke tahap selanjutnya.' !!}
                                                 </div>
                                             </div>
                                         </div>
@@ -309,7 +330,11 @@
                 </div>
             @endif
 
-            @if ($vacancyUser->status === 'eligible')
+            @if (
+                $vacancyUser->status === 'eligible' ||
+                    $vacancyUser->status === 'report' ||
+                    $vacancyUser->status === 'extend' ||
+                    $vacancyUser->status === 'done')
                 <div id="sk" class="section-body">
                     <div class="row mt-2">
                         <div class="col-12">
@@ -333,21 +358,32 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @php
+                                                $ath_total = 0;
+                                            @endphp
                                             @foreach ($vacancyAttachments as $attachment)
                                                 <tr>
+                                                    @php
+                                                        $ath = \Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment::where(
+                                                            'vacancy_attachment_id',
+                                                            $attachment->id,
+                                                        )
+                                                            ->where('vacancy_user_id', $vacancyUser->id)
+                                                            ->first();
+                                                        if ($ath) {
+                                                            $ath_total = $ath_total + 1;
+                                                        }
+                                                    @endphp
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $attachment->name }}</td>
-                                                    <td>{{ $attachment->is_active === 1 ? 'true' : 'false' }}
+                                                    <td>
+                                                        @if ($ath)
+                                                            <span class="badge badge-success">Tersedia</span>
+                                                        @else
+                                                            <span class="badge badge-danger">Belum Tersedia</span>
+                                                        @endif
                                                     </td>
                                                     <td>
-                                                        @php
-                                                            $ath = \Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment::where(
-                                                                'vacancy_attachment_id',
-                                                                $attachment->id,
-                                                            )
-                                                                ->where('vacancy_user_id', $vacancyUser->id)
-                                                                ->first();
-                                                        @endphp
                                                         @if ($ath)
                                                             <button class="btn btn-danger btn-sm m-1" data-toggle="modal"
                                                                 data-target="#pdfModal"
@@ -378,12 +414,45 @@
                                             @endforeach
                                         </tbody>
                                     </table>
+                                    @if ($ath_total == count($vacancyAttachments) && $vacancyUser->status == 'eligible')
+                                        <div class="col-md-12">
+                                            <div class="alert alert-info alert-has-icon alert-dismissible"
+                                                id="studyCompletionAlert">
+                                                <div class="alert-icon"><i class="far fa-check-circle"></i></div>
+                                                <div class="alert-body">
+                                                    <div class="alert-title">Konfirmasi Kelengkapan Berkas Tugas
+                                                        Belajar</div>
+                                                    Pastikan berkas telah lengkap. Setelah kelengkapan berkas telah
+                                                    dikonfirmasi
+                                                    maka peserta akan dapat mengunggah laporan.
+                                                    <div class="d-flex justify-content-center">
+                                                        <form
+                                                            action="{{ route('admin.vacancies-participant.update.status', $vacancyUser->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" id="status">
+                                                            <div class="mt-3">
+                                                                <button
+                                                                    type="submit"class="btn btn-primary btn-icon icon-left print-btn"
+                                                                    onclick="document.getElementById('status').value='report'"><i
+                                                                        class="fas fa-check"></i>
+                                                                    {{ __('Confirmation') }}</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            @endif
 
+            @if ($vacancyUser->status === 'report' || $vacancyUser->status === 'extend' || $vacancyUser->status === 'done')
                 <div id="laporan" class="section-body">
                     <div class="row mt-2">
                         <div class="col-12">
@@ -460,43 +529,57 @@
                         </div>
                     </div>
                 </div>
+            @endif
 
-                @if ($vacancyUser->status != 'done')
-                    <div id="perpanjang" class="section-body">
-                        <div class="row mt-2">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="section-title">
-                                            <div class="d-flex justify-content-between">
-                                                {{ __('Extension') }}
-                                            </div>
+            @if (($vacancyUser->status === 'report' || $vacancyUser->status === 'extend') && $vacancyUser->status != 'done')
+                <div id="perpanjang" class="section-body">
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <div class="d-flex justify-content-between">
+                                            {{ __('Extension') }}
                                         </div>
-                                        <hr>
-                                        <form action="" method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="row mb-3">
-                                                <div class="form-group col-md-8 offset-md-2">
-                                                    <label>{{ __('Reason') }} <span class="text-danger">*</span></label>
-                                                    <textarea name="extension_reason" id="" cols="30" rows="10" class="summernote">{{ old('extension_reason') }}</textarea>
-                                                    @error('extension_reason')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="text-center col-md-8 offset-md-2">
-                                                    <x-admin.save-button :text="__('Save')"></x-admin.save-button>
-                                                </div>
-                                            </div>
-                                        </form>
                                     </div>
+                                    <hr>
+                                    <form
+                                        action="{{ route('admin.vacancies-participant.update.status', $vacancyUser->id) }}"
+                                        method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="col-md-12 mb-3">
+                                            <label>{{ __('File') }} <span class="text-danger">*</span></label>
+                                            <input type="file" name="file" class="form-control"
+                                                accept="application/pdf" required>
+                                            @error('file')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <input type="hidden" name="status" id="status">
+                                        <div class="col-md-12 mb-2">
+                                            <label>{{ __('Reason') }} <span class="text-danger">*</span></label>
+                                            <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('reason', optional(\Modules\PendidikanLanjutan\app\Models\VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->where('status', 'extend')->latest()->first())->description) }}</textarea>
+                                            @error('reason')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                        <div class="mt-3 d-flex justify-content-center">
+                                            {{-- <button type="submit" class="btn btn-warning btn-icon icon-left print-btn"
+                                                onclick="document.getElementById('status').value='draft_extend'"><i
+                                                    class="fas fa-hourglass"></i>
+                                                {{ __('Draft') }}</button> --}}
+                                            <button type="submit"class="btn btn-primary btn-icon icon-left print-btn"
+                                                onclick="document.getElementById('status').value='extend'"><i
+                                                    class="fas fa-check"></i>
+                                                {{ __('Extend') }}</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endif
+                </div>
             @endif
         </section>
     </div>
@@ -546,9 +629,9 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-0" style="height: 80vh">
                     <object id="pdfObject" data="" type="application/pdf" width="100%"
-                        height="420px"></object>
+                        style="height: 100%"></object>
                 </div>
             </div>
         </div>

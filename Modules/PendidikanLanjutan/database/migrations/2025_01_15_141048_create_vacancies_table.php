@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('vacancies', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('instansi_id')->nullable();
             $table->unsignedBigInteger('study_id');
             $table->string('education_level');
             $table->string('employment_grade');

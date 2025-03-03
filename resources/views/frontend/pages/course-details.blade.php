@@ -502,7 +502,13 @@
                             @endif --}}
                             <span>Jenis Pelatihan:</span>
                             <h2 class="title">{{ $course->category->parentCategory->translation->name }}</h2>
-
+                        </div>
+                        <div class="courses__information-wrap mb-3">
+                            <span class="title">{{ __('Category') }}:</span>
+                            <span style="font-size: 1rem; padding: 0.5rem 1rem; margin-left: 0.5rem; border-radius: 20px; font-weight: bold; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);"
+                                class="{{ $course->category == 'internal' ? 'bg-warning' : 'bg-info' }} text-white">
+                                {{ $course->category == 'internal' ? 'Internal' : 'Publik' }}
+                            </span>
                         </div>
                         <div class="courses__information-wrap">
                             <h5 class="title">{{ __('Course includes') }}:</h5>
@@ -574,11 +580,21 @@
                         </div>
                         <div class="courses__details-enroll">
                             <div class="tg-button-wrap">
-                                <a href="{{ route('student.enrolled-courses') }}"
-                                    class="btn btn-two arrow-btn already-enrolled-btn" data-id="">
-                                    <span class="text">Mulai Pelatihan</span>
-                                    <i class="flaticon-arrow-right"></i>
-                                </a>
+                                @if($isInvitedParticipant)
+                                    <a href="{{ route('student.enrolled-courses') }}"
+                                        class="btn btn-two arrow-btn already-enrolled-btn" data-id="">
+                                        <span class="text">Mulai Pelatihan</span>
+                                        <i class="flaticon-arrow-right"></i>
+                                    </a>
+                                @elseif ($isWaitingParticipant)
+                                    <button class="btn btn-secondary" disabled>Menunggu Akses</button>
+                                @elseif ($course->category === 'public' && $isNotRegistered)
+                                    <a href="{{ route('student.courses.register-course', ['slug' => $course->slug]) }}"
+                                        class="btn btn-two arrow-btn" data-slug="{{ $course?->slug }}">
+                                        <span class="text">Gabung Pelatihan</span>
+                                        <i class="flaticon-arrow-right"></i>
+                                    </a>
+                                @endif
                                 {{-- @if (in_array($course->id, session('enrollments') ?? []))
                                     <a href="{{ route('student.enrolled-courses') }}"
                                         class="btn btn-two arrow-btn already-enrolled-btn" data-id="">

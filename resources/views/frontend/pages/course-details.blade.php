@@ -503,9 +503,14 @@
                             <span>Jenis Pelatihan:</span>
                             <h2 class="title">{{ $course->category->parentCategory->translation->name }}</h2>
                         </div>
+                        <div class="courses__information-wrap mb-3">
+                            <span class="title">{{ __('Category') }}:</span>
+                            <span style="font-size: 1rem; padding: 0.5rem 1rem; margin-left: 0.5rem; border-radius: 20px; font-weight: bold; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);"
+                                class="{{ $course->category == 'internal' ? 'bg-warning' : 'bg-info' }} text-white">
+                                {{ $course->category == 'internal' ? 'Internal' : 'Publik' }}
+                            </span>
+                        </div>
                         <div class="courses__information-wrap">
-                            <b>{{ __('Category') }}</b>
-                            <span>{{ $course->category }}</span>
                             <h5 class="title">{{ __('Course includes') }}:</h5>
                             <ul class="list-wrap">
                                 <li class="level-wrapper">

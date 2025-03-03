@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label for="title">{{ __('Question Title') }} <code>*</code></label>
-                    <textarea id="title" name="title" value="" class="form-control summernote"></textarea>
+                    <textarea id="question-summernote" name="title" class="form-control "></textarea>
                 </div>
                 <div class="mb-3 row">
                     <label for="title" class="col-md-2 col-form-label">Bobot {{ __('Grade') }}
@@ -27,7 +27,7 @@
                                 <label for="answer">{{ __('Answer Title') }} <code>*</code></label>
                                 <button class="remove-answer" type="button"><i class="fas fa-trash-alt"></i></button>
                             </div>
-                            <textarea class="answer form-control summernote" name="answers[]" value=""></textarea>
+                            <textarea id="answer-summernote-1" class="answer form-control " name="answers[]" value=""></textarea>
                         </div>
                         <div class="switcher row mt-2">
                             <div class="col-md-5 d-flex align-items-center">
@@ -40,7 +40,7 @@
                             </div>
                             <div class="col-md-7 d-flex justify-content-end">
                                 <button type="button"
-                                    class="add-answer btn btn-primary">{{ __('Add Answer') }}</button>
+                                    class="append-answer btn btn-primary">{{ __('Add Answer') }}</button>
                             </div>
                         </div>
 

@@ -301,7 +301,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         $('#exampleModalCenter').on('shown.bs.modal', function() {
-            $('.summernote').summernote({
+            $('#question-summernote').summernote({
                 toolbar: [
                     ['style', ['style']],
                     ['font', ['bold', 'italic', 'underline', 'clear']],
@@ -310,6 +310,75 @@
                     ['insert', ['picture']],
                 ],
             });
-        })
+
+            var textareas = $('.answer-container textarea').length;
+            for (var i = 1; i <= textareas; i++) {
+                $('#answer-summernote-' + i).summernote({
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['picture']],
+                    ],
+                });
+            }
+        });
+
+        // Add Answer button click event
+        $(document).on("click", ".append-answer", function() {
+            var randomId = Math.random().toString(36).substring(2, 11);
+            var randomSummernoteId = Math.random().toString(36).substring(3, 13);
+            var answerContainer = $(".answer-container");
+
+            // Bikin HTML baru buat card jawaban
+            var newAnswerCard = `
+        <div class="card border-1 mt-3">
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="form-grp">
+                        <div class="d-flex justify-content-between">
+                            <label for="answer-${randomId}">{{ __('Answer Title') }} <code>*</code></label>
+                            <button class="remove-answer" type="button"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                        <textarea id="answer_summernote-${randomSummernoteId}" 
+                                  name="answers[${randomId}]" 
+                                  class="answer form-control"></textarea>
+                    </div>
+                    <div class="switcher row mt-2">
+                        <div class="col-md-5 d-flex align-items-center">
+                            <p class="mr-3">{{ __('Correct Answer') }}</p>
+                            <label for="toggle-${randomId}" class="ms-2">
+                                <input type="checkbox" class="correct" id="toggle-${randomId}" 
+                                       value="1" name="correct[${randomId}]" />
+                                <span><small></small></span>
+                            </label>
+                        </div>
+                        <div class="col-md-7 d-flex justify-content-end">
+                            <button type="button" class="append-answer btn btn-primary">
+                                {{ __('Add Answer') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+            // Masukin card baru ke container
+            answerContainer.append(newAnswerCard);
+
+            // Inisialisasi Summernote buat textarea baru
+            $('#answer_summernote-' + randomSummernoteId).summernote({
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['picture']],
+                ],
+            });
+
+            console.log("Jawaban baru ditambah!");
+        });
     </script>
 @endpush

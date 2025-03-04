@@ -59,6 +59,8 @@ class StudentPendidikanLanjutanController extends Controller
             $query->where('user_id', $user->id)->whereNotIn('status', ['register']); // next update with value_type, unor, dll
         }])->findOrFail($id);
 
+        $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $id)->first();
+
         $passAgeLimit = $vacancy->age_limit >=  (Carbon::parse($user->date_of_birth)->diffInYears(Carbon::now()));
         $passEmployeeGrade = $vacancy->employment_grade === $user->golongan;
         // dd($vacancy);
@@ -72,7 +74,7 @@ class StudentPendidikanLanjutanController extends Controller
 
         $meetCondition = (count($vacancyTakeConditions) == count($vacancyConditions));
 
-        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy', 'vacancyConditions', 'meetCondition', 'passAgeLimit', 'passEmployeeGrade'));
+        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy','vacancyUser', 'vacancyConditions', 'meetCondition', 'passAgeLimit', 'passEmployeeGrade'));
     }
 
 

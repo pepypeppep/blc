@@ -176,7 +176,7 @@
                                     <th>{{ __('#') }}</th>
                                     <th>{{ __('Jenis Lampiran') }}</th>
                                     <th class="text-center">{{ __('Aksi') }}</th>
-                                    <th>{{ __('Berkas') }}</th>
+                                    {{-- <th>{{ __('Berkas') }}</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -185,61 +185,49 @@
 
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $condition->name }} <span class="text-danger">*</span></td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-3">
-                                                @if (!$isExist && count($condition->attachment) != 0)
-                                                    <form id="{{ $condition->id }}_form_action"
-                                                        action="{{ route('student.continuing-education.attachment', $condition->id) }}"
-                                                        method="POST" enctype="multipart/form-data">
-                                                        @csrf
-                                                        <input id="{{ $condition->id }}_file" type="file" name="file"
-                                                            @if ($condition->type == 'pdf') accept="application/pdf" @endif
-                                                            @if (count($condition->attachment) == 0) disabled @endif
-                                                            class="form-control me-2"
-                                                            onchange="$('#{{ $condition->id }}_form_action').trigger('submit')"
-                                                            hidden />
-                                                        <button onclick="$('#{{ $condition->id }}_file').click()"
-                                                            type="button" class="align-middle border-0 bg-transparent"
-                                                            data-bs-toggle="tooltip" title="Unggah Ulang Berkas">
-                                                            <i class="fas fa-pencil-alt"></i>
-                                                        </button>
-                                                    </form>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                @if (!$isExist)
+                                                    @if (count($condition->attachment) != 0)
+                                                        <form id="{{ $condition->id }}_form_action"
+                                                            action="{{ route('student.continuing-education.attachment', $condition->id) }}"
+                                                            method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <input id="{{ $condition->id }}_file" type="file"
+                                                                name="file"
+                                                                @if ($condition->type == 'pdf') accept="application/pdf" @endif
+                                                                @if (count($condition->attachment) == 0) disabled @endif
+                                                                class="form-control me-2"
+                                                                onchange="$('#{{ $condition->id }}_form_action').trigger('submit')"
+                                                                hidden />
+                                                            <button onclick="$('#{{ $condition->id }}_file').click()"
+                                                                type="button" class="align-middle border-0 bg-transparent"
+                                                                data-bs-toggle="tooltip" title="Unggah Ulang Berkas">
+                                                                <i class="fas fa-pencil-alt"></i>
+                                                            </button>
+                                                        </form>
+                                                    @else
+                                                        <form id="{{ $condition->id }}_form"
+                                                            action="{{ route('student.continuing-education.attachment', $condition->id) }}"
+                                                            method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            <input type="file" name="file"
+                                                                @if ($condition->type == 'pdf') accept="application/pdf" @endif
+                                                                @if (count($condition->attachment) != 0) disabled @endif
+                                                                class="form-control me-2"
+                                                                onchange="$('#{{ $condition->id }}_form').trigger('submit')" />
+                                                        </form>
+                                                    @endif
                                                 @endif
                                                 @if (count($condition->attachment) > 0)
                                                     <a target="_blank"
-                                                        href="{{ route('vacancies-participant.get.file', [$condition->attachment[0]->vacancy_attachment_id, auth()->user()->id]) }}"
+                                                        href="{{ route('vacancies-participant.get.file', [$condition->attachment[0]->vacancy_attachment_id, $vacancyUser->id]) }}"
                                                         class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                 @endif
                                             </div>
                                         </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <input type="text" name="attachment_id" value="{{ $condition->id }}"
-                                                    hidden />
-                                                @if (count($condition->attachment) > 0)
-                                                    <input type="text" @if (count($condition->attachment) != 0) disabled @endif
-                                                        class="form-control me-2"
-                                                        value="{{ $condition->attachment[0]->file }}" />
-                                                @elseif (!$isExist)
-                                                    <form id="{{ $condition->id }}_form"
-                                                        action="{{ route('student.continuing-education.attachment', $condition->id) }}"
-                                                        method="POST" enctype="multipart/form-data">
-                                                        @csrf
-                                                        <input type="file" name="file"
-                                                            @if ($condition->type == 'pdf') accept="application/pdf" @endif
-                                                            @if (count($condition->attachment) != 0) disabled @endif
-                                                            class="form-control me-2"
-                                                            onchange="$('#{{ $condition->id }}_form').trigger('submit')" />
-                                                    </form>
-                                                @else
-                                                    <input type="text" class="form-control me-2" disabled />
-                                                @endif
-
-                                            </div>
-                                        </td>
-                                       
                                     </tr>
                                 @endforeach
                             </tbody>

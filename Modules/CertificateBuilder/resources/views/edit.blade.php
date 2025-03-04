@@ -38,7 +38,7 @@
                                     @method('PUT')
 
                                     <div class="form-group">
-                                        <label for="">{{ __('Background Image') }} <code>( 930px * 600px )
+                                        <label for="">{{ __('Front Image') }} <code>( 930px * 600px )
                                                 *</code></label>
                                         <div id="image-preview-background" class="image-preview">
                                             <label for="image-upload-background"
@@ -51,19 +51,49 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="">{{ __('Title') }}</label>
+                                        <label for="">{{ __('Front Title') }}</label>
                                         <input type="text" class="form-control" name="title"
                                             value="{{ $certificate->title }}">
                                     </div>
                                     <div class="form-group">
-                                        <label for="">{{ __('Sub Title') }}</label>
+                                        <label for="">{{ __('Front Sub Title') }}</label>
                                         <input type="text" class="form-control" name="sub_title"
                                             value="{{ $certificate->sub_title }}">
                                     </div>
                                     <div class="form-group">
-                                        <label for="">{{ __('Description') }}</label>
+                                        <label for="">{{ __('Front Description') }}</label>
                                         <textarea id="" class="form-control hight-200" name="description">{!! clean($certificate->description) !!}</textarea>
                                     </div>
+
+                                    @if ($certificate->background2)
+                                        <div class="form-group">
+                                            <label for="">{{ __('Back Image') }} <code>( 930px * 600px )
+                                                    *</code></label>
+                                            <div id="image-preview-background2" class="image-preview">
+                                                <label for="image-upload-background2"
+                                                    id="image-label-background2">{{ __('Image') }}</label>
+                                                <input type="file" name="background2" id="image-upload-background2">
+                                            </div>
+                                            @error('image')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="">{{ __('Back Title') }}</label>
+                                            <input type="text" class="form-control" name="title2"
+                                                value="{{ $certificate->title2 }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">{{ __('Back Sub Title') }}</label>
+                                            <input type="text" class="form-control" name="sub_title2"
+                                                value="{{ $certificate->sub_title2 }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">{{ __('Back Description') }}</label>
+                                            <textarea id="" class="form-control hight-200" name="description2">{!! clean($certificate->description2) !!}</textarea>
+                                        </div>
+                                    @endif
                                     <button type="submit" class="btn btn-primary">{{ __('Update') }}</button>
                                 </form>
                             </div>
@@ -71,9 +101,10 @@
                     </div>
                     <div class="col-lg-8">
                         <div class="card">
-
                             <div class="card-body">
-                                <p class="text-center text-danger">{{ __('Background size will be ( 930px * 600px )') }}
+                                <p class="text-center text-danger">
+                                    <strong>{{ __('Front Image') }}</strong>
+                                    {{ __('Background size will be ( 930px * 600px )') }}
                                 </p>
                                 <div class="certificate-outer">
                                     <div class="table-responsive">
@@ -106,6 +137,48 @@
                                 </div>
                             </div>
                         </div>
+                        @if ($certificate->background2)
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="text-center text-danger">
+                                        <strong>{{ __('Back Image') }}</strong>
+                                        {{ __('Background size will be ( 930px * 600px )') }}
+                                    </p>
+                                    <div class="certificate-outer">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <div class="certificate-body2">
+                                                    @if ($certificate->title)
+                                                        <div id="title2" class="draggable-element2">
+                                                            {{ $certificate->title }}
+                                                        </div>
+                                                    @endif
+                                                    @if ($certificate->sub_title)
+                                                        <div id="sub_title2" class="draggable-element2">
+                                                            {{ $certificate->sub_title }}
+                                                        </div>
+                                                    @endif
+
+                                                    @if ($certificate->description)
+                                                        <div id="description2" class="draggable-element2">
+                                                            {!! nl2br(clean($certificate->description)) !!}
+                                                        </div>
+                                                    @endif
+
+                                                    @if ($certificate->description)
+                                                        <div id="signature2" class="draggable-element2"><img
+                                                                style="width: 100px; height: 100px;"
+                                                                src="{{ asset('backend/img/QRCode.png') }}"
+                                                                alt="">
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -118,6 +191,7 @@
 
     <script>
         // Make draggable items draggable
+        // Front Side
         $('.draggable-element').draggable({
             containment: '.certificate-body', // Restrict draggable within certificate-body
             stop: function(event, ui) {
@@ -150,11 +224,48 @@
                 });
             }
         });
+
+        @if ($certificate->background2)
+            // Back Side
+            $('.draggable-element2').draggable({
+                containment: '.certificate-body2', // Restrict draggable within certificate-body
+                stop: function(event, ui) {
+                    var elementId = $(this).attr('id');
+                    var xPosition = ui.position.left;
+                    var yPosition = ui.position.top;
+
+                    console.log(elementId, xPosition, yPosition);
+
+                    // Send AJAX request to update position
+                    $.ajax({
+                        url: '{{ url('/admin/certificate-builder/item/update') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            certificate_builder_id: "{{ $certificate->id }}",
+                            element_id: elementId,
+                            x_position: xPosition,
+                            y_position: yPosition
+                        },
+                        success: function(response) {
+                            console.log(response.message);
+                        },
+                        error: function(xhr) {
+                            let errors = xhr.responseJSON.errors;
+                            $.each(errors, function(key, value) {
+                                toastr.error(value);
+                            })
+                        }
+                    });
+                }
+            });
+        @endif
     </script>
 @endpush
 
 @push('css')
     <style>
+        /* Front Style */
         @foreach ($certificateItems as $item)
             #{{ $item->element_id }} {
                 left: {{ $item->x_position }}px;
@@ -202,11 +313,61 @@
             margin-right: 100px;
 
         }
+
+        /* Back Style */
+        @foreach ($certificateItems as $item)
+            #{{ $item->element_id }} {
+                left: {{ $item->x_position }}px;
+                top: {{ $item->y_position }}px;
+            }
+        @endforeach
+
+        .certificate-outer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .certificate-body2 {
+            width: 930px !important;
+            height: 600px !important;
+            background: rgb(231, 231, 231);
+            position: relative;
+            background-image: url({{ route('admin.certificate-builder.getBg2', $certificate->id) }});
+        }
+
+        .draggable-element2 {
+            position: absolute;
+            cursor: move;
+        }
+
+        #title2 {
+            font-size: 22px;
+            font-weight: bold;
+            color: black
+        }
+
+        #sub_title2 {
+            font-size: 18px;
+            color: black;
+            text-align: inherit;
+            font-weight: inherit;
+        }
+
+        #description2 {
+            font-size: 16px;
+            color: black;
+            text-align: center;
+            font-weight: inherit;
+            margin-left: 100px;
+            margin-right: 100px;
+
+        }
     </style>
 @endpush
 @push('js')
     <script src="{{ asset('backend/js/jquery.uploadPreview.min.js') }}"></script>
     <script>
+        // Front Side
         $.uploadPreview({
             input_field: "#image-upload-background",
             preview_box: "#image-preview-background",
@@ -222,5 +383,24 @@
             'background-position': 'center',
             'background-repeat': 'no-repeat'
         });
+
+        @if ($certificate->background2)
+            // Back Side
+            $.uploadPreview({
+                input_field: "#image-upload-background2",
+                preview_box: "#image-preview-background2",
+                label_field: "#image-label-background2",
+                label_default: "{{ __('Choose Image') }}",
+                label_selected: "{{ __('Change Image') }}",
+                no_label: false,
+                success_callback: null
+            })
+            $('#image-preview-background2').css({
+                'background-image': 'url({{ route('admin.certificate-builder.getBg2', $certificate->id) }})',
+                'background-size': 'contain',
+                'background-position': 'center',
+                'background-repeat': 'no-repeat'
+            });
+        @endif
     </script>
 @endpush

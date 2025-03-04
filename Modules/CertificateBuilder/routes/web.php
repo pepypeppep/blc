@@ -19,4 +19,6 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::resource('certificate-builder', CertificateBuilderController::class)->names('certificate-builder');
     Route::get('certificate-builder/{id}/getBg', [CertificateBuilderController::class, 'getBg'])->name('certificate-builder.getBg');
     Route::get('certificate-builder/{id}/getSg', [CertificateBuilderController::class, 'getSg'])->name('certificate-builder.getSg');
+    Route::get('certificate-builder/{id}/getBg2', [CertificateBuilderController::class, 'getBg2'])->name('certificate-builder.getBg2');
+    Route::get('certificate-builder/{id}/getSg2', [CertificateBuilderController::class, 'getSg2'])->name('certificate-builder.getSg2');
 });

@@ -33,8 +33,8 @@
             <nav class="navbar navbar-expand-lg main-navbar">
                 <div class="mr-2 form-inline">
                     <ul class="mr-3 navbar-nav d-flex align-items-center">
-                        <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i
-                                    class="fas fa-bars"></i></a></li>
+                        <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"
+                                id="adminBurgerNavbar"><i class="fas fa-bars"></i></a></li>
                         <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-none"><i
                                     class="fas fa-search"></i></a></li>
                         @if (Module::isEnabled('Language') && Route::has('set-language'))

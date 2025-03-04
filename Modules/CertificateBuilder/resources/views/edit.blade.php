@@ -110,6 +110,7 @@
                                     <div class="table-responsive">
                                         <table class="table">
                                             <div class="certificate-body">
+                                                <div class="grid-overlay"></div>
                                                 @if ($certificate->title)
                                                     <div id="title" class="draggable-element">{{ $certificate->title }}
                                                     </div>
@@ -148,6 +149,7 @@
                                         <div class="table-responsive">
                                             <table class="table">
                                                 <div class="certificate-body2">
+                                                    <div class="grid-overlay"></div>
                                                     @if ($certificate->title)
                                                         <div id="title2" class="draggable-element2">
                                                             {{ $certificate->title }}
@@ -190,6 +192,9 @@
     <script src="{{ asset('global/js/jquery-ui.min.js') }}"></script>
 
     <script>
+        $(document).ready(function() {
+            $('#adminBurgerNavbar').click();
+        });
         // Make draggable items draggable
         // Front Side
         $('.draggable-element').draggable({
@@ -286,8 +291,24 @@
             background-image: url({{ route('admin.certificate-builder.getBg', $certificate->id) }});
         }
 
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: 30px 30px;
+            /* Adjust grid size */
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+            pointer-events: none;
+            /* Ensures the grid does not interfere with dragging */
+            z-index: 1;
+        }
+
         .draggable-element {
             position: absolute;
+            z-index: 2;
             cursor: move;
         }
 
@@ -337,6 +358,7 @@
 
         .draggable-element2 {
             position: absolute;
+            z-index: 2;
             cursor: move;
         }
 

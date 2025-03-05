@@ -46,7 +46,7 @@ class CourseController extends Controller
         $query->withCount('enrollments as enrollments_count');
         $query->withCount([
             'enrollments as enrollments_pending_count' => function ($q) {
-                $q->where('has_access', 0);
+                $q->whereIn('has_access', [null, '']);
             }
         ]);
         $orderBy = $request->order_by == 1 ? 'asc' : 'desc';

@@ -54,8 +54,8 @@ class UserSeeder extends Seeder
 
         User::create([
             'id' => 1,
-            'unor_id' => 1,
-            'username' => 'lms.student@example.com',
+            'instansi_id' => 1,
+            'username' => 'lms.student',
             'name' => 'LMS Student',
             'email' => 'student@gmail.com',
             'password' => bcrypt('1234'),
@@ -65,170 +65,80 @@ class UserSeeder extends Seeder
 
         User::create([
             'id' => 2,
-            'unor_id' => 1,
             'name' => 'LMS Instructor',
-            'username' => 'lms.instructor@example.com',
+            'username' => 'lms.instructor',
             'email' => 'instructor@gmail.com',
             'password' => bcrypt('1234'),
             'role' => 'instructor',
             'email_verified_at' => now(),
-            // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
-            // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-
-            // developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-
-            // a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-            // ',
-            // 'job_title' => 'Developer',
-            // 'facebook' => 'https://www.facebook.com/',
-            // 'twitter' => 'https://twitter.com/',
-            // 'linkedin' => 'https://www.linkedin.com/',
-            // 'website' => 'https://www.websolutionus.com/',
-            // 'github' => 'https://www.github.com/',
         ]);
 
-        // User::create([
-        //     'id' => 3,
-        //     'name' => 'Mark Davenport',
-        //     'email' => 'instructortwo@gmail.com',
-        //     'password' => bcrypt('1234'),
-        //     'role' => 'instructor',
-        //     'email_verified_at' => now(),
-        //     // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
-        //     // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
+        User::create([
+            'id' => 3,
+            'name' => 'Mark Davenport',
+            'email' => 'instructortwo@gmail.com',
+            'username' => 'instructortwo',
+            'password' => bcrypt('1234'),
+            'role' => 'instructor',
+            'email_verified_at' => now(),
+        ]);
 
-        //     // developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
+        User::create([
+            'id' => 4,
+            'name' => 'Ethan Granger',
+            'email' => 'instructortrhee@gmail.com',
+            'username' => 'instructorthree',
+            'password' => bcrypt('1234'),
+            'role' => 'instructor',
+            'email_verified_at' => now(),
+        ]);
 
-        //     // a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-        //     // ',
-        //     // 'job_title' => 'Developer',
-        //     // 'facebook' => 'https://www.facebook.com/',
-        //     // 'twitter' => 'https://twitter.com/',
-        //     // 'linkedin' => 'https://www.linkedin.com/',
-        //     // 'website' => 'https://www.websolutionus.com/',
-        //     // 'github' => 'https://www.github.com/',
-        // ]);
+        User::create([
+            'id' => 5,
+            'name' => 'Lucas Hale',
+            'email' => 'instructorfour@gmail.com',
+            'username' => 'instructorfour',
+            'password' => bcrypt('1234'),
+            'role' => 'instructor',
+            'email_verified_at' => now(),
+        ]);
 
-        // User::create([
-        //     'id' => 4,
-        //     'name' => 'Ethan Granger',
-        //     'email' => 'instructortrhee@gmail.com',
-        //     'password' => bcrypt('1234'),
-        //     'role' => 'instructor',
-        //     'email_verified_at' => now(),
-        //     // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
-        //     // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
+        User::create([
+            'id' => 6,
+            'name' => 'Nathaniel Cross',
+            'email' => 'instructorfive@gmail.com',
+            'username' => 'instructorfive',
+            'password' => bcrypt('1234'),
+            'role' => 'instructor',
+            'email_verified_at' => now(),
+        ]);
 
-        //     // developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
+        User::create([
+            'id' => 7,
+            'name' => 'Adrian Pierce',
+            'email' => 'instructorsix@gmail.com',
+            'username' => 'instructorsix',
+            'password' => bcrypt('1234'),
+            'role' => 'instructor',
+            'email_verified_at' => now(),
+        ]);
 
-        //     // a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-        //     // ',
-        //     // 'job_title' => 'Developer',
-        //     // 'facebook' => 'https://www.facebook.com/',
-        //     // 'twitter' => 'https://twitter.com/',
-        //     // 'linkedin' => 'https://www.linkedin.com/',
-        //     // 'website' => 'https://www.websolutionus.com/',
-        //     // 'github' => 'https://www.github.com/',
-        // ]);
+        User::create([
+            'id' => 8,
+            'name' => 'Laire Kaira Nayadita',
+            'email' => 'studenttwo@gmail.com',
+            'username' => 'studenttwo',
+            'password' => bcrypt('1234'),
+            'role' => 'student',
+            'email_verified_at' => now(),
+        ]);
 
-        // User::create([
-        //     'id' => 5,
-        //     'name' => 'Lucas Hale',
-        //     'email' => 'instructorfour@gmail.com',
-        //     'password' => bcrypt('1234'),
-        //     'role' => 'instructor',
-        //     'email_verified_at' => now(),
-        //     // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
-        //     // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-
-        //     // developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-
-        //     // a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-        //     // ',
-        //     // 'job_title' => 'Instructor',
-        //     // 'facebook' => 'https://www.facebook.com/',
-        //     // 'twitter' => 'https://twitter.com/',
-        //     // 'linkedin' => 'https://www.linkedin.com/',
-        //     // 'website' => 'https://www.websolutionus.com/',
-        //     // 'github' => 'https://www.github.com/',
-        // ]);
-
-        // User::create([
-        //     'id' => 6,
-        //     'name' => 'Nathaniel Cross',
-        //     'email' => 'instructorfive@gmail.com',
-        //     'password' => bcrypt('1234'),
-        //     'role' => 'instructor',
-        //     'email_verified_at' => now(),
-        //     // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
-        //     // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-
-        //     // developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-
-        //     // a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-        //     // ',
-        //     // 'job_title' => 'Developer',
-        //     // 'facebook' => 'https://www.facebook.com/',
-        //     // 'twitter' => 'https://twitter.com/',
-        //     // 'linkedin' => 'https://www.linkedin.com/',
-        //     // 'website' => 'https://www.websolutionus.com/',
-        //     // 'github' => 'https://www.github.com/',
-        // ]);
-
-        // User::create([
-        //     'id' => 7,
-        //     'name' => 'Adrian Pierce',
-        //     'email' => 'instructorsix@gmail.com',
-        //     'password' => bcrypt('1234'),
-        //     'role' => 'instructor',
-        //     'email_verified_at' => now(),
-
-
-        //     // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
-        //     // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-
-        //     // developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-
-        //     // a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-        //     // ',
-        //     // 'job_title' => 'Developer',
-        //     // 'facebook' => 'https://www.facebook.com/',
-        //     // 'twitter' => 'https://twitter.com/',
-        //     // 'linkedin' => 'https://www.linkedin.com/',
-        //     // 'website' => 'https://www.websolutionus.com/',
-        //     // 'github' => 'https://www.github.com/',
-        // ]);
-
-        // User::create([
-        //     'id' => 8,
-        //     'name' => 'Laire Kaira Nayadita',
-        //     'email' => 'studenttwo@gmail.com',
-        //     'password' => bcrypt('1234'),
-        //     'role' => 'student',
-        //     'email_verified_at' => now(),
-
-
-        //     // 'short_bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices',
-        //     // 'bio' => 'I am a web developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-
-        //     // developer with a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-
-        //     // a vast array of knowledge in many different front end and back end languages, responsive frameworks, databases, and best code practices. My objective is simply to be the best web developer that I can be and to contribute to the technology industry all that I know and can do. I am dedicated to perfecting my craft by learning from more seasoned developers, remaining humble, and continuously making strides to learn all that I can about development.
-        //     // ',
-        //     // 'job_title' => 'Developer',
-        //     // 'facebook' => 'https://www.facebook.com/',
-        //     // 'twitter' => 'https://twitter.com/',
-        //     // 'linkedin' => 'https://www.linkedin.com/',
-        //     // 'website' => 'https://www.websolutionus.com/',
-        //     // 'github' => 'https://www.github.com/',
-        // ]);
-
-        // foreach (User::where('role', 'instructor')->get() as $key => $instructor) {
-        //     InstructorRequest::updateOrCreate([
-        //         'user_id' => $instructor->id
-        //     ], [
-        //         'status' => 'approved'
-        //     ]);
-        // }
+        foreach (User::where('role', 'instructor')->get() as $key => $instructor) {
+            InstructorRequest::updateOrCreate([
+                'user_id' => $instructor->id
+            ], [
+                'status' => 'approved'
+            ]);
+        }
     }
 }

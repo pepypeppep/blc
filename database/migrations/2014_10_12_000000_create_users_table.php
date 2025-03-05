@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('username')->unique();
             $table->unsignedBigInteger('instansi_id')->nullable();
             $table->unsignedBigInteger('unor_id')->nullable();
             $table->string('nip')->unique()->nullable();
@@ -28,6 +29,9 @@ return new class extends Migration
             $table->string('status')->default('active');
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('instansi_id')->references('id')->on('instansis')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreign('unor_id')->references('id')->on('unors')->onDelete('restrict')->onUpdate('restrict');
         });
 
         Schema::create('sessions', function (Blueprint $table) {

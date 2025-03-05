@@ -33,7 +33,6 @@ class SSOController extends Controller
             $keycloakUser = $driver->user();
             $keycloakUsername = $keycloakUser->getNickname();
 
-
             $accessTokenResponseBody = $keycloakUser->accessTokenResponseBody;
             $accessToken = $accessTokenResponseBody['access_token'];
             $refreshToken = $accessTokenResponseBody['refresh_token'];
@@ -58,24 +57,29 @@ class SSOController extends Controller
                 )->with($notification);
             }
 
+            return view('auth.message', [
+                'email' => $keycloakUser->getEmail(),
+                'username' => $keycloakUsername,
+            ]);
+
             // ==================
             // if user not exists
             // ==================
 
-            // check account from esurat
-            $headers = [
-                'Authorization' => 'Bearer ' . $accessToken,
-            ];
+            // // check account from esurat
+            // $headers = [
+            //     'Authorization' => 'Bearer ' . $accessToken,
+            // ];
 
-            $response = Http::withHeaders($headers)->get('https://esuratapi.bantulkab.go.id/api/v2/whoami');
-            if ($response->status() != 200) {
-                return view('auth.message', [
-                    'email' => $keycloakUser->getEmail(),
-                    'username' => $keycloakUser->getNickname(),
-                ]);
-            }
+            // $response = Http::withHeaders($headers)->get('https://esuratapi.bantulkab.go.id/api/v2/whoami');
+            // if ($response->status() != 200) {
+            //     return view('auth.message', [
+            //         'email' => $keycloakUser->getEmail(),
+            //         'username' => $keycloakUser->getNickname(),
+            //     ]);
+            // }
 
-            $keycloakData = $response->json()['data'];
+            // $keycloakData = $response->json()['data'];
 
             // "code" => 200
             // "message" => ""
@@ -101,49 +105,50 @@ class SSOController extends Controller
             // ]
 
             // create opd
-            $opdID = $keycloakData['instansi_id'];
-            $unorID = $keycloakData['unorId'];
+            // $opdID = $keycloakData['instansi_id'];
+            // $unorID = $keycloakData['unorId'];
 
-            Opd::updateOrCreate([
-                'id' => $opdID,
-            ], [
-                'name' => $keycloakData['instansi_name'],
-            ]);
+            // Opd::updateOrCreate([
+            //     'id' => $opdID,
+            // ], [
+            //     'name' => $keycloakData['instansi_name'],
+            // ]);
 
-            Unor::updateOrCreate([
-                'id' => $unorID,
-            ], [
-                'name' => $keycloakData['unor_name'],
-                'opd_id' => $opdID,
-            ]);
+            // Unor::updateOrCreate([
+            //     'id' => $unorID,
+            // ], [
+            //     'name' => $keycloakData['unor_name'],
+            //     'opd_id' => $opdID,
+            // ]);
 
-            $user = User::create([
-                'unor_id' => $unorID,
-                'name' => $keycloakData['name'],
-                'email' => $keycloakUser->getEmail(),
-                'sso_id' => $keycloakUser->getId(),
-                'password' => bcrypt(Str::random(10)),
-                'role' => 'student',
-                'user_type' => $keycloakData['type'],
-                'email_verified_at' => now(),
-            ]);
+            // $user = User::create([
+            //     'unor_id' => $unorID,
+            //     'name' => $keycloakData['name'],
+            //     'email' => $keycloakUser->getEmail(),
+            //     'sso_id' => $keycloakUser->getId(),
+            //     'password' => bcrypt(Str::random(10)),
+            //     'role' => 'student',
+            //     'user_type' => $keycloakData['type'],
+            //     'email_verified_at' => now(),
+            // ]);
 
-            Auth::login($user);
+            // Auth::login($user);
 
-            session([
-                'sso' => true,
-                'access_token' => $accessToken,
-                'refresh_token' => $refreshToken
-            ]);
+            // session([
+            //     'sso' => true,
+            //     'access_token' => $accessToken,
+            //     'refresh_token' => $refreshToken
+            // ]);
 
             // Redirect user to dashboard based on role
-            $notification = __('Logged in successfully.');
-            $notification = ['message' => $notification, 'alert-type' => 'success'];
+            // $notification = __('Logged in successfully.');
+            // $notification = ['message' => $notification, 'alert-type' => 'success'];
 
-            return redirect()->intended(
-                $user->role === 'instructor' ?
-                    route('instructor.dashboard') : route('student.dashboard')
-            )->with($notification);
+            // return redirect()->intended(
+            //     $user->role === 'instructor' ?
+            //         route('instructor.dashboard') : route('student.dashboard')
+            // )->with($notification);
+
         } catch (\Throwable $th) {
             report($th);
             abort(400, 'invalid request');

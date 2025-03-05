@@ -73,8 +73,12 @@ class EmployeeCrawler extends Command
             ], [
                 'unor_id' => $unorId,
                 'instansi_id' => $response->id_unor_L1,
-                'name' => $response->nama_lengkap
+                'name' => $response->nama_lengkap,
+                'place_of_birth' => $response->tempat_lahir,
+                'date_of_birth' => $response->tanggal_lahir,
             ]);
+
+            Unor::where('id', $response->id_unor_L1)->update(['is_instansi' => 1]);
         }
     }
 }

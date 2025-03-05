@@ -40,6 +40,9 @@ class User extends Authenticatable
         'is_banned',
         'verification_token',
         'forget_password_token',
+        'phone',
+        'place_of_birth',
+        'date_of_birth'
     ];
 
     /**
@@ -96,6 +99,11 @@ class User extends Authenticatable
         return $this->hasOne(InstructorRequest::class, 'user_id', 'id');
     }
 
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
     public function courses()
     {
         return $this->hasMany(Course::class, 'instructor_id');
@@ -103,7 +111,7 @@ class User extends Authenticatable
 
     public function coursesTaken()
     {
-        return $this->belongsToMany(Course::class, 'course_participants');
+        return $this->belongsToMany(Course::class, 'enrollments')->withPivot('has_access')->withTimestamps();
     }
 
     function country(): BelongsTo

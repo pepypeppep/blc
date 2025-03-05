@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\StudentVacancyReportRequest;
 use App\Http\Requests\Frontend\UploadRequirementFileRequest;
+use App\Models\Unor;
 use App\Models\VacancyReport;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -19,11 +21,11 @@ use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 
 class StudentPendidikanLanjutanController extends Controller
 {
-    // list pendidikan 
+    // list pendidikan
     public function index(Request $request): View
     {
         $perPage = $request->get('per_page', 10);
-        $vacancies = Vacancy::paginate($perPage);
+        $vacancies = Vacancy::where('instansi_id', userAuth()->instansi_id)->paginate($perPage);
 
         return view('frontend.student-dashboard.continuing-education.index', compact('vacancies'));
     }
@@ -39,8 +41,8 @@ class StudentPendidikanLanjutanController extends Controller
 
     function registeredDetail($id)
     {
-        $vacancy = VacancyUser::with(['vacancy', 'user'])->findOrFail($id);
-        $logs = VacancyLogs::where('vacancy_user_id', $vacancy->id)->get();
+        $vacancy = VacancyUser::with(['vacancy.study', 'user.unor', 'user.instansi'])->findOrFail($id);
+        $logs = VacancyLogs::where('vacancy_user_id', $vacancy->id)->orderBy('created_at', 'desc')->get();
         $attachments = VacancyUserAttachment::whereHas('vacancyattachment', function ($query) use ($vacancy) {
             $query->where('vacancy_id', $vacancy->vacancy_id);
         })->where('vacancy_user_id', $vacancy->id)->get();
@@ -52,9 +54,15 @@ class StudentPendidikanLanjutanController extends Controller
     // detail pendidikan
     function continuingEducationDetail($id)
     {
-        $vacancy = Vacancy::with(['study', 'users' => function ($query) {
-            $query->where('user_id', userAuth()->id)->whereNotIn('status', ['register']); // next update with value_type, unor, dll
+        $user = userAuth();
+        $vacancy = Vacancy::with(['study', 'users' => function ($query) use ($user) {
+            $query->where('user_id', $user->id)->whereNotIn('status', ['register']); // next update with value_type, unor, dll
         }])->findOrFail($id);
+
+        $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $id)->first();
+
+        $passAgeLimit = $vacancy->age_limit >=  (Carbon::parse($user->date_of_birth)->diffInYears(Carbon::now()));
+        $passEmployeeGrade = $vacancy->employment_grade === $user->golongan;
         // dd($vacancy);
         $base = VacancyAttachment::syarat()->where('vacancy_id', $id)->where('is_active', 1);
         $vacancyConditions = $base->with('attachment')->get();
@@ -66,7 +74,7 @@ class StudentPendidikanLanjutanController extends Controller
 
         $meetCondition = (count($vacancyTakeConditions) == count($vacancyConditions));
 
-        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy', 'vacancyConditions', 'meetCondition'));
+        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy','vacancyUser', 'vacancyConditions', 'meetCondition', 'passAgeLimit', 'passEmployeeGrade'));
     }
 
 
@@ -77,7 +85,7 @@ class StudentPendidikanLanjutanController extends Controller
         $attachment = VacancyAttachment::findOrFail($id);
 
         if (!$attachment) {
-            return redirect()->back()->with(['messege' => __('Attachment not found'), 'alert-type' => 'error']);
+            return redirect()->back()->withFragment('attachment_container')->with(['messege' => __('Attachment not found'), 'alert-type' => 'error']);
         }
         DB::beginTransaction();
 
@@ -98,7 +106,7 @@ class StudentPendidikanLanjutanController extends Controller
 
         if ($validator->fails()) {
             DB::rollBack();
-            return redirect()->back()->with(['messege' => $validator->errors()->first(), 'alert-type' => 'error']);
+            return redirect()->back()->withFragment('attachment_container')->with(['messege' => $validator->errors()->first(), 'alert-type' => 'error']);
         }
 
         $fileName = "vacancy/" . now()->year . "/attachments" . "/" . str_replace([' ', '/'], '_', $attachment->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
@@ -130,12 +138,12 @@ class StudentPendidikanLanjutanController extends Controller
 
         if (!$result) {
             DB::rollBack();
-            return redirect()->back()->with(['messege' => __('Upload file requirement failed'), 'alert-type' => 'error']);
+            return redirect()->back()->withFragment('attachment_container')->with(['messege' => __('Upload file requirement failed'), 'alert-type' => 'error']);
         }
 
 
         DB::commit();
-        return redirect()->back()->with(['messege' => __('Upload file requirement successfully'), 'alert-type' => 'success']);
+        return redirect()->back()->withFragment('attachment_container')->with(['messege' => __('Upload file requirement successfully'), 'alert-type' => 'success']);
     }
 
     // pengajuan pendaftaran
@@ -178,7 +186,16 @@ class StudentPendidikanLanjutanController extends Controller
 
         DB::beginTransaction();
 
+        $auth = userAuth();
+        $instansi = Unor::where('id', $auth->instansi_id)->first();
+
         $vacancyUser->update([
+            'employment_grade' => $auth->golongan,
+            'last_position' => $auth->jabatan,
+            'instansi' => $instansi->name,
+            'cost_type' => $vacancy->cost_type,
+            'education_level' => $auth->tingkat_pendidikan,
+            'last_education' => $auth->pendidikan,
             'status' => 'verification'
         ]);
 

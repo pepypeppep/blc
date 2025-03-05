@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('unors', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->longText('name');
-            $table->integer('is_instansi')->default(0);
-            $table->timestamps();
+        Schema::table('courses', function (Blueprint $table) {
+            $table->string('access')->default('private');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('unors');
+        Schema::table('courses', function (Blueprint $table) {
+            $table->dropColumn('access');
+        });
     }
 };

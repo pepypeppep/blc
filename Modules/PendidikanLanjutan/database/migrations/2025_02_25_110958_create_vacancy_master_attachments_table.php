@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vacancy_logs', function (Blueprint $table) {
+        Schema::create('vacancy_master_attachments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('vacancy_user_id')->onDelete('cascade');
             $table->string('name');
             $table->longText('description')->nullable();
-            $table->longText('draft_notes')->nullable();
-            $table->longText('attachment')->nullable();
-            $table->string('status');
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vacancy_logs');
+        Schema::dropIfExists('vacancy_master_attachments');
     }
 };

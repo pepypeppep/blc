@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 
 class VacancyParticipantController extends Controller
@@ -20,7 +21,7 @@ class VacancyParticipantController extends Controller
     public function updateStatus(Request $request, $vacancyUserId)
     {
         $request->validate([
-            'status' => 'required|in:rejected,assesment,eligible,ineligible,done',
+            'status' => 'required|in:draft_verification,draft_assessment,rejected,assessment,eligible,ineligible,report,extend,done',
             'description' => 'nullable'
         ]);
 
@@ -31,31 +32,99 @@ class VacancyParticipantController extends Controller
             // Get vacancy user data
             $vacancyUser = VacancyUser::findOrFail($vacancyUserId);
 
+            if ($request->status == 'draft_verification') {
+                $log = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)
+                    ->where('status', 'verification')->latest()->first();
+
+                if ($log) {
+                    $log->update([
+                        'draft_notes' => $request->description
+                    ]);
+
+                    // Commit transaction
+                    DB::commit();
+
+                    return redirect()->route('admin.vacancies.verification.show', $vacancyUser->id . '#verif')->with('success', 'Draft saved successfully.');
+                }
+            }
+
+            if ($request->status == 'draft_assessment') {
+                $log = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)
+                    ->where('status', 'assessment')->latest()->first();
+
+                if ($log) {
+                    $log->update([
+                        'draft_notes' => $request->description
+                    ]);
+
+                    // Commit transaction
+                    DB::commit();
+
+                    return redirect()->route('admin.vacancies.assessment.show', $vacancyUser->id . '#assessment')->with('success', 'Draft saved successfully.');
+                }
+            }
+
+            // if ($request->status == 'draft_extend') {
+            //     $log = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)
+            //         ->where('status', 'extend')->latest()->first();
+
+            //     if ($log) {
+            //         $log->update([
+            //             'draft_notes' => $request->description
+            //         ]);
+
+            //         // Commit transaction
+            //         DB::commit();
+
+            //         return redirect()->route('admin.vacancies.assessment.show', $vacancyUser->id . '#assessment')->with('success', 'Draft saved successfully.');
+            //     }
+            // }
+
             // Update Vacancy Status
             $vacancyUser->update([
                 'status' => $request->status
             ]);
 
-            if ($request->status === 'rejected' || $request->status === 'assesment') {
+            $attachment = null;
+            $redirectTo = 'admin.vacancies.verification.index';
+            if ($request->status === 'rejected' || $request->status === 'assessment') {
                 $name = "Verifikasi Berkas";
             } elseif ($request->status === 'eligible' || $request->status === 'ineligible') {
                 $name = "Asessment";
+                $redirectTo = 'admin.vacancies.assessment.index';
+            } elseif ($request->status === 'report') {
+                $name = "Laporan";
+                $request->merge([
+                    'description' => 'Lampiran telah diunggah'
+                ]);
+                $redirectTo = 'admin.vacancies.report.index';
+            } elseif ($request->status === 'extend') {
+                $name = "Perpanjang Waktu";
+
+                // Upload file
+                $file = $request->file('file');
+                $fileName = "extend/" . now()->year . "/" . now()->month . "/" . $vacancyUser->id . "/berkas_perpanjang_" . $vacancyUser->vacancy->id . "_" . $vacancyUser->user->name . ".pdf";
+                Storage::disk('private')->put($fileName, file_get_contents($file));
+                $attachment = $fileName;
+                $redirectTo = 'admin.vacancies.extend.index';
             } elseif ($request->status === 'done') {
                 $name = "Selesai";
+                $redirectTo = 'admin.vacancies.done.index';
             }
 
             // Update Vacancy Log
             $request->merge([
                 'vacancy_user_id' => $vacancyUser->id,
                 'name' => $name,
-                'description' => $request->description
+                'description' => $request->description,
+                'attachment' => $attachment
             ]);
             vacancyLog($request);
 
             // Commit transaction
             DB::commit();
 
-            return redirect()->route('admin.vacancies.verification.index')->with('success', 'Vacancy status updated successfully.');
+            return redirect()->route($redirectTo)->with('success', 'Vacancy status updated successfully.');
         } catch (\Throwable $th) {
             // Rollback transaction
             DB::rollBack();
@@ -98,7 +167,7 @@ class VacancyParticipantController extends Controller
             DB::commit();
 
             // Redirect with success message
-            return redirect()->back()->with('success', 'File uploaded successfully.');
+            return redirect()->back()->with('success', 'File uploaded successfully.')->withFragment('sk');
         } catch (\Throwable $th) {
             // Rollback transaction
             DB::rollBack();

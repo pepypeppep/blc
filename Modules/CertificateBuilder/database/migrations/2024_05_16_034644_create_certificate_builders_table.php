@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('certificate_builders', function (Blueprint $table) {
             $table->id();
-            $table->string('background')->nullable();
+            $table->longText('background')->nullable();
+            $table->longText('background2')->nullable();
             $table->string('title')->nullable();
             $table->string('sub_title')->nullable();
-            $table->text('description')->nullable(); 
-            $table->string('signature')->nullable(); 
+            $table->text('description')->nullable();
+            $table->string('signature')->nullable();
+            $table->string('title2')->nullable();
+            $table->string('sub_title2')->nullable();
+            $table->text('description2')->nullable();
+            $table->string('signature2')->nullable();
             $table->timestamps();
         });
     }

@@ -166,6 +166,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
         /** general service **/
         Route::get('courses/get-students', [LearningController::class, 'getStudents'])->name('courses.get-students');
+        Route::get('courses/register-course/{slug}', [CoursePageController::class, 'registerCourse'])->name('courses.register-course');
     });
 
     /**

@@ -14,6 +14,7 @@ use Illuminate\View\View;
 use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
 use Modules\Course\app\Models\CourseLevel;
+use Modules\Order\app\Models\Enrollment;
 
 class CoursePageController extends Controller
 {
@@ -107,10 +108,29 @@ class CoursePageController extends Controller
             ->withCount(['reviews' => function ($query) {
                 $query->where('status', 1)->whereHas('course')->whereHas('user');
             }])
+            ->with('enrollments')
             ->where('slug', $slug)->firstOrFail();
         $courseLessonCount = CourseChapterLesson::where('course_id', $course->id)->count();
         $courseQuizCount = Quiz::where('course_id', $course->id)->count();
         $reviews = CourseReview::where('course_id', $course->id)->where('status', 1)->whereHas('course')->whereHas('user')->orderBy('created_at', 'desc')->paginate(20);
+        
         return view('frontend.pages.course-details', compact('course', 'courseLessonCount', 'courseQuizCount', 'reviews'));
     }
+
+    public function registerCourse(string $slug)
+    {
+        $course = Course::where('slug', $slug)->firstOrFail();
+        $enrollment = Enrollment::firstOrCreate(
+            [
+                'user_id' => auth()->id(),
+                'course_id' => $course->id,
+            ],
+            [
+                'has_access' => 0,
+            ]
+        );
+
+        return redirect()->back()->with(['messege' => __('Course registration successfully'), 'alert-type' => 'success']);
+    }
+
 }

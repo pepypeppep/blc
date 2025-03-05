@@ -17,8 +17,8 @@ class PendidikanLanjutanDatabaseSeeder extends Seeder
         $this->call([
             VacancySeeder::class,
             VacancyAttachmentSeeder::class,
-            VacancyUserSeeder::class,
-            VacancyUserAttachmentSeeder::class
+            // VacancyUserSeeder::class,
+            // VacancyUserAttachmentSeeder::class
         ]);
     }
 }

@@ -108,26 +108,13 @@ class CoursePageController extends Controller
             ->withCount(['reviews' => function ($query) {
                 $query->where('status', 1)->whereHas('course')->whereHas('user');
             }])
-            ->with('participants')
+            ->with('enrollments')
             ->where('slug', $slug)->firstOrFail();
         $courseLessonCount = CourseChapterLesson::where('course_id', $course->id)->count();
         $courseQuizCount = Quiz::where('course_id', $course->id)->count();
         $reviews = CourseReview::where('course_id', $course->id)->where('status', 1)->whereHas('course')->whereHas('user')->orderBy('created_at', 'desc')->paginate(20);
         
-        $userParticipant = $course->participants->first();
-        if ($userParticipant) {
-            $hasAccess = $userParticipant->pivot->has_access;
-
-            $isInvitedParticipant = $hasAccess == 1;
-            $isWaitingParticipant = $hasAccess == 0;
-            $isNotRegistered = false;
-        } else {
-
-            $isInvitedParticipant = false;
-            $isWaitingParticipant = false;
-            $isNotRegistered = true;
-        }
-        return view('frontend.pages.course-details', compact('course', 'courseLessonCount', 'courseQuizCount', 'reviews', 'isInvitedParticipant', 'isWaitingParticipant', 'isNotRegistered'));
+        return view('frontend.pages.course-details', compact('course', 'courseLessonCount', 'courseQuizCount', 'reviews'));
     }
 
     public function registerCourse(string $slug)

@@ -506,8 +506,8 @@
                         <div class="courses__information-wrap mb-3">
                             <span class="title">{{ __('Category') }}:</span>
                             <span style="font-size: 1rem; padding: 0.5rem 1rem; margin-left: 0.5rem; border-radius: 20px; font-weight: bold; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);"
-                                class="{{ $course->category == 'internal' ? 'bg-warning' : 'bg-info' }} text-white">
-                                {{ $course->category == 'internal' ? 'Internal' : 'Publik' }}
+                                class="{{ $course->access == 'private' ? 'bg-warning' : 'bg-info' }} text-white">
+                                {{ $course->access === 'private' ? 'Internal' : 'Publik' }}
                             </span>
                         </div>
                         <div class="courses__information-wrap">
@@ -580,20 +580,27 @@
                         </div>
                         <div class="courses__details-enroll">
                             <div class="tg-button-wrap">
-                                @if($isInvitedParticipant)
-                                    <a href="{{ route('student.enrolled-courses') }}"
-                                        class="btn btn-two arrow-btn already-enrolled-btn" data-id="">
-                                        <span class="text">Mulai Pelatihan</span>
-                                        <i class="flaticon-arrow-right"></i>
-                                    </a>
-                                @elseif ($isWaitingParticipant)
-                                    <button class="btn btn-secondary" disabled>Menunggu Akses</button>
-                                @elseif ($course->category === 'public' && $isNotRegistered)
-                                    <a href="{{ route('student.courses.register-course', ['slug' => $course->slug]) }}"
-                                        class="btn btn-two arrow-btn" data-slug="{{ $course?->slug }}">
+                                @if($course->access === 'public' && !$course->enrollments->pluck('user_id')->contains(auth()->id()))
+                                    <a href="{{ auth()->check() ? route('student.courses.register-course', ['slug' => $course->slug]) : route('login') }}"
+                                    class="btn btn-two arrow-btn" data-slug="{{ $course?->slug }}">
                                         <span class="text">Gabung Pelatihan</span>
                                         <i class="flaticon-arrow-right"></i>
                                     </a>
+                                @elseif($course->enrollments->isNotEmpty())
+                                    @php
+                                        $userEnrollment = $course->enrollments->firstWhere('user_id', auth()->id());
+                                    @endphp
+                                    @if($userEnrollment)
+                                        @if($userEnrollment->has_access === 1)
+                                            <a href="{{ route('student.enrolled-courses') }}"
+                                                class="btn btn-two arrow-btn already-enrolled-btn" data-id="">
+                                                <span class="text">Mulai Pelatihan</span>
+                                                <i class="flaticon-arrow-right"></i>
+                                            </a>
+                                        @elseif($userEnrollment->has_access === 0)
+                                            <button class="btn btn-secondary" disabled>Menunggu Akses</button>
+                                        @endif
+                                    @endif
                                 @endif
                                 {{-- @if (in_array($course->id, session('enrollments') ?? []))
                                     <a href="{{ route('student.enrolled-courses') }}"

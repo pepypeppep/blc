@@ -51,11 +51,6 @@ class Course extends Model {
         return $this->belongsTo(User::class, 'instructor_id', 'id')->withDefault();
     }
 
-    public function participants()
-    {
-        return $this->belongsToMany(User::class, 'enrollments')->withPivot('has_access')->withTimestamps();
-    }
-
     function chapters(): HasMany
     {
         return $this->hasMany(CourseChapter::class, 'course_id', 'id');

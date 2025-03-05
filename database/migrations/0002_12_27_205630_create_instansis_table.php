@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('opds', function (Blueprint $table) {
-            $table->unsignedBigInteger('id');
-            $table->string('name');
+        Schema::create('instansis', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->index();
             $table->timestamps();
-
-            $table->primary('id');
         });
     }
 

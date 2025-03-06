@@ -4,15 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
-use App\Models\Opd;
-use App\Models\Unor;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 
@@ -43,7 +38,7 @@ class SSOController extends Controller
             /**
              * Login Admin
              */
-            $admin = Admin::where('email', $keycloakUserEmail)->first();
+            $admin = Admin::where('username', $keycloakUsername)->first();
             if ($admin) {
                 if ($admin->status == 'active') {
                     Auth::guard('admin')->login($admin);
@@ -59,7 +54,7 @@ class SSOController extends Controller
                 } else {
                     return view('auth.message', [
                         'message' => 'Akun Anda Dalam Status Tidak Aktif',
-                        'email' => $keycloakUser->getEmail(),
+                        'email' => $keycloakUserEmail,
                         'username' => $keycloakUsername,
                     ]);
                 }
@@ -91,7 +86,7 @@ class SSOController extends Controller
 
             return view('auth.message', [
                 'message' => 'Akun Anda Tidak Terdaftar',
-                'email' => $keycloakUser->getEmail(),
+                'email' => $keycloakUserEmail,
                 'username' => $keycloakUsername,
             ]);
         } catch (\Throwable $th) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Opd;
 use App\Models\Unor;
 use App\Models\User;
@@ -32,11 +33,42 @@ class SSOController extends Controller
             $driver = Socialite::driver('keycloak');
             $keycloakUser = $driver->user();
             $keycloakUsername = $keycloakUser->getNickname();
+            $keycloakUserEmail = $keycloakUser->getEmail();
 
             $accessTokenResponseBody = $keycloakUser->accessTokenResponseBody;
             $accessToken = $accessTokenResponseBody['access_token'];
             $refreshToken = $accessTokenResponseBody['refresh_token'];
 
+
+            /**
+             * Login Admin
+             */
+            $admin = Admin::where('email', $keycloakUserEmail)->first();
+            if ($admin) {
+                if ($admin->status == 'active') {
+                    Auth::guard('admin')->login($admin);
+                    session([
+                        'sso' => true,
+                        'access_token' => $accessToken,
+                        'refresh_token' => $refreshToken
+                    ]);
+                    $notification = __('Logged in successfully.');
+                    $notification = ['messege' => $notification, 'alert-type' => 'success'];
+
+                    return redirect()->route('admin.dashboard')->with($notification);
+                } else {
+                    return view('auth.message', [
+                        'message' => 'Akun Anda Dalam Status Tidak Aktif',
+                        'email' => $keycloakUser->getEmail(),
+                        'username' => $keycloakUsername,
+                    ]);
+                }
+            }
+
+
+            /**
+             * Login User
+             */
             $user = User::where('username', $keycloakUsername)->first();
             // check if user exists
             if ($user) {
@@ -58,97 +90,10 @@ class SSOController extends Controller
             }
 
             return view('auth.message', [
+                'message' => 'Akun Anda Tidak Terdaftar',
                 'email' => $keycloakUser->getEmail(),
                 'username' => $keycloakUsername,
             ]);
-
-            // ==================
-            // if user not exists
-            // ==================
-
-            // // check account from esurat
-            // $headers = [
-            //     'Authorization' => 'Bearer ' . $accessToken,
-            // ];
-
-            // $response = Http::withHeaders($headers)->get('https://esuratapi.bantulkab.go.id/api/v2/whoami');
-            // if ($response->status() != 200) {
-            //     return view('auth.message', [
-            //         'email' => $keycloakUser->getEmail(),
-            //         'username' => $keycloakUser->getNickname(),
-            //     ]);
-            // }
-
-            // $keycloakData = $response->json()['data'];
-
-            // "code" => 200
-            // "message" => ""
-            // "data" => array:14 [▼
-            //   "uuid" => "1HLy4m"
-            //   "name" => "EMANUEL TEGAR WIBISONO, S.Kom."
-            //   "namaJabatan" => "Pranata Komputer Pertama"
-            //   "unorId" => 20299
-            //   "plt" => false
-            //   "type" => "jft"
-            //   "has_plt" => false
-            //   "unor_name" => "Bidang Tata Kelola E-Goverment, Aplikasi Informatika dan Statistik"
-            //   "instansi_id" => 18
-            //   "instansi_name" => "Dinas Komunikasi dan Informatika"
-            //   "atasan_name" => "SRI MULYANI, SSTP,M.Eng"
-            //   "atasan_jabatan" => "Kepala Bidang Tata Kelola E-Goverment, Aplikasi Informatika dan Statistik"
-            //   "permissions" => array:3 [▼
-            //     0 => "create_agenda"
-            //     1 => "receive_disposisi"
-            //     2 => "view_statistics"
-            //   ]
-            //   "unor_jenis_name" => "Bidang"
-            // ]
-
-            // create opd
-            // $opdID = $keycloakData['instansi_id'];
-            // $unorID = $keycloakData['unorId'];
-
-            // Opd::updateOrCreate([
-            //     'id' => $opdID,
-            // ], [
-            //     'name' => $keycloakData['instansi_name'],
-            // ]);
-
-            // Unor::updateOrCreate([
-            //     'id' => $unorID,
-            // ], [
-            //     'name' => $keycloakData['unor_name'],
-            //     'opd_id' => $opdID,
-            // ]);
-
-            // $user = User::create([
-            //     'unor_id' => $unorID,
-            //     'name' => $keycloakData['name'],
-            //     'email' => $keycloakUser->getEmail(),
-            //     'sso_id' => $keycloakUser->getId(),
-            //     'password' => bcrypt(Str::random(10)),
-            //     'role' => 'student',
-            //     'user_type' => $keycloakData['type'],
-            //     'email_verified_at' => now(),
-            // ]);
-
-            // Auth::login($user);
-
-            // session([
-            //     'sso' => true,
-            //     'access_token' => $accessToken,
-            //     'refresh_token' => $refreshToken
-            // ]);
-
-            // Redirect user to dashboard based on role
-            // $notification = __('Logged in successfully.');
-            // $notification = ['message' => $notification, 'alert-type' => 'success'];
-
-            // return redirect()->intended(
-            //     $user->role === 'instructor' ?
-            //         route('instructor.dashboard') : route('student.dashboard')
-            // )->with($notification);
-
         } catch (\Throwable $th) {
             report($th);
             abort(400, 'invalid request');

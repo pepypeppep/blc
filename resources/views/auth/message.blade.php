@@ -17,6 +17,7 @@
             <div class="col-xl-6 col-lg-8">
                 <div class="singUp-wrap">
                     <h2 class="title">Anda tidak diperkenankan mengakses aplikasi ini</h2>
+                    <h2>{{$message}}</h2>
                     <p>Akun {{$username}} {{$email}} Tidak Terdaftar di Esurat</p>
 
                 </div>

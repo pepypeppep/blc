@@ -156,6 +156,32 @@ class CourseApiController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $slug
+     * @return \Illuminate\Http\Response
+     */
+    public function showCourse(Request $request, $slug)
+    {
+        try {
+            $course = Course::with(['instructor:id,name', 'partnerInstructors', 'levels', 'enrollments', 'category.translation', 'chapters', 'reviews', 'lessons'])->where('slug', $slug)->where('status', 'active')->firstOrFail();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Course retrieved successfully',
+                'data' => $course
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve course',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Retrieve a course thumbnail.
      *
      * @param int $courseId The ID of the course.

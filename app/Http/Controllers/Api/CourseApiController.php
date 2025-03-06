@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Course;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
+use App\Models\CourseProgress;
+use App\Models\CourseChapterItem;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Modules\Course\app\Models\CourseLevel;
@@ -131,12 +134,12 @@ class CourseApiController extends Controller
 
             $query->with(['instructor:id,name', 'enrollments', 'category.translation']);
 
-            $query->when($request->user_id, function ($q) use ($request) {
+            if ($request->has('user_id')) {
                 $authorId = $request->user_id;
-                $q->whereHas('enrollments', function ($q) use ($authorId) {
-                    $q->whereIn('user_id', $authorId);
+                $query->whereHas('enrollments', function ($q) use ($authorId) {
+                    $q->where('user_id', $authorId);
                 });
-            });
+            }
 
             $query->orderBy('id', $request->order && $request->filled('order') ? $request->order : 'desc');
             $courses = $query->paginate();
@@ -165,12 +168,107 @@ class CourseApiController extends Controller
     public function showCourse(Request $request, $slug)
     {
         try {
-            $course = Course::with(['instructor:id,name', 'partnerInstructors', 'levels', 'enrollments', 'category.translation', 'chapters', 'reviews', 'lessons'])->where('slug', $slug)->where('status', 'active')->firstOrFail();
+            $query = Course::with(['instructor:id,name', 'partnerInstructors', 'levels', 'enrollments', 'category.translation', 'chapters', 'reviews', 'lessons'])
+                ->where('slug', $slug)
+                ->where('status', 'active');
+
+            if ($request->has('user_id')) {
+                $authorId = $request->user_id;
+                $query->whereHas('enrollments', function ($q) use ($authorId) {
+                    $q->where('user_id', $authorId);
+                });
+            }
+
+            $course = $query->firstOrFail();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Course retrieved successfully',
                 'data' => $course
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve course',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function learningCourse(Request $request, $slug)
+    {
+        try {
+            $query = Course::with([
+                'enrollments',
+                'chapters',
+                'chapters.chapterItems',
+                'chapters.chapterItems.lesson',
+                'chapters.chapterItems.quiz'
+            ])->where('slug', $slug)->where('status', 'active');
+
+            $authorId = $request->user_id;
+            $query->whereHas('enrollments', function ($q) use ($authorId) {
+                $q->where('user_id', $authorId);
+            });
+
+            $course = $query->firstOrFail();
+
+            $currentProgress = CourseProgress::where('user_id', $authorId)
+                ->where('course_id', $course->id)
+                ->where('current', 1)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            $alreadyWatchedLectures = CourseProgress::where('user_id', $authorId)
+                ->where('course_id', $course->id)
+                ->where('type', 'lesson')
+                ->where('watched', 1)
+                ->pluck('lesson_id')
+                ->toArray();
+
+            $alreadyCompletedQuiz = CourseProgress::where('user_id', $authorId)
+                ->where('course_id', $course->id)
+                ->where('type', 'quiz')
+                ->where('watched', 1)
+                ->pluck('lesson_id')
+                ->toArray();
+
+            $announcements = Announcement::where('course_id', $course->id)->orderBy('id', 'desc')->get();
+
+            $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
+                $q->where('course_id', $course->id);
+            })->count();
+
+            $courseLectureCompletedByUser = CourseProgress::where('user_id', $authorId)
+                ->where('course_id', $course->id)->where('watched', 1)->count();
+            $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
+
+            if (!$currentProgress) {
+                $lessonId = @$course->chapters?->first()?->chapterItems()?->first()?->lesson->id;
+                if ($lessonId) {
+                    $currentProgress = CourseProgress::create([
+                        'user_id'    => $authorId,
+                        'course_id'  => $course->id,
+                        'chapter_id' => $course->chapters->first()->id,
+                        'lesson_id'  => $lessonId,
+                        'current'    => 1,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Course retrieved successfully',
+                'data' => [
+                    'course' => $course,
+                    'currentProgress' => $currentProgress,
+                    'announcements' => $announcements,
+                    'courseCompletedPercent' => $courseCompletedPercent,
+                    'courseLectureCount' => $courseLectureCount,
+                    'courseLectureCompletedByUser' => $courseLectureCompletedByUser,
+                    'alreadyWatchedLectures' => $alreadyWatchedLectures,
+                    'alreadyCompletedQuiz' => $alreadyCompletedQuiz
+                ]
             ]);
         } catch (\Exception $e) {
             return response()->json([

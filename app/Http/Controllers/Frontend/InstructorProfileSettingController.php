@@ -153,11 +153,11 @@ class InstructorProfileSettingController extends Controller
     {
         $education = new UserEducation();
         $education->user_id = Auth::user()->id;
-        $education->organization = $request->organization; 
-        $education->degree = $request->degree; 
-        $education->start_date = $request->start_date; 
-        $education->end_date = $request->end_date; 
-        $education->current = $request->current; 
+        $education->organization = $request->organization;
+        $education->degree = $request->degree;
+        $education->start_date = $request->start_date;
+        $education->end_date = $request->end_date;
+        $education->current = $request->current;
         $education->save();
 
         return $this->redirectWithMessage(RedirectType::CREATE->value, 'instructor.setting.index');
@@ -172,11 +172,11 @@ class InstructorProfileSettingController extends Controller
     function updateEducation(StudentEducationStoreRequest $request, string $id): RedirectResponse
     {
         $education = UserEducation::whereUserId(Auth::user()->id)->whereId($id)->firstOrFail();
-        $education->organization = $request->organization; 
-        $education->degree = $request->degree; 
-        $education->start_date = $request->start_date; 
-        $education->end_date = $request->end_date; 
-        $education->current = $request->current; 
+        $education->organization = $request->organization;
+        $education->degree = $request->degree;
+        $education->start_date = $request->start_date;
+        $education->end_date = $request->end_date;
+        $education->current = $request->current;
         $education->save();
 
         return $this->redirectWithMessage(RedirectType::UPDATE->value, 'instructor.setting.index');

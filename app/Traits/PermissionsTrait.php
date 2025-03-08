@@ -316,6 +316,21 @@ trait PermissionsTrait
         ],
     ];
 
+    public static array $PendidikanLanjutanManagementPermissions = [
+        'group_name' => 'pendidikan lanjutan management',
+        'permissions' => [
+            'pendidikanlanjutan.verifikasi',
+            'pendidikanlanjutan.pendaftar',
+        ],
+    ];
+
+    public static array $PegawaiPermissions = [
+        'group_name' => 'pegawai',
+        'permissions' => [
+            'pegawai.pendidikanlanjutan',
+        ],
+    ];
+
     private static function getSuperAdminPermissions(): array
     {
         $reflection = new ReflectionClass(__TRAIT__);
@@ -342,6 +357,7 @@ trait PermissionsTrait
             self::$CertificatePermission,
             self::$badgePermission,
             self::$PendidikanLanjutanPermissions,
+            self::$PendidikanLanjutanManagementPermissions,
         ];
 
         $permissions = [];

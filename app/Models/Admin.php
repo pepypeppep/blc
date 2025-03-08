@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
@@ -76,5 +77,10 @@ class Admin extends Authenticatable
         }
 
         return $hasPermission;
+    }
+
+    public function instansi(): HasOne
+    {
+        return $this->hasOne(Unor::class, 'id', 'instansi_id');
     }
 }

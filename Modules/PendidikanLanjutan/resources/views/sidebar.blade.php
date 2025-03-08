@@ -5,11 +5,20 @@
                 <i class="fas fa-book"></i>{{ __('Vacancy') }}
             </a>
         </li>
-        <li class="{{ isRoute('admin.verifikasi.*', 'active') }}">
-            <a class="nav-link" href="{{ route('admin.vacancies.verification.index') }}">
-                <i class="fas fa-book"></i>{{ __('Verification') }}
-            </a>
-        </li>
+        @adminCan('pendidikanlanjutan.pendaftar')
+            <li class="{{ isRoute('admin.peserta.*', 'active') }}">
+                <a class="nav-link" href="{{ route('admin.vacancies.peserta.index') }}">
+                    <i class="fas fa-book"></i>{{ __('Daftar Peserta') }}
+                </a>
+            </li>
+        @endadminCan
+        @adminCan('pendidikanlanjutan.verifikasi')
+            <li class="{{ isRoute('admin.verifikasi.*', 'active') }}">
+                <a class="nav-link" href="{{ route('admin.vacancies.verification.index') }}">
+                    <i class="fas fa-book"></i>{{ __('Verification') }}
+                </a>
+            </li>
+        @endadminCan
         <li class="{{ isRoute('admin.assessment.*', 'active') }}">
             <a class="nav-link" href="{{ route('admin.vacancies.assessment.index') }}">
                 <i class="fas fa-book"></i>{{ __('Assesment') }}

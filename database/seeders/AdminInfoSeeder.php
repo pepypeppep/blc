@@ -49,6 +49,7 @@ class AdminInfoSeeder extends Seeder
             $admin->email = 'admin@opd.com';
             $admin->image = 'uploads/website-images/admin.jpg';
             $admin->password = Hash::make(1234);
+            $admin->instansi_id = 20487;
             $admin->status = 'active';
             $admin->save();
 

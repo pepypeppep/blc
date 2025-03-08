@@ -56,13 +56,13 @@ class StudentPendidikanLanjutanController extends Controller
     {
         $user = userAuth();
         $vacancy = Vacancy::with(['study', 'users' => function ($query) use ($user) {
-            $query->where('user_id', $user->id)->whereNotIn('status', ['register']); // next update with value_type, unor, dll
+            $query->where('user_id', $user->id)->whereNotIn('status', [VacancyUser::STATUS_REGISTER]); // next update with value_type, unor, dll
         }])->findOrFail($id);
 
         $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $id)->first();
 
         $passAgeLimit = $vacancy->age_limit >=  (Carbon::parse($user->date_of_birth)->diffInYears(Carbon::now()));
-        $passEmployeeGrade = $vacancy->employment_grade === $user->golongan;
+        $passEmployeeGrade = strtolower($vacancy->employment_grade) === strtolower($user->golongan);
         // dd($vacancy);
         $base = VacancyAttachment::syarat()->where('vacancy_id', $id)->where('is_active', 1);
         $vacancyConditions = $base->with('attachment')->get();
@@ -74,7 +74,7 @@ class StudentPendidikanLanjutanController extends Controller
 
         $meetCondition = (count($vacancyTakeConditions) == count($vacancyConditions));
 
-        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy','vacancyUser', 'vacancyConditions', 'meetCondition', 'passAgeLimit', 'passEmployeeGrade'));
+        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy', 'vacancyUser', 'vacancyConditions', 'meetCondition', 'passAgeLimit', 'passEmployeeGrade'));
     }
 
 
@@ -93,7 +93,7 @@ class StudentPendidikanLanjutanController extends Controller
             'user_id' => userAuth()->id,
             'vacancy_id' => $attachment->vacancy_id
         ], [
-            'status' => 'register',
+            'status' => VacancyUser::STATUS_REGISTER,
         ]);
 
         $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $attachment->vacancy_id)->first();
@@ -180,7 +180,7 @@ class StudentPendidikanLanjutanController extends Controller
             return redirect()->back()->with(['messege' => 'Pendaftaran sudah ditutup', 'alert-type' => 'error']);
         }
 
-        if ($vacancy->users()->where('user_id', userAuth()->id)->whereNotIn('status', ['register'])->exists()) {
+        if ($vacancy->users()->where('user_id', userAuth()->id)->whereNotIn('status', [VacancyUser::STATUS_REGISTER])->exists()) {
             return redirect()->back()->with(['messege' => 'Anda sudah terdaftar', 'alert-type' => 'error']);
         }
 
@@ -196,7 +196,7 @@ class StudentPendidikanLanjutanController extends Controller
             'cost_type' => $vacancy->cost_type,
             'education_level' => $auth->tingkat_pendidikan,
             'last_education' => $auth->pendidikan,
-            'status' => 'verification'
+            'status' => VacancyUser::STATUS_VERIFICATION
         ]);
 
         $request->merge([

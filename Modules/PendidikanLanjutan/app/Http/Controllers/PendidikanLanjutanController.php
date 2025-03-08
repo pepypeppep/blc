@@ -78,8 +78,42 @@ class PendidikanLanjutanController extends Controller
         //
     }
 
+    public function indexPeserta()
+    {
+        checkAdminHasPermissionAndThrowException('pendidikanlanjutan.pendaftar');
+
+        $query = VacancyUser::with(['vacancy', 'vacancy.study', 'user']);
+
+        if (checkAdminHasPermission('pendidikanlanjutan.verifikasi')) {
+            $vacancyUsers = $query->paginate(10);
+        } else {
+            $vacancyUsers = $query->whereHas('user', function ($query) {
+                $query->where('instansi_id', adminAuth()->instansi_id);
+            })->paginate(10);
+        }
+
+        $submenu = 'Daftar Peserta';
+
+        return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers', 'submenu'));
+    }
+
+    public function showPeserta($id)
+    {
+        checkAdminHasPermissionAndThrowException('pendidikanlanjutan.pendaftar');
+        $vacancyUser = VacancyUser::with(['user'])->where('status', 'verification')
+            ->findOrFail($id);
+
+        $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment', 'vacancyuser')
+            ->where('vacancy_user_id', $vacancyUser->id)
+            ->where('category', 'syarat')
+            ->get();
+
+        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'vacancyUserAttachments'));
+    }
+
     public function indexVerif()
     {
+        checkAdminHasPermissionAndThrowException('pendidikanlanjutan.verifikasi');
         $vacancyUsers = VacancyUser::with(['vacancy', 'vacancy.study', 'user'])->where('status', 'verification')->paginate(10);
         $submenu = 'Verifikasi';
 
@@ -88,6 +122,7 @@ class PendidikanLanjutanController extends Controller
 
     public function showVerif($id)
     {
+        checkAdminHasPermissionAndThrowException('pendidikanlanjutan.verifikasi');
         $vacancyUser = VacancyUser::with(['user'])->where('status', 'verification')
             ->findOrFail($id);
 

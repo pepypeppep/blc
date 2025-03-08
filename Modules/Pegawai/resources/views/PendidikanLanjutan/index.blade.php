@@ -19,48 +19,18 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route('admin.vacancies.index') }}" method="GET"
+                                <form action="{{ route('admin.pegawai.pendidikanlanjutan.index') }}" method="GET"
                                     onchange="$(this).trigger('submit')" class="form_padding">
                                     <div class="row">
-                                        <div class="col-md-2 form-group">
+                                        <div class="col-md-3 form-group">
                                             <input type="text" name="keyword" value="{{ request()->get('keyword') }}"
                                                 class="form-control" placeholder="{{ __('Search') }}">
                                         </div>
-                                        <div class="col-md-2 form-group">
-                                            <select name="start_date" id="start_date" class="form-control">
-                                                <option value="">{{ __('Start Date') }}</option>
-                                                <option value="1" {{ request('start_date') == '1' ? 'selected' : '' }}>
-                                                    {{ __('Yes') }}
-                                                </option>
-                                                <option value="0"
-                                                    {{ request('is_popular') == '0' ? 'selected' : '' }}>
-                                                    {{ __('No') }}
-                                                </option>
-                                            </select>
+                                        <div class="col-md-3 form-group">
+                                            <input type="text" name="tahun" value="{{ request()->get('tahun') }}"
+                                                class="form-control" placeholder="{{ __('Tahun') }}">
                                         </div>
-                                        <div class="col-md-2 form-group">
-                                            <select name="end_date" id="end_date" class="form-control">
-                                                <option value="">{{ __('End Date') }}</option>
-                                                <option value="1" {{ request('end_date') == '1' ? 'selected' : '' }}>
-                                                    {{ __('Yes') }}
-                                                </option>
-                                                <option value="0" {{ request('end_date') == '0' ? 'selected' : '' }}>
-                                                    {{ __('No') }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 form-group">
-                                            <select name="status" id="status" class="form-control">
-                                                <option value="">{{ __('Select Status') }}</option>
-                                                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>
-                                                    {{ __('Active') }}
-                                                </option>
-                                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>
-                                                    {{ __('In-Active') }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 form-group">
+                                        <div class="col-md-3 form-group">
                                             <select name="order_by" id="order_by" class="form-control">
                                                 <option value="">{{ __('Order By') }}</option>
                                                 <option value="1" {{ request('order_by') == '1' ? 'selected' : '' }}>
@@ -71,7 +41,7 @@
                                                 </option>
                                             </select>
                                         </div>
-                                        <div class="col-md-2 form-group">
+                                        <div class="col-md-3 form-group">
                                             <select name="par-page" id="par-page" class="form-control">
                                                 <option value="">{{ __('Per Page') }}</option>
                                                 <option value="10" {{ '10' == request('par-page') ? 'selected' : '' }}>
@@ -98,12 +68,6 @@
 
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Participant List') }}</h4>
-                                <div>
-                                    <!-- <a href="" class="btn btn-primary"><i class="fa fa-plus"></i>{{ __('Add New') }}</a> -->
-                                </div>
-                            </div>
                             <div class="card-body">
                                 <div class="table-responsive max-h-400">
                                     <table class="table table-striped">
@@ -116,9 +80,7 @@
                                                 <th width="15%">{{ __('Employment Unit') }}</th>
                                                 <th width="30%">{{ __('Education Level') }} / {{ __('Study') }}</th>
                                                 <th width="5%">{{ __('Year') }}</th>
-                                                <th width="5%">{{ __('Cost Type') }}</th>
                                                 <th width="5%">{{ __('Status') }}</th>
-                                                <th width="5%">{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -134,62 +96,9 @@
                                                     <td>{{ optional($vacancyUser->vacancy)->education_level }} <br>
                                                         {{ optional(optional($vacancyUser->vacancy)->study)->name }}</td>
                                                     <td>{{ optional($vacancyUser->vacancy)->year }}</td>
-                                                    <td>{{ $vacancyUser->cost_type }}</td>
                                                     <td>
                                                         <span
-                                                        class="badge badge-{{ $vacancyUser->stat['color'] }}">{{ $vacancyUser->stat['label'] }}</span>
-                                                        {{-- @if ($vacancyUser->status === 'created')
-                                                            <span
-                                                                class="badge badge-warning">{{ $vacancyUser->status }}</span>
-                                                        @elseif($vacancyUser->status === 'verification')
-                                                            <span
-                                                                class="badge badge-info">{{ $vacancyUser->status }}</span>
-                                                        @elseif($vacancyUser->status === 'assessment')
-                                                            <span
-                                                                class="badge badge-primary">{{ $vacancyUser->status }}</span>
-                                                        @elseif($vacancyUser->status === 'eligible')
-                                                            <span
-                                                                class="badge badge-success">{{ $vacancyUser->status }}</span>
-                                                        @elseif($vacancyUser->status === 'rejected')
-                                                            <span class="badge badge-danger">Ditolak</span>
-                                                        @elseif($vacancyUser->status === 'report')
-                                                            <span class="badge badge-info">Laporan</span>
-                                                        @elseif($vacancyUser->status === 'extend')
-                                                            <span class="badge badge-warning">Perpanjang</span>
-                                                        @else
-                                                            <span
-                                                                class="badge badge-secondary">{{ $vacancyUser->status }}</span>
-                                                        @endif --}}
-                                                    </td>
-                                                    <td>
-                                                        @if ($vacancyUser->status === 'verification')
-                                                            <a href="{{ route('admin.vacancies.verification.show', $vacancyUser->id) }}"
-                                                                class="btn btn-primary btn-sm m-1"
-                                                                title="Verifikasi Pendaftar">
-                                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                                            </a>
-                                                        @elseif($vacancyUser->status === 'assessment')
-                                                            <a href="{{ route('admin.vacancies.assessment.show', $vacancyUser->id) }}#assessment"
-                                                                class="btn btn-primary btn-sm m-1"
-                                                                title="Assesment Pendaftar">
-                                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                                            </a>
-                                                        @elseif($vacancyUser->status === 'eligible')
-                                                            <a href="{{ route('admin.vacancies.sk.show', $vacancyUser->id) }}#sk"
-                                                                class="btn btn-primary btn-sm m-1" title="SK Pendaftar">
-                                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                                            </a>
-                                                        @elseif($vacancyUser->status === 'report')
-                                                            <a href="{{ route('admin.vacancies.report.show', $vacancyUser->id) }}#laporan"
-                                                                class="btn btn-primary btn-sm m-1" title="Laporan">
-                                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                                            </a>
-                                                        @elseif($vacancyUser->status === 'extend')
-                                                            <a href="{{ route('admin.vacancies.extend.show', $vacancyUser->id) }}#perpanjang"
-                                                                class="btn btn-primary btn-sm m-1" title="Perpanjgan">
-                                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                                            </a>
-                                                        @endif
+                                                            class="badge badge-{{ $vacancyUser->stat['color'] }}">{{ $vacancyUser->stat['label'] }}</span>
                                                     </td>
                                                 </tr>
                                             @empty

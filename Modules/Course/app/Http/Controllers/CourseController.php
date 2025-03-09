@@ -44,10 +44,12 @@ class CourseController extends Controller
         $query->when($request->instructor && $request->filled('instructor'), function ($q) use ($request) {
             $q->where('instructor_id', $request->instructor);
         });
-        $query->withCount('enrollments as enrollments_count');
+        $query->withCount(['enrollments as enrollments_count' => function ($q) {
+            $q->where('has_access', 1);
+        }]);
         $query->withCount([
             'enrollments as enrollments_pending_count' => function ($q) {
-                $q->whereIn('has_access', [null, '']);
+                $q->whereNull('has_access');
             }
         ]);
         $orderBy = $request->order_by == 1 ? 'asc' : 'desc';

@@ -117,7 +117,8 @@
 
                                         </div>
                                         <div class="col-md-4 text-right">
-                                            <a href="{{ route('admin.course-verification.rejectedList', ['id' => $id]) }}" class="btn btn-primary btn-md m-2">
+                                            <a href="{{ route('admin.course-verification.rejectedList', ['id' => $id]) }}"
+                                                class="btn btn-primary btn-md m-2">
                                                 Verifikasi Pendaftaran yang Ditolak
                                             </a>
                                         </div>
@@ -126,45 +127,49 @@
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th ><input type="checkbox" id="selectAll"></th>
-                                                <th >{{ __('#') }}</th>
-                                                <th >{{ __('Employee Id') }}</th>
-                                                <th >{{ __('Name') }}</th>
-                                                <th >{{ __('Employment Unit') }}</th>
-                                                <th >{{ __('Status') }}</th>
-                                                <th >{{ __('Action') }}</th>
+                                                <th><input type="checkbox" id="selectAll"></th>
+                                                <th>{{ __('#') }}</th>
+                                                <th>{{ __('Employee Id') }}</th>
+                                                <th>{{ __('Name') }}</th>
+                                                <th>{{ __('Employment Unit') }}</th>
+                                                <th>{{ __('Status') }}</th>
+                                                <th>{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse ($enrollmentUsers as $enrollmentUser)
                                                 <tr data-user-id="{{ $enrollmentUser->user->id }}">
 
-                                                    <td><input type="checkbox" class="userCheckbox" value="{{ $enrollmentUser->user->id }}"></td>
+                                                    <td><input type="checkbox" class="userCheckbox"
+                                                            value="{{ $enrollmentUser->user->id }}"></td>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $enrollmentUser->user->nip }} </td>
                                                     <td>{{ $enrollmentUser->user->name }}</td>
                                                     <td>Dinas Komunikasi dan Informatika</td>
                                                     <td>
-                                                        @if ($enrollmentUser->has_access == 1)
+                                                        @if ($enrollmentUser->has_access === 1)
                                                             <span class="badge badge-success">Diterima</span>
-                                                        @elseif ($enrollmentUser->has_access == 0)
+                                                        @elseif ($enrollmentUser->has_access === 0)
                                                             <span class="badge badge-danger">Ditolak</span>
                                                         @else
                                                             <span class="badge badge-warning">Pending</span>
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-primary btn-sm m-1 updateStatus" data-id="{{ $enrollmentUser->user->id }}" data-status="1">
+                                                        <button class="btn btn-primary btn-sm m-1 acceptStatus"
+                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="1">
                                                             <i class="fa fa-check" aria-hidden="true"></i> Terima
                                                         </button>
-                                                        <button class="btn btn-danger btn-sm m-1 updateStatus" data-id="{{ $enrollmentUser->user->id }}" data-status="0">
+                                                        <button class="btn btn-danger btn-sm m-1 rejectStatus"
+                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="0">
                                                             <i class="fa fa-times" aria-hidden="true"></i> Tolak
                                                         </button>
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="7" class="text-center">{{ __('No vacancies found!') }}</td>
+                                                    <td colspan="7" class="text-center">
+                                                        {{ __('No vacancies found!') }}</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -207,128 +212,141 @@
 
     @push('js')
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
-    function showReasonModal(userIds, status) {
-        let title;
-        if (status === 1) {
-            title = "Alasan Penerimaan";
-        } else if (status === 0) {
-            title = "Alasan Penolakan";
-        } else {
-            title = "Reset ke Pending";
-        }
+            document.addEventListener("DOMContentLoaded", function() {
+                function showReasonModal(userIds, status) {
+                    let title;
+                    if (status === 1) {
+                        title = "Alasan Penerimaan";
+                    } else if (status === 0) {
+                        title = "Alasan Penolakan";
+                    } else {
+                        title = "Reset ke Pending";
+                    }
 
-        Swal.fire({
-            title: title,
-            input: status !== null ? "textarea" : null,
-            inputPlaceholder: status !== null ? "Masukkan alasan..." : null,
-            showCancelButton: true,
-            confirmButtonText: "Lanjutkan",
-            cancelButtonText: "Batal",
-            preConfirm: (reason) => {
-                if (status !== null && !reason) {
-                    Swal.showValidationMessage("Alasan harus diisi");
+                    Swal.fire({
+                        title: title,
+                        input: status !== null ? "textarea" : null,
+                        inputPlaceholder: status !== null ? "Masukkan alasan..." : null,
+                        showCancelButton: true,
+                        confirmButtonText: "Lanjutkan",
+                        cancelButtonText: "Batal",
+                        preConfirm: (reason) => {
+                            if (status !== null && !reason) {
+                                Swal.showValidationMessage("Alasan harus diisi");
+                            }
+                            return reason;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            showConfirmation(userIds, status, result.value);
+                        }
+                    });
                 }
-                return reason;
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                showConfirmation(userIds, status, result.value);
-            }
-        });
-    }
 
-    function showConfirmation(userIds, status, reason) {
-        let message;
-        if (status === 1) {
-            message = "Peserta akan diterima.";
-        } else if (status === 0) {
-            message = "Peserta akan ditolak.";
-        } else {
-            message = "Status peserta akan dikembalikan ke Pending.";
-        }
+                function showConfirmation(userIds, status, reason) {
+                    let message;
+                    if (status === 1) {
+                        message = "Peserta akan diterima.";
+                    } else if (status === 0) {
+                        message = "Peserta akan ditolak.";
+                    } else {
+                        message = "Status peserta akan dikembalikan ke Pending.";
+                    }
 
-        Swal.fire({
-            title: "Apakah Anda yakin?",
-            text: message,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Ya, lanjutkan!",
-            cancelButtonText: "Batal"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                updateEnrollment(userIds, status, reason);
-            }
-        });
-    }
+                    Swal.fire({
+                        title: "Apakah Anda yakin?",
+                        text: message,
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Ya, lanjutkan!",
+                        cancelButtonText: "Batal"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            updateEnrollment(userIds, status, reason);
+                        }
+                    });
+                }
 
-    async function updateEnrollment(userIds, status, reason) {
-    if (userIds.length === 0) {
-        return Swal.fire("Peringatan", "Pilih minimal 1 peserta.", "warning");
-    }
+                async function updateEnrollment(userIds, status, reason) {
+                    if (userIds.length === 0) {
+                        return Swal.fire("Peringatan", "Pilih minimal 1 peserta.", "warning");
+                    }
 
-    try {
-        let response = await fetch("{{ route('admin.course.updateEnrollmentStatus') }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-            },
-            body: JSON.stringify({ user_ids: userIds, status: status, reason: reason })
-        });
+                    try {
+                        let response = await fetch("{{ route('admin.course.updateEnrollmentStatus') }}", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                            },
+                            body: JSON.stringify({
+                                user_ids: userIds,
+                                status: status,
+                                reason: reason
+                            })
+                        });
 
-        let data = await response.json();
-        Swal.fire("Sukses", data.message, "success");
+                        let data = await response.json();
+                        Swal.fire("Sukses", data.message, "success");
 
-        // Hapus baris dari tabel setelah diterima/ditolak
-        userIds.forEach(userId => {
-            let row = document.querySelector(`tr[data-user-id='${userId}']`);
-            if (row) {
-                row.remove(); // Hapus baris peserta dari tampilan
-            }
-        });
+                        // Hapus baris dari tabel setelah diterima/ditolak
+                        userIds.forEach(userId => {
+                            let row = document.querySelector(`tr[data-user-id='${userId}']`);
+                            if (row) {
+                                row.remove(); // Hapus baris peserta dari tampilan
+                            }
+                        });
 
-    } catch (error) {
-        Swal.fire("Error", "Terjadi kesalahan, coba lagi.", "error");
-    }
-}
+                    } catch (error) {
+                        Swal.fire("Error", "Terjadi kesalahan, coba lagi.", "error");
+                    }
+                }
 
-    document.querySelectorAll(".updateStatus").forEach(button => {
-        button.addEventListener("click", function () {
-            let userId = this.dataset.id;
-            let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ? 0 : null);
-            showReasonModal([userId], status);
-        });
-    });
+                document.querySelectorAll(".acceptStatus").forEach(button => {
+                    button.addEventListener("click", function() {
+                        let userId = this.dataset.id;
+                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ?
+                            0 : null);
+                        showConfirmation([userId], 1, '')
+                    });
+                });
 
-    document.getElementById("acceptAll").addEventListener("click", function () {
-        let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
-            .map(checkbox => checkbox.value);
-        showReasonModal(selectedUsers, 1);
-    });
+                document.querySelectorAll(".rejectStatus").forEach(button => {
+                    button.addEventListener("click", function() {
+                        let userId = this.dataset.id;
+                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ?
+                            0 : null);
+                        showReasonModal([userId], 0);
+                    });
+                });
 
-    document.getElementById("rejectAll").addEventListener("click", function () {
-        let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
-            .map(checkbox => checkbox.value);
-        showReasonModal(selectedUsers, 0);
-    });
+                document.getElementById("acceptAll").addEventListener("click", function() {
+                    let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
+                        .map(checkbox => checkbox.value);
+                    showConfirmation([selectedUsers], 1, '')
+                });
 
-    document.getElementById("resetAll").addEventListener("click", function () {
-        let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
-            .map(checkbox => checkbox.value);
-        showReasonModal(selectedUsers, null);
-    });
+                document.getElementById("rejectAll").addEventListener("click", function() {
+                    let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
+                        .map(checkbox => checkbox.value);
+                    showReasonModal(selectedUsers, 0);
+                });
 
-    document.getElementById("selectAll").addEventListener("change", function () {
-        let isChecked = this.checked;
-        document.querySelectorAll(".userCheckbox").forEach(checkbox => {
-            checkbox.checked = isChecked;
-        });
-    });
-});
+                // document.getElementById("resetAll").addEventListener("click", function() {
+                //     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
+                //         .map(checkbox => checkbox.value);
+                //     showReasonModal(selectedUsers, null);
+                // });
 
+                document.getElementById("selectAll").addEventListener("change", function() {
+                    let isChecked = this.checked;
+                    document.querySelectorAll(".userCheckbox").forEach(checkbox => {
+                        checkbox.checked = isChecked;
+                    });
+                });
+            });
         </script>
     @endpush
 @endpush

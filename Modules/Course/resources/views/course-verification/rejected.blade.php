@@ -15,94 +15,10 @@
             </div>
             <div class="section-body">
                 <div class="mt-4 row">
-                    {{-- Search filter --}}
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <form action="{{ route('admin.vacancies.index') }}" method="GET"
-                                    onchange="$(this).trigger('submit')" class="form_padding">
-                                    <div class="row">
-                                        <div class="col-md-2 form-group">
-                                            <input type="text" name="keyword" value="{{ request()->get('keyword') }}"
-                                                class="form-control" placeholder="{{ __('Search') }}">
-                                        </div>
-                                        <div class="col-md-2 form-group">
-                                            <select name="start_date" id="start_date" class="form-control">
-                                                <option value="">{{ __('Start Date') }}</option>
-                                                <option value="1" {{ request('start_date') == '1' ? 'selected' : '' }}>
-                                                    {{ __('Yes') }}
-                                                </option>
-                                                <option value="0"
-                                                    {{ request('is_popular') == '0' ? 'selected' : '' }}>
-                                                    {{ __('No') }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 form-group">
-                                            <select name="end_date" id="end_date" class="form-control">
-                                                <option value="">{{ __('End Date') }}</option>
-                                                <option value="1" {{ request('end_date') == '1' ? 'selected' : '' }}>
-                                                    {{ __('Yes') }}
-                                                </option>
-                                                <option value="0" {{ request('end_date') == '0' ? 'selected' : '' }}>
-                                                    {{ __('No') }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 form-group">
-                                            <select name="status" id="status" class="form-control">
-                                                <option value="">{{ __('Select Status') }}</option>
-                                                <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>
-                                                    {{ __('Active') }}
-                                                </option>
-                                                <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>
-                                                    {{ __('In-Active') }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 form-group">
-                                            <select name="order_by" id="order_by" class="form-control">
-                                                <option value="">{{ __('Order By') }}</option>
-                                                <option value="1" {{ request('order_by') == '1' ? 'selected' : '' }}>
-                                                    {{ __('ASC') }}
-                                                </option>
-                                                <option value="0" {{ request('order_by') == '0' ? 'selected' : '' }}>
-                                                    {{ __('DESC') }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-2 form-group">
-                                            <select name="par-page" id="par-page" class="form-control">
-                                                <option value="">{{ __('Per Page') }}</option>
-                                                <option value="10" {{ '10' == request('par-page') ? 'selected' : '' }}>
-                                                    {{ __('10') }}
-                                                </option>
-                                                <option value="50" {{ '50' == request('par-page') ? 'selected' : '' }}>
-                                                    {{ __('50') }}
-                                                </option>
-                                                <option value="100"
-                                                    {{ '100' == request('par-page') ? 'selected' : '' }}>
-                                                    {{ __('100') }}
-                                                </option>
-                                                <option value="all"
-                                                    {{ 'all' == request('par-page') ? 'selected' : '' }}>
-                                                    {{ __('All') }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('Registrant List') }}</h4>
-                                <div>
-                                    <!-- <a href="" class="btn btn-primary"><i class="fa fa-plus"></i>{{ __('Add New') }}</a> -->
-                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive max-h-400">
@@ -114,16 +30,13 @@
                                             <button type="button" id="rejectAll" class="btn btn-danger btn-md m-2">
                                                 <i class="fa fa-times" aria-hidden="true"></i> Tolak Semua
                                             </button>
-
                                         </div>
                                         <div class="col-md-4 text-right">
-                                            <a href="{{ route('admin.course-verification.rejectedList', ['id' => $id]) }}"
-                                                class="btn btn-primary btn-md m-2">
-                                                Verifikasi Pendaftaran yang Ditolak
-                                            </a>
+                                            {{-- <button type="button" id="verifyRejected" class="btn btn-primary btn-md m-2">
+                                            Verifikasi Ulang Pendaftaran yang Ditolak
+                                        </button> --}}
                                         </div>
                                     </div>
-
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
@@ -133,53 +46,51 @@
                                                 <th>{{ __('Name') }}</th>
                                                 <th>{{ __('Employment Unit') }}</th>
                                                 <th>{{ __('Status') }}</th>
+                                                <th>{{ __('Reason') }}</th>
                                                 <th>{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @forelse ($enrollmentUsers as $enrollmentUser)
-                                                <tr data-user-id="{{ $enrollmentUser->user->id }}">
-
+                                            @forelse ($rejectedUsers as $rejectedUser)
+                                                <tr data-user-id="{{ $rejectedUser->user->id }}">
                                                     <td><input type="checkbox" class="userCheckbox"
-                                                            value="{{ $enrollmentUser->user->id }}"></td>
+                                                            value="{{ $rejectedUser->user->id }}"></td>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $enrollmentUser->user->nip }} </td>
-                                                    <td>{{ $enrollmentUser->user->name }}</td>
+                                                    <td>{{ $rejectedUser->user->nip }}</td>
+                                                    <td>{{ $rejectedUser->user->name }}</td>
                                                     <td>Dinas Komunikasi dan Informatika</td>
                                                     <td>
-                                                        @if ($enrollmentUser->has_access === 1)
+                                                        @if ($rejectedUser->has_access == 1)
                                                             <span class="badge badge-success">Diterima</span>
-                                                        @elseif ($enrollmentUser->has_access === 0)
+                                                        @elseif ($rejectedUser->has_access == 0)
                                                             <span class="badge badge-danger">Ditolak</span>
                                                         @else
                                                             <span class="badge badge-warning">Pending</span>
                                                         @endif
                                                     </td>
                                                     <td>
+                                                        @if ($rejectedUser->has_access == 0)
+                                                            {{ $rejectedUser->rejection_reason ?? 'Tidak ada alasan yang diberikan' }}
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
+                                                    <td>
                                                         <button class="btn btn-primary btn-sm m-1 acceptStatus"
-                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="1">
+                                                            data-id="{{ $rejectedUser->user->id }}" data-status="1">
                                                             <i class="fa fa-check" aria-hidden="true"></i> Terima
-                                                        </button>
-                                                        <button class="btn btn-danger btn-sm m-1 rejectStatus"
-                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="0">
-                                                            <i class="fa fa-times" aria-hidden="true"></i> Tolak
                                                         </button>
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="7" class="text-center">
-                                                        {{ __('No vacancies found!') }}</td>
+                                                    <td colspan="8" class="text-center">
+                                                        {{ __('No registrants found!') }}</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
                                     </table>
                                 </div>
-                                {{-- @if (request()->get('par-page') !== 'all')
-                                    <div class="float-right">
-                                        {{ $posts->onEachSide(0)->links() }}
-                                    </div>
-                                @endif --}}
                             </div>
                         </div>
                     </div>
@@ -304,28 +215,19 @@
                     }
                 }
 
-                document.querySelectorAll(".acceptStatus").forEach(button => {
-                    button.addEventListener("click", function() {
-                        let userId = this.dataset.id;
-                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ?
-                            0 : null);
-                        showConfirmation([userId], 1, '')
-                    });
-                });
-
                 document.querySelectorAll(".rejectStatus").forEach(button => {
                     button.addEventListener("click", function() {
                         let userId = this.dataset.id;
                         let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ?
                             0 : null);
-                        showReasonModal([userId], 0);
+                        showReasonModal([userId], status);
                     });
                 });
 
                 document.getElementById("acceptAll").addEventListener("click", function() {
                     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
                         .map(checkbox => checkbox.value);
-                    showConfirmation([selectedUsers], 1, '')
+                    showReasonModal(selectedUsers, 1);
                 });
 
                 document.getElementById("rejectAll").addEventListener("click", function() {
@@ -334,11 +236,11 @@
                     showReasonModal(selectedUsers, 0);
                 });
 
-                // document.getElementById("resetAll").addEventListener("click", function() {
-                //     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
-                //         .map(checkbox => checkbox.value);
-                //     showReasonModal(selectedUsers, null);
-                // });
+                document.getElementById("resetAll").addEventListener("click", function() {
+                    let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
+                        .map(checkbox => checkbox.value);
+                    showReasonModal(selectedUsers, null);
+                });
 
                 document.getElementById("selectAll").addEventListener("change", function() {
                     let isChecked = this.checked;

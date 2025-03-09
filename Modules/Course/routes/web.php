@@ -44,6 +44,8 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         /** Course verification routes */
         Route::get('/course-verification/{id}', [CourseVerificationController::class, 'index'])->name('course-verification.index');
         Route::post('/course/update-enrollment-status', [CourseVerificationController::class, 'updateEnrollmentStatus'])->name('course.updateEnrollmentStatus');
+        Route::get('/course-verification/{id}/rejected', [CourseVerificationController::class, 'rejectedList'])->name('course-verification.rejectedList');
+
     });
 
 

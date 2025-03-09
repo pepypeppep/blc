@@ -16,7 +16,7 @@ return new class extends Migration
             // $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->foreignId('user_id');
             $table->foreignId('course_id');
-            $table->boolean('has_access')->default(1);
+            $table->boolean('has_access')->nullable();
             $table->timestamps();
         });
     }

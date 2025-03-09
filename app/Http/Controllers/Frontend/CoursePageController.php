@@ -113,7 +113,7 @@ class CoursePageController extends Controller
         $courseLessonCount = CourseChapterLesson::where('course_id', $course->id)->count();
         $courseQuizCount = Quiz::where('course_id', $course->id)->count();
         $reviews = CourseReview::where('course_id', $course->id)->where('status', 1)->whereHas('course')->whereHas('user')->orderBy('created_at', 'desc')->paginate(20);
-        
+
         return view('frontend.pages.course-details', compact('course', 'courseLessonCount', 'courseQuizCount', 'reviews'));
     }
 
@@ -126,11 +126,10 @@ class CoursePageController extends Controller
                 'course_id' => $course->id,
             ],
             [
-                'has_access' => 0,
+                'has_access' => null,
             ]
         );
 
         return redirect()->back()->with(['messege' => __('Course registration successfully'), 'alert-type' => 'success']);
     }
-
 }

@@ -7,6 +7,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\GlobalSetting\app\Models\Setting;
 use Modules\GlobalSetting\app\Models\SeoSetting;
@@ -62,6 +63,11 @@ class AppServiceProvider extends ServiceProvider
 
         // Define default homepage based on site_theme from setting, with fallback
         define('DEFAULT_HOMEPAGE', $setting?->site_theme ?? ThemeList::MAIN->value);
+
+        // Register socialite providers
+        Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
+            $event->extendSocialite('keycloak', \SocialiteProviders\Keycloak\Provider::class);
+        });
     }
 
     protected function registerBladeDirectives()

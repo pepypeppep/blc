@@ -1,0 +1,45 @@
+volumes:
+  lms_dev:
+    external: true
+
+services:
+  app:
+    image: wbso/php8.3-dev:latest
+    depends_on:
+      - db
+    volumes:
+      - ./:/var/www/html
+
+  webserver:
+    image: nginx:1.27
+    ports:
+      - "30000:80"
+    depends_on:
+      - app
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+
+  db:
+    image: "mariadb:11.6"
+    ports:
+      - "127.0.0.1:30001:3306"
+    environment:
+      MYSQL_DATABASE: lms_dev
+      MYSQL_USER: lms_dev
+      MYSQL_PASSWORD: lms_dev
+      MYSQL_ROOT_PASSWORD: lms_dev
+    volumes:
+      - lms_dev:/var/lib/mysql
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - "-q"
+        - "-d"
+        - "emeterai_dev"
+        - "-U"
+        - "emeterai_dev"
+      retries: 3
+      timeout: 5s

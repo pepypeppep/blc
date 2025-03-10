@@ -22,6 +22,7 @@ class AdminInfoSeeder extends Seeder
             $admin = new Admin();
             $admin->name = 'John Doe';
             $admin->email = 'admin@gmail.com';
+            $admin->username = 'lms_admin';
             $admin->image = 'uploads/website-images/admin.jpg';
             $admin->password = Hash::make(1234);
             $admin->status = 'active';
@@ -35,6 +36,7 @@ class AdminInfoSeeder extends Seeder
             $admin = new Admin();
             $admin->name = 'Admin BKPSDM';
             $admin->email = 'admin@bkpsdm.com';
+            $admin->username = 'lms_admin_bkpsdm';
             $admin->image = 'uploads/website-images/admin.jpg';
             $admin->password = Hash::make(1234);
             $admin->status = 'active';
@@ -47,6 +49,7 @@ class AdminInfoSeeder extends Seeder
             $admin = new Admin();
             $admin->name = 'Admin OPD';
             $admin->email = 'admin@opd.com';
+            $admin->username = 'lms_admin_opd';
             $admin->image = 'uploads/website-images/admin.jpg';
             $admin->password = Hash::make(1234);
             $admin->status = 'active';

@@ -18,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'translation' => \App\Http\Middleware\SetLocaleMiddleware::class,
             'approved.instructor' => \App\Http\Middleware\ApprovedInstructorMiddleware::class
         ]);
+
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

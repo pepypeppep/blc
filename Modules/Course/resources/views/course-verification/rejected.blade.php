@@ -3,37 +3,39 @@
     <title>{{ __($submenu) }}</title>
 @endsection
 @section('admin-content')
-<div class="main-content">
-    <section class="section">
-        <div class="section-header">
-            <h1>{{ __($submenu) }}</h1>
-            <div class="section-header-breadcrumb">
-                <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></div>
-                <div class="breadcrumb-item">{{ __($submenu) }}</div>
+    <div class="main-content">
+        <section class="section">
+            <div class="section-header">
+                <h1>{{ __($submenu) }}</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
+                    </div>
+                    <div class="breadcrumb-item">{{ __($submenu) }}</div>
+                </div>
             </div>
-        </div>
-        <div class="section-body">
-            <div class="mt-4 row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between">
-                            <h4>{{ __('Registrant List') }}</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive max-h-400">
-                                <div class="row mb-2">
-                                    <div class="col-md-8">
-                                        <button type="button" id="acceptAll" class="btn btn-primary btn-md m-2">
-                                            <i class="fa fa-check" aria-hidden="true"></i> Terima Semua
-                                        </button>
-                                        <button type="button" id="rejectAll" class="btn btn-danger btn-md m-2">
-                                            <i class="fa fa-times" aria-hidden="true"></i> Tolak Semua
-                                        </button>
-                                    </div>
-                                    <div class="col-md-4 text-right">
-                                        {{-- <button type="button" id="verifyRejected" class="btn btn-primary btn-md m-2">
+            <div class="section-body">
+                <div class="mt-4 row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <h4>{{ __('Registrant List') }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive max-h-400">
+                                    <div class="row mb-2">
+                                        <div class="col-md-8">
+                                            <button type="button" id="acceptAll" class="btn btn-primary btn-md m-2">
+                                                <i class="fa fa-check" aria-hidden="true"></i> Terima Semua
+                                            </button>
+                                            <button type="button" id="rejectAll" class="btn btn-danger btn-md m-2">
+                                                <i class="fa fa-times" aria-hidden="true"></i> Tolak Semua
+                                            </button>
+                                        </div>
+                                        <div class="col-md-4 text-right">
+                                            {{-- <button type="button" id="verifyRejected" class="btn btn-primary btn-md m-2">
                                             Verifikasi Ulang Pendaftaran yang Ditolak
                                         </button> --}}
+                                        </div>
                                     </div>
                                 </div>
                                 <table class="table table-striped">
@@ -84,19 +86,64 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="8" class="text-center">{{ __('No registrants found!') }}</td>
+                                                <th><input type="checkbox" id="selectAll"></th>
+                                                <th>{{ __('#') }}</th>
+                                                <th>{{ __('Employee Id') }}</th>
+                                                <th>{{ __('Name') }}</th>
+                                                <th>{{ __('Employment Unit') }}</th>
+                                                <th>{{ __('Status') }}</th>
+                                                <th>{{ __('Reason') }}</th>
+                                                <th>{{ __('Action') }}</th>
                                             </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($rejectedUsers as $rejectedUser)
+                                                <tr data-user-id="{{ $rejectedUser->user->id }}">
+                                                    <td><input type="checkbox" class="userCheckbox"
+                                                            value="{{ $rejectedUser->user->id }}"></td>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $rejectedUser->user->nip }}</td>
+                                                    <td>{{ $rejectedUser->user->name }}</td>
+                                                    <td>Dinas Komunikasi dan Informatika</td>
+                                                    <td>
+                                                        @if ($rejectedUser->has_access == 1)
+                                                            <span class="badge badge-success">Diterima</span>
+                                                        @elseif ($rejectedUser->has_access == 0)
+                                                            <span class="badge badge-danger">Ditolak</span>
+                                                        @else
+                                                            <span class="badge badge-warning">Pending</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($rejectedUser->has_access == 0)
+                                                            {{ $rejectedUser->rejection_reason ?? 'Tidak ada alasan yang diberikan' }}
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-primary btn-sm m-1 acceptStatus"
+                                                            data-id="{{ $rejectedUser->user->id }}" data-status="1">
+                                                            <i class="fa fa-check" aria-hidden="true"></i> Terima
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="8" class="text-center">
+                                                        {{ __('No registrants found!') }}</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-</div>
+        </section>
+    </div>
     <x-admin.delete-modal />
 @endsection
 

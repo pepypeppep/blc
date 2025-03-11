@@ -117,7 +117,8 @@
 
                                         </div>
                                         <div class="col-md-4 text-right">
-                                            <a href="{{ route('admin.course-verification.rejectedList', ['id' => $id]) }}" class="btn btn-primary btn-md m-2">
+                                            <a href="{{ route('admin.course-verification.rejectedList', ['id' => $id]) }}"
+                                                class="btn btn-primary btn-md m-2">
                                                 Verifikasi Pendaftaran yang Ditolak
                                             </a>
                                         </div>
@@ -126,45 +127,49 @@
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th ><input type="checkbox" id="selectAll"></th>
-                                                <th >{{ __('#') }}</th>
-                                                <th >{{ __('Employee Id') }}</th>
-                                                <th >{{ __('Name') }}</th>
-                                                <th >{{ __('Employment Unit') }}</th>
-                                                <th >{{ __('Status') }}</th>
-                                                <th >{{ __('Action') }}</th>
+                                                <th><input type="checkbox" id="selectAll"></th>
+                                                <th>{{ __('#') }}</th>
+                                                <th>{{ __('Employee Id') }}</th>
+                                                <th>{{ __('Name') }}</th>
+                                                <th>{{ __('Employment Unit') }}</th>
+                                                <th>{{ __('Status') }}</th>
+                                                <th>{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse ($enrollmentUsers as $enrollmentUser)
                                                 <tr data-user-id="{{ $enrollmentUser->user->id }}">
 
-                                                    <td><input type="checkbox" class="userCheckbox" value="{{ $enrollmentUser->user->id }}"></td>
+                                                    <td><input type="checkbox" class="userCheckbox"
+                                                            value="{{ $enrollmentUser->user->id }}"></td>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $enrollmentUser->user->nip }} </td>
                                                     <td>{{ $enrollmentUser->user->name }}</td>
                                                     <td>Dinas Komunikasi dan Informatika</td>
                                                     <td>
-                                                        @if ($enrollmentUser->has_access == 1)
+                                                        @if ($enrollmentUser->has_access === 1)
                                                             <span class="badge badge-success">Diterima</span>
-                                                        @elseif ($enrollmentUser->has_access == 0)
+                                                        @elseif ($enrollmentUser->has_access === 0)
                                                             <span class="badge badge-danger">Ditolak</span>
                                                         @else
                                                             <span class="badge badge-warning">Pending</span>
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-primary btn-sm m-1 updateStatus" data-id="{{ $enrollmentUser->user->id }}" data-status="1">
+                                                        <button class="btn btn-primary btn-sm m-1 acceptStatus"
+                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="1">
                                                             <i class="fa fa-check" aria-hidden="true"></i> Terima
                                                         </button>
-                                                        <button class="btn btn-danger btn-sm m-1 updateStatus" data-id="{{ $enrollmentUser->user->id }}" data-status="0">
+                                                        <button class="btn btn-danger btn-sm m-1 rejectStatus"
+                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="0">
                                                             <i class="fa fa-times" aria-hidden="true"></i> Tolak
                                                         </button>
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="7" class="text-center">{{ __('No vacancies found!') }}</td>
+                                                    <td colspan="7" class="text-center">
+                                                        {{ __('No vacancies found!') }}</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>

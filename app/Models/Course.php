@@ -2,21 +2,32 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Order\app\Models\Enrollment;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Course\app\Models\CourseCategory;
-use Modules\Order\app\Models\Enrollment;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Course extends Model {
+class Course extends Model
+{
     use HasFactory, SoftDeletes;
 
-    function scopeActive() {
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['thumbnail_url'];
+
+    function scopeActive()
+    {
         return $this->where(['is_approved' => 'approved', 'status' => 'active']);
     }
-    public function getFavoriteByClientAttribute() {
+    public function getFavoriteByClientAttribute()
+    {
         if (auth()->guard('web')->check()) {
             return $this->relationLoaded('favoriteBy') ? in_array(userAuth()->id, $this->favoriteBy->pluck('id')->toArray()) : false;
         }
@@ -24,30 +35,37 @@ class Course extends Model {
         return false;
     }
 
-    public function favoriteBy() {
+    public function favoriteBy()
+    {
         return $this->belongsToMany(User::class, 'favorite_course_user')->withTimestamps();
     }
 
-    function partnerInstructors(): HasMany {
+    function partnerInstructors(): HasMany
+    {
         return $this->hasMany(CoursePartnerInstructor::class, 'course_id', 'id');
     }
 
-    function levels(): HasMany {
+    function levels(): HasMany
+    {
         return $this->hasMany(CourseSelectedLevel::class, 'course_id', 'id');
     }
-    function languages(): HasMany {
+    function languages(): HasMany
+    {
         return $this->hasMany(CourseSelectedLanguage::class, 'course_id', 'id');
     }
 
-    function filtersOptions(): HasMany {
+    function filtersOptions(): HasMany
+    {
         return $this->hasMany(CourseSelectedFilterOption::class, 'course_id', 'id');
     }
 
-    function category(): BelongsTo {
+    function category(): BelongsTo
+    {
         return $this->belongsTo(CourseCategory::class, 'category_id', 'id')->withDefault();
     }
 
-    function instructor(): BelongsTo {
+    function instructor(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'instructor_id', 'id')->withDefault();
     }
 
@@ -56,20 +74,32 @@ class Course extends Model {
         return $this->hasMany(CourseChapter::class, 'course_id', 'id');
     }
 
-    function reviews(): HasMany {
+    function reviews(): HasMany
+    {
         return $this->hasMany(CourseReview::class, 'course_id', 'id');
     }
-    function lessons(): HasMany {
+    function lessons(): HasMany
+    {
         return $this->hasMany(CourseChapterLesson::class, 'course_id', 'id');
     }
 
-    function enrollments(): HasMany {
+    function enrollments(): HasMany
+    {
         return $this->hasMany(Enrollment::class, 'course_id', 'id');
     }
+
+    protected function thumbnailUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->attributes['thumbnail'] ? route('api.courses.get-thumbnail', ['courseId' => $this->attributes['id']]) : null
+        );
+    }
+
     /**
      * Boot method to handle model events.
      */
-    protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
 
         static::deleting(function ($course) {

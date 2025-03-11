@@ -26,6 +26,10 @@
                 <a href="{{ route('vacancies-participant.index') }}">
                     <img src="{{ asset('uploads/website-images/announcement.svg') }}">{{ __('ContinuingEducation') }}</a>
             </li> --}}
+            <li class="{{ Route::is('student.follow-up-action.index') ? 'active' : '' }}">
+                <a href="{{ route('student.follow-up-action.index') }}">
+                    <i class="fa fa-receipt"></i>{{ __('FollowUpAction') }}</a>
+            </li>
             <li class="{{ Route::is('student.continuing-education') ? 'active' : '' }}">
                 <a class="d-flex align-items-center text-decoration-none" data-bs-toggle="collapse"
                     href="#continuingEducationMenu" role="button" aria-expanded="false"

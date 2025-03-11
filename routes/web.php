@@ -16,6 +16,7 @@ use App\Http\Controllers\Global\CloudStorageController;
 use App\Http\Controllers\Frontend\CourseContentController;
 use App\Http\Controllers\Frontend\StudentReviewController;
 use App\Http\Controllers\Frontend\BecomeInstructorController;
+use App\Http\Controllers\Frontend\FollowUpActionController;
 use App\Http\Controllers\Frontend\InstructorCourseController;
 use App\Http\Controllers\Frontend\InstructorPayoutController;
 use App\Http\Controllers\Frontend\StudentDashboardController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Frontend\StudentProfileSettingController;
 use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
+use App\Http\Controllers\Frontend\StudentFollowUpActionController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
@@ -121,6 +123,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         // Route::get('order-details/{id}', [StudentOrderController::class, 'show'])->name('order.show');
         // Route::get('order/invoice/{id}', [StudentOrderController::class, 'printInvoice'])->name('order.print-invoice');
 
+
         Route::get('reviews', [StudentReviewController::class, 'index'])->name('reviews.index');
         Route::get('reviews/{id}', [StudentReviewController::class, 'show'])->name('reviews.show');
         Route::delete('reviews/{id}', [StudentReviewController::class, 'destroy'])->name('reviews.destroy');
@@ -134,6 +137,22 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('continuing-education-registration', [StudentPendidikanLanjutanController::class, 'registered'])->name('continuing-education.registration');
         Route::get('continuing-education-registration/{id}', [StudentPendidikanLanjutanController::class, 'registeredDetail'])->name('continuing-education.registration.show');
         Route::post('continuing-education-registration/{id}/report', [StudentPendidikanLanjutanController::class, 'vacancyReportSubmit'])->name('continuing-education.registration.report');
+
+        /** follow up action routes */
+
+        Route::get('follow-up-action/files/{filename}', function ($filename) {
+
+            $path = storage_path('app/private/rtl/' . $filename);
+
+            if (!file_exists($path)) {
+                abort(404);
+            }
+
+            return response()->file($path);
+        })->name('follow-up-action.files');
+        
+        Route::resource('follow-up-action', StudentFollowUpActionController::class);
+        // Route::get('follow-up-action/create', [StudentFollowUpActionController::class, 'create'])->name('follow-up-action.create');
 
         /** learning routes */
         Route::get('learning/{slug}', [LearningController::class, 'index'])->name('learning.index');

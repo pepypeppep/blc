@@ -10,9 +10,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Laravel\Socialite\Facades\Socialite;
 use Modules\Order\app\Models\Enrollment;
 
 class AuthenticatedSessionController extends Controller
@@ -91,7 +94,7 @@ class AuthenticatedSessionController extends Controller
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
 
         $intendedUrl = session()->get('url.intended');
-        if ($intendedUrl && \Str::contains($intendedUrl, '/admin')) {
+        if ($intendedUrl && Str::contains($intendedUrl, '/admin')) {
             if ($user->role == 'instructor')  return redirect()->route('instructor.dashboard');
             return redirect()->route('student.dashboard');
         }
@@ -108,9 +111,16 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
+        Auth::guard('admin')->logout();
 
         $notification = __('Logged out successfully.');
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
+
+        // check if login from sso, so we can logout from keycloak
+        if (session()->has('sso')) {
+            $redirectUri = Config::get('app.url');
+            return redirect(Socialite::driver('keycloak')->getLogoutUrl($redirectUri, env('KEYCLOAK_CLIENT_ID')));
+        }
 
         return redirect()->route('login')->with($notification);
     }

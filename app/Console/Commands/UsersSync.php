@@ -15,7 +15,6 @@ class UsersSync extends Command
 
     protected $description = 'Sync users';
 
-
     public function handle()
     {
         $instansiID = $this->argument('instansi');
@@ -25,47 +24,63 @@ class UsersSync extends Command
             return;
         }
 
-        $instansi = Instansi::where('esurat_id', $instansiID)->firstOrFail();
+        $instansi = Instansi::where('id', $instansiID)->firstOrFail();
 
-        $this->info("Crawling data users");
+        if ($instansi->unor_id == null) {
+            $this->error('Instansi ID doesn\'t have UNOR ID');
+            return;
+        }
 
-        $request = Http::withHeaders([
-            'accept' => 'application/json',
-            'x-secret' => env('ESURATAPI_SECRET'),
-        ]);
+        $this->info("Crawling data users on " . $instansi->name);
 
-        $response = $request->get(env("ESURATAPI_BASEURL") . sprintf("/internal/instansis/%s/users", $instansiID));
-
+        $response = Http::timeout(60)->withHeaders([
+            'Authorization' => 'Basic ' . base64_encode(env('SAPA_USERNAME') . ':' . env('SAPA_PASSWORD')),
+        ])
+            ->post('https://asn.bantulkab.go.id/ws/showpegbyunormt.php', [
+                'unor_id' => $instansi->unor_id
+            ]);
         if ($response->failed()) {
             $this->error('Gagal mengambil data user' . 'status: ' . $response->status());
             return;
         }
 
-        $usersData = json_decode(json_encode($response->json(), true));
-        // dd($usersData);
 
-        //     +"username": "199401162020121006"
-        //   +"unor_id": 20299
-        //   +"nama": "KRESNA RAKHMAN HUTAMA, A.Md."
-        //   +"nip": "199401162020121006"
-        //   +"jabatan": "Pranata Komputer Pelaksana"
-        //   +"eselon": ""
-        //   +"type": "jft"
+        $usersData = $response->json('result');
 
+        foreach ($usersData as $user) {
+            $batasUsiaPensiun = now()->year - substr($user['tanggal_lahir'], 0, 4) + $user['bup'];
 
-        foreach ($usersData->data as $user) {
+            // unor id from api has prefix 0
+            // ex: 020298 to 20298
+            $unorID = null;
+            if (substr($user['id_unor'], 0, 1) == '0') {
+                $unorID =  substr($user['id_unor'], 1);
+            } else {
+                $unorID = $user['id_unor'];
+            }
             User::updateOrCreate([
-                'username' => $user->username,
+                'username' => $user['nip'],
             ], [
-                // 'unor_id' => $user->unor_id,
                 'instansi_id' => $instansi->id,
-                'name' => $user->nama,
-                'nip' => $user->nip,
-                'jabatan' => $user->jabatan,
-                // 'eselon' => $user->eselon,
+                'unor_id' => $unorID,
+                'name' => $user['nama_lengkap'],
+                'nip' => $user['nip'],
+                'jabatan' => $user['jabatan'],
+                'jenis_kelamin' => $user['jenis_kelamin'],
+                'tempat_lahir' => $user['tempat_lahir'],
+                'tanggal_lahir' => $user['tanggal_lahir'],
+                'bup' => $batasUsiaPensiun,
+                'golongan' => $user['golongan'],
+                'pangkat' => $user['pangkat'],
+                'jabatan' => $user['jabatan'],
+                'eselon' => $user['Eselon'],
+                // 'unor' => $user['unor'],
+                // 'unor_l1' => $user['unor_l1'],
+                // 'unor_l2' => $user['unor_l2'],
+                // 'unor_l3' => $user['unor_l3'],
             ]);
         }
 
-        $this->info('Berhasil sinkronisasi data instansi');
+        $this->info('Berhasil sinkronisasi data user');
     }
 }

@@ -192,6 +192,7 @@
 
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @if (session('success'))
         <script>
             toastr.success("{{ session('success') }}", "Success", {
@@ -212,27 +213,31 @@
 
     @push('js')
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 function showReasonModal(userIds, status) {
                     let title;
+                    let isReasonRequired = false;
+
                     if (status === 1) {
-                        title = "Alasan Penerimaan";
+                        title = "Alasan Penerimaan (Opsional)";
                     } else if (status === 0) {
                         title = "Alasan Penolakan";
+                        isReasonRequired = true; // Alasan wajib diisi jika ditolak
                     } else {
                         title = "Reset ke Pending";
                     }
 
                     Swal.fire({
                         title: title,
-                        input: status !== null ? "textarea" : null,
-                        inputPlaceholder: status !== null ? "Masukkan alasan..." : null,
+                        input: "textarea",
+                        inputPlaceholder: "Masukkan alasan...",
                         showCancelButton: true,
                         confirmButtonText: "Lanjutkan",
                         cancelButtonText: "Batal",
                         preConfirm: (reason) => {
-                            if (status !== null && !reason) {
-                                Swal.showValidationMessage("Alasan harus diisi");
+                            if (isReasonRequired && !reason) {
+                                Swal.showValidationMessage("Alasan harus diisi jika peserta ditolak.");
+                                return false;
                             }
                             return reason;
                         }
@@ -284,18 +289,18 @@
                             body: JSON.stringify({
                                 user_ids: userIds,
                                 status: status,
-                                reason: reason
+                                reason: reason || null // Alasan opsional untuk diterima
                             })
                         });
 
                         let data = await response.json();
                         Swal.fire("Sukses", data.message, "success");
 
-                        // Hapus baris dari tabel setelah diterima/ditolak
+                        // Hapus baris dari tabel setelah status diperbarui
                         userIds.forEach(userId => {
                             let row = document.querySelector(`tr[data-user-id='${userId}']`);
                             if (row) {
-                                row.remove(); // Hapus baris peserta dari tampilan
+                                row.remove();
                             }
                         });
 
@@ -304,43 +309,33 @@
                     }
                 }
 
-                document.querySelectorAll(".acceptStatus").forEach(button => {
-                    button.addEventListener("click", function() {
+                document.querySelectorAll(".updateStatus").forEach(button => {
+                    button.addEventListener("click", function () {
                         let userId = this.dataset.id;
-                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ?
-                            0 : null);
-                        showConfirmation([userId], 1, '')
+                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ? 0 : null);
+                        showReasonModal([userId], status);
                     });
                 });
 
-                document.querySelectorAll(".rejectStatus").forEach(button => {
-                    button.addEventListener("click", function() {
-                        let userId = this.dataset.id;
-                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ?
-                            0 : null);
-                        showReasonModal([userId], 0);
-                    });
-                });
-
-                document.getElementById("acceptAll").addEventListener("click", function() {
+                document.getElementById("acceptAll").addEventListener("click", function () {
                     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
                         .map(checkbox => checkbox.value);
-                    showConfirmation([selectedUsers], 1, '')
+                    showReasonModal(selectedUsers, 1);
                 });
 
-                document.getElementById("rejectAll").addEventListener("click", function() {
+                document.getElementById("rejectAll").addEventListener("click", function () {
                     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
                         .map(checkbox => checkbox.value);
                     showReasonModal(selectedUsers, 0);
                 });
 
-                // document.getElementById("resetAll").addEventListener("click", function() {
-                //     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
-                //         .map(checkbox => checkbox.value);
-                //     showReasonModal(selectedUsers, null);
-                // });
+                document.getElementById("resetAll").addEventListener("click", function () {
+                    let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
+                        .map(checkbox => checkbox.value);
+                    showReasonModal(selectedUsers, null);
+                });
 
-                document.getElementById("selectAll").addEventListener("change", function() {
+                document.getElementById("selectAll").addEventListener("change", function () {
                     let isChecked = this.checked;
                     document.querySelectorAll(".userCheckbox").forEach(checkbox => {
                         checkbox.checked = isChecked;

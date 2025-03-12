@@ -49,63 +49,63 @@ class VacancyUser extends Pivot
 
     public function getStatAttribute()
     {
-        if ($this->status == 'register') {
+        if ($this->status == $this->STATUS_REGISTER) {
             return [
                 'label' => 'Regiser',
                 'color' => 'warning'
             ];
         }
 
-        if ($this->status == 'verification') {
+        if ($this->status == $this->STATUS_VERIFICATION) {
             return [
                 'label' => 'Verifikasi',
                 'color' => 'warning'
             ];
         }
 
-        if ($this->status == 'rejected') {
+        if ($this->status == $this->STATUS_REJECTED) {
             return [
                 'label' => 'Ditolak',
                 'color' => 'danger'
             ];
         }
 
-        if ($this->status == 'assessment') {
+        if ($this->status == $this->STATUS_ASSESSMENT) {
             return [
                 'label' => 'Asesmen',
                 'color' => 'primary'
             ];
         }
 
-        if ($this->status == 'eligible') {
+        if ($this->status == $this->STATUS_ELIGIBLE) {
             return [
                 'label' => 'Eligible',
                 'color' => 'success'
             ];
         }
 
-        if ($this->status == 'ineligible') {
+        if ($this->status == $this->STATUS_INELIGIBLE) {
             return [
                 'label' => 'Ineligible',
                 'color' => 'danger'
             ];
         }
 
-        if ($this->status == 'report') {
+        if ($this->status == $this->STATUS_REPORT) {
             return [
                 'label' => 'Laporan',
                 'color' => 'primary'
             ];
         }
 
-        if ($this->status == 'extend') {
+        if ($this->status == $this->STATUS_EXTEND) {
             return [
                 'label' => 'Perpanjangan',
                 'color' => 'primary'
             ];
         }
 
-        if ($this->status == 'done') {
+        if ($this->status == $this->STATUS_DONE) {
             return [
                 'label' => 'Selesai',
                 'color' => 'success'

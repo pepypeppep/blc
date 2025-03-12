@@ -324,13 +324,6 @@ trait PermissionsTrait
         ],
     ];
 
-    public static array $PegawaiPermissions = [
-        'group_name' => 'pegawai',
-        'permissions' => [
-            'pegawai.pendidikanlanjutan',
-        ],
-    ];
-
     private static function getSuperAdminPermissions(): array
     {
         $reflection = new ReflectionClass(__TRAIT__);

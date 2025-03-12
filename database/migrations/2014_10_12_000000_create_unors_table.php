@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('instansi_id')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->longText('name')->index();
+            $table->longText('name');
             $table->integer('is_instansi')->default(0);
             $table->timestamps();
 

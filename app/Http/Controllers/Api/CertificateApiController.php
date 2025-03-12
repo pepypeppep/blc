@@ -64,20 +64,20 @@ class CertificateApiController extends Controller
                         ->latest()
                         ->first()->created_at);
 
-                    $certificate = CertificateBuilder::first();
-                    $certificateItems = CertificateBuilderItem::all();
+                    // $certificate = CertificateBuilder::first();
+                    // $certificateItems = CertificateBuilderItem::all();
 
-                    $html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate'))->render();
+                    // $html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate'))->render();
 
-                    $html = str_replace('[student_name]', $enrollment->user->name, $html);
-                    $html = str_replace('[platform_name]', Cache::get('setting')->app_name, $html);
-                    $html = str_replace('[course]', $course->title, $html);
-                    $html = str_replace('[date]', $completed_date, $html);
-                    $html = str_replace('[instructor_name]', $course->instructor->name, $html);
+                    // $html = str_replace('[student_name]', $enrollment->user->name, $html);
+                    // $html = str_replace('[platform_name]', Cache::get('setting')->app_name, $html);
+                    // $html = str_replace('[course]', $course->title, $html);
+                    // $html = str_replace('[date]', $completed_date, $html);
+                    // $html = str_replace('[instructor_name]', $course->instructor->name, $html);
 
                     $certificates[] = [
                         'course' => $course->title,
-                        'certificate_html' => $html,
+                        // 'certificate_html' => $html,
                         'completed_date' => $completed_date,
                         'certificate_url' => route('student.download-certificate', $course->id)
                     ];

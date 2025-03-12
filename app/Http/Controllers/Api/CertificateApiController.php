@@ -84,6 +84,13 @@ class CertificateApiController extends Controller
                 }
             }
 
+            if (count($certificates) === 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sertifikat tidak ditemukan.',
+                ], 404);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Daftar sertifikat ditemukan.',

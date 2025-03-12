@@ -33,11 +33,17 @@ class CourseVerificationController extends Controller
     {
         $validated = $request->validate([
             'user_ids' => 'required|array',
-            'status' => 'nullable|in:0,1'
+            'status' => 'nullable|in:0,1',
+            'reason' => 'nullable|string'
         ]);
 
-        Enrollment::whereIn('user_id', $validated['user_ids'])
-            ->update(['has_access' => $validated['status']]);
+        foreach ($validated['user_ids'] as $userId) {
+            Enrollment::where('user_id', $userId)
+                ->update([
+                    'has_access' => $validated['status'],
+                    'notes' => $validated['status'] == 0 ? $validated['reason'] : null,
+                ]);
+        }
 
         return response()->json(['message' => 'Enrollment status updated successfully.']);
     }

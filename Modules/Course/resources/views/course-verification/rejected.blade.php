@@ -37,8 +37,54 @@
                                         </button> --}}
                                         </div>
                                     </div>
-                                    <table class="table table-striped">
-                                        <thead>
+                                </div>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th><input type="checkbox" id="selectAll"></th>
+                                            <th>{{ __('#') }}</th>
+                                            <th>{{ __('Employee Id') }}</th>
+                                            <th>{{ __('Name') }}</th>
+                                            <th>{{ __('Employment Unit') }}</th>
+                                            <th>{{ __('Status') }}</th>
+                                            <th>{{ __('Reason') }}</th>
+                                            <th>{{ __('Action') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($rejectedUsers as $rejectedUser)
+                                            <tr data-user-id="{{ $rejectedUser->user->id }}">
+                                                <td><input type="checkbox" class="userCheckbox" value="{{ $rejectedUser->user->id }}"></td>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $rejectedUser->user->nip }}</td>
+                                                <td>{{ $rejectedUser->user->name }}</td>
+                                                <td>Dinas Komunikasi dan Informatika</td>
+                                                <td>
+                                                    @if ($rejectedUser->has_access == 1)
+                                                        <span class="badge badge-success">Diterima</span>
+                                                    @elseif ($rejectedUser->has_access == 0)
+                                                        <span class="badge badge-danger">Ditolak</span>
+                                                    @else
+                                                        <span class="badge badge-warning">Pending</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($rejectedUser->has_access == 0)
+                                                        {{ $rejectedUser->notes ?? 'Tidak ada alasan yang diberikan' }}
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-sm m-1 updateStatus" data-id="{{ $rejectedUser->user->id }}" data-status="1">
+                                                        <i class="fa fa-check" aria-hidden="true"></i> Terima
+                                                    </button>
+                                                    <button class="btn btn-danger btn-sm m-1 updateStatus" data-id="{{ $rejectedUser->user->id }}" data-status="0">
+                                                        <i class="fa fa-times" aria-hidden="true"></i> Tolak
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @empty
                                             <tr>
                                                 <th><input type="checkbox" id="selectAll"></th>
                                                 <th>{{ __('#') }}</th>
@@ -103,6 +149,7 @@
 
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @if (session('success'))
         <script>
             toastr.success("{{ session('success') }}", "Success", {
@@ -123,27 +170,31 @@
 
     @push('js')
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 function showReasonModal(userIds, status) {
                     let title;
+                    let isReasonRequired = false;
+
                     if (status === 1) {
-                        title = "Alasan Penerimaan";
+                        title = "Alasan Penerimaan (Opsional)";
                     } else if (status === 0) {
                         title = "Alasan Penolakan";
+                        isReasonRequired = true; // Alasan wajib diisi jika ditolak
                     } else {
                         title = "Reset ke Pending";
                     }
 
                     Swal.fire({
                         title: title,
-                        input: status !== null ? "textarea" : null,
-                        inputPlaceholder: status !== null ? "Masukkan alasan..." : null,
+                        input: "textarea",
+                        inputPlaceholder: "Masukkan alasan...",
                         showCancelButton: true,
                         confirmButtonText: "Lanjutkan",
                         cancelButtonText: "Batal",
                         preConfirm: (reason) => {
-                            if (status !== null && !reason) {
-                                Swal.showValidationMessage("Alasan harus diisi");
+                            if (isReasonRequired && !reason) {
+                                Swal.showValidationMessage("Alasan harus diisi jika peserta ditolak.");
+                                return false;
                             }
                             return reason;
                         }
@@ -195,18 +246,18 @@
                             body: JSON.stringify({
                                 user_ids: userIds,
                                 status: status,
-                                reason: reason
+                                reason: reason || null // Alasan opsional untuk diterima
                             })
                         });
 
                         let data = await response.json();
                         Swal.fire("Sukses", data.message, "success");
 
-                        // Hapus baris dari tabel setelah diterima/ditolak
+                        // Hapus baris dari tabel setelah status diperbarui
                         userIds.forEach(userId => {
                             let row = document.querySelector(`tr[data-user-id='${userId}']`);
                             if (row) {
-                                row.remove(); // Hapus baris peserta dari tampilan
+                                row.remove();
                             }
                         });
 
@@ -215,34 +266,33 @@
                     }
                 }
 
-                document.querySelectorAll(".rejectStatus").forEach(button => {
-                    button.addEventListener("click", function() {
+                document.querySelectorAll(".updateStatus").forEach(button => {
+                    button.addEventListener("click", function () {
                         let userId = this.dataset.id;
-                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ?
-                            0 : null);
+                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ? 0 : null);
                         showReasonModal([userId], status);
                     });
                 });
 
-                document.getElementById("acceptAll").addEventListener("click", function() {
+                document.getElementById("acceptAll").addEventListener("click", function () {
                     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
                         .map(checkbox => checkbox.value);
                     showReasonModal(selectedUsers, 1);
                 });
 
-                document.getElementById("rejectAll").addEventListener("click", function() {
+                document.getElementById("rejectAll").addEventListener("click", function () {
                     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
                         .map(checkbox => checkbox.value);
                     showReasonModal(selectedUsers, 0);
                 });
 
-                document.getElementById("resetAll").addEventListener("click", function() {
+                document.getElementById("resetAll").addEventListener("click", function () {
                     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
                         .map(checkbox => checkbox.value);
                     showReasonModal(selectedUsers, null);
                 });
 
-                document.getElementById("selectAll").addEventListener("change", function() {
+                document.getElementById("selectAll").addEventListener("change", function () {
                     let isChecked = this.checked;
                     document.querySelectorAll(".userCheckbox").forEach(checkbox => {
                         checkbox.checked = isChecked;

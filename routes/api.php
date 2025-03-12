@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CertificateApiController;
 use App\Http\Controllers\Api\CourseApiController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\ReviewApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,4 +21,6 @@ Route::name('api.')->group(function () {
     Route::get('/courses-levels', [CourseApiController::class, 'levels'])->name('courses.levels');
 
     Route::get('/certificates', [CertificateApiController::class, 'getCertificatesForStudent'])->name('certificates');
+        
+    Route::get('/reviews', [ReviewApiController::class, 'reviews'])->name('reviews');
 });

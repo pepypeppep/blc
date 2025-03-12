@@ -63,7 +63,6 @@ class StudentPendidikanLanjutanController extends Controller
 
         $passAgeLimit = $vacancy->age_limit >=  (Carbon::parse($user->date_of_birth)->diffInYears(Carbon::now()));
         $passEmployeeGrade = strtolower($vacancy->employment_grade) === strtolower($user->golongan);
-        // dd($vacancy);
         $base = VacancyAttachment::syarat()->where('vacancy_id', $id)->where('is_active', 1);
         $vacancyConditions = $base->with('attachment')->get();
         $vacancyTakeConditions = $base->whereHas('attachment', function ($query) use ($vacancy) {

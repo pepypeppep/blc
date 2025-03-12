@@ -78,37 +78,37 @@ class PendidikanLanjutanController extends Controller
         //
     }
 
-    public function indexPeserta()
+    public function indexPeserta(Request $request)
     {
         checkAdminHasPermissionAndThrowException('pendidikanlanjutan.pendaftar');
 
         $query = VacancyUser::with(['vacancy', 'vacancy.study', 'user']);
 
+        if ($request->has('keyword')) {
+            $keyword = $request->input('keyword');
+            $query->whereHas('user', function ($query) use ($keyword) {
+                $query->where('name', 'like', '%' . $keyword . '%');
+            });
+        }
+
+        if ($request->has('order_by')) {
+            $order = $request->input('order_by');
+            $query->orderBy('name', $order == 1 ? 'asc' : 'desc');
+        }
+
+        $perPage = $request->has('par-page') ? $request->input('par-page') : 10;
+
         if (checkAdminHasPermission('pendidikanlanjutan.verifikasi')) {
-            $vacancyUsers = $query->paginate(10);
+            $vacancyUsers = $query->paginate($perPage);
         } else {
             $vacancyUsers = $query->whereHas('user', function ($query) {
                 $query->where('instansi_id', adminAuth()->instansi_id);
-            })->paginate(10);
+            })->paginate($perPage);
         }
 
-        $submenu = 'Daftar Peserta';
+        $submenu = 'Daftar Pegawai';
 
-        return view('pendidikanlanjutan::Submenu.index', compact('vacancyUsers', 'submenu'));
-    }
-
-    public function showPeserta($id)
-    {
-        checkAdminHasPermissionAndThrowException('pendidikanlanjutan.pendaftar');
-        $vacancyUser = VacancyUser::with(['user'])->where('status', 'verification')
-            ->findOrFail($id);
-
-        $vacancyUserAttachments = VacancyUserAttachment::with('vacancyAttachment', 'vacancyuser')
-            ->where('vacancy_user_id', $vacancyUser->id)
-            ->where('category', 'syarat')
-            ->get();
-
-        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'vacancyUserAttachments'));
+        return view('pendidikanlanjutan::Peserta.index', compact('vacancyUsers', 'submenu'));
     }
 
     public function indexVerif()

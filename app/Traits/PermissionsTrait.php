@@ -342,6 +342,7 @@ trait PermissionsTrait
         return $permissions;
     }
 
+
     private static function getAdminBKPSDMPermissions(): array
     {
         $properties = [
@@ -373,6 +374,12 @@ trait PermissionsTrait
             self::$coursePermissions,
             self::$customerPermissions,
             self::$PendidikanLanjutanPermissions,
+            [
+                'group_name' => 'pendidikan lanjutan management',
+                'permissions' => [
+                    'pendidikanlanjutan.pendaftar',
+                ],
+            ],
         ];
 
         $permissions = [];

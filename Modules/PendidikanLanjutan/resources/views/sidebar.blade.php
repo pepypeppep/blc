@@ -3,7 +3,7 @@
         @adminCan('pendidikanlanjutan.pendaftar')
             <li class="{{ isRoute('admin.peserta.*', 'active') }}">
                 <a class="nav-link" href="{{ route('admin.vacancies.peserta.index') }}">
-                    <i class="fas fa-book"></i>{{ __('Daftar Peserta') }}
+                    <i class="fas fa-book"></i>{{ __('Pegawai') }}
                 </a>
             </li>
         @endadminCan

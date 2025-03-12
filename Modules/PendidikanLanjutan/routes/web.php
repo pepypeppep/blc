@@ -27,7 +27,6 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::prefix('vacancies')->group(function () {
         Route::prefix('peserta')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'indexPeserta'])->name('vacancies.peserta.index');
-            Route::get('{id}', [PendidikanLanjutanController::class, 'showPeserta'])->name('vacancies.peserta.show');
         });
 
         Route::prefix('verification')->group(function () {

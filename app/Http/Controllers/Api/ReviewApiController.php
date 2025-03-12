@@ -12,7 +12,8 @@ class ReviewApiController extends Controller
     {
         $user_id = $request->input('user_id');
         try {
-            $reviews = CourseReview::where('user_id', $user_id)
+            $reviews = CourseReview::with('course:id,title,slug,thumbnail','user:id,name')
+                ->where('user_id', $user_id)
                 ->orderByDesc('id')
                 ->get();
 

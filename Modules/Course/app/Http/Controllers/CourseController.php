@@ -77,7 +77,7 @@ class CourseController extends Controller
         if ($request->edit_mode == 1) {
             $course = Course::findOrFail($request->id);
             $course->instructor_id = $request->instructor;
-            $course->unor_id = $request->instansi;
+            $course->instansi_id = $request->instansi;
         } else {
             $course = new Course();
             $slug = generateUniqueSlug(Course::class, $request->title);
@@ -104,7 +104,7 @@ class CourseController extends Controller
         $course->description = $request->description;
         $course->background = $request->background;
         $course->course_type = "pdf";
-        $course->unor_id = $request->instansi;
+        $course->instansi_id = $request->instansi;
         $course->instructor_id = $request->instructor;
         $course->save();
 

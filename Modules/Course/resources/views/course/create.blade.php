@@ -55,7 +55,7 @@
                                                             <option value="">{{ __('Select') }}</option>
                                                             @foreach ($instansis as $instansi)
                                                                 <option value="{{ $instansi->id }}"
-                                                                    @selected($instansi->id == @$course?->unor_id)>{{ $instansi->name }}
+                                                                    @selected($instansi->id == @$course?->instansi_id)>{{ $instansi->name }}
                                                                     ({{ $instansi->name }})
                                                                 </option>
                                                             @endforeach

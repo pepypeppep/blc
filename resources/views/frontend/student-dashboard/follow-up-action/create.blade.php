@@ -8,74 +8,87 @@
         <div class="row">
             <div class="col-12">
                 <div class="dashboard__review-table">
-                    <form id="contentForm" enctype="multipart/form-data" action="{{ route('student.follow-up-action.store') }}"
-                        method="POST">
-                        @csrf
-                        <div class="form-group">
-                            <label for="kursus">Kursus</label>
-                            <select name="course_id" class="form-control" id="kursus">
-                                <option value="">Pilih Kursus</option>
-                                @foreach ($courses as $item)
-                                    <option value="{{ $item->id }}">{{ $item->title }}</option>
-                                @endforeach
-                            </select>
-                            @error('course_id')
-                                <small class="text-danger d-block">{{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="form-group">
+                    @if ($items->count() > 0)
+                        <form id="contentForm" enctype="multipart/form-data"
+                            action="{{ route('student.follow-up-action.store') }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label for="kursus">Kursus</label>
+                                <select name="course_id" class="form-control" id="kursus">
+                                    <option value="">Pilih Kursus</option>
+                                    @foreach ($items as $item)
+                                        <option value="{{ $item->course->id }}">{{ $item->course->title }}</option>
+                                    @endforeach
+                                </select>
+                                @error('course_id')
+                                    <small class="text-danger d-block">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <div class="form-group">
 
-                            <div class="mt-2">
-                                <label for="fileSurat" class="form-label">Unggah File Rencana Tindak Lanjut</label>
-                                <!-- Upload Section -->
-                                <div class="upload-card">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <h5 class="mb-3">Pilih berkas atau drag & drop di sini</h5>
-                                    <p class="text-muted">Hanya format PDF, maksimal 30MB</p>
-                                    <input name="file_path" type="file" id="fileInput" accept=".pdf">
-                                    <label for="fileInput">Telusuri Berkas</label>
-                                </div>
+                                <div class="mt-2">
+                                    <label for="fileSurat" class="form-label">Unggah File Rencana Tindak Lanjut</label>
+                                    <!-- Upload Section -->
+                                    <div class="upload-card">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <h5 class="mb-3">Pilih berkas atau drag & drop di sini</h5>
+                                        <p class="text-muted">Hanya format PDF, maksimal 30MB</p>
+                                        <input name="file_path" type="file" id="fileInput" accept=".pdf">
+                                        <label for="fileInput">Telusuri Berkas</label>
+                                    </div>
 
-                                <!-- File Info Section -->
-                                <div id="fileInfo" style="display: none;">
-                                    <div class="file-info">
-                                        <div class="d-flex align-items-center">
-                                            <!-- Font Awesome Icon PDF -->
-                                            <i class="fas fa-file-pdf fa-lg"></i>
-                                            <span id="fileName" class="fw-bold"></span>
-                                        </div>
-                                        <div class="file-actions">
-                                            <!-- Preview Button -->
-                                            <button type="button" id="previewBtn" data-bs-toggle="modal"
-                                                data-bs-target="#previewModal" title="Preview">
-                                                Pratinjau
-                                            </button>
-                                            <!-- Delete Button -->
-                                            <button type="button" class="text-danger" id="deleteBtn" title="Hapus">
-                                                Hapus
-                                            </button>
+                                    <!-- File Info Section -->
+                                    <div id="fileInfo" style="display: none;">
+                                        <div class="file-info">
+                                            <div class="d-flex align-items-center">
+                                                <!-- Font Awesome Icon PDF -->
+                                                <i class="fas fa-file-pdf fa-lg"></i>
+                                                <span id="fileName" class="fw-bold"></span>
+                                            </div>
+                                            <div class="file-actions">
+                                                <!-- Preview Button -->
+                                                <button type="button" id="previewBtn" data-bs-toggle="modal"
+                                                    data-bs-target="#previewModal" title="Preview">
+                                                    Pratinjau
+                                                </button>
+                                                <!-- Delete Button -->
+                                                <button type="button" class="text-danger" id="deleteBtn" title="Hapus">
+                                                    Hapus
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                @error('file_path')
+                                    <small class="text-danger d-block">{{ $message }}</small>
+                                @enderror
                             </div>
-                            @error('file_path')
-                                <small class="text-danger d-block">{{ $message }}</small>
-                            @enderror
-                        </div>
-                        <div class="form-group mt-3">
-                            <label for="catatan">Resume Rencana Tindak Lanjut</label>
-                            @csrf
-                            <input type="hidden" name="summary" id="summary">
-                            <div id="editor"></div>
-                            <br>
+                            <div class="form-group mt-3">
+                                <label for="catatan">Resume Rencana Tindak Lanjut</label>
+                                @csrf
+                                <input type="hidden" name="summary" id="summary">
+                                <div id="editor"></div>
+                                <br>
 
-                            @error('summary')
-                                <small class="text-danger d-block">{{ $message }}</small>
-                            @enderror
+                                @error('summary')
+                                    <small class="text-danger d-block">{{ $message }}</small>
+                                @enderror
+                            </div>
+                            <button type="submit" class="bg-primary text-white">Simpan</button>
+                        </form>
+                    @else
+                        <div class="text-center d-flex flex-column align-items-center flex-md-row">
+                            <img src="https://storage.googleapis.com/a1aa/image/XsTEW3YFbJDWbBqJzmCa-DJuXpRXkP-W7zTuf-lfWHI.jpg"
+                                alt="Illustration of a robot holding a stop sign" class="img-fluid"
+                                style="max-width: 300px; height: auto;">
+                            <div class="mt-4 mt-md-0 ms-md-4">
+                                <h1 class="text-danger fw-bold">Whoops</h1>
+                                <h2 class="text-danger fw-bold mt-2">Akses Dibatasi</h2>
+                                <p class="text-secondary mt-3">Anda belum bisa membuat rencana tindak lanjut.
+                                    Selesaikan kursus terlebih dahulu untuk melanjutkan</p>
+                            </div>
                         </div>
-                        <button type="submit" class="bg-primary text-white">Simpan</button>
-                    </form>
-
+                    @endif
                 </div>
             </div>
 

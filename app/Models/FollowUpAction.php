@@ -16,6 +16,8 @@ class FollowUpAction extends Model
         'summary',
         'file_path',
         'status',
+        'instructor_id',
+        'note'
     ];
 
     //relations

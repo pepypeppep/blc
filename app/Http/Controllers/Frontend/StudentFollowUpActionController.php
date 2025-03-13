@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\CourseProgress;
 use App\Models\FollowUpAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,21 +28,15 @@ class StudentFollowUpActionController extends Controller
     public function create()
     {
         //data course
+        $items = CourseProgress::with('course')
+            ->where(
+                'user_id',
+                userAuth()->id,
+            )
+            ->where('watched', 1)
+            ->get();
 
-        $enrolls = Enrollment::with(['course' => function ($q) {
-            $q->withTrashed()->select('id', 'title', 'thumbnail');
-        }])->where('user_id', userAuth()->id)->get();
-
-
-        $courses = [];
-
-        foreach ($enrolls as $enroll) {
-            if ($enroll->course) {
-                $courses[] = $enroll->course;
-            }
-        }
-
-        return view('frontend.student-dashboard.follow-up-action.create', compact('courses'));
+        return view('frontend.student-dashboard.follow-up-action.create', compact('items'));
     }
 
     public function store(Request $request)
@@ -88,19 +83,15 @@ class StudentFollowUpActionController extends Controller
     {
         $followUpAction = FollowUpAction::findOrFail($id);
 
-        $enrolls = Enrollment::with(['course' => function ($q) {
-            $q->withTrashed()->select('id', 'title', 'thumbnail');
-        }])->where('user_id', userAuth()->id)->get();
+        $items = CourseProgress::with('course')
+            ->where(
+                'user_id',
+                userAuth()->id,
+            )
+            ->where('watched', 1)
+            ->get();
 
-
-        $courses = [];
-
-        foreach ($enrolls as $enroll) {
-            if ($enroll->course) {
-                $courses[] = $enroll->course;
-            }
-        }
-        return view('frontend.student-dashboard.follow-up-action.edit', compact('followUpAction', 'courses'));
+        return view('frontend.student-dashboard.follow-up-action.edit', compact('followUpAction', 'items'));
     }
 
     public function update(Request $request, $id)

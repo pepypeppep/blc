@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('instansis', function (Blueprint $table) {
             $table->id();
+            $table->string('esurat_id')->nullable()->index();
+            $table->string('unor_id')->nullable()->index();
             $table->string('name')->index();
             $table->timestamps();
         });

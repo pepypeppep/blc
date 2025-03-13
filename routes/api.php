@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\CertificateApiController;
 use App\Http\Controllers\Api\CourseApiController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\ReviewApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,4 +19,8 @@ Route::name('api.')->group(function () {
     Route::get('/courses/{courseId}/get-thumbnail', [CourseApiController::class, 'getCourseThumbnail'])->name('courses.get-thumbnail');
     Route::get('/courses-categories', [CourseApiController::class, 'categories'])->name('courses.categories');
     Route::get('/courses-levels', [CourseApiController::class, 'levels'])->name('courses.levels');
+
+    Route::get('/certificates', [CertificateApiController::class, 'getCertificatesForStudent'])->name('certificates');
+        
+    Route::get('/reviews', [ReviewApiController::class, 'reviews'])->name('reviews');
 });

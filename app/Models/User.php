@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\InstructorRequest\app\Models\InstructorRequest;
+use Modules\Order\app\Models\Enrollment;
 
 class User extends Authenticatable
 {
@@ -28,21 +29,36 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'id',
-        'instansi_id',
-        'unor_id',
-        'nip',
-        'role',
-        'name',
+        // 'id',
+        'agama',
+        'alamat',
+        'bup',
+        'date_of_birth',
         'email',
-        'password',
-        'status',
-        'is_banned',
-        'verification_token',
+        'eselon',
         'forget_password_token',
+        'golongan',
+        'instansi_id',
+        'is_banned',
+        'jabatan',
+        'jenis_kelamin',
+        'name',
+        'nip',
+        'pangkat',
+        'password',
+        'pendidikan',
         'phone',
         'place_of_birth',
-        'date_of_birth'
+        'role',
+        'status',
+        'tanggal_lahir',
+        'tempat_lahir',
+        'tingkat_pendidikan',
+        'tmt_golongan',
+        'tmt_jabatan',
+        'unor_id',
+        'username',
+        'verification_token',
     ];
 
     /**

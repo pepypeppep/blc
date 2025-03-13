@@ -79,8 +79,8 @@ class Admin extends Authenticatable
         return $hasPermission;
     }
 
-    public function instansi(): HasOne
+    public function instansi()
     {
-        return $this->hasOne(Unor::class, 'id', 'instansi_id');
+        return $this->belongsTo(Instansi::class);
     }
 }

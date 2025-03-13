@@ -1,6 +1,9 @@
 @extends('frontend.student-dashboard.layouts.master')
 
 @section('dashboard-contents')
+    @php
+        use Modules\PendidikanLanjutan\app\Models\VacancyUser;
+    @endphp
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title">
             <h4 class="title">{{ __('Detail Pendaftaran Tugas Belajar') }}</h4>
@@ -24,7 +27,11 @@
                                             aria-controls="itemFour-tab-pane" aria-selected="false"
                                             tabindex="-1">Dokumen</button>
                                     </li>
-                                    @if ($vacancy->status == 'eligible' || $vacancy->status == 'done')
+                                    @if (
+                                        $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
+                                            $vacancy->status === VacancyUser::STATUS_DONE ||
+                                            $vacancy->status === VacancyUser::STATUS_REPORT ||
+                                            $vacancy->status === VacancyUser::STATUS_EXTEND)
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link" id="itemSix-tab" data-bs-toggle="tab"
                                                 data-bs-target="#itemSix-tab-pane" type="button" role="tab"
@@ -89,7 +96,7 @@
                                                                                     class="badge bg-secondary">{{ $log->status }}</span>
                                                                             @endif
                                                                         </h6>
-                                                                        <p>{{ $log->description }}</p>
+                                                                        <p>{!! $log->description !!}</p>
                                                                     </div>
                                                                 </div>
                                                             </div>

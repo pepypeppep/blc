@@ -25,6 +25,10 @@ Route::middleware(['auth:admin', 'translation'])
 
 Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::prefix('vacancies')->group(function () {
+        Route::prefix('peserta')->group(function () {
+            Route::get('/', [PendidikanLanjutanController::class, 'indexPeserta'])->name('vacancies.peserta.index');
+        });
+
         Route::prefix('verification')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'indexVerif'])->name('vacancies.verification.index');
             Route::get('{id}', [PendidikanLanjutanController::class, 'showVerif'])->name('vacancies.verification.show');

@@ -74,10 +74,12 @@ class UsersSync extends Command
                 'pangkat' => $user['pangkat'],
                 'jabatan' => $user['jabatan'],
                 'eselon' => $user['Eselon'],
-                // 'unor' => $user['unor'],
-                // 'unor_l1' => $user['unor_l1'],
-                // 'unor_l2' => $user['unor_l2'],
-                // 'unor_l3' => $user['unor_l3'],
+                'alamat' => $user['alamat'],
+                'jenis_kelamin' => $user['jenis_kelamin'],
+                'pendidikan' => $user['pendidikan'],
+                'tingkat_pendidikan' => $user['tingkat_pendidikan'],
+                'tmt_golongan' => $user['tmt_golongan'],
+                'tmt_jabatan' => $user['tmt_jabatan'],
             ]);
         }
 

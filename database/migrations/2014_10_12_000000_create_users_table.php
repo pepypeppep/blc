@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->unsignedBigInteger('instansi_id')->nullable();
             $table->unsignedBigInteger('unor_id')->nullable();
-
             $table->string('nip')->unique()->nullable();
             $table->string('name');
             $table->string('jabatan')->nullable();
@@ -36,6 +35,11 @@ return new class extends Migration
             $table->string('golongan')->nullable();
             $table->string('pangkat')->nullable();
             $table->string('eselon')->nullable();
+            $table->string('alamat')->nullable();
+            $table->string('pendidikan')->nullable();
+            $table->string('tingkat_pendidikan')->nullable();
+            $table->date('tmt_golongan')->nullable();
+            $table->date('tmt_jabatan')->nullable();
             $table->rememberToken();
             $table->timestamps();
 

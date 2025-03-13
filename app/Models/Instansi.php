@@ -8,6 +8,8 @@ class Instansi extends Model
 {
     protected $fillable = [
         'id',
-        'name'
+        'esurat_id',
+        'unor_id',
+        'name',
     ];
 }

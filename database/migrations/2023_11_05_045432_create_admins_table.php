@@ -15,12 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('username')->unique();
+            $table->unsignedBigInteger('instansi_id')->nullable();
             $table->string('email')->unique();
             $table->string('image')->nullable();
             $table->string('password');
             $table->text('bio')->nullable();
             $table->string('status')->default('active');
             $table->timestamps();
+
+            $table->foreign('instansi_id')->references('id')->on('instansis')->onDelete('restrict')->onUpdate('restrict');
         });
     }
 

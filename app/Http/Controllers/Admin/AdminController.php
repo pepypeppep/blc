@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\RedirectType;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Instansi;
 use App\Traits\RedirectHelperTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -23,15 +24,15 @@ class AdminController extends Controller
         return view('admin.admin-list.admin')->with([
             'admins' => $admins,
         ]);
-
     }
 
     public function create()
     {
         checkAdminHasPermissionAndThrowException('admin.create');
         $roles = Role::all();
+        $instansis = Instansi::all();
 
-        return view('admin.admin-list.create_admin', compact('roles'));
+        return view('admin.admin-list.create_admin', compact('roles', 'instansis'));
     }
 
     public function store(Request $request)
@@ -39,11 +40,11 @@ class AdminController extends Controller
         checkAdminHasPermissionAndThrowException('admin.store');
         $rules = [
             'name' => 'required',
-            'email' => 'required|unique:admins',
-            'password' => 'required|min:4',
+            'username' => 'required|unique:admins',
             'status' => 'required',
             'role' => 'nullable|array',
         ];
+
         $customMessages = [
             'name.required' => __('Name is required'),
             'email.required' => __('Email is required'),
@@ -55,12 +56,22 @@ class AdminController extends Controller
         ];
         $this->validate($request, $rules, $customMessages);
 
+
         $admin = new Admin();
         $admin->name = $request->name;
-        $admin->email = $request->email;
+        $admin->username = $request->username;
+        $admin->email = sprintf('%s@lms.bantulkab.go.id', $request->username);
         $admin->status = $request->status;
-        $admin->password = Hash::make($request->password);
+        if ($request->instansi) {
+            $instansi = Instansi::find($request->instansi);
+            if (!$instansi) {
+                return $this->redirectWithMessage(RedirectType::CREATE->value, 'admin.admin.index');
+            }
+            $admin->instansi_id = $instansi->id;
+        }
         $admin->save();
+
+
         if ($request->role) {
             $admin->syncRoles($request->role);
         }
@@ -73,8 +84,10 @@ class AdminController extends Controller
         checkAdminHasPermissionAndThrowException('admin.edit');
         $admin = Admin::findOrFail($id);
         $roles = Role::all();
+        $instansis = Instansi::all();
+        $selectedInstansiId = $admin->instansi_id;
 
-        return view('admin.admin-list.edit_admin', compact('roles', 'admin'));
+        return view('admin.admin-list.edit_admin', compact('roles', 'admin', 'instansis', 'selectedInstansiId'));
     }
 
     public function update(Request $request, $id)
@@ -84,7 +97,8 @@ class AdminController extends Controller
         abort_if($admin->id == 1, 403);
         $rules = [
             'name' => 'required',
-            'email' => 'required|unique:admins,email,'.$admin->id,
+            'email' => 'required|unique:admins,email,' . $admin->id,
+            'username' => 'required|unique:admins,username,' . $admin->id,
             'password' => 'nullable|min:4',
             'status' => 'required',
             'role' => 'nullable|array',
@@ -93,13 +107,22 @@ class AdminController extends Controller
             'name.required' => __('Name is required'),
             'email.required' => __('Email is required'),
             'email.unique' => __('Email already exist'),
+            'username.required' => __('Username is required'),
+            'username.unique' => __('Username already exist'),
             'password.min' => __('Password Must be 4 characters'),
             'role.array' => __('You must select role'),
         ];
         $this->validate($request, $rules, $customMessages);
 
+        $instansi = Instansi::find($request->instansi);
+        if (!$instansi) {
+            return $this->redirectWithMessage(RedirectType::CREATE->value, 'admin.admin.index');
+        }
+
+        $admin->instansi_id = $instansi->id;
         $admin->name = $request->name;
         $admin->email = $request->email;
+        $admin->username = $request->username;
         $admin->status = $request->status;
         if ($request->filled('password')) {
             $admin->password = Hash::make($request->password);

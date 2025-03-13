@@ -39,7 +39,6 @@ class UserSeeder extends Seeder
             [
                 'id' => 1,
                 'name' => 'Unor Example 1',
-                'instansi_id' => 1
             ],
         ]);
 
@@ -47,8 +46,15 @@ class UserSeeder extends Seeder
             [
                 'id' => 2,
                 'name' => 'Unor Example 2',
-                'instansi_id' => 1,
                 'parent_id' => 1
+            ],
+        ]);
+
+        // 20000
+        DB::table('unors')->insert([
+            [
+                'id' => 20000,
+                'name' => 'Perda 20000',
             ],
         ]);
 

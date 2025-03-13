@@ -77,4 +77,9 @@ class Admin extends Authenticatable
 
         return $hasPermission;
     }
+
+    public function instansi()
+    {
+        return $this->belongsTo(Instansi::class);
+    }
 }

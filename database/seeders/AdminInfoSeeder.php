@@ -52,7 +52,7 @@ class AdminInfoSeeder extends Seeder
             $admin->username = 'lms_admin_opd';
             $admin->image = 'uploads/website-images/admin.jpg';
             $admin->password = Hash::make(1234);
-            $admin->instansi_id = 20487;
+            // $admin->instansi_id = 20487;
             $admin->status = 'active';
             $admin->save();
 

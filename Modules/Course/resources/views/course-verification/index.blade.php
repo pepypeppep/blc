@@ -105,9 +105,9 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive max-h-400">
+                                <div class=" max-h-400">
                                     <div class="row mb-2">
-                                        <div class="col-md-8">
+                                        <div class="col-md-10">
                                             <button type="button" id="acceptAll" class="btn btn-primary btn-md m-2">
                                                 <i class="fa fa-check" aria-hidden="true"></i> Terima Semua
                                             </button>
@@ -116,10 +116,12 @@
                                             </button>
 
                                         </div>
-                                        <div class="col-md-4 text-right">
+                                        <div class="col-md-2 text-right">
                                             <a href="{{ route('admin.course-verification.rejectedList', ['id' => $id]) }}"
-                                                class="btn btn-primary btn-md m-2">
-                                                Verifikasi Pendaftaran yang Ditolak
+                                                class="btn btn-warning btn-md m-2 d-flex align-items-center"
+                                                onmouseover="this.classList.replace('btn-warning', 'btn-danger')"
+                                                onmouseout="this.classList.replace('btn-danger', 'btn-warning')">
+                                                <i class="fas fa-tasks mr-2"></i> Pendaftar yang Ditolak
                                             </a>
                                         </div>
                                     </div>
@@ -156,12 +158,10 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-primary btn-sm m-1 acceptStatus"
-                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="1">
+                                                        <button class="btn btn-primary btn-sm m-1 updateStatus" data-id="{{ $enrollmentUser->user->id }}" data-status="1">
                                                             <i class="fa fa-check" aria-hidden="true"></i> Terima
                                                         </button>
-                                                        <button class="btn btn-danger btn-sm m-1 rejectStatus"
-                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="0">
+                                                        <button class="btn btn-danger btn-sm m-1 updateStatus" data-id="{{ $enrollmentUser->user->id }}" data-status="0">
                                                             <i class="fa fa-times" aria-hidden="true"></i> Tolak
                                                         </button>
                                                     </td>
@@ -345,7 +345,6 @@
         </script>
     @endpush
 @endpush
-
 
 @push('css')
     <style>

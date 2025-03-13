@@ -21,9 +21,9 @@
                                 <h4>{{ __('Registrant List') }}</h4>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive max-h-400">
+                                <div class=" max-h-400">
                                     <div class="row mb-2">
-                                        <div class="col-md-8">
+                                        <div class="col-md-10">
                                             <button type="button" id="acceptAll" class="btn btn-primary btn-md m-2">
                                                 <i class="fa fa-check" aria-hidden="true"></i> Terima Semua
                                             </button>
@@ -31,60 +31,15 @@
                                                 <i class="fa fa-times" aria-hidden="true"></i> Tolak Semua
                                             </button>
                                         </div>
-                                        <div class="col-md-4 text-right">
-                                            {{-- <button type="button" id="verifyRejected" class="btn btn-primary btn-md m-2">
-                                            Verifikasi Ulang Pendaftaran yang Ditolak
-                                        </button> --}}
+                                        <div class="col-auto ms-auto text-end">
+                                            <a href="javascript:history.back()" class="btn btn-primary btn-md m-2 d-flex align-items-center w-auto">
+                                                <i class="fas fa-arrow-left mr-2"></i> Kembali
+                                            </a>
                                         </div>
                                     </div>
-                                </div>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th><input type="checkbox" id="selectAll"></th>
-                                            <th>{{ __('#') }}</th>
-                                            <th>{{ __('Employee Id') }}</th>
-                                            <th>{{ __('Name') }}</th>
-                                            <th>{{ __('Employment Unit') }}</th>
-                                            <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Reason') }}</th>
-                                            <th>{{ __('Action') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($rejectedUsers as $rejectedUser)
-                                            <tr data-user-id="{{ $rejectedUser->user->id }}">
-                                                <td><input type="checkbox" class="userCheckbox" value="{{ $rejectedUser->user->id }}"></td>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $rejectedUser->user->nip }}</td>
-                                                <td>{{ $rejectedUser->user->name }}</td>
-                                                <td>Dinas Komunikasi dan Informatika</td>
-                                                <td>
-                                                    @if ($rejectedUser->has_access == 1)
-                                                        <span class="badge badge-success">Diterima</span>
-                                                    @elseif ($rejectedUser->has_access == 0)
-                                                        <span class="badge badge-danger">Ditolak</span>
-                                                    @else
-                                                        <span class="badge badge-warning">Pending</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($rejectedUser->has_access == 0)
-                                                        {{ $rejectedUser->notes ?? 'Tidak ada alasan yang diberikan' }}
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-primary btn-sm m-1 updateStatus" data-id="{{ $rejectedUser->user->id }}" data-status="1">
-                                                        <i class="fa fa-check" aria-hidden="true"></i> Terima
-                                                    </button>
-                                                    <button class="btn btn-danger btn-sm m-1 updateStatus" data-id="{{ $rejectedUser->user->id }}" data-status="0">
-                                                        <i class="fa fa-times" aria-hidden="true"></i> Tolak
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @empty
+
+                                    <table class="table table-striped">
+                                        <thead>
                                             <tr>
                                                 <th><input type="checkbox" id="selectAll"></th>
                                                 <th>{{ __('#') }}</th>
@@ -99,8 +54,7 @@
                                         <tbody>
                                             @forelse ($rejectedUsers as $rejectedUser)
                                                 <tr data-user-id="{{ $rejectedUser->user->id }}">
-                                                    <td><input type="checkbox" class="userCheckbox"
-                                                            value="{{ $rejectedUser->user->id }}"></td>
+                                                    <td><input type="checkbox" class="userCheckbox" value="{{ $rejectedUser->user->id }}"></td>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $rejectedUser->user->nip }}</td>
                                                     <td>{{ $rejectedUser->user->name }}</td>
@@ -116,22 +70,23 @@
                                                     </td>
                                                     <td>
                                                         @if ($rejectedUser->has_access == 0)
-                                                            {{ $rejectedUser->rejection_reason ?? 'Tidak ada alasan yang diberikan' }}
+                                                            {{ $rejectedUser->notes ?? 'Tidak ada alasan yang diberikan' }}
                                                         @else
                                                             -
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-primary btn-sm m-1 acceptStatus"
-                                                            data-id="{{ $rejectedUser->user->id }}" data-status="1">
+                                                        <button class="btn btn-primary btn-sm m-1 updateStatus" data-id="{{ $rejectedUser->user->id }}" data-status="1">
                                                             <i class="fa fa-check" aria-hidden="true"></i> Terima
+                                                        </button>
+                                                        <button class="btn btn-danger btn-sm m-1 updateStatus" data-id="{{ $rejectedUser->user->id }}" data-status="0">
+                                                            <i class="fa fa-times" aria-hidden="true"></i> Tolak
                                                         </button>
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="8" class="text-center">
-                                                        {{ __('No registrants found!') }}</td>
+                                                    <td colspan="8" class="text-center">{{ __('No registrants found!') }}</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>

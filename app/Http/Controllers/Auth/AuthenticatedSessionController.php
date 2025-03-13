@@ -116,12 +116,8 @@ class AuthenticatedSessionController extends Controller
         $notification = __('Logged out successfully.');
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
 
-        // check if login from sso, so we can logout from keycloak
-        if (session()->has('sso')) {
-            $redirectUri = Config::get('app.url');
-            return redirect(Socialite::driver('keycloak')->getLogoutUrl($redirectUri, env('KEYCLOAK_CLIENT_ID')));
-        }
 
-        return redirect()->route('login')->with($notification);
+        $redirectUri = Config::get('app.url');
+        return redirect(Socialite::driver('keycloak')->getLogoutUrl($redirectUri, env('KEYCLOAK_CLIENT_ID')));
     }
 }

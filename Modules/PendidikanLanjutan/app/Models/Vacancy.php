@@ -4,6 +4,7 @@ namespace Modules\PendidikanLanjutan\app\Models;
 
 use App\Models\Unor;
 use App\Models\User;
+use App\Models\Instansi;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -44,7 +45,7 @@ class Vacancy extends Model
      */
     public function instansi(): BelongsTo
     {
-        return $this->belongsTo(Unor::class);
+        return $this->belongsTo(Instansi::class);
     }
 
     public function educationLevel()

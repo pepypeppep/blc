@@ -67,6 +67,8 @@ class UserSeeder extends Seeder
             'password' => bcrypt('1234'),
             'role' => 'student',
             'email_verified_at' => now(),
+            'golongan' => 'III/a',
+
         ]);
 
         User::create([

@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Frontend\StudentVacancyReportRequest;
-use App\Http\Requests\Frontend\UploadRequirementFileRequest;
-use App\Models\Unor;
-use App\Models\VacancyReport;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\Models\Unor;
+use App\Models\Instansi;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
+use App\Models\VacancyReport;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\View\View;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
-use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Modules\PendidikanLanjutan\app\Models\VacancyUser;
+use App\Http\Requests\Frontend\StudentVacancyReportRequest;
+use App\Http\Requests\Frontend\UploadRequirementFileRequest;
+use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 
 class StudentPendidikanLanjutanController extends Controller
@@ -186,7 +187,7 @@ class StudentPendidikanLanjutanController extends Controller
         DB::beginTransaction();
 
         $auth = userAuth();
-        $instansi = Unor::where('id', $auth->instansi_id)->first();
+        $instansi = Instansi::findOrFail($auth->instansi_id);
 
         $vacancyUser->update([
             'employment_grade' => $auth->golongan,

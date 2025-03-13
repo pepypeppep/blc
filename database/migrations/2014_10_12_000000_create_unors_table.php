@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('unors', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->longText('name')->index();
+            $table->string('name')->index();
             $table->timestamps();
             $table->foreign('parent_id')->references('id')->on('unors')->onDelete('restrict')->onUpdate('restrict');
         });

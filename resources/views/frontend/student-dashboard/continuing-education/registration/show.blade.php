@@ -50,7 +50,11 @@
                             <div class="tab-content" id="myTabContent">
                                 @include('frontend.student-dashboard.continuing-education.registration.partials.data-peserta')
                                 @include('frontend.student-dashboard.continuing-education.registration.partials.dokumen')
-                                @if ($vacancy->status == 'eligible' || $vacancy->status == 'done')
+                                @if (
+                                    $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
+                                        $vacancy->status === VacancyUser::STATUS_DONE ||
+                                        $vacancy->status === VacancyUser::STATUS_REPORT ||
+                                        $vacancy->status === VacancyUser::STATUS_EXTEND)
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.lampiran')
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.laporan')
                                 @endif

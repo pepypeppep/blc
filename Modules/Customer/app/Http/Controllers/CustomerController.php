@@ -27,7 +27,14 @@ class CustomerController extends Controller
     {
         checkAdminHasPermissionAndThrowException('customer.view');
 
-        $query = User::query();
+        /**
+         * @var \App\Models\Admin
+         */
+        $authUser = auth()->user();
+        $authInstansi = $authUser->instansi;
+
+        $query = User::query()
+            ->where('instansi_id', $authInstansi->id);
 
         $query->when($request->filled('keyword'), function ($q) use ($request) {
             $q->where('name', 'like', '%' . $request->keyword . '%')
@@ -345,12 +352,14 @@ class CustomerController extends Controller
         return redirect()->back()->with($notification);
     }
 
-    function editExperienceModal(Request $request, $id) {
+    function editExperienceModal(Request $request, $id)
+    {
         $experience = UserExperience::find($id);
         return view('customer::modals.edit-experience-modal', compact('experience'))->render();
     }
 
-    function experienceUpdate(Request $request, $id) {
+    function experienceUpdate(Request $request, $id)
+    {
         $rules = [
             'company' => ['required', 'string', 'max:255'],
             'position' => ['required', 'string', 'max:255'],
@@ -372,7 +381,7 @@ class CustomerController extends Controller
             'current.boolean' => __('The current field must be a boolean'),
         ];
 
-        $this->validate($request, $rules, $messages); 
+        $this->validate($request, $rules, $messages);
         $experience = UserExperience::whereId($id)->firstOrFail();
         $experience->company = $request->company;
         $experience->position = $request->position;
@@ -387,10 +396,11 @@ class CustomerController extends Controller
         return redirect()->back()->with($notification);
     }
 
-    function experienceDestroy($id) {
+    function experienceDestroy($id)
+    {
         $experience = UserExperience::whereId($id)->firstOrFail();
         $experience->delete();
-        
+
         $notification = __('Deleted Successfully');
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
 
@@ -412,7 +422,7 @@ class CustomerController extends Controller
             'end_date' => ['nullable', 'date'],
         ];
         $messages = [
-            
+
             'organization.required' => __('The organization field is required.'),
             'organization.max' => __('The organization field must not be greater than 255 characters.'),
             'organization.string' => __('The organization field must be a string.'),
@@ -432,11 +442,11 @@ class CustomerController extends Controller
 
         $education = new UserEducation();
         $education->user_id = $id;
-        $education->organization = $request->organization; 
-        $education->degree = $request->degree; 
-        $education->start_date = $request->start_date; 
-        $education->end_date = $request->end_date; 
-        $education->current = $request->current; 
+        $education->organization = $request->organization;
+        $education->degree = $request->degree;
+        $education->start_date = $request->start_date;
+        $education->end_date = $request->end_date;
+        $education->current = $request->current;
         $education->save();
 
         $notification = __('Create Successfully');
@@ -445,13 +455,15 @@ class CustomerController extends Controller
         return redirect()->back()->with($notification);
     }
 
-    function editEducationModal(Request $request, $id) {
-        $education = UserEducation::find($id); 
-        return view('customer::modals.edit-education-modal', compact('education'))->render(); 
+    function editEducationModal(Request $request, $id)
+    {
+        $education = UserEducation::find($id);
+        return view('customer::modals.edit-education-modal', compact('education'))->render();
     }
 
-    function educationUpdate(Request $request, $id) {
-       
+    function educationUpdate(Request $request, $id)
+    {
+
         $rules = [
             'organization' => ['required', 'max:255', 'string'],
             'degree' => ['required', 'max:255', 'string'],
@@ -459,7 +471,7 @@ class CustomerController extends Controller
             'end_date' => ['nullable', 'date'],
         ];
         $messages = [
-            
+
             'organization.required' => __('The organization field is required.'),
             'organization.max' => __('The organization field must not be greater than 255 characters.'),
             'organization.string' => __('The organization field must be a string.'),
@@ -477,10 +489,10 @@ class CustomerController extends Controller
 
         $this->validate($request, $rules, $messages);
         $education = UserEducation::whereId($id)->firstOrFail();
-        $education->organization = $request->organization; 
-        $education->degree = $request->degree; 
-        $education->start_date = $request->start_date; 
-        $education->end_date = $request->end_date; 
+        $education->organization = $request->organization;
+        $education->degree = $request->degree;
+        $education->start_date = $request->start_date;
+        $education->end_date = $request->end_date;
         $education->current = $request->current;
         $education->save();
 
@@ -490,23 +502,25 @@ class CustomerController extends Controller
         return redirect()->back()->with($notification);
     }
 
-    function educationDestroy($id) {
+    function educationDestroy($id)
+    {
         $education = UserEducation::whereId($id)->firstOrFail();
         $education->delete();
-        
+
         $notification = __('Deleted Successfully');
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
 
         return redirect()->back()->with($notification);
     }
 
-    function locationUpdate(Request $request, $id) {
+    function locationUpdate(Request $request, $id)
+    {
         $request->validate([
             'country' => ['required', 'integer', 'exists:countries,id'],
             'state' => ['nullable', 'max:255'],
             'city' => ['nullable', 'max:255'],
             'address' => ['nullable', 'string', 'max:255']
-        ],[
+        ], [
             'country.required' => __('You must select a country.'),
             'country.integer' => __('Country ID must be an integer.'),
             'country.exists' => __('The selected country is invalid.'),
@@ -523,7 +537,7 @@ class CustomerController extends Controller
         $user->city = $request->city;
         $user->state = $request->state;
         $user->country_id = $request->country;
-        $user->save(); 
+        $user->save();
 
         $notification = __('Updated Successfully');
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
@@ -531,7 +545,8 @@ class CustomerController extends Controller
         return redirect()->back()->with($notification);
     }
 
-    function socialUpdate(Request $request, $id) {
+    function socialUpdate(Request $request, $id)
+    {
         $rules = [
             'facebook' => ['nullable', 'string', 'max:255'],
             'twitter' => ['nullable', 'string', 'max:255'],
@@ -560,7 +575,7 @@ class CustomerController extends Controller
         $user->website = $request->website;
         $user->linkedin = $request->linkedin;
         $user->github = $request->github;
-        $user->save(); 
+        $user->save();
 
         $notification = __('Updated Successfully');
         $notification = ['messege' => $notification, 'alert-type' => 'success'];

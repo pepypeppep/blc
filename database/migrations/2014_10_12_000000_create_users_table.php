@@ -40,6 +40,7 @@ return new class extends Migration
             $table->string('tingkat_pendidikan')->nullable();
             $table->date('tmt_golongan')->nullable();
             $table->date('tmt_jabatan')->nullable();
+            $table->boolean('is_banned')->default(0);
             $table->rememberToken();
             $table->timestamps();
 

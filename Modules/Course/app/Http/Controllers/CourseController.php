@@ -6,21 +6,15 @@ use App\Models\Quiz;
 use App\Models\User;
 use App\Models\Course;
 use Illuminate\View\View;
-use App\Models\QuizQuestion;
 use Illuminate\Http\Request;
 use App\Models\CourseChapter;
-use App\Models\CourseChapterItem;
-use App\Models\CourseChapterLesson;
 use App\Models\CourseSelectedLevel;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use App\Models\CourseSelectedLanguage;
 use App\Models\CoursePartnerInstructor;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Modules\Order\app\Models\Enrollment;
-use App\Models\CourseSelectedFilterOption;
-use App\Models\Unor;
+use App\Models\Instansi;
 use Modules\CertificateBuilder\app\Models\CertificateBuilder;
 use Modules\Course\app\Models\CourseLevel;
 use Modules\Course\app\Models\CourseCategory;
@@ -58,7 +52,7 @@ class CourseController extends Controller
             $query->orderBy('id', $orderBy)->paginate($request->par_page ?? null)->withQueryString();
         $categories = CourseCategory::where('status', 1)->get();
         $instructors = User::where('role', 'instructor')->get();
-        $instansis = Unor::where('is_instansi', 1)->get();
+        $instansis = Instansi::get();
         return view('course::course.index', compact('courses', 'categories', 'instructors', 'instansis'));
     }
 
@@ -73,7 +67,7 @@ class CourseController extends Controller
         Session::put('course_create', $id);
         $course = Course::findOrFail($id);
         $instructors = User::where('role', 'instructor')->get();
-        $instansis = Unor::where('is_instansi', 1)->get();
+        $instansis = Instansi::get();
         $editMode = true;
         return view('course::course.create', compact('course', 'editMode', 'instructors', 'instansis'));
     }
@@ -134,7 +128,7 @@ class CourseController extends Controller
             case '1':
                 $course = Course::findOrFail($request->id);
                 $instructors = User::where('role', 'instructor')->get();
-                $instansis = Unor::where('is_instansi', 1)->get();
+                $instansis = Instansi::get();
                 $editMode = true;
                 return view('course::course.create', compact('course', 'editMode', 'instructors', 'instansis'));
                 break;

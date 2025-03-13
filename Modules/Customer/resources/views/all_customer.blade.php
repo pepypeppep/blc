@@ -84,7 +84,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="table-responsive table-invoice">
-                                    <table class="table table-striped">
+                                    <table class="table-striped table">
                                         <thead>
                                             <tr>
                                                 <th>{{ __('SN') }}</th>
@@ -103,16 +103,10 @@
                                                     <td>{{ html_decode($user->email) }}</td>
                                                     <td>{{ $user->created_at->format('h:iA, d M Y') }}</td>
                                                     <td>
-                                                        @if ($user->email_verified_at)
-                                                            @if ($user->is_banned == 'no')
-                                                                <span
-                                                                    class="badge badge-success">{{ __('Active') }}</span>
-                                                            @else
-                                                                <b class="badge badge-danger">{{ __('Banned') }}</b>
-                                                            @endif
+                                                        @if ($user->is_banned == 'no')
+                                                            <span class="badge badge-success">{{ __('Active') }}</span>
                                                         @else
-                                                            <span
-                                                                class="badge badge-warning">{{ __('Not verified') }}</span>
+                                                            <b class="badge badge-danger">{{ __('Banned') }}</b>
                                                         @endif
                                                     </td>
                                                     <td>

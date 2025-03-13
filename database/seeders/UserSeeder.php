@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use App\Models\User;
 use App\Models\UserEducation;
 use App\Models\UserExperience;
@@ -17,21 +18,14 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // force truncate
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('instansis')->truncate();
-        DB::table('unors')->truncate();
-        DB::table('users')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
         DB::table('instansis')->insert([
             [
                 'id' => 1,
-                'name' => 'Badan Kepegawaian dan Pelatihan Bantul',
+                'name' => 'Dinas 1',
             ],
             [
                 'id' => 2,
-                'name' => 'Dinas Komunikasi dan Informatika Kabupaten Bantul',
+                'name' => 'Dinas 2',
             ]
         ]);
 
@@ -58,6 +52,9 @@ class UserSeeder extends Seeder
             ],
         ]);
 
+
+
+        // User
         User::create([
             'id' => 1,
             'instansi_id' => 1,

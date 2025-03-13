@@ -224,10 +224,11 @@ class CustomerController extends Controller
     public function show($id)
     {
         checkAdminHasPermissionAndThrowException('customer.view');
-
         $user = User::findOrFail($id);
-        $experiences = UserExperience::where('user_id', $user->id)->get();
-        $educations = UserEducation::where('user_id', $user->id)->get();
+
+        // limting access to the user on same instansi
+        $this->authorize('view',  $user);
+
         $banned_histories = BannedHistory::where('user_id', $id)->orderBy('id', 'desc')->get();
         $states = State::where(['country_id' => $user->country_id, 'status' => 1])->get();
         $cities = City::where(['state_id' => $user->state_id, 'status' => 1])->get();
@@ -235,8 +236,6 @@ class CustomerController extends Controller
         return view('customer::customer_show')->with([
             'user' => $user,
             'banned_histories' => $banned_histories,
-            'experiences' => $experiences,
-            'educations' => $educations,
             'states' => $states,
             'cities' => $cities
         ]);
@@ -260,6 +259,9 @@ class CustomerController extends Controller
         $request->validate($rules, $customMessages);
 
         $user = User::findOrFail($id);
+
+        $this->authorize('update',  $user);
+
         $user->name = $request->name;
         $user->email = $request->email;
         $user->phone = $request->phone;
@@ -296,6 +298,9 @@ class CustomerController extends Controller
         $this->validate($request, $rules, $messages);
 
         $user = User::findOrFail($id);
+
+        $this->authorize('update',  $user);
+
         $user->job_title = $request->designation;
         $user->bio = $request->bio;
         $user->short_bio = $request->short_bio;

@@ -42,13 +42,6 @@
                 @endif --}}
             @endif
 
-            @if (checkAdminHasPermission('pegawai.pendidikanlanjutan'))
-                <li class="menu-header">{{ __('Manage Pegawai') }}</li>
-                @if (Module::isEnabled('Pegawai'))
-                    @include('pegawai::sidebar')
-                @endif
-            @endif
-
             @if (checkAdminHasPermission('course.management'))
                 <li class="menu-header">{{ __('Manage ContinuingEducation') }}</li>
                 @if (Module::isEnabled('PendidikanLanjutan') && checkAdminHasPermission('pendidikanlanjutan.view'))

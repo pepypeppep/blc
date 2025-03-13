@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('instansi_id')->nullable();
             $table->string('email')->unique();
             $table->string('image')->nullable();
-            $table->unsignedBigInteger('instansi_id')->nullable();
             $table->string('password');
             $table->text('bio')->nullable();
             $table->string('status')->default('active');

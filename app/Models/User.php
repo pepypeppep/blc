@@ -153,13 +153,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the instansi associated with the User
+     * Get the instansi that owns the User
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function instansi(): HasOne
+    public function instansi(): BelongsTo
     {
-        return $this->hasOne(Unor::class, 'id', 'instansi_id');
+        return $this->belongsTo(Instansi::class);
     }
 
     /**

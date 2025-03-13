@@ -27,8 +27,9 @@ class VacancySeeder extends Seeder
         $data = [
             [
                 'study_id' => 1,
+                'instansi_id' => 19,
                 'education_level' => 'Strata I',
-                'employment_grade' => 'IIIb',
+                'employment_grade' => 'III/a',
                 'employment_status' => 'tidak_diberhentikan_dari_jabatan',
                 'cost_type' => 'Non APBD',
                 'formation' => 3,
@@ -39,8 +40,9 @@ class VacancySeeder extends Seeder
             ],
             [
                 'study_id' => 2,
+                'instansi_id' => 19,
                 'education_level' => 'Strata II',
-                'employment_grade' => 'IIIb',
+                'employment_grade' => 'III/b',
                 'employment_status' => 'tidak_diberhentikan_dari_jabatan',
                 'cost_type' => 'APBD',
                 'formation' => 2,

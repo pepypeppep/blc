@@ -36,7 +36,7 @@
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-info alert-has-icon">
                         <div class="alert-icon"><i class="bi bi-hourglass-split"></i> Menunggu Verifikasi Berkas</div>
-                    </div>
+                    </div>$vacancy->status === VacancyUser::STATUS_DONE
                 </div>
             @elseif($vacancy->status === VacancyUser::STATUS_ASSESSMENT)
                 <div class="col-md-12 mb-2">
@@ -44,13 +44,20 @@
                         <div class="alert-icon"><i class="bi bi-hourglass-split"></i> Berkas telah diverifikasi</div>
                     </div>
                 </div>
-            @elseif($vacancy->status === VacancyUser::STATUS_ELIGIBLE || $vacancy->status === VacancyUser::STATUS_DONE || $vacancy->status === VacancyUser::STATUS_REPORT || $vacancy->status === VacancyUser::STATUS_EXTEND)
+            @elseif(
+                $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
+                    $vacancy->status === VacancyUser::STATUS_DONE ||
+                    $vacancy->status === VacancyUser::STATUS_REPORT ||
+                    $vacancy->status === VacancyUser::STATUS_EXTEND)
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-success alert-has-icon">
                         <div class="alert-icon"><i class="far fa-check-circle"></i> Berkas disetujui</div>
+                    </div>
+                    <div class="alert alert-success">
                         <div class="alert-body">
                             @if ($logs->where('status', 'eligible')->last())
-                                {{ $logs->where('status', 'eligible')->last()->description }}
+                                Alasan :
+                                {!! $logs->where('status', 'eligible')->last()->description !!}
                             @endif
                         </div>
                     </div>
@@ -59,9 +66,12 @@
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-danger alert-has-icon">
                         <div class="alert-icon"><i class="bi bi-x-circle"></i> Berkas dikembalikan</div>
+                    </div>
+                    <div class="alert alert-danger">
                         <div class="alert-body">
                             @if ($logs->where('status', 'rejected')->last())
-                                {{ $logs->where('status', 'rejected')->last()->description }}
+                                Alasan :
+                                {!! $logs->where('status', 'rejected')->last()->description !!}
                             @endif
                         </div>
                     </div>
@@ -72,9 +82,12 @@
                         <div class="alert-icon"><i class="bi bi-question-circle"></i> Status Berkas
                             {{ $vacancy->status }}
                         </div>
+                    </div>
+                    <div class="alert alert-danger">
                         <div class="alert-body">
                             @if ($logs->last())
-                                {{ $logs->last()->description }}
+                                Alasan :
+                                {!! $logs->last()->description !!}
                             @endif
                         </div>
                     </div>
@@ -90,7 +103,11 @@
                         <div class="tg-post-tag">
                             <h5 class="tag-title">Status Assesment :</h5>
                             <ul class="list-wrap p-0 mb-0">
-                                @if ($vacancy->status === VacancyUser::STATUS_ELIGIBLE || $vacancy->status === VacancyUser::STATUS_DONE || $vacancy->status === VacancyUser::STATUS_REPORT || $vacancy->status === VacancyUser::STATUS_EXTEND)
+                                @if (
+                                    $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
+                                        $vacancy->status === VacancyUser::STATUS_DONE ||
+                                        $vacancy->status === VacancyUser::STATUS_REPORT ||
+                                        $vacancy->status === VacancyUser::STATUS_EXTEND)
                                     <li><a class="bg-success text-white " href="javascript:;">
                                             <strong>Sudah Assesmen</strong> </a></li>
                                     <li>

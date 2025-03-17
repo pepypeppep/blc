@@ -1,5 +1,10 @@
+@php
+    use Modules\PendidikanLanjutan\app\Models\VacancyUser;
+@endphp
+
 <div class="tab-pane fade" id="itemSeven-tab-pane" role="tabpanel" aria-labelledby="itemSeven-tab" tabindex="0">
     <div class="instructor__profile-form-wrap">
+        @if($vacancy->status !== VacancyUser::STATUS_DONE)
         <form action="{{ route('student.continuing-education.registration.report', $vacancy->id) }}" method="POST"
             enctype="multipart/form-data" class="instructor__profile-form">
             @csrf
@@ -36,7 +41,7 @@
                 </div>
             </div>
         </form>
-
+        @endif
         <!-- Tabel Pemantauan File -->
         <div class="dashboard__review-table mt-4" style="overflow: hidden;">
             <h6 class="mb-3">Daftar Laporan per Semester</h6>

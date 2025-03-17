@@ -15,12 +15,12 @@
     @adminCan('pendidikanlanjutan.verifikasi')
         <li class="{{ isRoute('admin.verifikasi.*', 'active') }}">
             <a class="nav-link" href="{{ route('admin.vacancies.verification.index') }}">
-                <i class="fas fa-book"></i><span>{{ __('Verification') }}</span>
+                <i class="fas fa-book"></i><span>{{ __('File Verification') }}</span>
             </a>
         </li>
         <li class="{{ isRoute('admin.assessment.*', 'active') }}">
             <a class="nav-link" href="{{ route('admin.vacancies.assessment.index') }}">
-                <i class="fas fa-book"></i><span>{{ __('Assesment') }}</span>
+                <i class="fas fa-book"></i><span>Assesment</span>
             </a>
         </li>
         <li class="{{ isRoute('admin.sk.*', 'active') }}">
@@ -30,7 +30,12 @@
         </li>
         <li class="{{ isRoute('admin.report.*', 'active') }}">
             <a class="nav-link" href="{{ route('admin.vacancies.report.index') }}">
-                <i class="fas fa-book"></i><span>{{ __('Report') }}</span>
+                <i class="fas fa-book"></i><span>{{ __('Lecture Report') }}</span>
+            </a>
+        </li>
+        <li class="{{ isRoute('admin.extend.*', 'active') }}">
+            <a class="nav-link" href="{{ route('admin.vacancies.extend.index') }}">
+                <i class="fas fa-book"></i><span>{{ __('Reactivation') }}</span>
             </a>
         </li>
         <li class="{{ isRoute('admin.extend.*', 'active') }}">

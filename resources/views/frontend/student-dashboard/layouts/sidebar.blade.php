@@ -86,7 +86,7 @@
 
         </ul>
     </nav>
-    <div class="dashboard__sidebar-title mt-30 mb-20">
+    <div class="dashboard__sidebar-title mt-20 mb-20">
         <h6 class="title">{{ __('User') }}</h6>
     </div>
     <nav class="dashboard__sidebar-menu">

@@ -55,10 +55,12 @@ class CourseVerificationController extends Controller
 
         $submenu = 'Verifikasi Rejected';
         $rejectedUsers = Enrollment::with('user', 'course')
-            ->where('course_id', $id)
-            ->whereNotNull('has_access') // Pastikan nilai tidak null
-            ->where('has_access', 0) // Hanya ambil yang bernilai 0
-            ->get();
+        ->where('course_id', $id)
+        ->where('has_access', 0)
+        ->whereNotNull('has_access')
+        ->where('has_access', '!=', '')
+        ->get();
+
 
         return view('course::course-verification.rejected', compact('rejectedUsers', 'submenu'));
     }

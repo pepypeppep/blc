@@ -79,9 +79,6 @@
                                                         <button class="btn btn-primary btn-sm m-1 updateStatus" data-id="{{ $rejectedUser->user->id }}" data-status="1">
                                                             <i class="fa fa-check" aria-hidden="true"></i> Terima
                                                         </button>
-                                                        <button class="btn btn-danger btn-sm m-1 updateStatus" data-id="{{ $rejectedUser->user->id }}" data-status="0">
-                                                            <i class="fa fa-times" aria-hidden="true"></i> Tolak
-                                                        </button>
                                                     </td>
                                                 </tr>
                                             @empty

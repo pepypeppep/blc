@@ -26,7 +26,7 @@ class StudentPendidikanLanjutanController extends Controller
     public function index(Request $request): View
     {
         $perPage = $request->get('per_page', 10);
-        $vacancies = Vacancy::where('instansi_id', userAuth()->instansi_id)->paginate($perPage);
+        $vacancies = Vacancy::where('instansi_id', userAuth()->instansi_id)->where('open_at', '<', now())->where('close_at', '>', now())->paginate($perPage);
 
         return view('frontend.student-dashboard.continuing-education.index', compact('vacancies'));
     }
@@ -59,6 +59,18 @@ class StudentPendidikanLanjutanController extends Controller
         $vacancy = Vacancy::with(['study', 'users' => function ($query) use ($user) {
             $query->where('user_id', $user->id)->whereNotIn('status', [VacancyUser::STATUS_REGISTER]); // next update with value_type, unor, dll
         }])->findOrFail($id);
+
+        if ($vacancy->instansi_id != $user->instansi_id) {
+            return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        if ($vacancy->close_at < now()) {
+            return redirect()->back()->with(['messege' => 'Pendaftaran sudah ditutup', 'alert-type' => 'error']);
+        }
+
+        if ($vacancy->open_at > now()) {
+            return redirect()->back()->with(['messege' => 'Pendaftaran belum dibuka', 'alert-type' => 'error']);
+        }
 
         $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $id)->first();
 

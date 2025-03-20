@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Course;
 use App\Models\Announcement;
+use App\Models\CourseReview;
 use Illuminate\Http\Request;
 use App\Models\CourseProgress;
 use App\Models\CourseChapterItem;
 use App\Http\Controllers\Controller;
+use App\Models\CourseChapterLesson;
+use App\Models\LessonQuestion;
+use App\Models\LessonReply;
 use Illuminate\Support\Facades\Storage;
 use Modules\Course\app\Models\CourseLevel;
 use Modules\Course\app\Models\CourseCategory;
@@ -356,6 +360,314 @@ class CourseApiController extends Controller
                 'success' => false,
                 'message' => 'Failed to retrieve levels',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get all reviews by user ID for a specific course.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $slug
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function reviews(Request $request, $slug)
+    {
+        try {
+            $reviews = CourseReview::with('course:id,title,slug,thumbnail', 'user:id,name')
+                ->whereHas('course', function ($q) use ($slug) {
+                    $q->where('slug', $slug);
+                })
+                ->orderByDesc('id')
+                ->get();
+
+            if ($reviews->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada ulasan ditemukan',
+                    'data' => [],
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Daftar ulasan yang pernah diberikan.',
+                'data' => $reviews,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Store a newly created review resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $slug
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function reviewsStore(Request $request, $slug)
+    {
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'user_id' => 'required|exists:users,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'required|string',
+        ]);
+
+        try {
+            $course = Course::where('slug', $slug)->first();
+
+            if (!$course) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pelatihan tidak ditemukan',
+                ], 404);
+            }
+
+            $review = CourseReview::firstOrCreate([
+                'course_id' => $request->course_id,
+                'user_id' => $request->user_id,
+                'rating' => $request->rating,
+                'review' => $request->review,
+                'status' => 1
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ulasan berhasil disimpan.',
+                'data' => $review,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Menampilkan daftar pertanyaan yang pernah diberikan untuk
+     * suatu pelatihan.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $slug
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function questions(Request $request, $slug)
+    {
+        try {
+            $questions = LessonQuestion::with('course:id,title,slug,thumbnail', 'user:id,name', 'lesson', 'replies')
+                ->whereHas('course', function ($q) use ($slug) {
+                    $q->where('slug', $slug);
+                })
+                ->orderByDesc('id')
+                ->get();
+
+            if ($questions->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada pertanyaan ditemukan',
+                    'data' => [],
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Daftar pertanyaan yang pernah diberikan.',
+                'data' => $questions,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Menampilkan daftar pertanyaan yang pernah diberikan untuk
+     * suatu materi pelatihan.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $slug
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function lessonQuestions(Request $request, $slug)
+    {
+        try {
+            $questions = LessonQuestion::with('course:id,title,slug,thumbnail', 'user:id,name', 'lesson', 'replies')
+                ->whereHas('lesson', function ($q) use ($slug) {
+                    $q->where('slug', $slug);
+                })
+                ->orderByDesc('id')
+                ->get();
+
+            if ($questions->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada pertanyaan ditemukan',
+                    'data' => [],
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Daftar pertanyaan yang pernah diberikan.',
+                'data' => $questions,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Store a newly created lesson question in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $slug
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function questionsStore(Request $request)
+    {
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'user_id' => 'required|exists:users,id',
+            'lesson_id' => 'required|exists:course_chapter_lessons,id',
+            'question_title' => 'required|string',
+            'question_description' => 'required|string',
+        ]);
+
+        try {
+            $course = Course::where('id', $request->course_id)->first();
+
+            if (!$course) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pelatihan tidak ditemukan',
+                ], 404);
+            }
+
+            $lesson = CourseChapterLesson::where('course_id', $course->id)
+                ->where('id', $request->lesson_id)
+                ->first();
+
+            if (!$lesson) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Materi pelatihan tidak ditemukan',
+                ], 404);
+            }
+
+            $review = LessonQuestion::firstOrCreate([
+                'course_id' => $request->course_id,
+                'user_id' => $request->user_id,
+                'lesson_id' => $request->lesson_id,
+                'question_title' => $request->question_title,
+                'question_description' => $request->question_description
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pertanyaan berhasil ditambahkan.',
+                'data' => $review,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    /**
+     * @OA\Post(
+     *     path="/api/v1/course-api/answer",
+     *     summary="Tambahkan Tanggapan Pertanyaan",
+     *     tags={"Course API"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="question_id",
+     *                 type="integer",
+     *                 description="ID Pertanyaan",
+     *                 example=1
+     *             ),
+     *             @OA\Property(
+     *                 property="user_id",
+     *                 type="integer",
+     *                 description="ID User",
+     *                 example=1
+     *             ),
+     *             @OA\Property(
+     *                 property="reply",
+     *                 type="string",
+     *                 description="Tanggapan",
+     *                 example="Tanggapan Pertanyaan"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Tanggapan berhasil ditambahkan."
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Materi pelatihan tidak ditemukan"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Terjadi kesalahan"
+     *     )
+     * )
+     */
+    public function answerStore(Request $request)
+    {
+        $request->validate([
+            'question_id' => 'required|exists:lesson_questions,id',
+            'user_id' => 'required|exists:users,id',
+            'reply' => 'required|string',
+        ]);
+
+        try {
+            $lesson = CourseChapterLesson::where('id', $request->question_id)->first();
+
+            if (!$lesson) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Materi pelatihan tidak ditemukan',
+                ], 404);
+            }
+
+            $answer = LessonReply::firstOrCreate([
+                'question_id' => $request->question_id,
+                'user_id' => $request->user_id,
+                'reply' => $request->reply
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tanggapan berhasil ditambahkan.',
+                'data' => $answer,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ], 500);
         }
     }

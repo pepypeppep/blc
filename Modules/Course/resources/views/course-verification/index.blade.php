@@ -158,10 +158,12 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-primary btn-sm m-1 updateStatus" data-id="{{ $enrollmentUser->user->id }}" data-status="1">
+                                                        <button class="btn btn-primary btn-sm m-1 updateStatus"
+                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="1">
                                                             <i class="fa fa-check" aria-hidden="true"></i> Terima
                                                         </button>
-                                                        <button class="btn btn-danger btn-sm m-1 updateStatus" data-id="{{ $enrollmentUser->user->id }}" data-status="0">
+                                                        <button class="btn btn-danger btn-sm m-1 updateStatus"
+                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="0">
                                                             <i class="fa fa-times" aria-hidden="true"></i> Tolak
                                                         </button>
                                                     </td>
@@ -213,7 +215,7 @@
 
     @push('js')
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("DOMContentLoaded", function() {
                 function showReasonModal(userIds, status) {
                     let title;
                     let isReasonRequired = false;
@@ -310,32 +312,38 @@
                 }
 
                 document.querySelectorAll(".updateStatus").forEach(button => {
-                    button.addEventListener("click", function () {
+                    button.addEventListener("click", function() {
                         let userId = this.dataset.id;
-                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ? 0 : null);
-                        showReasonModal([userId], status);
+                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ?
+                            0 : null);
+                        if (status === 1) {
+                            showConfirmation([userId], status, '')
+                        } else {
+                            showReasonModal([userId], status);
+                        }
                     });
                 });
 
-                document.getElementById("acceptAll").addEventListener("click", function () {
+                document.getElementById("acceptAll").addEventListener("click", function() {
                     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
                         .map(checkbox => checkbox.value);
-                    showReasonModal(selectedUsers, 1);
+                    showConfirmation(selectedUsers, 1);
+                    // showReasonModal(selectedUsers, 1);
                 });
 
-                document.getElementById("rejectAll").addEventListener("click", function () {
+                document.getElementById("rejectAll").addEventListener("click", function() {
                     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
                         .map(checkbox => checkbox.value);
                     showReasonModal(selectedUsers, 0);
                 });
 
-                document.getElementById("resetAll").addEventListener("click", function () {
-                    let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
-                        .map(checkbox => checkbox.value);
-                    showReasonModal(selectedUsers, null);
-                });
+                // document.getElementById("resetAll").addEventListener("click", function() {
+                //     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
+                //         .map(checkbox => checkbox.value);
+                //     showReasonModal(selectedUsers, null);
+                // });
 
-                document.getElementById("selectAll").addEventListener("change", function () {
+                document.getElementById("selectAll").addEventListener("change", function() {
                     let isChecked = this.checked;
                     document.querySelectorAll(".userCheckbox").forEach(checkbox => {
                         checkbox.checked = isChecked;

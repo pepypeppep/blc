@@ -20,8 +20,7 @@ class CourseVerificationController extends Controller
         $enrollmentUsers = Enrollment::with('user', 'course')
             ->where('course_id', $id)
             ->where(function ($query) {
-                $query->whereNull('has_access')
-                ->orWhere('has_access', '');
+                $query->whereNull('has_access');
             })
             ->get();
 
@@ -55,11 +54,10 @@ class CourseVerificationController extends Controller
 
         $submenu = 'Verifikasi Rejected';
         $rejectedUsers = Enrollment::with('user', 'course')
-        ->where('course_id', $id)
-        ->where('has_access', 0)
-        ->whereNotNull('has_access')
-        ->where('has_access', '!=', '')
-        ->get();
+            ->where('course_id', $id)
+            ->where('has_access', 0)
+            ->whereNotNull('has_access')
+            ->get();
 
 
         return view('course::course-verification.rejected', compact('rejectedUsers', 'submenu'));

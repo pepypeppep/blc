@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Course;
 use App\Models\Announcement;
+use App\Models\CourseReview;
 use Illuminate\Http\Request;
 use App\Models\CourseProgress;
 use App\Models\CourseChapterItem;
@@ -356,6 +357,93 @@ class CourseApiController extends Controller
                 'success' => false,
                 'message' => 'Failed to retrieve levels',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get all reviews by user ID for a specific course.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $slug
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function reviews(Request $request, $slug)
+    {
+        $user_id = $request->input('user_id');
+        try {
+            $reviews = CourseReview::with('course:id,title,slug,thumbnail', 'user:id,name')
+                ->whereHas('course', function ($q) use ($slug) {
+                    $q->where('slug', $slug);
+                })
+                ->where('user_id', $user_id)
+                ->orderByDesc('id')
+                ->get();
+
+            if ($reviews->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada ulasan ditemukan',
+                    'data' => [],
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Daftar ulasan yang pernah diberikan.',
+                'data' => $reviews,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Store a newly created review resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $slug
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function reviewsStore(Request $request, $slug)
+    {
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'user_id' => 'required|exists:users,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'required|string',
+        ]);
+
+        try {
+            $course = Course::where('slug', $slug)->first();
+
+            if (!$course) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pelatihan tidak ditemukan',
+                ], 404);
+            }
+
+            $review = CourseReview::firstOrCreate([
+                'course_id' => $request->course_id,
+                'user_id' => $request->user_id,
+                'rating' => $request->rating,
+                'review' => $request->review,
+                'status' => 1
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ulasan berhasil disimpan.',
+                'data' => $review,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ], 500);
         }
     }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CertificateApiController;
 use App\Http\Controllers\Api\CourseApiController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\ReviewApiController;
+use App\Http\Controllers\Api\PendidikanLanjutanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,11 @@ Route::name('api.')->group(function () {
     Route::get('/courses-levels', [CourseApiController::class, 'levels'])->name('courses.levels');
 
     Route::get('/certificates', [CertificateApiController::class, 'getCertificatesForStudent'])->name('certificates');
-        
+
     Route::get('/reviews', [ReviewApiController::class, 'reviews'])->name('reviews');
+
+    Route::prefix('pendidikan-lanjutan')->group(function () {
+        Route::get('/', [PendidikanLanjutanController::class, 'index']);
+        Route::get('/{id}', [PendidikanLanjutanController::class, 'show']);
+    });
 });

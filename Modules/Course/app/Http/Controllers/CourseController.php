@@ -43,7 +43,8 @@ class CourseController extends Controller
         }]);
         $query->withCount([
             'enrollments as enrollments_pending_count' => function ($q) {
-                $q->whereNull('has_access');
+                $q->whereNull('has_access')
+                ->orWhere('has_access', '');
             }
         ]);
         $orderBy = $request->order_by == 1 ? 'asc' : 'desc';

@@ -56,7 +56,9 @@ class CourseVerificationController extends Controller
         $rejectedUsers = Enrollment::with('user', 'course')
             ->where('course_id', $id)
             ->where('has_access', 0)
+            ->whereNotNull('has_access')
             ->get();
+
 
         return view('course::course-verification.rejected', compact('rejectedUsers', 'submenu'));
     }

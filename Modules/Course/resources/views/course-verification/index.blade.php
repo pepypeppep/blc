@@ -105,9 +105,9 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive max-h-400">
+                                <div class=" max-h-400">
                                     <div class="row mb-2">
-                                        <div class="col-md-8">
+                                        <div class="col-md-10">
                                             <button type="button" id="acceptAll" class="btn btn-primary btn-md m-2">
                                                 <i class="fa fa-check" aria-hidden="true"></i> Terima Semua
                                             </button>
@@ -116,10 +116,12 @@
                                             </button>
 
                                         </div>
-                                        <div class="col-md-4 text-right">
+                                        <div class="col-md-2 text-right">
                                             <a href="{{ route('admin.course-verification.rejectedList', ['id' => $id]) }}"
-                                                class="btn btn-primary btn-md m-2">
-                                                Verifikasi Pendaftaran yang Ditolak
+                                                class="btn btn-warning btn-md m-2 d-flex align-items-center"
+                                                onmouseover="this.classList.replace('btn-warning', 'btn-danger')"
+                                                onmouseout="this.classList.replace('btn-danger', 'btn-warning')">
+                                                <i class="fas fa-tasks mr-2"></i> Pendaftar yang Ditolak
                                             </a>
                                         </div>
                                     </div>
@@ -156,11 +158,11 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-primary btn-sm m-1 acceptStatus"
+                                                        <button class="btn btn-primary btn-sm m-1 updateStatus"
                                                             data-id="{{ $enrollmentUser->user->id }}" data-status="1">
                                                             <i class="fa fa-check" aria-hidden="true"></i> Terima
                                                         </button>
-                                                        <button class="btn btn-danger btn-sm m-1 rejectStatus"
+                                                        <button class="btn btn-danger btn-sm m-1 updateStatus"
                                                             data-id="{{ $enrollmentUser->user->id }}" data-status="0">
                                                             <i class="fa fa-times" aria-hidden="true"></i> Tolak
                                                         </button>
@@ -213,7 +215,7 @@
 
     @push('js')
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("DOMContentLoaded", function() {
                 function showReasonModal(userIds, status) {
                     let title;
                     let isReasonRequired = false;
@@ -310,32 +312,38 @@
                 }
 
                 document.querySelectorAll(".updateStatus").forEach(button => {
-                    button.addEventListener("click", function () {
+                    button.addEventListener("click", function() {
                         let userId = this.dataset.id;
-                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ? 0 : null);
-                        showReasonModal([userId], status);
+                        let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ?
+                            0 : null);
+                        if (status === 1) {
+                            showConfirmation([userId], status, '')
+                        } else {
+                            showReasonModal([userId], status);
+                        }
                     });
                 });
 
-                document.getElementById("acceptAll").addEventListener("click", function () {
+                document.getElementById("acceptAll").addEventListener("click", function() {
                     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
                         .map(checkbox => checkbox.value);
-                    showReasonModal(selectedUsers, 1);
+                    showConfirmation(selectedUsers, 1);
+                    // showReasonModal(selectedUsers, 1);
                 });
 
-                document.getElementById("rejectAll").addEventListener("click", function () {
+                document.getElementById("rejectAll").addEventListener("click", function() {
                     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
                         .map(checkbox => checkbox.value);
                     showReasonModal(selectedUsers, 0);
                 });
 
-                document.getElementById("resetAll").addEventListener("click", function () {
-                    let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
-                        .map(checkbox => checkbox.value);
-                    showReasonModal(selectedUsers, null);
-                });
+                // document.getElementById("resetAll").addEventListener("click", function() {
+                //     let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
+                //         .map(checkbox => checkbox.value);
+                //     showReasonModal(selectedUsers, null);
+                // });
 
-                document.getElementById("selectAll").addEventListener("change", function () {
+                document.getElementById("selectAll").addEventListener("change", function() {
                     let isChecked = this.checked;
                     document.querySelectorAll(".userCheckbox").forEach(checkbox => {
                         checkbox.checked = isChecked;
@@ -345,7 +353,6 @@
         </script>
     @endpush
 @endpush
-
 
 @push('css')
     <style>

@@ -8,6 +8,13 @@ use App\Http\Controllers\Api\PendidikanLanjutanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+Route::middleware('auth:sso-api')->get('/hello', function (Request $request) {
+
+    return [
+        'message' => sprintf("Hello my username is %s", $request->user()->username)
+    ];
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

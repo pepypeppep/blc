@@ -45,6 +45,11 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+
+        'sso-api' => [
+            'driver' => 'keycloak',
+        ],
+
     ],
 
     /*

@@ -3,12 +3,16 @@
 namespace App\Providers;
 
 use App\Enums\ThemeList;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Socialite\Facades\Socialite;
 use Modules\GlobalSetting\app\Models\Setting;
 use Modules\GlobalSetting\app\Models\SeoSetting;
 use Modules\GlobalSetting\app\Models\MarketingSetting;
@@ -67,6 +71,24 @@ class AppServiceProvider extends ServiceProvider
         // Register socialite providers
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('keycloak', \SocialiteProviders\Keycloak\Provider::class);
+        });
+
+        // Register guards
+        Auth::viaRequest('keycloak', function (Request $request) {
+            try {
+                $provider = Socialite::driver('keycloak');
+                $userData = $provider
+                    ->stateless()
+                    ->userFromToken($request->bearerToken());
+                $username = $userData->getNickname();
+
+                return User::where('username', $username)->first();
+            } catch (\Throwable $throwable) {
+                if ($throwable->getCode() != 401) {
+                    report($throwable);
+                }
+            }
+            return null;
         });
     }
 

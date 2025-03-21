@@ -242,7 +242,7 @@
                                                 <div class="alert-title">Lolos Verifikasi!</div>
                                                 {!! $sectionLog->verifLogs[0]->description ??
                                                     'Pendaftar telah lolos tahap verifikasi berkas dan akan melanjutkan ke tahap
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                assessment.' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                assessment.' !!}
                                             </div>
                                         </div>
                                     </div>
@@ -257,6 +257,7 @@
                 $vacancyUser->status == 'assessment' ||
                     $vacancyUser->status == 'eligible' ||
                     $vacancyUser->status == 'ineligible' ||
+                    $vacancyUser->status === 'activation' ||
                     $vacancyUser->status === 'done')
                 <div id="assessment" class="section-body">
                     <div class="row mt-2">
@@ -330,10 +331,12 @@
                 </div>
             @endif
 
+            {{-- Lampiran --}}
             @if (
                 $vacancyUser->status === 'eligible' ||
                     $vacancyUser->status === 'report' ||
                     $vacancyUser->status === 'extend' ||
+                    $vacancyUser->status === 'activation' ||
                     $vacancyUser->status === 'done')
                 <div id="sk" class="section-body">
                     <div class="row mt-2">
@@ -371,43 +374,60 @@
                                                             ->where('vacancy_user_id', $vacancyUser->id)
                                                             ->first();
                                                         if ($ath) {
-                                                            $ath_total = $ath_total + 1;
+                                                            if ($ath->status == 'final') {
+                                                                $ath_total = $ath_total + 1;
+                                                            }
                                                         }
                                                     @endphp
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $attachment->name }}</td>
                                                     <td>
                                                         @if ($ath)
-                                                            <span class="badge badge-success">Tersedia</span>
+                                                            @if ($ath->status == 'draft')
+                                                                <span class="badge badge-info">Draft</span>
+                                                            @elseif ($ath->status == 'assign')
+                                                                <span class="badge badge-primary">Diajukan</span>
+                                                            @elseif ($ath->status == 'final')
+                                                                <span class="badge badge-success">Final</span>
+                                                            @endif
                                                         @else
                                                             <span class="badge badge-danger">Belum Tersedia</span>
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        @if ($ath)
-                                                            <button class="btn btn-danger btn-sm m-1" data-toggle="modal"
-                                                                data-target="#pdfModal"
-                                                                title="Lihat {{ $attachment->name }}"
-                                                                onclick="setPDF('{{ $attachment->name }}','{{ route('vacancies-participant.get.file', [$attachment->id, $ath->vacancy_user_id]) }}')">
-                                                                <i class="fa fa-file-pdf" aria-hidden="true"></i>
-                                                            </button>
-                                                        @endif
-                                                        @if ($attachment->name == 'Perjanjian Kinerja')
-                                                            <a href="javascript:void(0);"
-                                                                class="btn btn-warning btn-sm m-1" title="Unduh Template">
-                                                                <i class="fa fa-download" aria-hidden="true"></i>
-                                                            </a>
+                                                        {{-- <a href="javascript:void(0);" class="btn btn-warning btn-sm m-1"
+                                                            title="Unduh Template">
+                                                            <i class="fa fa-download" aria-hidden="true"></i>
+                                                        </a> --}}
+                                                        @if ($vacancyUser->status === 'eligible')
                                                             <button class="btn btn-info btn-sm m-1" data-toggle="modal"
                                                                 data-target="#uploadModal"
                                                                 title="Unggah {{ $attachment->name }}">
                                                                 <i class="fa fa-upload" aria-hidden="true"></i>
                                                             </button>
-                                                        @else
+                                                        @endif
+                                                        {{-- @else
                                                             <a href="javascript:void(0);"
                                                                 class="btn btn-success btn-sm m-1"
                                                                 title="Kirim {{ $attachment->name }}">
                                                                 <i class="fa fa-paper-plane" aria-hidden="true"></i>
                                                             </a>
+                                                        @endif --}}
+                                                        @if ($attachment->name != 'Perjanjian Kinerja' && $ath)
+                                                            <button class="btn btn-primary px-2 btn-sm m-1"
+                                                                data-toggle="modal" data-target="#pdfModal"
+                                                                title="Lihat Draft {{ $attachment->name }}"
+                                                                onclick="setPDF('Draft {{ $attachment->name }}','{{ route('vacancies-participant.get.draft.file', [$attachment->id, $ath->vacancy_user_id]) }}')">
+                                                                <i class="fa fa-file-pdf" aria-hidden="true"></i>
+                                                            </button>
+                                                        @endif
+                                                        @if ($ath)
+                                                            <button class="btn btn-danger px-2 btn-sm m-1"
+                                                                data-toggle="modal" data-target="#pdfModal"
+                                                                title="Lihat {{ $attachment->name }}"
+                                                                onclick="setPDF('{{ $attachment->name }}','{{ route('vacancies-participant.get.file', [$attachment->id, $ath->vacancy_user_id]) }}')">
+                                                                <i class="fa fa-file-pdf" aria-hidden="true"></i>
+                                                            </button>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -452,7 +472,12 @@
                 </div>
             @endif
 
-            @if ($vacancyUser->status === 'report' || $vacancyUser->status === 'extend' || $vacancyUser->status === 'done')
+            {{-- Laporan --}}
+            @if (
+                $vacancyUser->status === 'report' ||
+                    $vacancyUser->status === 'extend' ||
+                    $vacancyUser->status === 'activation' ||
+                    $vacancyUser->status === 'done')
                 <div id="laporan" class="section-body">
                     <div class="row mt-2">
                         <div class="col-12">
@@ -473,7 +498,7 @@
                                             <th>{{ __('Status') }}</th>
                                             <th>{{ __('Action') }}</th>
                                         </tr>
-                                        @foreach ($vacancyReports as $report)
+                                        @forelse ($vacancyReports as $report)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $report->name }}</td>
@@ -492,21 +517,26 @@
                                                     @endif
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="text-center">
+                                                    <h4>Belum ada berkas yang diunggah</h4>
+                                                </td>
+                                            </tr>
+                                        @endforelse
                                     </table>
-                                    @if ($vacancyUser->status != 'done')
+                                    @if ($vacancyUser->status != 'activation' && $vacancyUser->status != 'done')
                                         <hr>
                                         <div class="col-md-12 mb-2">
-                                            <div class="alert alert-warning alert-has-icon alert-dismissible"
+                                            <div class="alert alert-primary alert-has-icon alert-dismissible"
                                                 id="studyCompletionAlert">
                                                 <div class="alert-icon"><i class="far fa-check-circle"></i></div>
                                                 <div class="alert-body">
                                                     <div class="alert-title">Konfirmasi Penyelesaian Tugas Belajar</div>
                                                     Pastikan laporan telah lengkap dan syarat lainnya telah dipenuhi oleh
                                                     peserta sebelum melakukan konfirmasi bahwa tugas belajar telah selesai
-                                                    dilakukan. Setelah tugas belajar selesai dan konfirmasi diterima, status
-                                                    PNS
-                                                    pegawai akan kembali diaktifkan.
+                                                    dilakukan. Setelah melakukan konfirmasi, pegawai akan melanjutkan proses
+                                                    untuk unggah berkas aktivasi status kepegawaian.
                                                 </div>
                                             </div>
                                         </div>
@@ -516,11 +546,11 @@
                                                 method="POST">
                                                 @csrf
                                                 @method('PUT')
-                                                <input type="hidden" name="status" value="done">
+                                                <input type="hidden" name="status" value="activation">
                                                 <button type="submit" target="_blank" href=""
                                                     class="btn btn-primary btn-icon icon-left print-btn"><i
                                                         class="fas fa-check"></i>
-                                                    {{ __('Finish') }}</button>
+                                                    {{ __('Confirmation') }}</button>
                                             </form>
                                         </div>
                                     @endif
@@ -531,6 +561,116 @@
                 </div>
             @endif
 
+            {{-- Aktivasi --}}
+            @if ($vacancyUser->status === 'activation' || $vacancyUser->status === 'done')
+                <div id="aktivasi" class="section-body">
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="section-title">
+                                        <div class="d-flex justify-content-between">
+                                            {{ __('Reactivation') }}
+                                            <div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <table class="table table-striped table-hover table-md">
+                                        <thead>
+                                            <tr>
+                                                <th data-width="40">#</th>
+                                                <th>{{ __('File') }}</th>
+                                                <th>{{ __('Status') }}</th>
+                                                <th>{{ __('Notes') }}</th>
+                                                <th>{{ __('Action') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php
+                                                $act_total = 0;
+                                            @endphp
+                                            @forelse ($vacancyActivations as $activation)
+                                                @php
+                                                    if ($activation->status == 'accepted') {
+                                                        $act_total = $act_total + 1;
+                                                    }
+                                                @endphp
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $activation->name }}</td>
+                                                    <td>
+                                                        @if ($activation->status == 'review')
+                                                            <span class="badge badge-info">Review</span>
+                                                        @elseif ($activation->status == 'rejected')
+                                                            <span class="badge badge-danger">Ditolak</span>
+                                                        @elseif ($activation->status == 'accepted')
+                                                            <span class="badge badge-success">Disetujui</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $activation->note }}</td>
+                                                    <td>
+                                                        <button class="btn btn-danger px-2 btn-sm m-1" data-toggle="modal"
+                                                            data-target="#pdfModal" title="Lihat {{ $activation->name }}"
+                                                            onclick="setPDF('{{ $activation->name }}','{{ route('vacancies-participant.get.activation.file', $activation->id) }}')">
+                                                            <i class="fa fa-file-pdf" aria-hidden="true"></i>
+                                                        </button>
+                                                        @if ($vacancyUser->status === 'activation' && $activation->status == 'review')
+                                                            <button class="btn btn-info btn-sm m-1" data-toggle="modal"
+                                                                data-target="#activationModal{{ $activation->id }}"
+                                                                title="Verifikasi {{ $activation->name }}">
+                                                                <i class="fa fa-comment" aria-hidden="true"></i>
+                                                            </button>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4" class="text-center">
+                                                        <h4>Belum ada berkas yang diunggah</h4>
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                    @if (count($vacancyActivations) > 0 && $act_total == 1 && $vacancyUser->status == 'activation')
+                                        <div class="col-md-12">
+                                            <div class="alert alert-info alert-has-icon alert-dismissible"
+                                                id="studyCompletionAlert">
+                                                <div class="alert-icon"><i class="far fa-check-circle"></i></div>
+                                                <div class="alert-body">
+                                                    <div class="alert-title">Konfirmasi Kelengkapan Berkas Aktivasi Ulang
+                                                        Status Kepegawaian</div>
+                                                    Pastikan berkas telah lengkap. Setelah kelengkapan berkas telah
+                                                    dikonfirmasi maka proses Pendidikan Lanjutan peserta telah selesai.
+                                                    <div class="d-flex justify-content-center">
+                                                        <form
+                                                            action="{{ route('admin.vacancies-participant.update.status', $vacancyUser->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" id="status">
+                                                            <div class="mt-3">
+                                                                <button
+                                                                    type="submit"class="btn btn-primary btn-icon icon-left print-btn"
+                                                                    onclick="document.getElementById('status').value='done'"><i
+                                                                        class="fas fa-check"></i>
+                                                                    {{ __('Done') }}</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Extend --}}
             @if (($vacancyUser->status === 'report' || $vacancyUser->status === 'extend') && $vacancyUser->status != 'done')
                 <div id="perpanjang" class="section-body">
                     <div class="row mt-2">
@@ -601,6 +741,7 @@
                         @csrf
                         <div class="form-group">
                             <label for="pdf_upload">{{ __('Choose PDF to Upload') }}</label>
+                            <input type="text" name="title" id="title" value="">
                             <input type="file" class="form-control" id="pdf_upload" name="file" accept=".pdf">
                         </div>
 
@@ -673,6 +814,46 @@
             </div>
         </div>
     </div>
+
+    @foreach ($vacancyActivations as $activation)
+        <!-- Modal Aktivasi -->
+        <div class="modal fade" id="activationModal{{ $activation->id }}" tabindex="-1"
+            aria-labelledby="verifyModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title ml-4" id="verifyModalLabel">Verifikasi Berkas
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="POST"
+                        action="{{ route('admin.vacancies-participant.update.activation.status', ['id' => $activation->id]) }}">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="activation_status" id="activation_status">
+                        <div class="modal-body">
+                            <div id="error-message" class="alert alert-danger" style="display: none;">
+                                <strong>Kesalahan!</strong> Alasan penolakan wajib diisi.
+                            </div>
+                            <div class="mb-3">
+                                <label for="verificationMessage" class="form-label">Pesan</label>
+                                <textarea class="form-control" id="verificationMessage" name="description" rows="4"
+                                    placeholder="Tuliskan pesan Anda di sini"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-between">
+                            <button type="submit" class="btn btn-danger" id="rejectButton"
+                                onclick="document.getElementById('activation_status').value='rejected'">Tolak</button>
+                            <button type="submit" class="btn btn-success" id="acceptButton"
+                                onclick="document.getElementById('activation_status').value='accepted'">Terima</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
 @endsection
 
 @push('css')
@@ -790,6 +971,12 @@
 
     <script>
         $(document).ready(function() {
+            $('#uploadModal').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var title = button.attr('title');
+                $('#title').val(title);
+            });
+
             $('#verifyButton').click(function() {
                 $('#verifyModal').modal('show');
             });

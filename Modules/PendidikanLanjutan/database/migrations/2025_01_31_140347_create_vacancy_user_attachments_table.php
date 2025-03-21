@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('vacancy_attachment_id')->onDelete('cascade');
             $table->longText('file');
             $table->string('category'); //syarat, lampiran
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

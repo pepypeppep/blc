@@ -34,7 +34,7 @@
             </a>
         </li>
         <li class="{{ isRoute('admin.extend.*', 'active') }}">
-            <a class="nav-link" href="{{ route('admin.vacancies.extend.index') }}">
+            <a class="nav-link" href="{{ route('admin.vacancies.activation.index') }}">
                 <i class="fas fa-book"></i><span>{{ __('Reactivation') }}</span>
             </a>
         </li>

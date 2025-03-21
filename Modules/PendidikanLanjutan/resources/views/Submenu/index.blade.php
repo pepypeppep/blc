@@ -137,7 +137,7 @@
                                                     <td>{{ $vacancyUser->cost_type }}</td>
                                                     <td>
                                                         <span
-                                                        class="badge badge-{{ $vacancyUser->stat['color'] }}">{{ $vacancyUser->stat['label'] }}</span>
+                                                            class="badge badge-{{ $vacancyUser->stat['color'] }}">{{ $vacancyUser->stat['label'] }}</span>
                                                         {{-- @if ($vacancyUser->status === 'created')
                                                             <span
                                                                 class="badge badge-warning">{{ $vacancyUser->status }}</span>
@@ -184,8 +184,18 @@
                                                                 class="btn btn-primary btn-sm m-1" title="Laporan">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             </a>
+                                                        @elseif($vacancyUser->status === 'activation')
+                                                            <a href="{{ route('admin.vacancies.activation.show', $vacancyUser->id) }}#aktivasi"
+                                                                class="btn btn-primary btn-sm m-1" title="Aktivasi Ulang">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
                                                         @elseif($vacancyUser->status === 'extend')
                                                             <a href="{{ route('admin.vacancies.extend.show', $vacancyUser->id) }}#perpanjang"
+                                                                class="btn btn-primary btn-sm m-1" title="Perpanjgan">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
+                                                        @elseif($vacancyUser->status === 'done')
+                                                            <a href="{{ route('admin.vacancies.done.show', $vacancyUser->id) }}"
                                                                 class="btn btn-primary btn-sm m-1" title="Perpanjgan">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             </a>

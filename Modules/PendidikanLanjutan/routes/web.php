@@ -54,6 +54,11 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
             Route::get('{id}', [PendidikanLanjutanController::class, 'showExtend'])->name('vacancies.extend.show');
         });
 
+        Route::prefix('activation')->group(function () {
+            Route::get('/', [PendidikanLanjutanController::class, 'indexActivation'])->name('vacancies.activation.index');
+            Route::get('{id}', [PendidikanLanjutanController::class, 'showActivation'])->name('vacancies.activation.show');
+        });
+
         Route::prefix('done')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'indexDone'])->name('vacancies.done.index');
             Route::get('{id}', [PendidikanLanjutanController::class, 'showDone'])->name('vacancies.done.show');
@@ -75,9 +80,11 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         Route::put('/update-status/{vacancyUserId}', [VacancyParticipantController::class, 'updateStatus'])->name('vacancies-participant.update.status');
         Route::post('/upload-file/{vacancyId}/{vacancyUserId}', [VacancyParticipantController::class, 'uploadFile'])->name('vacancies-participant.upload.file');
         Route::put('/update-report-status/{vacancyReportId}', [VacancyParticipantController::class, 'updateReportStatus'])->name('vacancies-participant.update.report.status');
+        Route::put('/update-activation-status/{id}', [VacancyParticipantController::class, 'updateActivationStatus'])->name('vacancies-participant.update.activation.status');
     });
 });
 
 Route::get('/get-file/{vacancyAttachmentId}/{userId}', [VacancyParticipantController::class, 'getFile'])->name('vacancies-participant.get.file');
 Route::get('/get-draft-file/{vacancyAttachmentId}/{userId}', [VacancyParticipantController::class, 'getDraftFile'])->name('vacancies-participant.get.draft.file');
+Route::get('/get-activation-file/{id}', [VacancyParticipantController::class, 'getActivationFile'])->name('vacancies-participant.get.activation.file');
 Route::get('/get-file/{vacancyReport}', [VacancyParticipantController::class, 'getReportFile'])->name('vacancies-participant.get.report.file');

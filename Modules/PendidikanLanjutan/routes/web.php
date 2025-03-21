@@ -79,4 +79,5 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
 });
 
 Route::get('/get-file/{vacancyAttachmentId}/{userId}', [VacancyParticipantController::class, 'getFile'])->name('vacancies-participant.get.file');
+Route::get('/get-draft-file/{vacancyAttachmentId}/{userId}', [VacancyParticipantController::class, 'getDraftFile'])->name('vacancies-participant.get.draft.file');
 Route::get('/get-file/{vacancyReport}', [VacancyParticipantController::class, 'getReportFile'])->name('vacancies-participant.get.report.file');

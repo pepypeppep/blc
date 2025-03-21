@@ -135,6 +135,11 @@ class VacancyParticipantController extends Controller
 
     public function uploadFile(Request $request, $vacancyId, $vacancyUserId)
     {
+        $request->validate([
+            'file' => 'required|mimes:pdf',
+            'title' => 'required|string'
+        ]);
+
         try {
             // Start transaction
             DB::beginTransaction();
@@ -145,23 +150,51 @@ class VacancyParticipantController extends Controller
             // Get vacancy user data
             $vacancyUser = VacancyUser::findOrFail($vacancyUserId);
 
+            $title = trim(str_replace("Unggah", "", $request->title));
             // Get vacancy attachment data
-            $vacancyAttachment = VacancyAttachment::where('vacancy_id', $vacancyId)->where('category', 'lampiran')->where('name', 'Perjanjian Kinerja')->where('is_active', true)->firstOrFail();
+            $vacancyAttachment = VacancyAttachment::where('vacancy_id', $vacancyId)->where('category', 'lampiran')->where('name', $title)->where('is_active', true)->firstOrFail();
 
+            $type = str_replace(" ", "_", strtolower($title));
             // Upload file
             $file = $request->file('file');
-            $fileName = "perjanjian_kerja/" . now()->year . "/" . now()->month . "/perjanjian_kerja_" . $vacancyId . "_" . $vacancyUser->user->name . ".pdf";
-            // Storage::disk('private')->put($fileName, $file);
-            // Storage::disk('private')->putFileAs('vacancies', $file, $fileName);
-            Storage::disk('private')->put($fileName, file_get_contents($file));
 
-            // Create Vacancy User Attachment
-            $vacancyUserAttachment = VacancyUserAttachment::create([
-                'vacancy_user_id' => $vacancyUser->id,
-                'vacancy_attachment_id' => $vacancyAttachment->id,
-                'file' => $fileName,
-                'category' => $vacancyAttachment->category
-            ]);
+            $check = VacancyUserAttachment::where('vacancy_user_id', $vacancyUser->id)
+                ->where('vacancy_attachment_id', $vacancyAttachment->id)
+                ->where('category', $vacancyAttachment->category)
+                ->first();
+
+            if ($check) {
+                if ($check->status == 'assign') {
+                    $assignFile = str_replace(["draft_", "final_"], "assign_", $check->file);
+                    if (Storage::disk('private')->exists($assignFile)) {
+                        Storage::disk('private')->delete($assignFile);
+                    }
+                    $fileName = "pendidikan_lanjutan/" . now()->year . "/lampiran/" . $vacancy->id . "/" . $type . "/" . now()->month . "_final_" . $type . "_" . $vacancyUser->user->name . ".pdf";
+                    $check->update([
+                        'file' => $fileName,
+                        'status' => 'final'
+                    ]);
+                }
+            } else {
+                $fileName = "pendidikan_lanjutan/" . now()->year . "/lampiran/" . $vacancy->id . "/" . $type . "/" . now()->month . "_draft_" . $type . "_" . $vacancyUser->user->name . ".pdf";
+
+                if ($title == "Perjanjian Kinerja") {
+                    $status = 'final';
+                } else {
+                    $status = 'draft';
+                }
+
+                // Create Vacancy User Attachment
+                $vacancyUserAttachment = VacancyUserAttachment::create([
+                    'vacancy_user_id' => $vacancyUser->id,
+                    'vacancy_attachment_id' => $vacancyAttachment->id,
+                    'file' => $fileName,
+                    'category' => $vacancyAttachment->category,
+                    'status' => $status
+                ]);
+            }
+
+            Storage::disk('private')->put($fileName, file_get_contents($file));
 
             // Commit transaction
             DB::commit();
@@ -224,13 +257,27 @@ class VacancyParticipantController extends Controller
         $VacancyUserAttachment = VacancyUserAttachment::where('vacancy_user_id', $userId)
             ->where('vacancy_attachment_id', $vacancyAttachmentId)->first();
 
-        return Storage::disk('private')->response($VacancyUserAttachment->file);
+        // return Storage::disk('private')->response($VacancyUserAttachment->file);
+        return response()->download(Storage::disk('private')->path($VacancyUserAttachment->file));
+        // return response()->streamDownload(Storage::disk('private')->path($VacancyUserAttachment->file), $VacancyUserAttachment->file);
+    }
+
+    public function getDraftFile($vacancyAttachmentId, $userId)
+    {
+        $VacancyUserAttachment = VacancyUserAttachment::where('vacancy_user_id', $userId)
+            ->where('vacancy_attachment_id', $vacancyAttachmentId)->first();
+
+        // return Storage::disk('private')->response(str_replace(['assign_', 'final_'], 'draft_', $VacancyUserAttachment->file));
+        return response()->download(Storage::disk('private')->path(str_replace(['assign_', 'final_'], 'draft_', $VacancyUserAttachment->file)));
+        // return response()->streamDownload(Storage::disk('private')->path(str_replace(['assign_', 'final_'], 'draft_', $VacancyUserAttachment->file)), str_replace(['assign_', 'final_'], 'draft_', $VacancyUserAttachment->file));
     }
 
     public function getReportFile($reportId)
     {
         $vacancyReport = VacancyReport::findOrFail($reportId);
 
-        return Storage::disk('private')->response($vacancyReport->file);
+        // return Storage::disk('private')->response($vacancyReport->file);
+        return response()->download(Storage::disk('private')->path($vacancyReport->file));
+        // return response()->streamDownload(Storage::disk('private')->path($vacancyReport->file), $vacancyReport->file);
     }
 }

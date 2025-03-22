@@ -14,14 +14,9 @@
                     <div class="form-group">
                         <label for="name">Pilih Semester</label>
                         <select name="name" id="name" class="form-select">
-                            <option value="Semester 1">Semester 1</option>
-                            <option value="Semester 2">Semester 2</option>
-                            <option value="Semester 3">Semester 3</option>
-                            <option value="Semester 4">Semester 4</option>
-                            <option value="Semester 5">Semester 5</option>
-                            <option value="Semester 6">Semester 6</option>
-                            <option value="Semester 7">Semester 7</option>
-                            <option value="Semester 8">Semester 8</option>
+                            @foreach ($reportsFiles as $report)
+                            <option value={{ $report->id }}>{{ $report->name }}</option>
+                            @endforeach
                         </select>
 
                     </div>

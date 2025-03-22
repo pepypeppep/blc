@@ -24,6 +24,7 @@ class VacancyUser extends Pivot
     public const STATUS_INELIGIBLE = 'ineligible';
     public const STATUS_REPORT = 'report';
     public const STATUS_EXTEND = 'extend';
+    public const STATUS_ACTIVATION = 'activation';
     public const STATUS_DONE = 'done';
 
 
@@ -109,6 +110,13 @@ class VacancyUser extends Pivot
             return [
                 'label' => 'Selesai',
                 'color' => 'success'
+            ];
+        }
+
+        if ($this->status == $this->STATUS_ACTIVATION) {
+            return [
+                'label' => 'Aktivasi',
+                'color' => 'primary'
             ];
         }
 

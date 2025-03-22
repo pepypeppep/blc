@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\PendidikanLanjutan\app\Http\Controllers\MasterPendidikanLanjutanController;
 use Modules\PendidikanLanjutan\app\Http\Controllers\PendidikanLanjutanController;
 use Modules\PendidikanLanjutan\app\Http\Controllers\VacancyController;
 use Modules\PendidikanLanjutan\app\Http\Controllers\VacancyParticipantController;
@@ -25,6 +26,13 @@ Route::middleware(['auth:admin', 'translation'])
 
 Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::prefix('vacancies')->group(function () {
+        Route::prefix('master')->group(function () {
+           Route::get('/report-file', [MasterPendidikanLanjutanController::class, 'reportFileIndex'])->name('vacancies.master.file.index'); 
+           Route::post('/report-file', [MasterPendidikanLanjutanController::class, 'reportFileStore'])->name('vacancies.master.file.store'); 
+           Route::get('/report-file/{id}', [MasterPendidikanLanjutanController::class, 'reportFileEdit'])->name('vacancies.master.file.edit');
+           Route::put('/report-file/{id}', [MasterPendidikanLanjutanController::class, 'reportFileUpdate'])->name('vacancies.master.file.update');
+        });
+
         Route::prefix('peserta')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'indexPeserta'])->name('vacancies.peserta.index');
         });

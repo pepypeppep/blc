@@ -36,7 +36,7 @@
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-info alert-has-icon">
                         <div class="alert-icon"><i class="bi bi-hourglass-split"></i> Menunggu Verifikasi Berkas</div>
-                    </div>$vacancy->status === VacancyUser::STATUS_DONE
+                    </div>
                 </div>
             @elseif($vacancy->status === VacancyUser::STATUS_ASSESSMENT)
                 <div class="col-md-12 mb-2">
@@ -48,19 +48,22 @@
                 $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
                     $vacancy->status === VacancyUser::STATUS_DONE ||
                     $vacancy->status === VacancyUser::STATUS_REPORT ||
+                    $vacancy->status === VacancyUser::STATUS_ACTIVATION ||
                     $vacancy->status === VacancyUser::STATUS_EXTEND)
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-success alert-has-icon">
                         <div class="alert-icon"><i class="far fa-check-circle"></i> Berkas disetujui</div>
                     </div>
-                    <div class="alert alert-success">
-                        <div class="alert-body">
-                            @if ($logs->where('status', 'eligible')->last())
-                                Alasan :
-                                {!! $logs->where('status', 'eligible')->last()->description !!}
-                            @endif
+                    @if ($logs->where('status', 'eligible')->last())
+                        <div class="alert alert-success">
+                            <div class="alert-body">
+                                @if ($logs->where('status', 'eligible')->last())
+                                    Alasan :
+                                    {!! $logs->where('status', 'eligible')->last()->description !!}
+                                @endif
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
             @elseif($vacancy->status === VacancyUser::STATUS_REJECTED)
                 <div class="col-md-12 mb-2">
@@ -107,16 +110,19 @@
                                     $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
                                         $vacancy->status === VacancyUser::STATUS_DONE ||
                                         $vacancy->status === VacancyUser::STATUS_REPORT ||
+                                        $vacancy->status === VacancyUser::STATUS_ACTIVATION ||
                                         $vacancy->status === VacancyUser::STATUS_EXTEND)
                                     <li><a class="bg-success text-white " href="javascript:;">
                                             <strong>Sudah Assesmen</strong> </a></li>
-                                    <li>
-                                        <span tabindex="0" class="fa fa-info-circle text-dark"
-                                            data-bs-toggle="popover" data-bs-trigger="hover focus"
-                                            data-bs-placement="top"
-                                            data-bs-content="Alasan : {{ $logs->whereIn('status', ['eligible', 'done'])->last()->description }}">
-                                        </span>
-                                    </li>
+                                    @if ($logs->whereIn('status', ['eligible', 'done'])->last())
+                                        <li>
+                                            <span tabindex="0" class="fa fa-info-circle text-dark"
+                                                data-bs-toggle="popover" data-bs-trigger="hover focus"
+                                                data-bs-placement="top"
+                                                data-bs-content="Alasan : {{ optional($logs->whereIn('status', ['eligible', 'done'])->last())->description ?? '' }}">
+                                            </span>
+                                        </li>
+                                    @endif
                                 @else
                                     <li><a class="bg-warning text-white " href="javascript:;">
                                             <strong>Belum assesmen</strong> </a></li>
@@ -124,7 +130,7 @@
                                         <span tabindex="0" class="fa fa-info-circle text-dark"
                                             data-bs-toggle="popover" data-bs-trigger="hover focus"
                                             data-bs-placement="top"
-                                            data-bs-content="Alasan : {{ $logs->last()->description }}">
+                                            data-bs-content="Alasan : {{ optional($logs->last())->description ?? '' }}">
                                         </span>
                                     </li>
                                 @endif

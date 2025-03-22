@@ -18,6 +18,7 @@ use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use App\Http\Requests\Frontend\StudentVacancyReportRequest;
 use App\Http\Requests\Frontend\UploadRequirementFileRequest;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyMasterReportFiles;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 
 class StudentPendidikanLanjutanController extends Controller
@@ -49,7 +50,8 @@ class StudentPendidikanLanjutanController extends Controller
         })->where('vacancy_user_id', $vacancy->id)->get();
         $lampirans = VacancyAttachment::lampiran()->where('vacancy_id', $vacancy->vacancy_id)->get();
         $reports = VacancyReport::where('vacancy_user_id', $vacancy->id)->orderBy('name')->get();
-        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancy', 'logs', 'attachments', 'lampirans', 'reports'));
+        $reportsFiles = VacancyMasterReportFiles::where('is_active', 1)->get();
+        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancy', 'logs', 'attachments', 'lampirans', 'reports','reportsFiles'));
     }
 
     // detail pendidikan
@@ -121,7 +123,7 @@ class StudentPendidikanLanjutanController extends Controller
             return redirect()->back()->withFragment('attachment_container')->with(['messege' => $validator->errors()->first(), 'alert-type' => 'error']);
         }
 
-        $fileName = "vacancy/" . now()->year . "/attachments" . "/" . str_replace([' ', '/'], '_', $attachment->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
+        $fileName = "pendidikan_lanjutan/" . now()->year . "/syarat" . "/" . $attachment->vacancy_id . "/" . now()->month . "_" . str_replace([' ', '/'], '_', $attachment->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
         Storage::disk('private')->put($fileName, file_get_contents($file));
 
         $request->merge([
@@ -236,7 +238,9 @@ class StudentPendidikanLanjutanController extends Controller
         DB::beginTransaction();
         $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->first();
 
-        $reportExist = VacancyReport::where('vacancy_user_id', $vacancyUser->id)->where('name', $validated['name'])->exists();
+        $reportFile = VacancyMasterReportFiles::where('id', $validated['name'])->first();
+        
+        $reportExist = VacancyReport::where('vacancy_user_id', $vacancyUser->id)->where('name', $reportFile->name)->exists();
 
         if ($reportExist) {
             DB::rollBack();
@@ -244,20 +248,21 @@ class StudentPendidikanLanjutanController extends Controller
         }
 
 
+
         $file = $request->file('file');
-        $fileName = "laporan_semester/" . now()->year . "/" . userAuth()->id . "/laporan_semester_" . $vacancyUser->vacancy_id . "_" . $vacancyUser->user->name . ".pdf";
+        $fileName = "pendidikan_lanjutan/" . now()->year . "/laporan_semester" . "/" . $vacancyUser->vacancy_id . "/" . now()->month . "_" . str_replace([' ', '/'], '_', $reportFile->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
         Storage::disk('private')->put($fileName, file_get_contents($file));
 
         $result = VacancyReport::create([
             'vacancy_user_id' => $vacancyUser->id,
-            'name' => $validated['name'],
+            'name' => $reportFile->name,
             'file' => $fileName,
             'status' => 'pending',
         ]);
 
         VacancyLogs::create([
             'vacancy_user_id' => $vacancyUser->id,
-            'name' => $validated['name'],
+            'name' => $reportFile->name,
             'description' => 'Telah mengirim laporan',
             'status' => 'success',
         ]);

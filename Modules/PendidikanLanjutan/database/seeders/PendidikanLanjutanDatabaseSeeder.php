@@ -16,7 +16,7 @@ class PendidikanLanjutanDatabaseSeeder extends Seeder
         $this->call([
             VacancySeeder::class,
             VacancyAttachmentSeeder::class,
-            VacancyMasterReportFileSeeder   ::class
+            VacancyMasterReportFileSeeder::class
             // VacancyUserSeeder::class,
             // VacancyUserAttachmentSeeder::class
         ]);

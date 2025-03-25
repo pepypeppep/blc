@@ -1,5 +1,16 @@
 @if (Module::isEnabled('Language') && Route::has('admin.vacancies.index'))
-    {{-- @adminCan('pendidikanlanjutan.view') --}}
+    <li class="nav-item dropdown {{ isRoute(['vacancies.master.*'], 'active') }}">
+        <a href="javascript:void()" class="nav-link has-dropdown"><i class="fas fa-graduation-cap"></i><span
+                class="beep parent">{{ __('Master') }}</span></a>
+
+        <ul class="dropdown-menu">
+            <li class="{{ isRoute('vacancies.master.file.*', 'active') }}">
+                <a class="nav-link" href="{{ route('admin.vacancies.master.file.index') }}">
+                    {{ __('Berkas Laporan') }}
+                </a>
+            </li>
+        </ul>
+    </li>
     @adminCan('pendidikanlanjutan.pendaftar')
         <li class="{{ isRoute('admin.peserta.*', 'active') }}">
             <a class="nav-link" href="{{ route('admin.vacancies.peserta.index') }}">

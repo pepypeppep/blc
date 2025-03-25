@@ -4,8 +4,7 @@ namespace Modules\PendidikanLanjutan\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\PendidikanLanjutan\database\seeders\VacancyAttachmentSeeder;
-use Modules\PendidikanLanjutan\database\seeders\VacancySeeder;
-use Modules\PendidikanLanjutan\database\seeders\VacancyUserSeeder;
+use Modules\PendidikanLanjutan\database\seeders\VacancyMasterReportFileSeeder;
 
 class PendidikanLanjutanDatabaseSeeder extends Seeder
 {
@@ -17,6 +16,7 @@ class PendidikanLanjutanDatabaseSeeder extends Seeder
         $this->call([
             VacancySeeder::class,
             VacancyAttachmentSeeder::class,
+            VacancyMasterReportFileSeeder::class
             // VacancyUserSeeder::class,
             // VacancyUserAttachmentSeeder::class
         ]);

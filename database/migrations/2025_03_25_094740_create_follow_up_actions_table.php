@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('follow_up_actions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->text('summary');
-            $table->string('status')->nullable();
-            $table->string('file_path')->nullable();
+            $table->foreignId('chapter_item_id')->nullable();
+            $table->foreignId('instructor_id')->nullable();
+            $table->foreignId('chapter_id');
+            $table->foreignId('course_id');
+            $table->string('title');
+            $table->string('description')->nullable();
+            $table->timestamp('due_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

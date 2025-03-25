@@ -17,6 +17,8 @@ class ChapterLessonRequest extends FormRequest
             return $this->lessonRules();
         } elseif ($this->type == 'document') {
             return $this->documentRules();
+        } elseif ($this->type == 'rtl') {
+            return $this->followUpActionRules();
         } elseif ($this->type == 'live') {
             return $this->liveRules();
         } else {
@@ -98,6 +100,17 @@ class ChapterLessonRequest extends FormRequest
             'attempts'   => ['nullable', 'numeric', 'min:1'],
             'pass_mark'  => ['required', 'numeric', 'min:1'],
             'total_mark' => ['required', 'numeric', 'min:1'],
+        ];
+
+        return $rules;
+    }
+
+    function followUpActionRules(): array
+    {
+        $rules = [
+            'chapter'     => ['required', 'exists:course_chapters,id'],
+            'title'       => ['required', 'max:255'],
+            'description' => ['nullable', 'max:600'],
         ];
 
         return $rules;

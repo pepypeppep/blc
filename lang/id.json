@@ -1677,7 +1677,7 @@
     "rating filed is required": "peringkat yang diajukan diperlukan",
     "rating have to be an integer": "peringkat harus berupa bilangan bulat",
     "review filed is required": "peninjauan yang diajukan diperlukan",
-    "Already added review": "Sudah ditambahkan ulasan",
+    "Already added review": "Anda telah memberikan ulasan pada pelatihan ini",
     "Review added successfully": "Ulasan berhasil ditambahkan",
     "You are trying to use unsupported currency": "Anda mencoba menggunakan mata uang yang tidak didukung",
     "Payment Fail": "Pembayaran Gagal",
@@ -2029,5 +2029,8 @@
     "File Verification": "Verifikasi Berkas",
     "Lecture Report": "Laporan Perkuliahan",
     "Done": "Selesai",
-    "Reactivation": "Pengaktifkan Kembali"
+    "Reactivation": "Pengaktifkan Kembali",
+    "Rate this course": "Berikan penilaian untuk pelatihan ini",
+    "Tell others about your experience": "Bagikan pengalaman Anda kepada orang lain",
+    "Review from Students": "Ulasan dari Siswa"
 }

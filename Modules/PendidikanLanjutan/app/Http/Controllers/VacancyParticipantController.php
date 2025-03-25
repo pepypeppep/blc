@@ -217,7 +217,7 @@ class VacancyParticipantController extends Controller
     public function updateReportStatus(Request $request, $vacancyReportId)
     {
         $request->validate([
-            'status' => 'required|in:rejected,accepted',
+            'statusReport' => 'required|in:rejected,accepted',
             'description' => 'nullable'
         ]);
 
@@ -230,7 +230,7 @@ class VacancyParticipantController extends Controller
 
             // Update Vacancy Report Status
             $vacancyReport->update([
-                'status' => $request->status,
+                'status' => $request->statusReport,
                 'note' => $request->description
             ]);
 
@@ -238,7 +238,7 @@ class VacancyParticipantController extends Controller
             $request->merge([
                 'vacancy_user_id' => $vacancyReport->vacancy_user_id,
                 'name' => "Verifikasi Laporan",
-                'status' => $request->status,
+                'status' => $request->statusReport,
                 'description' => $request->description
             ]);
             vacancyLog($request);

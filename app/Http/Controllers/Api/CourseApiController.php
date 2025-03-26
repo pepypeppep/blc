@@ -136,7 +136,14 @@ class CourseApiController extends Controller
                 });
             });
 
-            $query->with(['instructor:id,name', 'enrollments', 'category.translation']);
+            $query->with([
+                'instructor:id,name',
+                'enrollments',
+                'category.translation',
+                'category' => function ($query) {
+                    $query->withCount('courses');
+                }
+            ]);
 
             if ($request->has('user_id')) {
                 $authorId = $request->user_id;

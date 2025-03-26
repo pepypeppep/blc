@@ -146,7 +146,8 @@ class CourseApiController extends Controller
             }
 
             $query->orderBy('id', $request->order && $request->filled('order') ? $request->order : 'desc');
-            $courses = $query->paginate();
+
+            $courses = $query->paginate($request->per_page ?? 10);
 
             return response()->json([
                 'success' => true,

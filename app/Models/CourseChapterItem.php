@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 
-class CourseChapterItem extends Model {
+class CourseChapterItem extends Model
+{
     use HasFactory;
 
     protected $fillable = [
@@ -19,25 +20,45 @@ class CourseChapterItem extends Model {
         'order',
     ];
 
-    function lesson(): HasOne {
+    function lesson(): HasOne
+    {
         return $this->hasOne(CourseChapterLesson::class, 'chapter_item_id', 'id');
     }
 
-    function chapter(): BelongsTo {
+    function chapter(): BelongsTo
+    {
         return $this->belongsTo(CourseChapter::class, 'chapter_id', 'id');
     }
 
-    function quiz(): HasOne {
+    function quiz(): HasOne
+    {
         return $this->hasOne(Quiz::class, 'chapter_item_id', 'id');
     }
 
-    function quizzes(): HasMany {
+    /**
+     * Get the rtl associated with the CourseChapterItem
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function rtl(): HasOne
+    {
+        return $this->hasOne(FollowUpAction::class, 'chapter_item_id', 'id');
+    }
+
+    function followUpAction(): HasOne
+    {
+        return $this->hasOne(FollowUpAction::class, 'chapter_item_id', 'id');
+    }
+
+    function quizzes(): HasMany
+    {
         return $this->hasMany(Quiz::class, 'chapter_item_id', 'id');
     }
     /**
      * Boot method to handle model events.
      */
-    protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
         static::deleting(function ($courseChapterItem) {
             $courseChapterItem->quizzes()->each(function ($quiz) {

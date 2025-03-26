@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Models\Quiz;
 use App\Models\User;
+use App\Models\FollowUpAction;
 use App\Models\Course;
 use Illuminate\Support\Str;
 use App\Models\QuizQuestion;
@@ -224,6 +225,13 @@ class CourseContentController extends Controller
                 'pass_mark'       => $request->pass_mark,
                 'total_mark'      => $request->total_mark,
             ]);
+        } elseif ($request->type == 'rtl') {
+
+            FollowUpAction::create([
+                'chapter_item_id' => $chapterItem->id,
+                'title'           => $request->title,
+                'description'     => $request->description,
+            ]);
         }
 
         return response()->json(['status' => 'success', 'message' => __('Lesson created successfully')]);
@@ -233,7 +241,7 @@ class CourseContentController extends Controller
     {
         $courseId = $request->courseId;
         $chapterItemId = $request->chapterItemId;
-        $chapterItem = CourseChapterItem::with(['lesson', 'quiz'])->find($chapterItemId);
+        $chapterItem = CourseChapterItem::with(['lesson', 'quiz', 'followUpAction'])->find($chapterItemId);
         $chapters = CourseChapter::where('course_id', $courseId)->get();
         if ($request->type == 'lesson') {
             return view('frontend.instructor-dashboard.course.partials.lesson-edit-modal', [
@@ -253,8 +261,14 @@ class CourseContentController extends Controller
                 'courseId'    => $courseId,
                 'chapterItem' => $chapterItem,
             ])->render();
+        } elseif ($request->type == 'rtl') {
+            return view('frontend.instructor-dashboard.course.partials.live-edit-modal', [
+                'chapters'    => $chapters,
+                'courseId'    => $courseId,
+                'chapterItem' => $chapterItem,
+            ])->render();
         } else {
-            return view('frontend.instructor-dashboard.course.partials.quiz-edit-modal', [
+            return view('frontend.instructor-dashboard.course.partials.followupaction-edit-modal', [
                 'chapters'    => $chapters,
                 'courseId'    => $courseId,
                 'chapterItem' => $chapterItem,
@@ -264,6 +278,8 @@ class CourseContentController extends Controller
 
     function lessonUpdate(ChapterLessonRequest $request)
     {
+        dd($request->all());
+
         $chapterItem = CourseChapterItem::findOrFail($request->chapter_item_id);
         abort_if($chapterItem->instructor_id != auth('web')->user()->id, 403, __('unauthorized access'));
         $chapterItem->update([
@@ -348,6 +364,13 @@ class CourseContentController extends Controller
             if (Storage::disk('private')->exists($old_file_path)) {
                 Storage::disk('private')->delete($old_file_path);
             }
+        } elseif ($request->type == 'rtl') {
+            $quiz = FollowUpAction::where('chapter_item_id', $chapterItem->id)->first();
+            $quiz->update([
+                'chapter_item_id' => $chapterItem->id,
+                'title'           => $request->title,
+                'description'     => $request->description,
+            ]);
         } else {
             $quiz = Quiz::where('chapter_item_id', $chapterItem->id)->first();
             $quiz->update([
@@ -377,6 +400,7 @@ class CourseContentController extends Controller
 
     function chapterLessonDestroy(string $chapterItemId)
     {
+        dd($chapterItemId);
         $chapterItem = CourseChapterItem::findOrFail($chapterItemId);
         abort_if($chapterItem->instructor_id != auth('web')->user()->id, 403, __('unauthorized access'));
 
@@ -389,6 +413,12 @@ class CourseContentController extends Controller
             }
             $quiz->delete();
             $chapterItem->delete();
+        } else if ($chapterItem->type == 'rtl') {
+            dd('a');
+            $followUpAction = $chapterItem->followUpAction;
+            if ($followUpAction) {
+                $followUpAction->delete();
+            }
         } else {
             if (in_array($chapterItem->lesson->storage, ['wasabi', 'aws'])) {
                 $disk = Storage::disk($chapterItem->lesson->storage);

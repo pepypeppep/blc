@@ -3,31 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FollowUpAction extends Model
 {
     use SoftDeletes;
-
-    //fillable
     protected $fillable = [
-        'course_id',
-        'user_id',
-        'summary',
-        'file_path',
-        'status',
+        'chapter_item_id',
         'instructor_id',
-        'note'
+        'chapter_id',
+        'course_id',
+        'title',
+        'description',
+        'due_date',
     ];
 
-    //relations
-    public function course()
+    function course(): BelongsTo
     {
-        return $this->belongsTo(Course::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Course::class, 'course_id', 'id')->withTrashed();
     }
 }

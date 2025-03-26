@@ -95,7 +95,7 @@
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="price">{{ __('Course Price') }}
+                                                        <label for="price">Jam Pelajaran (JP)
                                                             <code>*</code></label>
                                                         <input id="price" name="price" type="text"
                                                             class="form-control" value="{{ @$course?->price }}">

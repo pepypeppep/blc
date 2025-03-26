@@ -89,6 +89,13 @@
                                                                             data-chapterid="{{ $chapter->id }}"
                                                                             href="javascript:;">{{ __('Add Quiz') }}</a>
                                                                     </li>
+                                                                    <li><a class="dropdown-item add-lesson-btn"
+                                                                            data-type="rtl"
+                                                                            data-chapterid="{{ $chapter->id }}"
+                                                                            href="javascript:;">Tambahkan <br />Rencana
+                                                                            Tindak
+                                                                            Lanjut</a>
+                                                                    </li>
                                                                 </ul>
                                                             </div>
                                                             <a href="javascript:;"
@@ -149,6 +156,42 @@
                                                                             <p class="mb-0 ms-2 bold-text">
                                                                                 {{ truncate($chapterItem->lesson?->title) }}
                                                                             </p>
+                                                                        </div>
+                                                                        <div class="item-action">
+                                                                            <a href="javascript:;"
+                                                                                class="ms-2 text-dark edit-lesson-btn"
+                                                                                data-type="{{ $chapterItem->type }}"
+                                                                                data-courseid="{{ $chapter->course_id }}"
+                                                                                data-chapterid="{{ $chapter->id }}"
+                                                                                data-chapter_item_id="{{ $chapterItem->id }}"><i
+                                                                                    class="fas fa-edit"></i></a>
+                                                                            <a href="{{ route('admin.course-chapter.lesson.destroy', $chapterItem->id) }}"
+                                                                                class="ms-2 text-danger delete-item"><i
+                                                                                    class="fas fa-trash-alt"></i></i></a>
+                                                                            <a href="javascript:;" class="ms-2 dragger"><i
+                                                                                    class="fas fa-arrows-alt"></i></a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @elseif ($chapterItem->type == 'rtl')
+                                                                <div class="card course-section-item create_couese_item mb-3"
+                                                                    data-chapter-item-id="{{ $chapterItem->id }}"
+                                                                    data-chapterid="{{ $chapter->id }}">
+                                                                    <div
+                                                                        class="d-flex flex-wrap justify-content-between align-items-center">
+                                                                        <div
+                                                                            class="edit_course_icons d-flex flex-wrap align-items-center">
+                                                                            <span class="icon-container">
+                                                                                <i class="fas fa-feather"></i>
+                                                                            </span>
+                                                                            <p class="mb-0 ms-2 bold-text">
+                                                                                Rencana
+                                                                                Tindak Lanjut :
+
+                                                                                {{ truncate($chapterItem->followUpAction?->title) }}
+
+                                                                            </p>
+
                                                                         </div>
                                                                         <div class="item-action">
                                                                             <a href="javascript:;"

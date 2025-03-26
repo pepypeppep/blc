@@ -15,6 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Session\Session;
 use App\Http\Requests\Frontend\QuizLessonCreateRequest;
+use App\Models\FollowUpAction;
 use Modules\Course\app\Http\Requests\ChapterLessonRequest;
 
 class CourseContentController extends Controller
@@ -124,6 +125,13 @@ class CourseContentController extends Controller
                 'chapters' => $chapters,
                 'type' => $type
             ])->render();
+        } elseif ($request->type == 'rtl') {
+            return view('course::course.partials.rtl-create-modal', [
+                'courseId' => $courseId,
+                'chapterId' => $chapterId,
+                'chapters' => $chapters,
+                'type' => $type
+            ])->render();
         }
     }
 
@@ -183,6 +191,14 @@ class CourseContentController extends Controller
                 'pass_mark' => $request->pass_mark,
                 'total_mark' => $request->total_mark,
             ]);
+        } elseif ($request->type == 'rtl') {
+            FollowUpAction::create([
+                'chapter_item_id' => $chapterItem->id,
+                'chapter_id' => $request->chapter,
+                'course_id' => $request->course_id,
+                'title' => $request->title,
+                'description' => $request->description,
+            ]);
         }
 
         return response()->json(['status' => 'success', 'message' => __('Lesson created successfully')]);
@@ -192,7 +208,7 @@ class CourseContentController extends Controller
     {
         $courseId = $request->courseId;
         $chapterItemId = $request->chapterItemId;
-        $chapterItem = CourseChapterItem::with(['lesson', 'quiz'])->find($chapterItemId);
+        $chapterItem = CourseChapterItem::with(['lesson', 'quiz', 'followUpAction'])->find($chapterItemId);
         $chapters = CourseChapter::where('course_id', $courseId)->get();
         if ($request->type == 'lesson') {
             return view('course::course.partials.lesson-edit-modal', [
@@ -202,6 +218,14 @@ class CourseContentController extends Controller
             ])->render();
         } elseif ($request->type == 'document') {
             return view('course::course.partials.document-edit-modal', [
+                'chapters' => $chapters,
+                'courseId' => $courseId,
+                'chapterItem' => $chapterItem
+            ])->render();
+        } elseif ($request->type == 'rtl') {
+            // dd($chapterItem);
+
+            return view('course::course.partials.rtl-edit-modal', [
                 'chapters' => $chapters,
                 'courseId' => $courseId,
                 'chapterItem' => $chapterItem
@@ -217,7 +241,7 @@ class CourseContentController extends Controller
 
     function lessonUpdate(ChapterLessonRequest $request)
     {
-        
+
         checkAdminHasPermissionAndThrowException('course.management');
 
         $chapterItem = CourseChapterItem::findOrFail($request->chapter_item_id);
@@ -311,6 +335,12 @@ class CourseContentController extends Controller
                 $question->delete();
             }
             $quiz->delete();
+            $chapterItem->delete();
+        } else if ($chapterItem->type == 'rtl') {
+            $followUpAction = $chapterItem->followUpAction;
+            if ($followUpAction) {
+                $followUpAction->delete();
+            }
             $chapterItem->delete();
         } else {
             if (in_array($chapterItem->lesson->storage, ['wasabi', 'aws'])) {
@@ -412,5 +442,25 @@ class CourseContentController extends Controller
         $question->answers()->delete();
         $question->delete();
         return response()->json(['status' => 'success', 'message' => __('Question deleted successfully')]);
+    }
+
+
+    function updateFollowUpAction(Request $request, string $followUpActionId)
+    {
+        $request->validate([
+            'title'     => ['required', 'string'],
+            'description'     => ['nullable', 'string'],
+        ], [
+            'title.required'     => __('Judul Wajib diisi'),
+        ]);
+
+        $followUpAction = FollowUpAction::findOrFail($followUpActionId);
+        $followUpAction->update([
+            'title' => $request->title,
+            'description' => $request->description,
+        ]);
+
+
+        return response()->json(['status' => 'success', 'message' => __('Question updated successfully')]);
     }
 }

@@ -151,19 +151,19 @@ $(document).ready(function () {
 
         var $container = $(
             "<div class='select2-result-repository clearfix'>" +
-                "<div class='select2-result-repository__avatar'><img src='" +
-                "/" +
-                repo.image +
-                "' /></div>" +
-                "<div class='select2-result-repository__meta'>" +
-                "<div class='select2-result-repository__title'>" +
-                repo.name +
-                "</div>" +
-                "<div class='select2-result-repository__description'>" +
-                repo.email +
-                "</div>" +
-                "</div>" +
-                "</div>"
+            "<div class='select2-result-repository__avatar'><img src='" +
+            "/" +
+            repo.image +
+            "' /></div>" +
+            "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title'>" +
+            repo.name +
+            "</div>" +
+            "<div class='select2-result-repository__description'>" +
+            repo.email +
+            "</div>" +
+            "</div>" +
+            "</div>"
         );
 
         return $container;
@@ -299,8 +299,10 @@ $(document).ready(function () {
 
     /** load add new lesson modal */
     $(".add-lesson-btn").on("click", function () {
+
         $(".dynamic-modal").modal("show");
         let type = $(this).data("type");
+
         let chapterId = $(this).data("chapterid");
         let courseId = $('meta[name="course_id"]').attr("content");
         $.ajax({
@@ -604,13 +606,14 @@ $(document).ready(function () {
         e.preventDefault();
         let url = $(this).attr("href");
         Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            title: "Anda yakin?",
+            text: "Anda tidak dapat membatalkan ini!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!",
+            confirmButtonText: "Ya, hapus!",
+            cancelButtonText: "Tidak, batalkan!",
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -619,12 +622,12 @@ $(document).ready(function () {
                     data: {
                         _token: $('meta[name="csrf-token"]').attr("content"),
                     },
-                    beforeSend: function () {},
+                    beforeSend: function () { },
                     success: function (data) {
                         if (data.status == "success") {
                             Swal.fire({
-                                title: "Deleted!",
-                                text: "Your file has been deleted.",
+                                title: "Dihapus!",
+                                text: "Data Anda telah dihapus.",
                                 icon: "success",
                             });
                             location.reload();

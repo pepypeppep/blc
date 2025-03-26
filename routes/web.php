@@ -150,7 +150,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
             return response()->file($path);
         })->name('follow-up-action.files');
-        
+
         Route::resource('follow-up-action', StudentFollowUpActionController::class);
         // Route::get('follow-up-action/create', [StudentFollowUpActionController::class, 'create'])->name('follow-up-action.create');
 
@@ -218,6 +218,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
         // Route::put('setting/address', [InstructorProfileSettingController::class, 'updateAddress'])->name('setting.address.update');
         // Route::put('setting/socials', [InstructorProfileSettingController::class, 'updateSocials'])->name('setting.socials.update');
+        Route::put('course-chapter/rtl/update/{follow_up_action_id}', [CourseContentController::class, 'updateFollowUpAction'])->name('course-chapter.rtl.update');
 
         /** Course Routes */
         Route::get('courses', [InstructorCourseController::class, 'index'])->name('courses.index');
@@ -247,6 +248,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::post('course-chapter/lesson/update', [CourseContentController::class, 'lessonUpdate'])->name('course-chapter.lesson.update');
         Route::delete('course-chapter/lesson/{chapter_item_id}/destroy', [CourseContentController::class, 'chapterLessonDestroy'])->name('course-chapter.lesson.destroy');
         Route::post('course-chapter/lesson/sorting/{chapter_id}', [CourseContentController::class, 'sortLessons'])->name('course-chapter.lesson.sorting');
+
+
 
         Route::get('course-chapter/quiz-question/create/{quiz_id}', [CourseContentController::class, 'createQuizQuestion'])->name('course-chapter.quiz-question.create');
         Route::post('course-chapter/quiz-question/create/{quiz_id}', [CourseContentController::class, 'storeQuizQuestion'])->name('course-chapter.quiz-question.store');

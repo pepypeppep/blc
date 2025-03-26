@@ -44,7 +44,7 @@ class CourseController extends Controller
         $query->withCount([
             'enrollments as enrollments_pending_count' => function ($q) {
                 $q->whereNull('has_access')
-                ->orWhere('has_access', '');
+                    ->orWhere('has_access', '');
             }
         ]);
         $orderBy = $request->order_by == 1 ? 'asc' : 'desc';
@@ -59,8 +59,9 @@ class CourseController extends Controller
 
     function create()
     {
-        $instructors = User::where('role', 'instructor')->get();
-        return view('course::course.create', compact('instructors'));
+        $instansis = Instansi::orderBy('name', 'asc')->get();
+        $instructors = User::where('role', 'instructor')->orderBy('name', 'asc')->get();
+        return view('course::course.create', compact('instructors', 'instansis'));
     }
 
     function editView(string $id)
@@ -104,7 +105,7 @@ class CourseController extends Controller
         $course->discount = $request->discount_price;
         $course->description = $request->description;
         $course->background = $request->background;
-        $course->course_type = "pdf";
+        // $course->course_type = "pdf";
         $course->instansi_id = $request->instansi;
         $course->instructor_id = $request->instructor;
         $course->save();

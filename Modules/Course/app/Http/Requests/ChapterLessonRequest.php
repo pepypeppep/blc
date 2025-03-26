@@ -17,6 +17,8 @@ class ChapterLessonRequest extends FormRequest
             return $this->lessonRules();
         } elseif ($this->type == 'document') {
             return $this->documentRules();
+        } else  if ($this->type == 'rtl') {
+            return $this->followUpActionRules();
         } else {
             return $this->quizRules();
         }
@@ -40,6 +42,16 @@ class ChapterLessonRequest extends FormRequest
             'title'       => ['required', 'max:255'],
             'description' => ['nullable', 'max:600'],
             'file_path' => ['nullable', 'file', 'mimes:pdf', 'max:10240'],
+        ];
+
+        return $rules;
+    }
+    function followUpActionRules(): array
+    {
+        $rules = [
+            'chapter'     => ['required', 'exists:course_chapters,id'],
+            'title'       => ['required', 'max:255'],
+            'description' => ['nullable', 'max:600'],
         ];
 
         return $rules;

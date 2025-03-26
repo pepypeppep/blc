@@ -2,20 +2,21 @@
 
 namespace Modules\Course\app\Http\Controllers;
 
-use App\Enums\RedirectType;
-use App\Http\Controllers\Controller;
 use App\Models\Course;
-use App\Traits\RedirectHelperTrait;
-use Illuminate\Http\RedirectResponse;
+use App\Enums\RedirectType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Traits\RedirectHelperTrait;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Modules\Blog\app\Models\BlogCategory;
-use Modules\Course\app\Http\Requests\CourseCategoryStoreRequest;
-use Modules\Course\app\Http\Requests\CourseCategoryUpdateRequest;
+use Modules\Language\app\Models\Language;
 use Modules\Course\app\Models\CourseCategory;
 use Modules\Language\app\Enums\TranslationModels;
-use Modules\Language\app\Models\Language;
 use Modules\Language\app\Traits\GenerateTranslationTrait;
+use Modules\Course\app\Http\Requests\CourseCategoryStoreRequest;
+use Modules\Course\app\Http\Requests\CourseCategoryUpdateRequest;
 
 class CourseCategoryController extends Controller
 {
@@ -34,7 +35,7 @@ class CourseCategoryController extends Controller
         $query->where('parent_id', $request->parent_id);
         $query->when(
             $request->status !== null && $request->status !== '',
-            fn ($q) => $q->where('status', $request->status)
+            fn($q) => $q->where('status', $request->status)
         );
         $orderBy = $request->order_by == 1 ? 'asc' : 'desc';
         $categories = $request->get('par-page') == 'all' ?
@@ -57,11 +58,14 @@ class CourseCategoryController extends Controller
      */
     public function store(CourseCategoryStoreRequest $request): RedirectResponse
     {
-        $iconPath = file_upload($request->icon);
+        $file = $request->file('icon');
+        $path = 'course/category/';
+        $filename = $request->slug . '_' . time() . '.png';
+        Storage::disk('private')->put($path . $filename, file_get_contents($file));
 
         $category = new CourseCategory();
         $category->slug = $request->slug;
-        $category->icon = $iconPath;
+        $category->icon = $path . $filename;
         $category->status = $request->status;
         $category->show_at_trending = $request->show_at_trending;
         $category->save();
@@ -101,8 +105,15 @@ class CourseCategoryController extends Controller
 
         $category = CourseCategory::findOrFail($id);
         if ($request->hasFile('icon')) {
-            $iconPath = file_upload($request->icon, 'uploads/custom-images/', $category->icon);
-            $category->icon = $iconPath;
+            if (Storage::disk('private')->exists($category->icon)) {
+                Storage::disk('private')->delete($category->icon);
+            }
+            $file = $request->file('icon');
+            $path = 'course/category/';
+            $filename = $request->slug . '_' . time() . '.png';
+            Storage::disk('private')->put($path . $filename, file_get_contents($file));
+
+            $category->icon = $path . $filename;
         }
         $category->status = $request->status;
         $category->show_at_trending = $request->show_at_trending;
@@ -125,10 +136,10 @@ class CourseCategoryController extends Controller
     public function destroy($id)
     {
         $category = CourseCategory::findOrFail($id);
-        if(CourseCategory::where('parent_id', $id)->exists()){
+        if (CourseCategory::where('parent_id', $id)->exists()) {
             return redirect()->route('admin.course-category.index')->with(['messege' => 'Category can not be deleted because it has sub categories', 'alert-type' => 'error']);
         }
-        
+
         if ($category->icon) {
             if (\File::exists(public_path($category->icon))) {
                 unlink(public_path($category->icon));
@@ -153,5 +164,11 @@ class CourseCategoryController extends Controller
             'success' => true,
             'message' => $notification,
         ]);
+    }
+
+    public function getFile($id)
+    {
+        $category = CourseCategory::findOrFail($id);
+        return response()->file(Storage::disk('private')->path($category->icon));
     }
 }

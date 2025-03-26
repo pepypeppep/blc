@@ -136,7 +136,14 @@ class CourseApiController extends Controller
                 });
             });
 
-            $query->with(['instructor:id,name', 'enrollments', 'category.translation']);
+            $query->with([
+                'instructor:id,name',
+                'enrollments',
+                'category.translation',
+                'category' => function ($query) {
+                    $query->withCount('courses');
+                }
+            ]);
 
             if ($request->has('user_id')) {
                 $authorId = $request->user_id;
@@ -146,7 +153,8 @@ class CourseApiController extends Controller
             }
 
             $query->orderBy('id', $request->order && $request->filled('order') ? $request->order : 'desc');
-            $courses = $query->paginate();
+
+            $courses = $query->paginate($request->per_page ?? 10);
 
             return response()->json([
                 'success' => true,

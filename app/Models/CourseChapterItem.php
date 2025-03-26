@@ -35,6 +35,16 @@ class CourseChapterItem extends Model
         return $this->hasOne(Quiz::class, 'chapter_item_id', 'id');
     }
 
+    /**
+     * Get the rtl associated with the CourseChapterItem
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function rtl(): HasOne
+    {
+        return $this->hasOne(FollowUpAction::class, 'chapter_item_id', 'id');
+    }
+
     function followUpAction(): HasOne
     {
         return $this->hasOne(FollowUpAction::class, 'chapter_item_id', 'id');

@@ -95,7 +95,7 @@
                                                 </span>
                                             </label>
                                         </div>
-                                    @else
+                                    @elseif ($chapterItem->type == 'quiz')
                                         <div class="form-check">
                                             <input @checked(in_array($chapterItem->quiz->id, $alreadyCompletedQuiz))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
@@ -107,6 +107,23 @@
                                                 {{ $chapterItem->quiz->title }}
                                                 <span>
                                                     <img src="{{ asset('frontend/img/video_icon_black_2.png') }}"
+                                                        alt="video" class="img-fluid">
+                                                    --.--
+                                                </span>
+                                            </label>
+                                        </div>
+                                    @elseif ($chapterItem->type == 'rtl')
+                                        <div class="form-check">
+                                            <input @checked(in_array($chapterItem->rtl->id, $alreadyCompletedQuiz))
+                                                class="form-check-input lesson-completed-checkbox" type="checkbox"
+                                                data-lesson-id="{{ $chapterItem->rtl->id }}" value="1"
+                                                data-type="quiz">
+                                            <label class="form-check-label lesson-item"
+                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
+                                                data-lesson-id="{{ $chapterItem->rtl->id }}" data-type="quiz">
+                                                {{ $chapterItem->rtl->title }}
+                                                <span>
+                                                    <img src="{{ asset('frontend/img/txt.png') }}"
                                                         alt="video" class="img-fluid">
                                                     --.--
                                                 </span>

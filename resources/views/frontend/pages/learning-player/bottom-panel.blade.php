@@ -131,9 +131,9 @@
         <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab"
             tabindex="0">
             <div class="video_review">
-                <div class="video_review_imput mt-2">
+                @if($userHasReviewed === 0)
+                <div class="video_review_imput mt-2 mb-5">
                     <h2 class="mb-2">{{ __('Course Reviews') }}</h2>
-
                     <form action="{{ route('student.add-review') }}" class="instructor__profile-form"
                         method="POST">
                         @csrf
@@ -166,8 +166,8 @@
                         <button type="submit" class="btn arrow-btn">{{ __('Submit') }}</button>
                     </form>
                 </div>
-
-                <h2 class="mt-5 mb-2">{{ __('Review from Students') }}</h2>
+                @endif
+                <h2 class="mb-2">{{ __('Review from Students') }}</h2>
                 <div class="review-holder mt-2"></div>
 
                 <div class="text-center mt-3">
@@ -221,7 +221,7 @@
 @push('styles')
     <style>
         .stars .star {
-            font-size: 25px !important;
+            font-size: 35px !important;
         }
 
         .stars {

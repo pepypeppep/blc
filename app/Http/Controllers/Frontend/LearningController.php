@@ -80,6 +80,11 @@ class LearningController extends Controller
                 ]);
             }
         }
+
+        $userHasReviewed = CourseReview::where('course_id', $course->id)
+                            ->where('user_id', userAuth()->id)
+                            ->exists();
+
         return view('frontend.pages.learning-player.index', compact(
             'course',
             'currentProgress',
@@ -88,7 +93,8 @@ class LearningController extends Controller
             'courseLectureCount',
             'courseLectureCompletedByUser',
             'alreadyWatchedLectures',
-            'alreadyCompletedQuiz'
+            'alreadyCompletedQuiz',
+            'userHasReviewed'
         ));
     }
 
@@ -416,12 +422,20 @@ class LearningController extends Controller
 
     function fetchReviews(Request $request, string $courseId)
     {
-        $reviews = CourseReview::where(['course_id' => $courseId, 'status' => 1])
+        $reviews = CourseReview::where('course_id', $courseId)
+            ->where(function($query) {
+                $query->where('status', 1)
+                      ->orWhere(function($subQuery) {
+                        $subQuery->where('user_id', auth()->id())
+                                 ->where('status', 0);
+                    });
+            })
             ->whereHas('course')
             ->whereHas('user')
+            ->orderByRaw('status = 0 DESC')
             ->orderBy('id', 'desc')
-            ->paginate(8, ['*'], 'page', $request->page ?? 1
-        );
+            ->paginate(8, ['*'], 'page', $request->page ?? 1);
+
         return response()->json([
             'view' => view('frontend.pages.learning-player.partials.review-card', compact('reviews'))->render(),
             'page' => $request->page,

@@ -82,6 +82,11 @@
                                 data-bs-target="#participants-tab-pane" type="button" role="tab"
                                 aria-controls="participants-tab-pane" aria-selected="false">{{ __('Peserta') }}</button>
                         </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="rtl-tab" data-bs-toggle="tab" data-bs-target="#rtl-tab-pane"
+                                type="button" role="tab" aria-controls="rtl-tab-pane"
+                                aria-selected="false">{{ __('Rencana Tindak Lanjut') }}</button>
+                        </li>
 
                     </ul>
                     <div class="tab-content " id="myTabContent">
@@ -103,8 +108,9 @@
                                         <div class="accordion-item">
                                             <h2 class="accordion-header" id="heading{{ $chapter->id }}">
                                                 <button class="accordion-button collapsed" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ $chapter->id }}"
-                                                    aria-expanded="false" aria-controls="collapse{{ $chapter->id }}">
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#collapse{{ $chapter->id }}" aria-expanded="false"
+                                                    aria-controls="collapse{{ $chapter->id }}">
                                                     {{ $loop->iteration }}. {{ $chapter?->title }}
                                                 </button>
                                             </h2>
@@ -240,6 +246,14 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="rtl-tab-pane" role="tabpanel" aria-labelledby="rtl-tab"
+                            tabindex="0">
+                            <div class="courses__overview-wrap border-0" style="border-radius: 0%">
+                                <h3 class="title">{{ __('Daftar Rencana Tindak Lanjut') }}</h3>
+
 
                             </div>
                         </div>

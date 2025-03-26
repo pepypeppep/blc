@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('withraw_methods');
+        Schema::dropIfExists('withdraw_methods');
     }
 };

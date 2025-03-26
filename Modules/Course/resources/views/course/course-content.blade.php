@@ -37,7 +37,7 @@
                                     <div class="mb-3 d-flex justify-content-between">
                                         <button type="button" class="btn btn-primary" data-toggle="modal"
                                             data-target="#exampleModal">
-                                            {{ __('Add new chapter') }} FADILA
+                                            {{ __('Add new chapter') }}
                                         </button>
 
                                         <button type="button" class="btn btn-primary sort-chapter-btn">

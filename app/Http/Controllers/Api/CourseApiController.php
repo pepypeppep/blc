@@ -180,7 +180,19 @@ class CourseApiController extends Controller
     public function showCourse(Request $request, $slug)
     {
         try {
-            $query = Course::with(['instructor:id,name', 'partnerInstructors', 'levels', 'enrollments', 'category.translation', 'chapters', 'reviews', 'lessons'])
+            $query = Course::with([
+                'instructor:id,name',
+                'partnerInstructors',
+                'levels',
+                'enrollments',
+                'category.translation',
+                'chapters',
+                'reviews',
+                'lessons',
+                'category' => function ($query) {
+                    $query->withCount('courses');
+                }
+            ])
                 ->where('slug', $slug)
                 ->where('status', 'active');
 

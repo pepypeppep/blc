@@ -103,7 +103,7 @@
                                             @forelse ($categories as $category)
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
-                                                    <td><img class="thumb p-2" src="{{ asset($category->icon) }}"
+                                                    <td><img class="thumb p-2" src="{{ route('admin.course-category.thumbnail', $category) }}"
                                                             alt=""></td>
                                                     <td>{{ $category->translation?->name }}</td>
                                                     <td>{{ $category->slug }}</td>

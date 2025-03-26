@@ -187,7 +187,7 @@
                 });
 
                 $('#image-preview').css({
-                    'background-image': 'url({{ asset($category->icon) }})',
+                    'background-image': 'url({{ route('admin.course-category.thumbnail', $category) }})',
                     'background-size': 'contain',
                     'background-position': 'center',
                     'background-repeat': 'no-repeat'

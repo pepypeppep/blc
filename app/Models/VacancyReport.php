@@ -20,11 +20,11 @@ class VacancyReport extends Model
     function getStatusLabel()
     {
         if ($this->status == 'accepted') {
-            return "<span class='badge badge-success'>Diterima</span>";
+            return "<span class='badge badge-success bg-success'>Diterima</span>";
         } elseif ($this->status == 'rejected') {
-            return "<span class='badge badge-warning'>Ditolak</span>";
+            return "<span class='badge badge-danger bg-danger' data-bs-toggle='tooltip' title='" . $this->note  . "'>Ditolak <i class='fa fa-exclamation-circle' aria-hidden='true'></i></span>";
         } else {
-            return "<span class='badge badge-warning'>Menunggu Verifikasi</span>";
+            return "<span class='badge badge-warning bg-warning'>Menunggu Verifikasi</span>";
         }
     }
 }

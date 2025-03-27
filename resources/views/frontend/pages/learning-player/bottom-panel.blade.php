@@ -131,7 +131,7 @@
         <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab"
             tabindex="0">
             <div class="video_review">
-                @if($userHasReviewed === 0)
+                @if($userHasReviewed === false)
                 <div class="video_review_imput mt-2 mb-5">
                     <h2 class="mb-2">{{ __('Course Reviews') }}</h2>
                     <form action="{{ route('student.add-review') }}" class="instructor__profile-form"
@@ -243,7 +243,7 @@
         }
 
         .stars input[type="radio"]:checked ~ label {
-            color: gold; 
+            color: gold;
         }
 
         .stars label:hover,
@@ -258,7 +258,7 @@
         }
 
         code {
-            vertical-align: super; 
+            vertical-align: super;
             font-size: 1em;
         }
     </style>

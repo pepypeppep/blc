@@ -82,8 +82,8 @@ class LearningController extends Controller
         }
 
         $userHasReviewed = CourseReview::where('course_id', $course->id)
-                            ->where('user_id', userAuth()->id)
-                            ->exists();
+            ->where('user_id', userAuth()->id)
+            ->exists();
 
         return view('frontend.pages.learning-player.index', compact(
             'course',
@@ -423,11 +423,11 @@ class LearningController extends Controller
     function fetchReviews(Request $request, string $courseId)
     {
         $reviews = CourseReview::where('course_id', $courseId)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('status', 1)
-                      ->orWhere(function($subQuery) {
+                    ->orWhere(function ($subQuery) {
                         $subQuery->where('user_id', auth()->id())
-                                 ->where('status', 0);
+                            ->where('status', 0);
                     });
             })
             ->whereHas('course')

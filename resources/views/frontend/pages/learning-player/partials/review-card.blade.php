@@ -56,5 +56,5 @@
     </div>
 </div>
 @empty
-{{-- <p class="text-center">{{ __('No reviews!') }}</p> --}}
+<p class="text-center">{{ __('No reviews!') }}</p>
 @endforelse

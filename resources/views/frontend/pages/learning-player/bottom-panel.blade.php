@@ -131,37 +131,27 @@
         <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab"
             tabindex="0">
             <div class="video_review">
-                <h2>{{ __('Reviews') }}</h2>
-                <div class="review-holder"></div>
-
-                <div class="text-center mt-3">
-                    <form action="" class="load-more-rating" method="GET">
-                        <button class="btn btn-primary" type="submit">{{ __('Load More') }}</button>
-                    </form>
-                </div>
-
-                <div class="video_review_imput mt-2">
-                    <h2 class="mb-2">{{ __('Write a review') }}</h2>
-
+                @if($userHasReviewed === 0)
+                <div class="video_review_imput mt-2 mb-5">
+                    <h2 class="mb-2">{{ __('Course Reviews') }}</h2>
                     <form action="{{ route('student.add-review') }}" class="instructor__profile-form"
                         method="POST">
                         @csrf
                         <input type="hidden" value="{{ $course->id }}" name="course_id">
                         <div class="col-md-12">
                             <div class="form-grp">
-                                <label for="">{{ __('Rating') }}</label>
-                                <select name="rating" id="" required>
-                                    <option value="5">5</option>
-                                    <option value="4">4</option>
-                                    <option value="3">3</option>
-                                    <option value="2">2</option>
-                                    <option value="1">1</option>
-                                </select>
+                                <label for="">{{ __('Rate this course') }} <code>*</code></label>
+                                <div class="stars">
+                                    @for($i = 5; $i >= 1; $i--)
+                                        <input type="radio" id="star{{ $i }}" name="rating" value="{{ $i }}" {{ (old('rating') == $i) ? 'checked' : '' }} />
+                                        <label for="star{{ $i }}" class="star">&#9733;</label>
+                                    @endfor
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-grp">
-                                <label for="phone">{{ __('Review') }} <code>*</code></label>
+                                <label for="phone">{{ __('Tell others about your experience') }} <code>*</code></label>
                                 <textarea name="review" class="form-control" required></textarea>
                             </div>
                         </div>
@@ -174,6 +164,15 @@
                             </div>
                         @endif
                         <button type="submit" class="btn arrow-btn">{{ __('Submit') }}</button>
+                    </form>
+                </div>
+                @endif
+                <h2 class="mb-2">{{ __('Review from Students') }}</h2>
+                <div class="review-holder mt-2"></div>
+
+                <div class="text-center mt-3">
+                    <form action="" class="load-more-rating" method="GET">
+                        <button class="btn btn-primary" type="submit">{{ __('Load More') }}</button>
                     </form>
                 </div>
 
@@ -219,3 +218,48 @@
         </div>
     </div>
 </div>
+@push('styles')
+    <style>
+        .stars .star {
+            font-size: 35px !important;
+        }
+
+        .stars {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            margin-left: auto;
+        }
+
+        .stars input[type="radio"] {
+            display: none;
+        }
+
+        .stars label {
+            font-size: 30px;
+            color: #ccc;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .stars input[type="radio"]:checked ~ label {
+            color: gold; 
+        }
+
+        .stars label:hover,
+        .stars label:hover ~ label {
+            color: gold;
+        }
+
+        .stars input[type="radio"]:checked ~ label,
+        .stars input[type="radio"]:checked + label:hover,
+        .stars label:hover {
+            color: gold;
+        }
+
+        code {
+            vertical-align: super; 
+            font-size: 1em;
+        }
+    </style>
+@endpush

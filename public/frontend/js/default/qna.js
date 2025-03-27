@@ -92,7 +92,7 @@ function fetchReviews(courseId, reviewPage = 1) {
             if(data.page == 1 && data.data_count == 0)  $(".review-holder").html(data.view);
 
             $(".load-more-rating button").attr('disabled', false);
-            $(".load-more-rating button").text("Load More");
+            $(".load-more-rating button").text("Muat lebih banyak");
         },
         error: function(xhr, status, error) {
             $(".load-more-rating button").attr('disabled', false);

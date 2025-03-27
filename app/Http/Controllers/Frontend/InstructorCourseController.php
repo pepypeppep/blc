@@ -17,6 +17,8 @@ use App\Models\CoursePartnerInstructor;
 use Illuminate\Support\Facades\Session;
 use Modules\Order\app\Models\Enrollment;
 use App\Models\CourseSelectedFilterOption;
+use App\Models\FollowUpAction;
+use App\Models\FollowUpActionResponse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Modules\Course\app\Models\CourseLevel;
@@ -348,5 +350,72 @@ class InstructorCourseController extends Controller
         // }
 
         return view('frontend.instructor-dashboard.course.detail-content', compact('course'));
+    }
+
+    public function getRtl(Request $request, $id)
+    {
+        $data = CourseChapterItem::query()
+            ->whereHas(
+                'chapter',
+                function ($query) use ($id) {
+                    $query->where('course_id', $id);
+                }
+            )
+            ->with('followUpAction', 'chapter')
+            ->where('type', 'rtl')
+            ->get();
+
+        if ($request->ajax()) {
+            return DataTables::of($data)
+
+                ->addColumn('action', function ($row) {
+
+                    $detail = route('instructor.courses.detail-rtl', ['course_id' => $row->chapter->course_id, 'rtl_id' => $row->followUpAction->id]);
+                    return "<a href='{$detail}' title='Detail'><i class='fas fa-eye'></i></a>";
+                })
+                ->make(true);
+        }
+        abort(404);
+    }
+
+
+
+    public function detailRtl($course_id, $rtl_id)
+    {
+        $rtl = FollowUpAction::where('id', $rtl_id)
+            ->with('course', 'chapter', 'course.enrollments')
+            ->where('course_id', $course_id)
+            ->first();
+
+        $enrollments = $rtl->course->enrollments()->with(['user'])->get();
+
+        $totalParticipants = $enrollments->count();
+
+        $submissions = FollowUpActionResponse::where('follow_up_action_id', $rtl_id)
+            ->with('instructor', 'participant')
+            ->get();
+
+
+        // Ambil ID peserta yang sudah ada di submissions
+        $submittedUserIds = $submissions->pluck('participant.id')->toArray();
+        // Hitung jumlah peserta yang sudah mengumpulkan
+        $submittedCount = count($submittedUserIds);
+
+        // Filter enrollments agar hanya peserta yang belum ada di submissions
+        $enrollments = $enrollments->filter(function ($enrollment) use ($submittedUserIds) {
+            return !in_array($enrollment->user->id, $submittedUserIds);
+        });
+
+        $notSubmittedCount = $enrollments->count();
+
+
+        return view('frontend.instructor-dashboard.course.detail-rtl-content', compact(
+            'rtl',
+            'enrollments',
+            'submissions',
+            'submittedCount',
+            'notSubmittedCount',
+            'totalParticipants'
+        ));
     }
 }

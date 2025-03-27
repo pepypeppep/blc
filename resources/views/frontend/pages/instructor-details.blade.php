@@ -135,7 +135,7 @@
                                     <div class="row">
                                         <div class="col-10 col-md-8 col-xl-8">
 
-                                            <ul class="timeline">
+                                            {{-- <ul class="timeline">
                                                 @foreach ($experiences as $experience)
                                                     <li class="timeline-item">
                                                         <div class="timeline-body">
@@ -157,7 +157,7 @@
                                                         </div>
                                                     </li>
                                                 @endforeach
-                                            </ul>
+                                            </ul> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -171,7 +171,7 @@
                                     <div class="row">
                                         <div class="col-10 col-md-8 col-xl-6">
 
-                                            <ul class="timeline">
+                                            {{-- <ul class="timeline">
                                                 @foreach ($educations as $education)
                                                     <li class="timeline-item">
                                                         <div class="timeline-body">
@@ -195,7 +195,7 @@
                                                         </div>
                                                     </li>
                                                 @endforeach
-                                            </ul>
+                                            </ul> --}}
 
                                         </div>
                                     </div>

@@ -170,11 +170,11 @@ class HomePageController extends Controller
             }]);
         }])
             ->firstOrFail();
-        $experiences = UserExperience::where(['user_id' => $id])->get();
-        $educations = UserEducation::where(['user_id' => $id])->get();
+        // $experiences = UserExperience::where(['user_id' => $id])->get();
+        // $educations = UserEducation::where(['user_id' => $id])->get();
         $courses = Course::active()->where(['instructor_id' => $id])->orderBy('id', 'desc')->get();
         $badges = Badge::where(['status' => 1])->get()->groupBy('key');
-        return view('frontend.pages.instructor-details', compact('instructor', 'experiences', 'educations', 'courses', 'badges'));
+        return view('frontend.pages.instructor-details', compact('instructor',  'courses', 'badges'));
     }
 
     function allInstructors()

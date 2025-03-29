@@ -40,8 +40,8 @@
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link" id="itemSeven-tab" data-bs-toggle="tab"
-                                                data-bs-target="#itemSeven-tab-pane" type="button" role="tab"
-                                                aria-controls="itemSeven-tab-pane" aria-selected="false"
+                                                data-bs-target="#laporan-tab-panel" type="button" role="tab"
+                                                aria-controls="laporan-tab-panel" aria-selected="false"
                                                 tabindex="-1">Laporan</button>
                                         </li>
                                     @endif

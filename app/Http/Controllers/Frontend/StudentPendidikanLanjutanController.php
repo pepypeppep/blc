@@ -123,7 +123,7 @@ class StudentPendidikanLanjutanController extends Controller
             return redirect()->back()->withFragment('attachment_container')->with(['messege' => $validator->errors()->first(), 'alert-type' => 'error']);
         }
 
-        $fileName = "pendidikan_lanjutan/" . now()->year . "/syarat" . "/" . $attachment->vacancy_id . "/" . now()->format("F") . "_" . str_replace([' ', '/'], '_', $attachment->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
+        $fileName = "pendidikan_lanjutan/" . now()->year . "/syarat" . "/" . $attachment->vacancy_id . "/" . now()->month . "_" . str_replace([' ', '/'], '_', $attachment->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
         Storage::disk('private')->put($fileName, file_get_contents($file));
 
         $request->merge([
@@ -231,12 +231,12 @@ class StudentPendidikanLanjutanController extends Controller
         return redirect('student/continuing-education-registration/' . $vacancyUser->id)->with(['message' => 'Pendaftaran berhasil', 'alert-type' => 'success']);
     }
 
-    public function vacancyReportSubmit(StudentVacancyReportRequest $request)
+    public function vacancyReportSubmit(StudentVacancyReportRequest $request, $id)
     {
         $validated = $request->validated();
 
         DB::beginTransaction();
-        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->first();
+        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $id)->first();
 
         $reportFile = VacancyMasterReportFiles::where('id', $validated['name'])->first();
         
@@ -250,7 +250,7 @@ class StudentPendidikanLanjutanController extends Controller
 
 
         $file = $request->file('file');
-        $fileName = "pendidikan_lanjutan/" . now()->year . "/laporan_semester" . "/" . $vacancyUser->vacancy_id . "/" . now()->format("F") . "_" . str_replace([' ', '/'], '_', $reportFile->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
+        $fileName = "pendidikan_lanjutan/" . now()->year . "/laporan_semester" . "/" . $vacancyUser->vacancy_id . "/" . now()->month . "_" . str_replace([' ', '/'], '_', $reportFile->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
         Storage::disk('private')->put($fileName, file_get_contents($file));
 
         $result = VacancyReport::create([
@@ -285,19 +285,19 @@ class StudentPendidikanLanjutanController extends Controller
         $vacancyReport = VacancyReport::with('vacancyUser')->findOrFail($reportId);
 
         if ($vacancyReport->vacancyUser->vacancy_id != $id) {
-            return redirect()->back()->with(['messege' => __('You are not allowed to change this report'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Pendidikan Lanjutan tidak sama dengan yang dipilih'), 'alert-type' => 'error']);
         }
 
         if ($vacancyReport->vacancyUser->user_id != userAuth()->id) {
-            return redirect()->back()->with(['messege' => __('You are not allowed to change this report'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Anda tidak terdaftar sebagai peserta'), 'alert-type' => 'error']);
         }
         if ($vacancyReport->status == 'accepted') {
-            return redirect()->back()->with(['messege' => __('You are not allowed to change this report'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Laporan yang telah disetujui tidak dapat diubah'), 'alert-type' => 'error']);
         }
 
         Storage::disk('private')->delete($vacancyReport->file);
 
-        $fileName = "pendidikan_lanjutan/" . now()->year . "/laporan_semester" . "/" . $id . "/" . now()->format("F") . "_" . str_replace([' ', '/'], '_', $vacancyReport->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
+        $fileName = "pendidikan_lanjutan/" . now()->year . "/laporan_semester" . "/" . $id . "/" . now()->month . "_" . str_replace([' ', '/'], '_', $vacancyReport->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
         Storage::disk('private')->put($fileName, file_get_contents($request->file('file')));
         $request->merge([
             'file' => $fileName,
@@ -325,14 +325,14 @@ class StudentPendidikanLanjutanController extends Controller
         $vacancyReport = VacancyReport::with('vacancyUser')->findOrFail($reportId);
 
         if ($vacancyReport->vacancyUser->vacancy_id != $id) {
-            return redirect()->back()->with(['messege' => __('You are not allowed to delete this report'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Pendidikan Lanjutan tidak sama dengan yang dipilih'), 'alert-type' => 'error']);
         }
 
         if ($vacancyReport->vacancyUser->user_id != userAuth()->id) {
-            return redirect()->back()->with(['messege' => __('You are not allowed to delete this report'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Pengguna tidak terdaftar pada pendidikan lanjutan yang dipilih'), 'alert-type' => 'error']);
         }
         if ($vacancyReport->status == 'accepted') {
-            return redirect()->back()->with(['messege' => __('You are not allowed to delete this report'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Laporan yang telah disetujui tidak dapat dihapus'), 'alert-type' => 'error']);
         }
         Storage::disk('private')->delete($vacancyReport->file);
 
@@ -357,14 +357,14 @@ class StudentPendidikanLanjutanController extends Controller
         $vacancyReport = VacancyReport::with('vacancyUser')->findOrFail($reportId);
 
         if ($vacancyReport->vacancyUser->vacancy_id != $id) {
-            return redirect()->back()->with(['messege' => __('You are not allowed to view this report'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Pendidikan Lanjutan tidak sama dengan yang dipilih'), 'alert-type' => 'error']);
         }
 
         if ($vacancyReport->vacancyUser->user_id != userAuth()->id) {
-            return redirect()->back()->with(['messege' => __('You are not allowed to view this report'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Pengguna tidak terdaftar pada pendidikan lanjutan yang dipilih'), 'alert-type' => 'error']);
         }
 
         $filePath = Storage::disk('private')->path($vacancyReport->file);
-        return response()->download($filePath);
+        return response()->file($filePath);
     }
 }

@@ -2,7 +2,7 @@
     use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 @endphp
 
-<div class="tab-pane fade" id="itemSeven-tab-pane" role="tabpanel" aria-labelledby="itemSeven-tab" tabindex="0">
+<div class="tab-pane fade" id="laporan-tab-panel" role="tabpanel" aria-labelledby="itemSeven-tab" tabindex="0">
     <div class="instructor__profile-form-wrap">
         @if ($vacancy->status !== VacancyUser::STATUS_DONE)
             <form action="{{ route('student.continuing-education.registration.report', $vacancy->id) }}" method="POST"

@@ -139,7 +139,7 @@
             border-radius: 50%;
         }
 
-        .active-step::before {
+        .active-step::handleDeleteFormSubmitbefore {
             animation: blink 0.5s infinite alternate ease-in-out;
         }
 

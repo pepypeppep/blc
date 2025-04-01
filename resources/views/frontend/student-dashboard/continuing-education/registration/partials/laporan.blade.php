@@ -73,7 +73,7 @@
                                         style="background: {{ $setting->primary_color }}"><i
                                             class="fa fa-pencil-alt text-white"></i></a>
                                     <a href="javascript:void(0);"
-                                        onclick="event.preventDefault(); document.getElementById('delete-form-{{ $report->id }}').submit();">
+                                        onclick="handleDeleteFormSubmit(event, 'delete-form-{{ $report->id }}')">
                                         <i class="fas fa-trash-alt text-danger"></i>
                                     </a>
                                     <form id="delete-form-{{ $report->id }}"
@@ -93,3 +93,28 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        function handleDeleteFormSubmit(event, formId) {
+            event.preventDefault();
+            console.log(formId);
+            swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak dapat mengembalikan file yang telah dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+
+                } else {
+                    swal.fire('Penghapusan dibatalkan', '', 'error');
+                }
+            })
+        };
+    </script>
+@endpush

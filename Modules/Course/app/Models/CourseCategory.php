@@ -82,7 +82,7 @@ class CourseCategory extends Model
     protected function thumbnailUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->attributes['icon'] ? route('admin.course-category.thumbnail', ['id' => $this->attributes['id']]) : null
+            get: fn() => $this->attributes['icon'] ? route('api.course-category.thumbnail', ['id' => $this->attributes['id']]) : null
         );
     }
 }

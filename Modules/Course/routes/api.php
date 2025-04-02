@@ -27,6 +27,7 @@ Route::name('api.')->group(function () {
     Route::get('course/{slug}/file', [CourseController::class, 'file'])->name('course.file');
     Route::resource('course', CourseController::class)->names('course');
     Route::resource('course-reviews', CourseReviewController::class)->names('course.reviews');
+    Route::get('course-category/{id}/thumbnail', 'Modules\Course\app\Http\Controllers\CourseCategoryController@getFile')->name('course-category.thumbnail');
     Route::resource('course-category', CourseCategoryController::class)->names('course.category');
     Route::resource('course-level', CourseLevelController::class)->names('course.level');
 });

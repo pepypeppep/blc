@@ -18,7 +18,7 @@ class CourseCategoryController extends Controller
     {
         try {
             $categories = CourseCategory::active()
-                ->with(['translation', 'subCategories'])
+                ->with(['translation', 'subCategories.translation'])
                 ->whereNull('parent_id')
                 ->get()
                 ->each(function ($category) {

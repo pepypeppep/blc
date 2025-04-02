@@ -4,6 +4,7 @@ namespace Modules\Course\app\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Modules\Course\app\Models\CourseCategory;
@@ -17,21 +18,13 @@ class CourseCategoryController extends Controller
     {
         try {
             $categories = CourseCategory::active()
-                ->with(['subCategories.courses', 'translation', 'courses'])
+                ->with(['translation', 'subCategories'])
                 ->whereNull('parent_id')
                 ->get()
-                ->map(function ($category) {
-                    $category->courses_count = $category->courses->count();
-                    $category->courses_count = $category->courses_count +
-                        $category->subCategories->sum(function ($sub) {
-                            return $sub->courses->count();
-                        });
-
-                    $category->subCategories->each(function ($sub) {
-                        $sub->courses_count = $sub->courses->count();
-                    });
-
-                    return $category;
+                ->each(function ($category) {
+                    $category->loadCount('courses');
+                    $category->subCategories->each->loadCount('courses');
+                    $category->courses_count = $category->courses_count + $category->subCategories->sum('courses_count');
                 });
 
 

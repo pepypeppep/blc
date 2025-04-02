@@ -231,12 +231,12 @@ class StudentPendidikanLanjutanController extends Controller
         return redirect('student/continuing-education-registration/' . $vacancyUser->id)->with(['message' => 'Pendaftaran berhasil', 'alert-type' => 'success']);
     }
 
-    public function vacancyReportSubmit(StudentVacancyReportRequest $request)
+    public function vacancyReportSubmit(StudentVacancyReportRequest $request, $id)
     {
         $validated = $request->validated();
 
         DB::beginTransaction();
-        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->first();
+        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $id)->first();
 
         $reportFile = VacancyMasterReportFiles::where('id', $validated['name'])->first();
         
@@ -274,5 +274,97 @@ class StudentPendidikanLanjutanController extends Controller
 
         DB::commit();
         return redirect()->back()->with(['messege' => __('Create vacancy report successfully'), 'alert-type' => 'success']);
+    }
+
+    public function vacancyReportUpdate(Request $request, $id, $reportId)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        $vacancyReport = VacancyReport::with('vacancyUser')->findOrFail($reportId);
+
+        if ($vacancyReport->vacancyUser->vacancy_id != $id) {
+            return redirect()->back()->with(['messege' => __('Pendidikan Lanjutan tidak sama dengan yang dipilih'), 'alert-type' => 'error']);
+        }
+
+        if ($vacancyReport->vacancyUser->user_id != userAuth()->id) {
+            return redirect()->back()->with(['messege' => __('Anda tidak terdaftar sebagai peserta'), 'alert-type' => 'error']);
+        }
+        if ($vacancyReport->status == 'accepted') {
+            return redirect()->back()->with(['messege' => __('Laporan yang telah disetujui tidak dapat diubah'), 'alert-type' => 'error']);
+        }
+
+        Storage::disk('private')->delete($vacancyReport->file);
+
+        $fileName = "pendidikan_lanjutan/" . now()->year . "/laporan_semester" . "/" . $id . "/" . now()->month . "_" . str_replace([' ', '/'], '_', $vacancyReport->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
+        Storage::disk('private')->put($fileName, file_get_contents($request->file('file')));
+        $request->merge([
+            'file' => $fileName,
+            'name' => $vacancyReport->name,
+        ]);
+        $result = $vacancyReport->update([
+            'file' => $fileName,
+            'status' => 'pending',
+        ]);
+        if (!$result) {
+            return redirect()->back()->with(['messege' => __('Update vacancy report failed'), 'alert-type' => 'error']);
+        }
+
+        VacancyLogs::create([
+            'vacancy_user_id' => $vacancyReport->vacancy_user_id,
+            'name' => $vacancyReport->name,
+            'description' => 'Laporan telah diperbarui oleh ' . userAuth()->name,
+            'status' => 'success',
+        ]);
+
+        return redirect()->back()->with(['messege' => __('Update vacancy report successfully'), 'alert-type' => 'success']);
+    }
+
+    public function vacancyReportDelete($id, $reportId){
+        $vacancyReport = VacancyReport::with('vacancyUser')->findOrFail($reportId);
+
+        if ($vacancyReport->vacancyUser->vacancy_id != $id) {
+            return redirect()->back()->with(['messege' => __('Pendidikan Lanjutan tidak sama dengan yang dipilih'), 'alert-type' => 'error']);
+        }
+
+        if ($vacancyReport->vacancyUser->user_id != userAuth()->id) {
+            return redirect()->back()->with(['messege' => __('Pengguna tidak terdaftar pada pendidikan lanjutan yang dipilih'), 'alert-type' => 'error']);
+        }
+        if ($vacancyReport->status == 'accepted') {
+            return redirect()->back()->with(['messege' => __('Laporan yang telah disetujui tidak dapat dihapus'), 'alert-type' => 'error']);
+        }
+        Storage::disk('private')->delete($vacancyReport->file);
+
+        $result = $vacancyReport->delete();
+
+        if (!$result) {
+            return redirect()->back()->with(['messege' => __('Delete vacancy report failed'), 'alert-type' => 'error']);
+        }
+
+        VacancyLogs::create([
+            'vacancy_user_id' => $vacancyReport->vacancy_user_id,
+            'name' => $vacancyReport->name,
+            'description' => 'Laporan telah dihapus oleh ' . userAuth()->name,
+            'status' => 'success',
+        ]);
+
+        return redirect()->back()->with(['messege' => __('Delete vacancy report successfully'), 'alert-type' => 'success']);
+    }
+
+    public function vacancyReportView($id, $reportId)
+    {
+        $vacancyReport = VacancyReport::with('vacancyUser')->findOrFail($reportId);
+
+        if ($vacancyReport->vacancyUser->vacancy_id != $id) {
+            return redirect()->back()->with(['messege' => __('Pendidikan Lanjutan tidak sama dengan yang dipilih'), 'alert-type' => 'error']);
+        }
+
+        if ($vacancyReport->vacancyUser->user_id != userAuth()->id) {
+            return redirect()->back()->with(['messege' => __('Pengguna tidak terdaftar pada pendidikan lanjutan yang dipilih'), 'alert-type' => 'error']);
+        }
+
+        $filePath = Storage::disk('private')->path($vacancyReport->file);
+        return response()->file($filePath);
     }
 }

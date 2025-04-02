@@ -137,6 +137,10 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('continuing-education-registration', [StudentPendidikanLanjutanController::class, 'registered'])->name('continuing-education.registration');
         Route::get('continuing-education-registration/{id}', [StudentPendidikanLanjutanController::class, 'registeredDetail'])->name('continuing-education.registration.show');
         Route::post('continuing-education-registration/{id}/report', [StudentPendidikanLanjutanController::class, 'vacancyReportSubmit'])->name('continuing-education.registration.report');
+        Route::put('continuing-education-registration/{id}/report/{report_id}', [StudentPendidikanLanjutanController::class, 'vacancyReportUpdate'])->name('continuing-education.registration.report.update');
+        Route::delete('continuing-education-registration/{id}/report/{report_id}', [StudentPendidikanLanjutanController::class, 'vacancyReportDelete'])->name('continuing-education.registration.report.delete');
+        Route::get('continuing-education-registration/{id}/report/{report_id}', [StudentPendidikanLanjutanController::class, 'vacancyReportView'])->name('continuing-education.registration.report.view');
+
 
         /** follow up action routes */
 

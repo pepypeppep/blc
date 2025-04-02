@@ -16,7 +16,7 @@ class CourseCategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $categories = CourseCategory::active()->with('subCategories')->whereNull('parent_id')->get();
+            $categories = CourseCategory::active()->with('subCategories', 'translation')->whereNull('parent_id')->get();
 
             return response()->json([
                 'status' => 'success',

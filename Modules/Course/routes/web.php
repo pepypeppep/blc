@@ -31,7 +31,6 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::group(['middleware' => 'role.admin:Super Admin|Admin BKPSDM'], function () {
         /** Course category routes */
         Route::put('course-category/status-update/{id}', [CourseCategoryController::class, 'statusUpdate'])->name('course-category.status-update');
-        Route::get('course-category/{id}/thumbnail', [CourseCategoryController::class, 'getFile'])->name('course-category.thumbnail');
         Route::resource('course-category', CourseCategoryController::class)->names('course-category');
         /** Course sub category routes */
         Route::get('course-sub-category/{parent_id}', [CourseSubCategoryController::class, 'index'])->name('course-sub-category.index');

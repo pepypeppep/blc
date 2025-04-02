@@ -16,7 +16,24 @@ class CourseCategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $categories = CourseCategory::active()->with('subCategories', 'translation')->whereNull('parent_id')->get();
+            $categories = CourseCategory::active()
+                ->with(['subCategories.courses', 'translation', 'courses'])
+                ->whereNull('parent_id')
+                ->get()
+                ->map(function ($category) {
+                    $category->courses_count = $category->courses->count();
+                    $category->courses_count = $category->courses_count +
+                        $category->subCategories->sum(function ($sub) {
+                            return $sub->courses->count();
+                        });
+
+                    $category->subCategories->each(function ($sub) {
+                        $sub->courses_count = $sub->courses->count();
+                    });
+
+                    return $category;
+                });
+
 
             return response()->json([
                 'status' => 'success',

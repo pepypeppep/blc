@@ -34,9 +34,19 @@
                                         {{ auth()->user()->phone }}
                                     </li>
                                 @endif
-
                             </ul>
                         </div>
+                    </div>
+                    <div class="content-badges">
+                        @if($userBadges->isNotEmpty())
+                            <ul class="badge-list">
+                                @foreach($userBadges as $badge)
+                                    <li>
+                                        <img class="badge-img" src="{{ asset($badge->image) }}" alt="img" data-toggle="tooltip" data-placement="top" title="{{ $badge->name }} - {{ $badge->pivot->category }}">
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -52,3 +62,40 @@
     </section>
     <!-- dashboard-area-end -->
 @endsection
+@push('styles')
+    <style>
+        .content-badges {
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 0 10px; 
+            background-color:rgb(63, 42, 63); 
+            border-radius: 15px; 
+            overflow: hidden;
+        }
+
+        .badge-list {
+            display: flex; 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+            justify-content: center; 
+            gap: 10px; 
+            align-items: center;
+        }
+
+        .badge-img{
+            max-width: 70px; 
+            height: auto; 
+            border-radius: 5px;
+        }
+
+    </style>
+@endpush
+@push('scripts')
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+@endpush

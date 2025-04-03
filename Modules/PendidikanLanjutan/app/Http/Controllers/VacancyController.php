@@ -14,6 +14,7 @@ use Modules\PendidikanLanjutan\app\Models\Study;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 
 class VacancyController extends Controller
 {
@@ -256,5 +257,24 @@ class VacancyController extends Controller
         }
 
         return redirect()->back()->with('success', 'Attachment updated successfully.');
+    }
+
+    public function sidebarCounter()
+    {
+        $verif = VacancyUser::where('status', VacancyUser::STATUS_VERIFICATION)->count();
+        $asses = VacancyUser::where('status', VacancyUser::STATUS_ASSESSMENT)->count();
+        $sk = VacancyUser::where('status', VacancyUser::STATUS_ELIGIBLE)->count();
+        $rpt = VacancyUser::where('status', VacancyUser::STATUS_REPORT)->count();
+        $ext = VacancyUser::where('status', VacancyUser::STATUS_EXTEND)->count();
+        $act = VacancyUser::where('status', VacancyUser::STATUS_ACTIVATION)->count();
+
+        return response()->json([
+            'verif' => $verif,
+            'asses' => $asses,
+            'sk' => $sk,
+            'rpt' => $rpt,
+            'ext' => $ext,
+            'act' => $act,
+        ]);
     }
 }

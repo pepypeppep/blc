@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Brand\app\Models\Brand;
 use App\Http\Controllers\Controller;
 use Modules\Course\app\Models\CourseCategory;
+use Modules\PageBuilder\app\Models\CustomPage;
 use Modules\Frontend\app\Models\ContactSection;
 use Modules\Testimonial\app\Models\Testimonial;
 use Modules\Frontend\app\Models\FeaturedInstructor;
@@ -84,6 +85,42 @@ class HomeController extends Controller
                     'selectedInstructors' => $selectedInstructors,
                     'testimonials' => $testimonials
                 ]
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    public function privacyPolicy()
+    {
+        try {
+            $data = CustomPage::with('translation')->where('slug', 'privacy-policy')->first();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $data
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    public function termsAndConditions()
+    {
+        try {
+            $data = CustomPage::with('translation')->where('slug', 'terms-and-conditions')->first();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $data
             ]);
         } catch (\Throwable $th) {
             //throw $th;

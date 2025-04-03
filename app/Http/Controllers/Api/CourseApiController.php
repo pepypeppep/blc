@@ -101,6 +101,10 @@ class CourseApiController extends Controller
                 $q->where('status', 1);
             });
 
+            $query->when($request->access, function ($q) use ($request) {
+                $q->where('access', $request->access);
+            });
+
             $query->when($request->search, function ($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->search . '%');
             });
@@ -220,11 +224,37 @@ class CourseApiController extends Controller
         }
     }
 
+    /**
+     * Retrieve a course by its slug, given the user ID.
+     *
+     * @authenticated
+     * @responseFile responses/course.json
+     * @urlParam slug required The slug of the course. Example: how-to-use-laravel
+     * @queryParam user_id required The ID of the user. Example: 1
+     * @response 200 {
+     *  "success": true,
+     *  "message": "Course retrieved successfully",
+     *  "data": {
+     *      "course": {...},
+     *      "currentProgress": {...},
+     *      "announcements": [...],
+     *      "courseCompletedPercent": 0,
+     *      "courseLectureCount": 0,
+     *      "courseLectureCompletedByUser": 0,
+     *      "alreadyWatchedLectures": [],
+     *      "alreadyCompletedQuiz": []
+     *  }
+     * }
+     * @response 500 {
+     *  "success": false,
+     *  "message": "Failed to retrieve course",
+     *  "error": "Error message"
+     * }
+     */
     public function learningCourse(Request $request, $slug)
     {
         try {
             $query = Course::with([
-                'enrollments',
                 'chapters',
                 'chapters.chapterItems',
                 'chapters.chapterItems.lesson',
@@ -304,6 +334,13 @@ class CourseApiController extends Controller
         }
     }
 
+    /**
+     * Join a public course.
+     *
+     * @param Request $request
+     * @param string $slug
+     * @return JsonResponse
+     */
     public function joinCourse(Request $request, $slug)
     {
         try {
@@ -333,6 +370,37 @@ class CourseApiController extends Controller
         }
     }
 
+    /**
+     * Get popular courses by counting the sum of enrollment relation where has_access is 1
+     *
+     * @param int $limit
+     * @return \Illuminate\Http\Response
+     */
+    public function popularCourses($limit = 10)
+    {
+        try {
+            $courses = Course::with('instructor', 'category.translation')
+                ->where('status', 'active')
+                ->withCount(['enrollments' => function ($query) {
+                    $query->where('has_access', 1);
+                }])
+                ->orderByDesc('enrollments_count')
+                ->take($limit)
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Retrieved popular courses',
+                'data' => $courses
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve popular courses',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     /**
      * Retrieve a course thumbnail.
      *

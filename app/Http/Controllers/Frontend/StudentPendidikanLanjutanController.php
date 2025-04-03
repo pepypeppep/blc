@@ -15,11 +15,12 @@ use Illuminate\Support\Facades\Validator;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Modules\PendidikanLanjutan\app\Models\VacancyUser;
+use Modules\PendidikanLanjutan\app\Models\VacancySchedule;
 use App\Http\Requests\Frontend\StudentVacancyReportRequest;
 use App\Http\Requests\Frontend\UploadRequirementFileRequest;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
-use Modules\PendidikanLanjutan\app\Models\VacancyMasterReportFiles;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyMasterReportFiles;
 
 class StudentPendidikanLanjutanController extends Controller
 {
@@ -27,7 +28,12 @@ class StudentPendidikanLanjutanController extends Controller
     public function index(Request $request): View
     {
         $perPage = $request->get('per_page', 10);
-        $vacancies = Vacancy::where('instansi_id', userAuth()->instansi_id)->where('open_at', '<', now())->where('close_at', '>', now())->paginate($perPage);
+        $schedule = VacancySchedule::where('year', now()->year)
+            ->where('start_at', '<=', now())
+            ->where('end_at', '>=', now())
+            ->first();
+        $vacancies = Vacancy::where('instansi_id', userAuth()->instansi_id)
+            ->where('year', $schedule->year ?? -1)->paginate($perPage);
 
         return view('frontend.student-dashboard.continuing-education.index', compact('vacancies'));
     }
@@ -51,16 +57,20 @@ class StudentPendidikanLanjutanController extends Controller
         $lampirans = VacancyAttachment::lampiran()->where('vacancy_id', $vacancy->vacancy_id)->get();
         $reports = VacancyReport::where('vacancy_user_id', $vacancy->id)->orderBy('name')->get();
         $reportsFiles = VacancyMasterReportFiles::where('is_active', 1)->get();
-        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancy', 'logs', 'attachments', 'lampirans', 'reports','reportsFiles'));
+        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancy', 'logs', 'attachments', 'lampirans', 'reports', 'reportsFiles'));
     }
 
     // detail pendidikan
     function continuingEducationDetail($id)
     {
         $user = userAuth();
+        $schedule = VacancySchedule::where('year', now()->year)
+            ->where('start_at', '<=', now())
+            ->where('end_at', '>=', now())
+            ->first();
         $vacancy = Vacancy::with(['study', 'users' => function ($query) use ($user) {
             $query->where('user_id', $user->id)->whereNotIn('status', [VacancyUser::STATUS_REGISTER]); // next update with value_type, unor, dll
-        }])->findOrFail($id);
+        }])->where('year', $schedule->year ?? -1)->findOrFail($id);
 
         if ($vacancy->instansi_id != $user->instansi_id) {
             return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
@@ -239,7 +249,7 @@ class StudentPendidikanLanjutanController extends Controller
         $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $id)->first();
 
         $reportFile = VacancyMasterReportFiles::where('id', $validated['name'])->first();
-        
+
         $reportExist = VacancyReport::where('vacancy_user_id', $vacancyUser->id)->where('name', $reportFile->name)->exists();
 
         if ($reportExist) {
@@ -321,7 +331,8 @@ class StudentPendidikanLanjutanController extends Controller
         return redirect()->back()->with(['messege' => __('Update vacancy report successfully'), 'alert-type' => 'success']);
     }
 
-    public function vacancyReportDelete($id, $reportId){
+    public function vacancyReportDelete($id, $reportId)
+    {
         $vacancyReport = VacancyReport::with('vacancyUser')->findOrFail($reportId);
 
         if ($vacancyReport->vacancyUser->vacancy_id != $id) {

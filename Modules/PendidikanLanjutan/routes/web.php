@@ -1,10 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\PendidikanLanjutan\app\Http\Controllers\MasterPendidikanLanjutanController;
-use Modules\PendidikanLanjutan\app\Http\Controllers\PendidikanLanjutanController;
 use Modules\PendidikanLanjutan\app\Http\Controllers\VacancyController;
+use Modules\PendidikanLanjutan\app\Http\Controllers\VacancyScheduleController;
+use Modules\PendidikanLanjutan\app\Http\Controllers\PendidikanLanjutanController;
 use Modules\PendidikanLanjutan\app\Http\Controllers\VacancyParticipantController;
+use Modules\PendidikanLanjutan\app\Http\Controllers\MasterPendidikanLanjutanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,11 +27,17 @@ Route::middleware(['auth:admin', 'translation'])
 
 Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::prefix('vacancies')->group(function () {
+        Route::get('/sidebar-counter', [VacancyController::class, 'sidebarCounter'])->name('vacancies.sidebar.counter');
+
         Route::prefix('master')->group(function () {
-           Route::get('/report-file', [MasterPendidikanLanjutanController::class, 'reportFileIndex'])->name('vacancies.master.file.index'); 
-           Route::post('/report-file', [MasterPendidikanLanjutanController::class, 'reportFileStore'])->name('vacancies.master.file.store'); 
-           Route::get('/report-file/{id}', [MasterPendidikanLanjutanController::class, 'reportFileEdit'])->name('vacancies.master.file.edit');
-           Route::put('/report-file/{id}', [MasterPendidikanLanjutanController::class, 'reportFileUpdate'])->name('vacancies.master.file.update');
+            Route::get('/report-file', [MasterPendidikanLanjutanController::class, 'reportFileIndex'])->name('vacancies.master.file.index');
+            Route::post('/report-file', [MasterPendidikanLanjutanController::class, 'reportFileStore'])->name('vacancies.master.file.store');
+            Route::get('/report-file/{id}', [MasterPendidikanLanjutanController::class, 'reportFileEdit'])->name('vacancies.master.file.edit');
+            Route::put('/report-file/{id}', [MasterPendidikanLanjutanController::class, 'reportFileUpdate'])->name('vacancies.master.file.update');
+
+            Route::get('/schedule', [VacancyScheduleController::class, 'index'])->name('vacancies.master.schedule.index');
+            Route::post('/schedule', [VacancyScheduleController::class, 'store'])->name('vacancies.master.schedule.store');
+            Route::put('/schedule/{id}', [VacancyScheduleController::class, 'update'])->name('vacancies.master.schedule.update');
         });
 
         Route::prefix('peserta')->group(function () {

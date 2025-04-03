@@ -121,6 +121,7 @@
                                                 <th width="10%">{{ __('Employment Status') }}</th>
                                                 <th width="10%">{{ __('Cost Type') }}</th>
                                                 <th width="10%">{{ __('Age Limit') }}</th>
+                                                <th width="10%">{{ __('Year') }}</th>
                                                 <th width="20%">{{ __('Notes') }}</th>
                                                 <th width="5%">{{ __('Number of Participants') }}</th>
                                                 <th width="5%">{{ __('Action') }}</th>
@@ -137,6 +138,7 @@
                                                     <td>{{ $vacancy->employmentStatus() }}</td>
                                                     <td>{{ $vacancy->cost_type }}</td>
                                                     <td class="text-center">{{ $vacancy->age_limit }}</td>
+                                                    <td>{{ $vacancy->year }}</td>
                                                     <td>{!! $vacancy->description !!}</td>
                                                     <td class="text-center">
                                                         <span

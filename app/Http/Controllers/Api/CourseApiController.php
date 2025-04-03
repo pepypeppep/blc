@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Course;
+use App\Models\LessonReply;
 use App\Models\Announcement;
 use App\Models\CourseReview;
 use Illuminate\Http\Request;
 use App\Models\CourseProgress;
-use App\Models\CourseChapterItem;
-use App\Http\Controllers\Controller;
-use App\Models\CourseChapterLesson;
 use App\Models\LessonQuestion;
-use App\Models\LessonReply;
+use App\Models\CourseChapterItem;
+use App\Models\CourseChapterLesson;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Modules\Order\app\Models\Enrollment;
 use Modules\Course\app\Models\CourseLevel;
 use Modules\Course\app\Models\CourseCategory;
 
@@ -298,6 +299,35 @@ class CourseApiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve course',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function joinCourse(Request $request, $slug)
+    {
+        try {
+            $course = Course::where('slug', $slug)
+                ->where('status', 'active')
+                ->where('access', 'public')
+                ->firstOrFail();
+            $enrollment = Enrollment::firstOrCreate(
+                [
+                    'course_id' => $course->id,
+                    'user_id' => $request->user_id,
+                    'has_access' => 0,
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully joined course, waiting for approval',
+                'data' => $course
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to join course',
                 'error' => $e->getMessage()
             ], 500);
         }

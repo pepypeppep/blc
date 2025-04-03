@@ -32,6 +32,7 @@ Route::name('api.')->group(function () {
     Route::get('/courses/{slug}/reviews', [CourseApiController::class, 'reviews'])->name('courses.reviews');
     Route::post('/courses/{slug}/reviews-store', [CourseApiController::class, 'reviewsStore'])->name('courses.reviews.store');
     Route::get('/courses/{slug}/questions', [CourseApiController::class, 'questions'])->name('courses.questions');
+    Route::post('/courses/{slug}/join', [CourseApiController::class, 'joinCourse'])->name('courses.join.store');
 
     // Lesson
     Route::name('lessons.')->group(function () {

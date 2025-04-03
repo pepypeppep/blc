@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Course;
+use App\Models\LessonReply;
 use App\Models\Announcement;
 use App\Models\CourseReview;
 use Illuminate\Http\Request;
 use App\Models\CourseProgress;
-use App\Models\CourseChapterItem;
-use App\Http\Controllers\Controller;
-use App\Models\CourseChapterLesson;
 use App\Models\LessonQuestion;
-use App\Models\LessonReply;
+use App\Models\CourseChapterItem;
+use App\Models\CourseChapterLesson;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Modules\Order\app\Models\Enrollment;
 use Modules\Course\app\Models\CourseLevel;
 use Modules\Course\app\Models\CourseCategory;
 
@@ -98,6 +99,10 @@ class CourseApiController extends Controller
             });
             $query->whereHas('category', function ($q) use ($request) {
                 $q->where('status', 1);
+            });
+
+            $query->when($request->access, function ($q) use ($request) {
+                $q->where('access', $request->access);
             });
 
             $query->when($request->search, function ($q) use ($request) {
@@ -219,11 +224,37 @@ class CourseApiController extends Controller
         }
     }
 
+    /**
+     * Retrieve a course by its slug, given the user ID.
+     *
+     * @authenticated
+     * @responseFile responses/course.json
+     * @urlParam slug required The slug of the course. Example: how-to-use-laravel
+     * @queryParam user_id required The ID of the user. Example: 1
+     * @response 200 {
+     *  "success": true,
+     *  "message": "Course retrieved successfully",
+     *  "data": {
+     *      "course": {...},
+     *      "currentProgress": {...},
+     *      "announcements": [...],
+     *      "courseCompletedPercent": 0,
+     *      "courseLectureCount": 0,
+     *      "courseLectureCompletedByUser": 0,
+     *      "alreadyWatchedLectures": [],
+     *      "alreadyCompletedQuiz": []
+     *  }
+     * }
+     * @response 500 {
+     *  "success": false,
+     *  "message": "Failed to retrieve course",
+     *  "error": "Error message"
+     * }
+     */
     public function learningCourse(Request $request, $slug)
     {
         try {
             $query = Course::with([
-                'enrollments',
                 'chapters',
                 'chapters.chapterItems',
                 'chapters.chapterItems.lesson',
@@ -303,6 +334,73 @@ class CourseApiController extends Controller
         }
     }
 
+    /**
+     * Join a public course.
+     *
+     * @param Request $request
+     * @param string $slug
+     * @return JsonResponse
+     */
+    public function joinCourse(Request $request, $slug)
+    {
+        try {
+            $course = Course::where('slug', $slug)
+                ->where('status', 'active')
+                ->where('access', 'public')
+                ->firstOrFail();
+            $enrollment = Enrollment::firstOrCreate(
+                [
+                    'course_id' => $course->id,
+                    'user_id' => $request->user_id,
+                    'has_access' => 0,
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully joined course, waiting for approval',
+                'data' => $course
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to join course',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get popular courses by counting the sum of enrollment relation where has_access is 1
+     *
+     * @param int $limit
+     * @return \Illuminate\Http\Response
+     */
+    public function popularCourses($limit = 10)
+    {
+        try {
+            $courses = Course::with('instructor', 'category.translation')
+                ->where('status', 'active')
+                ->withCount(['enrollments' => function ($query) {
+                    $query->where('has_access', 1);
+                }])
+                ->orderByDesc('enrollments_count')
+                ->take($limit)
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Retrieved popular courses',
+                'data' => $courses
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve popular courses',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     /**
      * Retrieve a course thumbnail.
      *

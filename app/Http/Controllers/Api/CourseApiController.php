@@ -492,12 +492,28 @@ class CourseApiController extends Controller
     public function reviews(Request $request, $slug)
     {
         try {
-            $reviews = CourseReview::with('course:id,title,slug,thumbnail', 'user:id,name')
-                ->whereHas('course', function ($q) use ($slug) {
-                    $q->where('slug', $slug);
-                })
-                ->orderByDesc('id')
-                ->get();
+            // $reviews = CourseReview::with('course:id,title,slug,thumbnail', 'user:id,name')
+            //     ->whereHas('course', function ($q) use ($slug) {
+            //         $q->where('slug', $slug);
+            //     })
+            //     ->orderByDesc('id')
+            //     ->get();
+
+            $course = Course::where('slug', $slug)->firstOrFail();
+
+            $reviews = CourseReview::whereHas('course', function ($q) use ($slug) {
+                $q->where('slug', $slug);
+            })->where(function ($query) use ($request) {
+                $query->where('status', 1)
+                    ->orWhere(function ($subQuery) use ($request) {
+                        $subQuery->where('user_id', $request->user_id)
+                            ->where('status', 0);
+                    });
+            })->whereHas('course')
+                ->whereHas('user')
+                ->orderByRaw('status = 0 DESC')
+                ->orderBy('id', 'desc')
+                ->paginate(8, ['*'], 'page', $request->page ?? 1);
 
             if ($reviews->isEmpty()) {
                 return response()->json([

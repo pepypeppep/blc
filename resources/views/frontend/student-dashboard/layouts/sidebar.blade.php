@@ -10,6 +10,12 @@
                     {{ __('Dashboard') }}
                 </a>
             </li>
+            <li class="{{ Route::is('student.pengetahuan') ? 'active' : '' }}">
+                <a href="{{ route('student.pengetahuan.index') }}">
+                    <img src="{{ asset('uploads/website-images/dashboard.svg') }}">
+                    {{ __('Pengetahuan') }}
+                </a>
+            </li>
             <li class="">
                 <a class="d-flex align-items-center text-decoration-none" data-bs-toggle="collapse" href="#courseMenu"
                     role="button" aria-expanded="true" aria-controls="courseMenu" id="courseMenuToggle">

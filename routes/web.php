@@ -29,6 +29,7 @@ use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 use App\Http\Controllers\Frontend\StudentFollowUpActionController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
+use App\Http\Controllers\Frontend\StudentPengetahuanController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -122,6 +123,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         // Route::get('orders', [StudentOrderController::class, 'index'])->name('orders.index');
         // Route::get('order-details/{id}', [StudentOrderController::class, 'show'])->name('order.show');
         // Route::get('order/invoice/{id}', [StudentOrderController::class, 'printInvoice'])->name('order.print-invoice');
+
+        Route::get('pengetahuan', [StudentPengetahuanController::class, 'index'])->name('pengetahuan.index');
 
 
         Route::get('reviews', [StudentReviewController::class, 'index'])->name('reviews.index');

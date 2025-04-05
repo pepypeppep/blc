@@ -27,6 +27,21 @@ use Illuminate\Routing\Controller as BaseController;
  *     description="Home API Endpoints"
  * )
  *
+ * @OA\Tag(
+ *     name="Courses",
+ *     description="Courses API Endpoints"
+ * )
+ *
+ * @OA\Tag(
+ *     name="Lessons",
+ *     description="Lessons API Endpoints"
+ * )
+ *
+ * @OA\Tag(
+ *     name="Pendidikan Lanjutan",
+ *     description="Pendidikan Lanjutan API Endpoints"
+ * )
+ *
  * */
 class Controller extends BaseController
 {

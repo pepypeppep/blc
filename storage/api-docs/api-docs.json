@@ -1492,15 +1492,15 @@
         },
         {
             "name": "Courses",
-            "description": "Courses"
+            "description": "Courses API Endpoints"
         },
         {
             "name": "Lessons",
-            "description": "Lessons"
+            "description": "Lessons API Endpoints"
         },
         {
             "name": "Pendidikan Lanjutan",
-            "description": "Pendidikan Lanjutan"
+            "description": "Pendidikan Lanjutan API Endpoints"
         }
     ]
 }

@@ -153,7 +153,7 @@
                                                         <small>{{ $course->category->translation->name ?? '' }}</small>
                                                     </td>
                                                     <td>{{ $course->instructor->name ?? '' }}</td>
-                                                    <td class="text-center">{{ $course->price }}</td>
+                                                    <td class="text-center">{{ $course->jp }}</td>
                                                     <td class="text-center">{{ $course->enrollments_count }}</td>
                                                     <td class="text-center">{{ $course->enrollments_pending_count }}
                                                         @if ($course->enrollments_pending_count > 0)

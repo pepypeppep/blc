@@ -62,12 +62,12 @@ class CourseApiController extends Controller
      *         )
      *     ),
      *     @OA\Parameter(
-     *         description="Filter by price",
+     *         description="Filter by minimum Jam Pelajaran",
      *         in="query",
-     *         name="price",
+     *         name="jp",
      *         required=false,
      *         @OA\Schema(
-     *             type="string",
+     *             type="integer",
      *             enum={"free", "paid"}
      *         )
      *     ),
@@ -86,8 +86,7 @@ class CourseApiController extends Controller
      *         name="order",
      *         required=false,
      *         @OA\Schema(
-     *             type="string",
-     *             enum={"asc", "desc"}
+     *             type="string"
      *         )
      *     ),
      *     @OA\Parameter(
@@ -146,11 +145,10 @@ class CourseApiController extends Controller
                 });
             });
 
-            $query->when($request->price, function ($q) use ($request) {
-                if ($request->price == 'paid') {
-                    $q->where('price', '>', 0);
-                } else {
-                    $q->where('price', 0)->orWhere('price', null);
+            // filter by jp (jam pelajaran)
+            $query->when($request->jp, function ($q) use ($request) {
+                if ($request->jp > 0) {
+                    $q->where('jp', '>', $request->jp);
                 }
             });
 
@@ -246,7 +244,7 @@ class CourseApiController extends Controller
      *                     example="This course covers the basics of Laravel and how to build a simple CRUD application."
      *                 ),
      *                 @OA\Property(
-     *                     property="price",
+     *                     property="jp",
      *                     type="integer",
      *                     example=0
      *                 ),
@@ -677,7 +675,7 @@ class CourseApiController extends Controller
      *                     example="This course covers the basics of Laravel and how to build a simple CRUD application."
      *                 ),
      *                 @OA\Property(
-     *                     property="price",
+     *                     property="jp",
      *                     type="integer",
      *                     example=0
      *                 ),

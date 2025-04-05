@@ -58,11 +58,10 @@ class CoursePageController extends Controller
             });
         });
 
-        $query->when($request->price, function ($q) use ($request) {
-            if ($request->price == 'paid') {
-                $q->where('price', '>', 0);
-            } else {
-                $q->where('price', 0)->orWhere('price', null);
+        // filter by minimum jam pelajaran
+        $query->when($request->jp, function ($q) use ($request) {
+            if ($request->jp > 0) {
+                $q->where('jp', '>', 0);
             }
         });
 

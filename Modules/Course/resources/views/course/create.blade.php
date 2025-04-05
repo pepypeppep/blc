@@ -97,8 +97,8 @@
                                                     <div class="form-group">
                                                         <label for="price">Jam Pelajaran (JP)
                                                             <code>*</code></label>
-                                                        <input id="price" name="price" type="text"
-                                                            class="form-control" value="{{ @$course?->price }}">
+                                                        <input id="price" name="jp" type="text"
+                                                            class="form-control" value="{{ @$course?->jp }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-12">

@@ -830,7 +830,7 @@ class CourseGovermentSeeder extends Seeder
             $course->demo_video_source = "https://www.youtube.com/watch?v=MHhIzIgFgJo";
             $course->description = "Kursus untuk ASN Pemerintah Kabupaten Bantul";
             $course->capacity = NULL;
-            $course->price = rand(50, 200);
+            $course->jp = rand(1, 72);
             $course->discount = null;
             $course->certificate = 1;
             $course->downloadable = 0;

@@ -101,7 +101,7 @@ class CourseController extends Controller
         $course->seo_description = $request->title;
         $course->demo_video_storage = 'upload';
         $course->demo_video_source = $request->demo_video_storage == 'upload' ? $request->upload_path : $request->external_path;
-        $course->price = $request->price;
+        $course->jp = $request->jp;
         $course->discount = $request->discount_price;
         $course->description = $request->description;
         $course->background = $request->background;
@@ -220,7 +220,12 @@ class CourseController extends Controller
             case '4':
                 $request->validate([
                     'status' => ['required'],
-                    'message_for_reviewer' => ['nullable', 'max:1000']
+                    'message_for_reviewer' => ['nullable', 'max:1000'],
+                    'participants' => ['required', 'array'],
+                ], [
+                    'status.required' => __('Status is required'),
+                    'message_for_reviewer.max' => __('Message for reviewer must not exceed 1000 characters'),
+                    'participants.required' => __('Participants is required'),
                 ]);
                 $this->storeFinish($request);
                 return response()->json([

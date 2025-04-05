@@ -22,12 +22,12 @@
                 <div class="courses__item-thumb-three shine__animate-link">
                     <a href="{{ route('course.show', $course->slug) }}"><img
                             src="{{ asset($course->thumbnail) }}" alt="img"></a>
-                    @if ($course->price == 0)
+                    @if ($course->jp == 0)
                         <span class="courses__price">{{ __('Free') }}</span>
-                    @elseif ($course->price > 0 && $course->discount > 0)
+                    @elseif ($course->jp > 0 && $course->discount > 0)
                         <span class="courses__price">{{ currency($course->discount) }}</span>
                     @else
-                        <span class="courses__price">{{ currency($course->price) }}</span>
+                        <span class="courses__price">{{ currency($course->jp) }}</span>
                     @endif
                 </div>
                 <div class="courses__item-content-three">

@@ -33,7 +33,7 @@ Route::name('api.')->group(function () {
     Route::get('/courses-categories', [CourseApiController::class, 'categories'])->name('courses.categories');
     Route::get('/courses-levels', [CourseApiController::class, 'levels'])->name('courses.levels');
     Route::get('/courses/{slug}/reviews', [CourseApiController::class, 'reviews'])->name('courses.reviews');
-    Route::post('/courses/{slug}/reviews-store', [CourseApiController::class, 'reviewsStore'])->name('courses.reviews.store');
+    Route::post('/courses/{slug}/reviews', [CourseApiController::class, 'reviewsStore'])->name('courses.reviews.store');
     Route::get('/courses/{slug}/questions', [CourseApiController::class, 'questions'])->name('courses.questions');
     Route::post('/courses/{slug}/join', [CourseApiController::class, 'joinCourse'])->name('courses.join.store');
 
@@ -47,8 +47,6 @@ Route::name('api.')->group(function () {
     // Dashboard
     Route::name('dashboard.')->group(function () {
         Route::get('/certificates', [CertificateApiController::class, 'getCertificatesForStudent'])->name('certificates');
-
-        Route::get('/reviews', [ReviewApiController::class, 'reviews'])->name('reviews');
 
         Route::prefix('pendidikan-lanjutan')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'index']);

@@ -18,6 +18,18 @@ use Modules\Frontend\app\Models\FeaturedCourseSection;
 
 class HomeController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/home",
+     *     tags={"Home"},
+     *     summary="Get Home Page Data",
+     *     description="Get Home Page Data",
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     )
+     * )
+     */
     function index()
     {
         try {
@@ -95,6 +107,21 @@ class HomeController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/privacy-policy",
+     *     summary="Get privacy policy page",
+     *     tags={"Home"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success response"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function privacyPolicy()
     {
         try {
@@ -113,6 +140,21 @@ class HomeController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/terms-and-conditions",
+     *     summary="Get terms and conditions page",
+     *     tags={"Home"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success response"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
     public function termsAndConditions()
     {
         try {

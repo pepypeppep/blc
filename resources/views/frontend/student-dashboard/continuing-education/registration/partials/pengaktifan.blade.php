@@ -26,7 +26,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $activation->name }} <span class="text-danger">*</span></td>
                                     <td class="text-center">
-                                        <div class="d-flex justify-content-center align-items-center gap-1">
+                                        <div class="d-flex justify-content-end align-items-center gap-1">
 
                                             @if ($exist)
                                                 {!! $exist->getStatusLabel() !!}
@@ -38,7 +38,7 @@
                                                         <input id="{{ $activation->id }}_file" type="file"
                                                             name="file"
                                                             @if ($activation->type == 'pdf') accept="application/pdf" @endif
-                                                            disabled class="form-control me-2"
+                                                            class="form-control me-2"
                                                             onchange="$('#{{ $activation->id }}_form').trigger('submit')"
                                                             hidden />
                                                         <button onclick="$('#{{ $activation->id }}_file').click()"
@@ -58,18 +58,21 @@
                                                         onclick="handleDeleteFormSubmit(event, 'delete-form-{{ $exist->id }}')">
                                                         <i class="fas fa-trash-alt text-danger"></i>
                                                     </a>
-                                                    @endif
-                                                @else
-                                                    <form id="{{ $activation->id }}_form"
-                                                        action="{{ route('student.continuing-education.registration.update-requirement-activation', ['vacancy_attachment_id' => $activation->id]) }}"
-                                                        method="POST" enctype="multipart/form-data">
-                                                        @csrf
-                                                        <input type="file" name="file"
-                                                            @if ($activation->type == 'pdf') accept="application/pdf" @endif
-                                                            class="form-control me-2"
-                                                            onchange="$('#{{ $activation->id }}_form').trigger('submit')" />
-                                                    </form>
                                                 @endif
+                                                <a href="{{ route('student.continuing-education.registration.view-requirement-activation', ['vacancy_attachment_id' => $activation->id, 'user_activation_id' => $exist->id]) }}"
+                                                    class="align-middle border-0 bg-transparent mx-2" target="_blank"><i
+                                                        class="fa fa-eye"></i></a>
+                                            @else
+                                                <form id="{{ $activation->id }}_form"
+                                                    action="{{ route('student.continuing-education.registration.update-requirement-activation', ['vacancy_attachment_id' => $activation->id]) }}"
+                                                    method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    <input type="file" name="file"
+                                                        @if ($activation->type == 'pdf') accept="application/pdf" @endif
+                                                        class="form-control me-2"
+                                                        onchange="$('#{{ $activation->id }}_form').trigger('submit')" />
+                                                </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

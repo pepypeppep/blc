@@ -470,4 +470,21 @@ class StudentPendidikanLanjutanController extends Controller
         $vacancyActivation->delete();
         return redirect()->back()->with(['messege' => 'File berhasil dihapus', 'alert-type' => 'success']);
     }
+
+    public function viewRequirementActivation($vacancyAttachmentId, $userActivationId)
+    {
+        $vacancyAttachment = VacancyAttachment::findOrFail($vacancyAttachmentId);
+        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $vacancyAttachment->vacancy_id)->with('vacancy')->first();
+        $vacancyActivation = VacancyActivation::findOrFail($userActivationId);
+
+        if ($vacancyActivation->vacancy_user_id != $vacancyUser->id) {
+            return redirect()->back()->with(['messege' => 'File tidak ditemukan', 'alert-type' => 'error']);
+        }
+        if ($vacancyActivation->vacancy_attachment_id != $vacancyAttachment->id) {
+            return redirect()->back()->with(['messege' => 'File tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        $filePath = Storage::disk('private')->path($vacancyActivation->file);
+        return response()->file($filePath);
+    }
 }

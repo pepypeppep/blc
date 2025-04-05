@@ -10,7 +10,7 @@
                     {{ __('Dashboard') }}
                 </a>
             </li>
-            <li class="{{ Route::is('student.pengetahuan') ? 'active' : '' }}">
+            <li class="{{ Route::is('student.pengetahuan.*') ? 'active' : '' }}">
                 <a href="{{ route('student.pengetahuan.index') }}">
                     <img src="{{ asset('uploads/website-images/dashboard.svg') }}">
                     {{ __('Pengetahuan') }}

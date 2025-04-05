@@ -124,7 +124,15 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         // Route::get('order-details/{id}', [StudentOrderController::class, 'show'])->name('order.show');
         // Route::get('order/invoice/{id}', [StudentOrderController::class, 'printInvoice'])->name('order.print-invoice');
 
-        Route::get('pengetahuan', [StudentPengetahuanController::class, 'index'])->name('pengetahuan.index');
+        Route::group(['prefix' => 'pengetahuan', 'as' => 'pengetahuan.'], function () {
+            Route::get('/', [StudentPengetahuanController::class, 'index'])->name('index');
+            Route::get('create', [StudentPengetahuanController::class, 'create'])->name('create');
+            Route::post('store', [StudentPengetahuanController::class, 'store'])->name('store');
+            Route::get('edit/{slug}', [StudentPengetahuanController::class, 'edit'])->name('edit');
+            Route::put('update/{slug}', [StudentPengetahuanController::class, 'update'])->name('update');
+            Route::delete('destroy/{id}', [StudentPengetahuanController::class, 'destroy'])->name('destroy');
+            Route::get('view/{id}', [StudentPengetahuanController::class, 'view'])->name('view.file');
+        });
 
 
         Route::get('reviews', [StudentReviewController::class, 'index'])->name('reviews.index');

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pengetahuans', function (Blueprint $table) {
             $table->id();
             $table->string('category');
-            $table->foreignId('course_id')->constrained('courses')->cascadeOnDelete();
+            $table->foreignId('enrollment_id')->constrained('enrollments')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('title');
             $table->string('slug')->unique();

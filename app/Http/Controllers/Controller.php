@@ -8,12 +8,12 @@ use Illuminate\Routing\Controller as BaseController;
 
 /**
  * @OA\Info(
- *      title="Laravel Swagger OpenAPI Docs",
+ *      title="BLC API Docs",
  *      version="1.0.0",
- *      description="Laravel Swagger OpenAPI documentation",
+ *      description="BLC Swagger OpenAPI documentation",
  *      @OA\Contact(
- *         email="info@laravel-swagger.com",
- *         name="Laravel Swagger API"
+ *         email="mukelele@mukelele.com",
+ *         name="BLC Swagger API"
  *      )
  * )
  *

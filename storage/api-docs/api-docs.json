@@ -1,11 +1,11 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Laravel Swagger OpenAPI Docs",
-        "description": "Laravel Swagger OpenAPI documentation",
+        "title": "BLC API Docs",
+        "description": "BLC Swagger OpenAPI documentation",
         "contact": {
-            "name": "Laravel Swagger API",
-            "email": "info@laravel-swagger.com"
+            "name": "BLC Swagger API",
+            "email": "mukelele@mukelele.com"
         },
         "version": "1.0.0"
     },
@@ -827,6 +827,16 @@
                         "example": "laravel"
                     },
                     {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
                         "name": "page",
                         "in": "query",
                         "description": "Page number",
@@ -1423,6 +1433,56 @@
                     }
                 }
             }
+        },
+        "/pendidikan-lanjutan": {
+            "get": {
+                "tags": [
+                    "Pendidikan Lanjutan"
+                ],
+                "summary": "Get all pendidikan lanjutan",
+                "description": "Get all pendidikan lanjutan",
+                "operationId": "80a44854f67d53a2d9e18811e7ee1afb",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/pendidikan-lanjutan/{id}": {
+            "get": {
+                "tags": [
+                    "Pendidikan Lanjutan"
+                ],
+                "summary": "Get pendidikan lanjutan by id",
+                "description": "Get pendidikan lanjutan by id",
+                "operationId": "51ded5ef237f67b6497f7507be15dfb7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Vacancy id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
         }
     },
     "tags": [
@@ -1437,6 +1497,10 @@
         {
             "name": "Lessons",
             "description": "Lessons"
+        },
+        {
+            "name": "Pendidikan Lanjutan",
+            "description": "Pendidikan Lanjutan"
         }
     ]
 }

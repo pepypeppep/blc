@@ -1122,6 +1122,16 @@ class CourseApiController extends Controller
      *         )
      *     ),
      *     @OA\Parameter(
+     *         description="User ID",
+     *         in="query",
+     *         name="user_id",
+     *         required=false,
+     *         example=1,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
      *         description="Page number",
      *         in="query",
      *         name="page",

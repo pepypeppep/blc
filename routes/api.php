@@ -48,8 +48,6 @@ Route::name('api.')->group(function () {
     Route::name('dashboard.')->group(function () {
         Route::get('/certificates', [CertificateApiController::class, 'getCertificatesForStudent'])->name('certificates');
 
-        Route::get('/reviews', [ReviewApiController::class, 'reviews'])->name('reviews');
-
         Route::prefix('pendidikan-lanjutan')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'index']);
             Route::get('/{id}', [PendidikanLanjutanController::class, 'show']);

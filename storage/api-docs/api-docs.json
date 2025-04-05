@@ -1,0 +1,1442 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel Swagger OpenAPI Docs",
+        "description": "Laravel Swagger OpenAPI documentation",
+        "contact": {
+            "name": "Laravel Swagger API",
+            "email": "info@laravel-swagger.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/courses": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get courses list",
+                "description": "Get courses list",
+                "operationId": "dcf8b4f726717dd9e6099b1d745c04ef",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by course title",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "main_category",
+                        "in": "query",
+                        "description": "Filter by main category",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by category",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "language",
+                        "in": "query",
+                        "description": "Filter by language",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "price",
+                        "in": "query",
+                        "description": "Filter by price",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "free",
+                                "paid"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "level",
+                        "in": "query",
+                        "description": "Filter by level",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Sort by id",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of records per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/courses/{slug}": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get course by slug",
+                "operationId": "8054a11a5895b4c2f8f2788df9a1d583",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Course slug",
+                        "required": true,
+                        "example": "laravel-fundamentals"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Course retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Course retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Laravel Fundamentals"
+                                                },
+                                                "slug": {
+                                                    "type": "string",
+                                                    "example": "laravel-fundamentals"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "This course covers the basics of Laravel and how to build a simple CRUD application."
+                                                },
+                                                "price": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "image": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/course.jpg"
+                                                },
+                                                "instructor": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "John Doe"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "enrollments": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "user": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer",
+                                                                        "example": 1
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "example": "Jane Doe"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2022-01-01 00:00:00"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "category": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Laravel"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "levels": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Beginner"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "chapters": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Chapter 1"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "This is the first chapter of the course."
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2022-01-01 00:00:00"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "reviews": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "rating": {
+                                                                "type": "integer",
+                                                                "example": 5
+                                                            },
+                                                            "comment": {
+                                                                "type": "string",
+                                                                "example": "This course is very good."
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2022-01-01 00:00:00"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "lessons": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Lesson 1"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "This is the first lesson of the course."
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2022-01-01 00:00:00"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Course not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Course not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve course",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to retrieve course"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/courses/{slug}/learning": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get course detail for learning",
+                "description": "Get course detail for learning",
+                "operationId": "a71f35adc4bfe1edc0247ab648c697bb",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug of course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "course-1"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/courses/{slug}/join": {
+            "post": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Join course",
+                "description": "Join course",
+                "operationId": "5369a8df638ac8134cb1e9b61668cb45",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Course slug",
+                        "required": true,
+                        "example": "laravel-fundamentals"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User ID",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully joined course, waiting for approval",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully joined course, waiting for approval"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Laravel Fundamentals"
+                                                },
+                                                "slug": {
+                                                    "type": "string",
+                                                    "example": "laravel-fundamentals"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "This course covers the basics of Laravel and how to build a simple CRUD application."
+                                                },
+                                                "price": {
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "level": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Beginner"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "category": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Laravel"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "main_category": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Programming"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "chapters": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Introduction"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "This chapter covers the basics of Laravel and how to build a simple CRUD application."
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to join course",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to join course"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Something went wrong"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/courses-popular": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get popular courses",
+                "description": "Get popular courses. This endpoint returns a list of courses sorted by the number of enrollments in descending order.",
+                "operationId": "3ece715aee298fe51649f40006e7c9f6",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of courses to return per page",
+                        "required": false,
+                        "example": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Popular courses retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "Laravel Fundamentals"
+                                            },
+                                            "slug": {
+                                                "type": "string",
+                                                "example": "laravel-fundamentals"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "This course covers the basics of Laravel and how to build a simple CRUD application."
+                                            },
+                                            "instructor": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "category": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Programming"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "enrollments_count": {
+                                                "type": "integer",
+                                                "example": 100
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2021-01-01T00:00:00.000000Z"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2021-01-01T00:00:00.000000Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve popular courses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to retrieve popular courses"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Something went wrong"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/courses-categories": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get course categories",
+                "description": "Get course categories. This endpoint returns a tree of categories with their sub categories.",
+                "operationId": "1d54df4008567c31a65d35d62d45004e",
+                "responses": {
+                    "200": {
+                        "description": "Categories retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Laravel"
+                                            },
+                                            "children": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 2
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Laravel Fundamentals"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/courses-levels": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get course levels",
+                "description": "Get course levels",
+                "operationId": "0ed5debaa7775988e97ea32300535db1",
+                "responses": {
+                    "200": {
+                        "description": "Levels retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Laravel"
+                                            },
+                                            "slug": {
+                                                "type": "string",
+                                                "example": "laravel"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "This course covers the basics of Laravel"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve levels",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to retrieve levels"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Something went wrong while retrieving levels"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/courses/{slug}/reviews": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get all reviews for a course",
+                "description": "Get all reviews for a course",
+                "operationId": "ed8bcd6793f34baa16ea685917f14cc5",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "slug of the course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "laravel"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reviews retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "course_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "user_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "rating": {
+                                                        "type": "integer",
+                                                        "example": 4
+                                                    },
+                                                    "review": {
+                                                        "type": "string",
+                                                        "example": "This course is awesome"
+                                                    },
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2020-01-01 12:00:00"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No reviews found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No reviews found"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": [],
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to retrieve reviews",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to retrieve reviews"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Something went wrong while retrieving reviews"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Add course review",
+                "description": "Add course review",
+                "operationId": "9eaf048d6e2ccc7a702d87fc70af8d1b",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Course slug",
+                        "required": true,
+                        "example": "laravel-fundamentals"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "rating": {
+                                        "type": "integer",
+                                        "maximum": 5,
+                                        "minimum": 1,
+                                        "example": 5
+                                    },
+                                    "review": {
+                                        "type": "string",
+                                        "example": "This course is awesome!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Review created successfully"
+                    },
+                    "404": {
+                        "description": "Course not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/courses/{slug}/questions": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get course questions",
+                "description": "Get course questions",
+                "operationId": "7a33117e00f4c6ce6d21329793d030cd",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Course slug",
+                        "required": true,
+                        "example": "laravel-fundamentals"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Questions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "course": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Laravel Fundamentals"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "laravel-fundamentals"
+                                                    },
+                                                    "thumbnail": {
+                                                        "type": "string",
+                                                        "format": "binary",
+                                                        "example": "thumbnail.jpg"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "user": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "lesson": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Laravel Installation"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "laravel-installation"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            },
+                                            "replies": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "user": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 1
+                                                                },
+                                                                "name": {
+                                                                    "type": "string",
+                                                                    "example": "John Doe"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "reply": {
+                                                            "type": "string",
+                                                            "example": "This is a reply"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Course not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/lessons/{slug}/questions": {
+            "get": {
+                "tags": [
+                    "Lessons"
+                ],
+                "summary": "Get questions for a lesson",
+                "description": "Get questions for a lesson",
+                "operationId": "df3c5dbdc73ea77183277d4c77a70b89",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Lesson slug",
+                        "required": true,
+                        "example": "laravel-fundamentals"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Questions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Questions retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "course": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Laravel Fundamentals"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string",
+                                                                "example": "laravel-fundamentals"
+                                                            },
+                                                            "thumbnail": {
+                                                                "type": "string",
+                                                                "example": "https://example.com/thumbnail.jpg"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "user": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "John Doe"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "lesson": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Laravel Basics"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string",
+                                                                "example": "laravel-basics"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "question_title": {
+                                                        "type": "string",
+                                                        "example": "This is a question title"
+                                                    },
+                                                    "question_description": {
+                                                        "type": "string",
+                                                        "example": "This is a question description"
+                                                    },
+                                                    "replies": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 1
+                                                                },
+                                                                "reply": {
+                                                                    "type": "string",
+                                                                    "example": "This is a reply"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Lesson not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/lessons/questions-store": {
+            "post": {
+                "tags": [
+                    "Lessons"
+                ],
+                "summary": "Add new question",
+                "description": "Add new question",
+                "operationId": "d757a2c26590daec1edfc963f80cadd5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "course_id": {
+                                        "description": "Course ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "user_id": {
+                                        "description": "User ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "lesson_id": {
+                                        "description": "Lesson ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "question_title": {
+                                        "description": "Question title",
+                                        "type": "string",
+                                        "example": "This is a question title"
+                                    },
+                                    "question_description": {
+                                        "description": "Question description",
+                                        "type": "string",
+                                        "example": "This is a question description"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Question created successfully"
+                    },
+                    "404": {
+                        "description": "Course not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/lessons/answer-store": {
+            "post": {
+                "tags": [
+                    "Lessons"
+                ],
+                "summary": "Add new answer",
+                "description": "Add new answer",
+                "operationId": "7802e5e71a2b7a902bcbeb20123f57ff",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "question_id": {
+                                        "description": "Question ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "user_id": {
+                                        "description": "User ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "reply": {
+                                        "description": "Answer description",
+                                        "type": "string",
+                                        "example": "This is an answer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Answer created successfully"
+                    },
+                    "404": {
+                        "description": "Question not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/home": {
+            "get": {
+                "tags": [
+                    "Home"
+                ],
+                "summary": "Get Home Page Data",
+                "description": "Get Home Page Data",
+                "operationId": "f4e4a775375271959dabcdd3686525ec",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    }
+                }
+            }
+        },
+        "/privacy-policy": {
+            "get": {
+                "tags": [
+                    "Home"
+                ],
+                "summary": "Get privacy policy page",
+                "operationId": "aafcf2253582bb65b1af61d52333b783",
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/terms-and-conditions": {
+            "get": {
+                "tags": [
+                    "Home"
+                ],
+                "summary": "Get terms and conditions page",
+                "operationId": "288f8add9e490f635451bd6e95115df0",
+                "responses": {
+                    "200": {
+                        "description": "Success response"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Home",
+            "description": "Home API Endpoints"
+        },
+        {
+            "name": "Courses",
+            "description": "Courses"
+        },
+        {
+            "name": "Lessons",
+            "description": "Lessons"
+        }
+    ]
+}

@@ -20,76 +20,96 @@ use Modules\Course\app\Models\CourseCategory;
 class CourseApiController extends Controller
 {
     /**
-     * Retrieves courses based on query parameters.
-     *
-     * @queryParam search string The value to search in course titles.
-     * @queryParam main_category string The slug of the main category.
-     * @queryParam category string The comma-separated IDs of categories.
-     * @queryParam language string The comma-separated IDs of languages.
-     * @queryParam price string The price of the course. Can be either 'paid' or 'free'.
-     * @queryParam level string The comma-separated IDs of course levels.
-     * @queryParam user_id string The ID of the user.
-     * @queryParam order string The order of the courses. Can be either 'asc' or 'desc'.
-     *
-     * @response 200 {
-     *     "success": true,
-     *     "message": "Courses retrieved successfully",
-     *     "data": {
-     *         "total": 1,
-     *         "per_page": 15,
-     *         "current_page": 1,
-     *         "last_page": 1,
-     *         "first_page_url": "http://localhost/api/courses?page=1",
-     *         "last_page_url": "http://localhost/api/courses?page=1",
-     *         "next_page_url": null,
-     *         "prev_page_url": null,
-     *         "path": "http://localhost/api/courses",
-     *         "from": 1,
-     *         "to": 1,
-     *         "data": [
-     *             {
-     *                 "id": 1,
-     *                 "title": "Course 1",
-     *                 "slug": "course-1",
-     *                 "description": "This is course 1",
-     *                 "price": 0,
-     *                 "image": null,
-     *                 "is_approved": "approved",
-     *                 "status": "active",
-     *                 "created_at": "2022-07-28T14:42:00.000000Z",
-     *                 "updated_at": "2022-07-28T14:42:00.000000Z",
-     *                 "deleted_at": null,
-     *                 "instructor": {
-     *                     "id": 1,
-     *                     "name": "John Doe"
-     *                 },
-     *                 "enrollments_count": 0,
-     *                 "category": {
-     *                     "id": 1,
-     *                     "name": "Category 1",
-     *                     "parent_id": 1,
-     *                     "status": 1,
-     *                     "created_at": "2022-07-28T14:42:00.000000Z",
-     *                     "updated_at": "2022-07-28T14:42:00.000000Z",
-     *                     "deleted_at": null,
-     *                     "translation": {
-     *                         "id": 1,
-     *                         "category_id": 1,
-     *                         "locale": "en",
-     *                         "name": "Category 1"
-     *                     }
-     *                 }
-     *             }
-     *         ]
-     *     }
-     * }
-     * @response 500 {
-     *     "success": false,
-     *     "message": "Failed to retrieve courses",
-     *     "error": "Error message"
-     * }
+     * @OA\Get(
+     *     path="/courses",
+     *     tags={"Courses"},
+     *     summary="Get courses list",
+     *     description="Get courses list",
+     *     @OA\Parameter(
+     *         description="Search by course title",
+     *         in="query",
+     *         name="search",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Filter by main category",
+     *         in="query",
+     *         name="main_category",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Filter by category",
+     *         in="query",
+     *         name="category",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Filter by language",
+     *         in="query",
+     *         name="language",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Filter by price",
+     *         in="query",
+     *         name="price",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"free", "paid"}
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Filter by level",
+     *         in="query",
+     *         name="level",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Sort by id",
+     *         in="query",
+     *         name="order",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"asc", "desc"}
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Number of records per page",
+     *         in="query",
+     *         name="per_page",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
      */
-    function courses(Request $request)
+    public function courses(Request $request)
     {
         try {
             $query = Course::query();
@@ -176,11 +196,265 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slug
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/courses/{slug}",
+     *     summary="Get course by slug",
+     *     tags={"Courses"},
+     *     @OA\Parameter(
+     *         name="slug",
+     *         in="path",
+     *         description="Course slug",
+     *         required=true,
+     *         example="laravel-fundamentals"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Course retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=true
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Course retrieved successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="title",
+     *                     type="string",
+     *                     example="Laravel Fundamentals"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="slug",
+     *                     type="string",
+     *                     example="laravel-fundamentals"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     example="This course covers the basics of Laravel and how to build a simple CRUD application."
+     *                 ),
+     *                 @OA\Property(
+     *                     property="price",
+     *                     type="integer",
+     *                     example=0
+     *                 ),
+     *                 @OA\Property(
+     *                     property="image",
+     *                     type="string",
+     *                     example="https://example.com/course.jpg"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="instructor",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example="John Doe"
+     *                     ),
+     *                 ),
+     *                 @OA\Property(
+     *                     property="enrollments",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
+     *                             property="user",
+     *                             type="object",
+     *                             @OA\Property(
+     *                                 property="id",
+     *                                 type="integer",
+     *                                 example=1
+     *                             ),
+     *                             @OA\Property(
+     *                                 property="name",
+     *                                 type="string",
+     *                                 example="Jane Doe"
+     *                             ),
+     *                         ),
+     *                         @OA\Property(
+     *                             property="created_at",
+     *                             type="string",
+     *                             example="2022-01-01 00:00:00"
+     *                         ),
+     *                     ),
+     *                 ),
+     *                 @OA\Property(
+     *                     property="category",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example="Laravel"
+     *                     ),
+     *                 ),
+     *                 @OA\Property(
+     *                     property="levels",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
+     *                             property="name",
+     *                             type="string",
+     *                             example="Beginner"
+     *                         ),
+     *                     ),
+     *                 ),
+     *                 @OA\Property(
+     *                     property="chapters",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
+     *                             property="title",
+     *                             type="string",
+     *                             example="Chapter 1"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="description",
+     *                             type="string",
+     *                             example="This is the first chapter of the course."
+     *                         ),
+     *                         @OA\Property(
+     *                             property="created_at",
+     *                             type="string",
+     *                             example="2022-01-01 00:00:00"
+     *                         ),
+     *                     ),
+     *                 ),
+     *                 @OA\Property(
+     *                     property="reviews",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
+     *                             property="rating",
+     *                             type="integer",
+     *                             example=5
+     *                         ),
+     *                         @OA\Property(
+     *                             property="comment",
+     *                             type="string",
+     *                             example="This course is very good."
+     *                         ),
+     *                         @OA\Property(
+     *                             property="created_at",
+     *                             type="string",
+     *                             example="2022-01-01 00:00:00"
+     *                         ),
+     *                     ),
+     *                 ),
+     *                 @OA\Property(
+     *                     property="lessons",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
+     *                             property="title",
+     *                             type="string",
+     *                             example="Lesson 1"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="description",
+     *                             type="string",
+     *                             example="This is the first lesson of the course."
+     *                         ),
+     *                         @OA\Property(
+     *                             property="created_at",
+     *                             type="string",
+     *                             example="2022-01-01 00:00:00"
+     *                         ),
+     *                     ),
+     *                 ),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Course not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Course not found"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Failed to retrieve course",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Failed to retrieve course"
+     *             ),
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Internal Server Error"
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function showCourse(Request $request, $slug)
     {
@@ -225,31 +499,41 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Retrieve a course by its slug, given the user ID.
-     *
-     * @authenticated
-     * @responseFile responses/course.json
-     * @urlParam slug required The slug of the course. Example: how-to-use-laravel
-     * @queryParam user_id required The ID of the user. Example: 1
-     * @response 200 {
-     *  "success": true,
-     *  "message": "Course retrieved successfully",
-     *  "data": {
-     *      "course": {...},
-     *      "currentProgress": {...},
-     *      "announcements": [...],
-     *      "courseCompletedPercent": 0,
-     *      "courseLectureCount": 0,
-     *      "courseLectureCompletedByUser": 0,
-     *      "alreadyWatchedLectures": [],
-     *      "alreadyCompletedQuiz": []
-     *  }
-     * }
-     * @response 500 {
-     *  "success": false,
-     *  "message": "Failed to retrieve course",
-     *  "error": "Error message"
-     * }
+     * @OA\Get(
+     *     path="/courses/{slug}/learning",
+     *     summary="Get course detail for learning",
+     *     description="Get course detail for learning",
+     *     tags={"Courses"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         description="Slug of course",
+     *         in="path",
+     *         name="slug",
+     *         required=true,
+     *         example="course-1",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="User ID",
+     *         in="query",
+     *         name="user_id",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="internal server error"
+     *     )
+     * )
      */
     public function learningCourse(Request $request, $slug)
     {
@@ -335,11 +619,158 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Join a public course.
-     *
-     * @param Request $request
-     * @param string $slug
-     * @return JsonResponse
+     * @OA\Post(
+     *     path="/courses/{slug}/join",
+     *     summary="Join course",
+     *     description="Join course",
+     *     tags={"Courses"},
+     *     @OA\Parameter(
+     *         name="slug",
+     *         in="path",
+     *         description="Course slug",
+     *         required=true,
+     *         example="laravel-fundamentals"
+     *     ),
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="query",
+     *         description="User ID",
+     *         required=true,
+     *         example=1
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Successfully joined course, waiting for approval",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=true
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Successfully joined course, waiting for approval"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="title",
+     *                     type="string",
+     *                     example="Laravel Fundamentals"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="slug",
+     *                     type="string",
+     *                     example="laravel-fundamentals"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     example="This course covers the basics of Laravel and how to build a simple CRUD application."
+     *                 ),
+     *                 @OA\Property(
+     *                     property="price",
+     *                     type="integer",
+     *                     example=0
+     *                 ),
+     *                 @OA\Property(
+     *                     property="level",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example="Beginner"
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="category",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example="Laravel"
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="main_category",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example="Programming"
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="chapters",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
+     *                             property="name",
+     *                             type="string",
+     *                             example="Introduction"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="description",
+     *                             type="string",
+     *                             example="This chapter covers the basics of Laravel and how to build a simple CRUD application."
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Failed to join course",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Failed to join course"
+     *             ),
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Something went wrong"
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function joinCourse(Request $request, $slug)
     {
@@ -371,12 +802,118 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Get popular courses by counting the sum of enrollment relation where has_access is 1
-     *
-     * @param int $limit
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/courses-popular",
+     *     summary="Get popular courses",
+     *     description="Get popular courses. This endpoint returns a list of courses sorted by the number of enrollments in descending order.",
+     *     tags={"Courses"},
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Number of courses to return per page",
+     *         required=false,
+     *         example=10
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Popular courses retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="title",
+     *                     type="string",
+     *                     example="Laravel Fundamentals"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="slug",
+     *                     type="string",
+     *                     example="laravel-fundamentals"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     example="This course covers the basics of Laravel and how to build a simple CRUD application."
+     *                 ),
+     *                 @OA\Property(
+     *                     property="instructor",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example="John Doe"
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="category",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example="Programming"
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="enrollments_count",
+     *                     type="integer",
+     *                     example=100
+     *                 ),
+     *                 @OA\Property(
+     *                     property="created_at",
+     *                     type="string",
+     *                     format="date-time",
+     *                     example="2021-01-01T00:00:00.000000Z"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="updated_at",
+     *                     type="string",
+     *                     format="date-time",
+     *                     example="2021-01-01T00:00:00.000000Z"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Failed to retrieve popular courses",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Failed to retrieve popular courses"
+     *             ),
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Something went wrong"
+     *             )
+     *         )
+     *     )
+     * )
      */
-    public function popularCourses($limit = 10)
+    public function popularCourses(Request $request)
     {
         try {
             $courses = Course::with('instructor', 'category.translation')
@@ -385,8 +922,7 @@ class CourseApiController extends Controller
                     $query->where('has_access', 1);
                 }])
                 ->orderByDesc('enrollments_count')
-                ->take($limit)
-                ->get();
+                ->paginate($request->per_page ?? 10);
 
             return response()->json([
                 'success' => true,
@@ -401,12 +937,7 @@ class CourseApiController extends Controller
             ], 500);
         }
     }
-    /**
-     * Retrieve a course thumbnail.
-     *
-     * @param int $courseId The ID of the course.
-     * @return \Illuminate\Http\Response
-     */
+
     public function getCourseThumbnail($courseId)
     {
         try {
@@ -423,9 +954,47 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Retrieve course categories.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/courses-categories",
+     *     tags={"Courses"},
+     *     summary="Get course categories",
+     *     description="Get course categories. This endpoint returns a tree of categories with their sub categories.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Categories retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     example="Laravel"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="children",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=2
+     *                         ),
+     *                         @OA\Property(
+     *                             property="name",
+     *                             type="string",
+     *                             example="Laravel Fundamentals"
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function categories()
     {
@@ -460,9 +1029,63 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Get all active levels
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/courses-levels",
+     *     summary="Get course levels",
+     *     description="Get course levels",
+     *     tags={"Courses"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Levels retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     example="Laravel"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="slug",
+     *                     type="string",
+     *                     example="laravel"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     example="This course covers the basics of Laravel"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Failed to retrieve levels",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Failed to retrieve levels"
+     *             ),
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Something went wrong while retrieving levels"
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function levels()
     {
@@ -483,11 +1106,126 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Get all reviews by user ID for a specific course.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param string $slug
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/courses/{slug}/reviews",
+     *     tags={"Courses"},
+     *     summary="Get all reviews for a course",
+     *     description="Get all reviews for a course",
+     *     @OA\Parameter(
+     *         description="slug of the course",
+     *         in="path",
+     *         name="slug",
+     *         required=true,
+     *         example="laravel",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Page number",
+     *         in="query",
+     *         name="page",
+     *         required=false,
+     *         example=1,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Reviews retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="course_id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="user_id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="rating",
+     *                         type="integer",
+     *                         example=4
+     *                     ),
+     *                     @OA\Property(
+     *                         property="review",
+     *                         type="string",
+     *                         example="This course is awesome"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="status",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="created_at",
+     *                         type="string",
+     *                         format="date-time",
+     *                         example="2020-01-01 12:00:00"
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No reviews found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="No reviews found"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 items={},
+     *                 example=null
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Failed to retrieve reviews",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Failed to retrieve reviews"
+     *             ),
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="Something went wrong while retrieving reviews"
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function reviews(Request $request, $slug)
     {
@@ -537,16 +1275,58 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Store a newly created review resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slug
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/courses/{slug}/reviews",
+     *     summary="Add course review",
+     *     description="Add course review",
+     *     tags={"Courses"},
+     *     @OA\Parameter(
+     *         description="Course slug",
+     *         in="path",
+     *         name="slug",
+     *         required=true,
+     *         example="laravel-fundamentals"
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="user_id",
+     *                 type="integer",
+     *                 example=1
+     *             ),
+     *             @OA\Property(
+     *                 property="rating",
+     *                 type="integer",
+     *                 minimum=1,
+     *                 maximum=5,
+     *                 example=5
+     *             ),
+     *             @OA\Property(
+     *                 property="review",
+     *                 type="string",
+     *                 example="This course is awesome!"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Review created successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Course not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
      */
     public function reviewsStore(Request $request, $slug)
     {
         $request->validate([
-            'course_id' => 'required|exists:courses,id',
             'user_id' => 'required|exists:users,id',
             'rating' => 'required|integer|min:1|max:5',
             'review' => 'required|string',
@@ -563,7 +1343,7 @@ class CourseApiController extends Controller
             }
 
             $review = CourseReview::firstOrCreate([
-                'course_id' => $request->course_id,
+                'course_id' => $course->id,
                 'user_id' => $request->user_id,
                 'rating' => $request->rating,
                 'review' => $request->review,
@@ -584,12 +1364,131 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Menampilkan daftar pertanyaan yang pernah diberikan untuk
-     * suatu pelatihan.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slug
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/courses/{slug}/questions",
+     *     summary="Get course questions",
+     *     description="Get course questions",
+     *     tags={"Courses"},
+     *     @OA\Parameter(
+     *         description="Course slug",
+     *         in="path",
+     *         name="slug",
+     *         required=true,
+     *         example="laravel-fundamentals"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Questions retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="course",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="title",
+     *                         type="string",
+     *                         example="Laravel Fundamentals"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="slug",
+     *                         type="string",
+     *                         example="laravel-fundamentals"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="thumbnail",
+     *                         type="string",
+     *                         format="binary",
+     *                         example="thumbnail.jpg"
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="user",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example="John Doe"
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="lesson",
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="title",
+     *                         type="string",
+     *                         example="Laravel Installation"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="slug",
+     *                         type="string",
+     *                         example="laravel-installation"
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="replies",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
+     *                             property="user",
+     *                             type="object",
+     *                             @OA\Property(
+     *                                 property="id",
+     *                                 type="integer",
+     *                                 example=1
+     *                             ),
+     *                             @OA\Property(
+     *                                 property="name",
+     *                                 type="string",
+     *                                 example="John Doe"
+     *                             )
+     *                         ),
+     *                         @OA\Property(
+     *                             property="reply",
+     *                             type="string",
+     *                             example="This is a reply"
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Course not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
      */
     public function questions(Request $request, $slug)
     {
@@ -623,12 +1522,141 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Menampilkan daftar pertanyaan yang pernah diberikan untuk
-     * suatu materi pelatihan.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slug
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Get(
+     *     path="/lessons/{slug}/questions",
+     *     summary="Get questions for a lesson",
+     *     description="Get questions for a lesson",
+     *     tags={"Lessons"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         description="Lesson slug",
+     *         in="path",
+     *         name="slug",
+     *         required=true,
+     *         example="laravel-fundamentals"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Questions retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=true
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Questions retrieved successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="id",
+     *                         type="integer",
+     *                         example=1
+     *                     ),
+     *                     @OA\Property(
+     *                         property="course",
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
+     *                             property="title",
+     *                             type="string",
+     *                             example="Laravel Fundamentals"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="slug",
+     *                             type="string",
+     *                             example="laravel-fundamentals"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="thumbnail",
+     *                             type="string",
+     *                             example="https://example.com/thumbnail.jpg"
+     *                         )
+     *                     ),
+     *                     @OA\Property(
+     *                         property="user",
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
+     *                             property="name",
+     *                             type="string",
+     *                             example="John Doe"
+     *                         )
+     *                     ),
+     *                     @OA\Property(
+     *                         property="lesson",
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=1
+     *                         ),
+     *                         @OA\Property(
+     *                             property="title",
+     *                             type="string",
+     *                             example="Laravel Basics"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="slug",
+     *                             type="string",
+     *                             example="laravel-basics"
+     *                         )
+     *                     ),
+     *                     @OA\Property(
+     *                         property="question_title",
+     *                         type="string",
+     *                         example="This is a question title"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="question_description",
+     *                         type="string",
+     *                         example="This is a question description"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="replies",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(
+     *                                 property="id",
+     *                                 type="integer",
+     *                                 example=1
+     *                             ),
+     *                             @OA\Property(
+     *                                 property="reply",
+     *                                 type="string",
+     *                                 example="This is a reply"
+     *                             )
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Lesson not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
      */
     public function lessonQuestions(Request $request, $slug)
     {
@@ -662,11 +1690,61 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Store a newly created lesson question in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slug
-     * @return \Illuminate\Http\JsonResponse
+     * @OA\Post(
+     *     path="/lessons/questions-store",
+     *     summary="Add new question",
+     *     description="Add new question",
+     *     tags={"Lessons"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="course_id",
+     *                 type="integer",
+     *                 example=1,
+     *                 description="Course ID"
+     *             ),
+     *             @OA\Property(
+     *                 property="user_id",
+     *                 type="integer",
+     *                 example=1,
+     *                 description="User ID"
+     *             ),
+     *             @OA\Property(
+     *                 property="lesson_id",
+     *                 type="integer",
+     *                 example=1,
+     *                 description="Lesson ID"
+     *             ),
+     *             @OA\Property(
+     *                 property="question_title",
+     *                 type="string",
+     *                 example="This is a question title",
+     *                 description="Question title"
+     *             ),
+     *             @OA\Property(
+     *                 property="question_description",
+     *                 type="string",
+     *                 example="This is a question description",
+     *                 description="Question description"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Question created successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Course not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
      */
     public function questionsStore(Request $request)
     {
@@ -721,16 +1799,12 @@ class CourseApiController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    /**
      * @OA\Post(
-     *     path="/api/v1/course-api/answer",
-     *     summary="Tambahkan Tanggapan Pertanyaan",
-     *     tags={"Course API"},
+     *     path="/lessons/answer-store",
+     *     summary="Add new answer",
+     *     description="Add new answer",
+     *     tags={"Lessons"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -738,34 +1812,34 @@ class CourseApiController extends Controller
      *             @OA\Property(
      *                 property="question_id",
      *                 type="integer",
-     *                 description="ID Pertanyaan",
-     *                 example=1
+     *                 example=1,
+     *                 description="Question ID"
      *             ),
      *             @OA\Property(
      *                 property="user_id",
      *                 type="integer",
-     *                 description="ID User",
-     *                 example=1
+     *                 example=1,
+     *                 description="User ID"
      *             ),
      *             @OA\Property(
      *                 property="reply",
      *                 type="string",
-     *                 description="Tanggapan",
-     *                 example="Tanggapan Pertanyaan"
+     *                 example="This is an answer",
+     *                 description="Answer description"
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Tanggapan berhasil ditambahkan."
+     *         description="Answer created successfully"
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Materi pelatihan tidak ditemukan"
+     *         description="Question not found"
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Terjadi kesalahan"
+     *         description="Internal server error"
      *     )
      * )
      */

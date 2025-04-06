@@ -43,6 +43,7 @@ class StudentPelatihanUpdateRequest extends FormRequest
             'link.required_if' => __('The link field is required when category is video'),
             'file.required_if' => __('The file field is required when category is document'),
             'content.required' => __('The content field is required'),
+            'tags.max' => __('The tags may not be greater than 5 items'),
         ];
     }
 }

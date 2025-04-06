@@ -32,9 +32,10 @@
                                                 <div class="col-xl-7">
                                                     <div class="courses__item-content courses__item-content-two">
                                                         <ul class="courses__item-meta list-wrap">
-                                                            <li class="courses__item-tag">
+                                                            <li class="courses__item-tag gap-1">
                                                                 <a href="javascript:;">{{ $pengetahuan->category }}</a>
-                                                                <a href="javascript:;">{{ $pengetahuan->visibility }}</a>
+                                                                <a href="javascript:;"
+                                                                    class="badge bg-{{ $pengetahuan->visibility == 'public' ? 'warning' : 'danger' }} text-white">{{ $pengetahuan->visibility }}</a>
                                                             </li>
                                                         </ul>
 
@@ -55,8 +56,18 @@
                                                                 </div>
                                                             </div>
                                                         @endif
-                                                        <span
-                                                            class="badge bg-{{ $pengetahuan->stat['color'] }} mt-4">{{ $pengetahuan->stat['label'] }}</span>
+                                                        <div>
+                                                            <span
+                                                                class="badge bg-{{ $pengetahuan->stat['color'] }} mt-4">{{ $pengetahuan->stat['label'] }}</span>
+                                                        </div>
+                                                        <div>
+                                                            @foreach ($pengetahuan->articleTags as $tag)
+                                                                <span
+                                                                    class="badge bg-secondary mt-2">{{ $tag->name }}</span>
+                                                            @endforeach
+                                                        </div>
+
+
                                                     </div>
                                                 </div>
                                             </div>

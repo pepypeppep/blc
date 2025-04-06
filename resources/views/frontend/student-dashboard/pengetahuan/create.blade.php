@@ -146,11 +146,10 @@
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
                                     <label for="Tags">{{ __('Tags') }}</label>
-                                    <select class="form-control select2" id="Tags" name="Tags[]"
-                                        multiple="multiple" style="width: 100%;">
-                                        <option value="">{{ __('Select One') }}</option>
+                                    <select class="select2" name="tags[]" multiple="multiple">
                                         @foreach ($tags as $tag)
-                                            <option value="{{ $tag->name }}">{{ $tag->name }}</option>
+                                            <option value="{{ $tag->name }}">
+                                                {{ $tag->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

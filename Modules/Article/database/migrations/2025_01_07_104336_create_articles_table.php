@@ -23,6 +23,8 @@ return new class extends Migration
             $table->longText('content');
             $table->text('description');
             $table->string('status')->default('draft');
+            $table->string('link')->nullable();
+            $table->string('file')->nullable();
             $table->string('instansi')->nullable();
             $table->bigInteger('views')->default(0);
             $table->string('visibility')->default('public');

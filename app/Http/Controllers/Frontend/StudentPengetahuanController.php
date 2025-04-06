@@ -32,7 +32,7 @@ class StudentPengetahuanController extends Controller
         if ($request->enrollment != null) {
             $enrollment = Enrollment::where('user_id', userAuth()->id)->where('id', $request->enrollment)->first();
             if (!$enrollment) {
-                return redirect()->back()->with(['message' => __('Enrollment not found'), 'alert-type' => 'error']);
+                return redirect()->back()->with(['messege' => __('Enrollment not found'), 'alert-type' => 'error']);
             }
         }
 
@@ -65,7 +65,7 @@ class StudentPengetahuanController extends Controller
 
         DB::beginTransaction();
         $result = Article::create([
-            'slug' => generateUniqueSlug(Article::class, $request->title),
+            'slug' => generateUniqueSlug(Article::class, $request->title) . '_' . now()->timestamp,
             'author_id' => userAuth()->id,
             'category' => $request->category,
             'enrollment_id' => $request->enrollment != null ? $enrollment->id : null,
@@ -79,31 +79,32 @@ class StudentPengetahuanController extends Controller
             'status' => Article::STATUS_DRAFT,
         ]);
 
-        if (isset($validated['tags'])) {
+        if (isset($request->tags)) {
             $tags = [];
-            foreach ($validated['tags'] as $tag) {
+            foreach ($request->tags as $tag) {
                 $res = Tag::firstOrCreate(['name' => $tag]);
                 array_push($tags, $res->id);
             }
             $pengetahuan = Article::where('slug', $result->slug)->first();
+            // dd($pengetahuan);
             $pengetahuan->articleTags()->attach($tags);
             $pengetahuan->save();
         }
 
         if ($result) {
             DB::commit();
-            return redirect()->route('student.pengetahuan.index')->with(['message' => __('Pengetahuan created successfully'), 'alert-type' => 'success']);
+            return redirect()->route('student.pengetahuan.index')->with(['messege' => __('Pengetahuan created successfully'), 'alert-type' => 'success']);
         } else {
             DB::rollBack();
-            return redirect()->back()->with(['message' => __('Pengetahuan created failed'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Pengetahuan created failed'), 'alert-type' => 'error']);
         }
     }
 
     public function edit($slug)
     {
-        $pengetahuan = Article::where('slug', $slug)->with('enrollment.course')->first();
+        $pengetahuan = Article::where('slug', $slug)->with(['enrollment.course', 'articleTags'])->first();
         if (!$pengetahuan) {
-            return redirect()->back()->with(['message' => __('Pengetahuan not found'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Pengetahuan not found'), 'alert-type' => 'error']);
         }
         $enrollments = Enrollment::where('user_id', userAuth()->id)->with('course')->get();
         $tags = Tag::all();
@@ -114,17 +115,17 @@ class StudentPengetahuanController extends Controller
     {
         $pengetahuan = Article::where('slug', $slug)->with('enrollment.course')->first();
         if (!$pengetahuan) {
-            return redirect()->back()->with(['message' => __('Pengetahuan not found'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Pengetahuan not found'), 'alert-type' => 'error']);
         }
 
         if ($pengetahuan->status != Article::STATUS_DRAFT && $pengetahuan->status != Article::STATUS_VERIFICATION) {
-            return redirect()->back()->with(['message' => __('Pengetahuan cannot be updated because it has status ' . $pengetahuan->status . ''), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Pengetahuan cannot be updated because it has status ' . $pengetahuan->status . ''), 'alert-type' => 'error']);
         }
 
         if ($request->enrollment != null) {
             $enrollment = Enrollment::where('user_id', userAuth()->id)->where('id', $request->enrollment)->first();
             if (!$enrollment) {
-                return redirect()->back()->with(['message' => __('Enrollment not found'), 'alert-type' => 'error']);
+                return redirect()->back()->with(['messege' => __('Enrollment not found'), 'alert-type' => 'error']);
             }
         }
         
@@ -160,7 +161,7 @@ class StudentPengetahuanController extends Controller
         DB::beginTransaction();
 
         $result = $pengetahuan->update([
-            'slug' => generateUniqueSlug(Article::class, $request->title),
+            'slug' => generateUniqueSlug(Article::class, $request->title) . '_' . now()->timestamp,
             'author_id' => userAuth()->id,
             'category' => $request->category,
             'enrollment_id' => isset($request->enrollment_id) ? $enrollment->id : $pengetahuan->enrollment_id,
@@ -174,9 +175,9 @@ class StudentPengetahuanController extends Controller
             'status' => Article::STATUS_DRAFT,
         ]);
 
-        if (isset($validated['tags'])) {
+        if (isset($request->tags)) {
             $tags = [];
-            foreach ($validated['tags'] as $tag) {
+            foreach ($request->tags as $tag) {
                 $res = Tag::firstOrCreate(['name' => $tag]);
                 array_push($tags, $res->id);
             }
@@ -186,10 +187,10 @@ class StudentPengetahuanController extends Controller
 
         if ($result) {
             DB::commit();
-            return redirect()->route('student.pengetahuan.index')->with(['message' => __('Pengetahuan updated successfully'), 'alert-type' => 'success']);
+            return redirect()->route('student.pengetahuan.index')->with(['messege' => __('Pengetahuan updated successfully'), 'alert-type' => 'success']);
         } else {
             DB::rollBack();
-            return redirect()->back()->with(['message' => __('Pengetahuan updated failed'), 'alert-type' => 'error']);
+            return redirect()->back()->with(['messege' => __('Pengetahuan updated failed'), 'alert-type' => 'error']);
         }
     }
 

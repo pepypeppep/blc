@@ -141,7 +141,15 @@
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
                                     <label for="Tags">{{ __('Tags') }}</label>
-                                    <input type="text" class="form-control tags" name="tags[]" multiple>
+                                    <select class="select2" name="tags[]" multiple="multiple">
+                                        @foreach ($tags as $tag)
+                                            <option value="{{ $tag->name }}"
+                                                @if ($pengetahuan->articleTags->contains('name', $tag->name)) selected @endif>
+                                                {{ $tag->name }}</option>
+                                            {{-- <option value="{{ $tag->name }}">
+                                                {{ $tag->name }}</option> --}}
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2 mb-4">

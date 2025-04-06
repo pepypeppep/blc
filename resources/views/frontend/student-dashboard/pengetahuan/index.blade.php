@@ -34,24 +34,27 @@
                                                         <ul class="courses__item-meta list-wrap">
                                                             <li class="courses__item-tag">
                                                                 <a href="javascript:;">{{ $pengetahuan->category }}</a>
+                                                                <a href="javascript:;">{{ $pengetahuan->visibility }}</a>
                                                             </li>
                                                         </ul>
 
                                                         <h5 class="title"><a
                                                                 href="{{ route('student.pengetahuan.edit', $pengetahuan->slug) }}">{{ $pengetahuan->title }}</a>
                                                         </h5>
-                                                        <div class="courses__item-content-bottom">
-                                                            <div class="author-two">
-                                                                <a href="javascript:;"><img
-                                                                        src="{{ asset($pengetahuan->enrollment->course->instructor->image) }}"
-                                                                        onerror="this.src='{{ asset('frontend/img/instructor/h2_instructor01.png') }}'"
-                                                                        alt="img">{{ $pengetahuan->enrollment->course->instructor->name }}</a>
+                                                        @if (isset($pengetahuan->enrollment))
+                                                            <div class="courses__item-content-bottom">
+                                                                <div class="author-two">
+                                                                    <a href="javascript:;"><img
+                                                                            src="{{ asset($pengetahuan->enrollment->course->instructor->image) }}"
+                                                                            onerror="this.src='{{ asset('frontend/img/instructor/h2_instructor01.png') }}'"
+                                                                            alt="img">{{ $pengetahuan->enrollment->course->instructor->name }}</a>
+                                                                </div>
+                                                                <div class="avg-rating">
+                                                                    <i class="fas fa-star"></i>
+                                                                    {{ number_format($pengetahuan->enrollment->course->reviews()->avg('rating') ?? 0, 1) }}
+                                                                </div>
                                                             </div>
-                                                            <div class="avg-rating">
-                                                                <i class="fas fa-star"></i>
-                                                                {{ number_format($pengetahuan->enrollment->course->reviews()->avg('rating') ?? 0, 1) }}
-                                                            </div>
-                                                        </div>
+                                                        @endif
                                                         <span
                                                             class="badge bg-{{ $pengetahuan->stat['color'] }} mt-4">{{ $pengetahuan->stat['label'] }}</span>
                                                     </div>

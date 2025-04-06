@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Modules\Article\app\Models\Article;
 use Modules\InstructorRequest\app\Models\InstructorRequest;
 use Modules\Order\app\Models\Enrollment;
 
@@ -108,6 +109,11 @@ class User extends Authenticatable
     public function socialite()
     {
         return $this->hasMany(SocialiteCredential::class, 'user_id');
+    }
+
+    public function articles()
+    {
+        return $this->hasMany(Article::class, 'author_id');
     }
 
     function instructorInfo(): HasOne

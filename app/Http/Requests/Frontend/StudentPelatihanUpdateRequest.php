@@ -10,7 +10,7 @@ class StudentPelatihanUpdateRequest extends FormRequest
     {
         $rules = [
             'category' => 'required|in:blog,document,video',
-            'enrollment' => 'required|exists:enrollments,id',
+            'enrollment' => 'nullable|exists:enrollments,id',
             'title' => 'required',
             'thumbnail' => 'mimes:jpg,jpeg,png|max:2048',
             'visibility' => 'required|in:public,internal',
@@ -28,7 +28,6 @@ class StudentPelatihanUpdateRequest extends FormRequest
     {
         return [
             'category.required' => __('The category field is required'),
-            'enrollment.required' => __('The enrollment id field is required'),
             'title.required' => __('The title field is required'),
             'thumbnail.required' => __('The thumbnail field is required'),
             'visibility.required' => __('The visibility field is required'),

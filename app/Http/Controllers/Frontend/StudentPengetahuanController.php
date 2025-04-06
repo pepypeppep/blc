@@ -9,14 +9,14 @@ use App\Models\Tag;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Modules\Article\app\Models\Article;
 use Modules\Order\app\Models\Enrollment;
-use Modules\Pengetahuan\app\Models\Pengetahuan;
 
 class StudentPengetahuanController extends Controller
 {
     public function index(): View
     {
-        $pengetahuans = Pengetahuan::where('user_id', userAuth()->id)->with('enrollment.course')->get();
+        $pengetahuans = Article::where('author_id', userAuth()->id)->with('enrollment.course')->get();
         return view('frontend.student-dashboard.pengetahuan.index', compact('pengetahuans'));
     }
 
@@ -29,13 +29,15 @@ class StudentPengetahuanController extends Controller
 
     public function store(StudentPelatihanStoreRequest $request)
     {
-        $enrollment = Enrollment::where('user_id', userAuth()->id)->where('id', $request->enrollment)->first();
-
-        if (!$enrollment) {
-            return redirect()->back()->with('error', __('You are not enrolled in this course'));
+        if ($request->enrollment != null) {
+            $enrollment = Enrollment::where('user_id', userAuth()->id)->where('id', $request->enrollment)->first();
+            if (!$enrollment) {
+                return redirect()->back()->with(['message' => __('Enrollment not found'), 'alert-type' => 'error']);
+            }
         }
 
-        $path = 'pengetahuan/' . $enrollment->course->id;
+
+        $path = 'pengetahuan';
         if ($request->category == 'video') {
             $request->validate([
                 'link' => 'required|url',
@@ -62,11 +64,11 @@ class StudentPengetahuanController extends Controller
 
 
         DB::beginTransaction();
-        $result = Pengetahuan::create([
-            'slug' => generateUniqueSlug(Pengetahuan::class, $request->title),
-            'user_id' => userAuth()->id,
+        $result = Article::create([
+            'slug' => generateUniqueSlug(Article::class, $request->title),
+            'author_id' => userAuth()->id,
             'category' => $request->category,
-            'enrollment_id' => $enrollment->id,
+            'enrollment_id' => $request->enrollment != null ? $enrollment->id : null,
             'title' => $request->title,
             'thumbnail' => $thumbnailName,
             'visibility' => $request->visibility,
@@ -74,7 +76,7 @@ class StudentPengetahuanController extends Controller
             'link' => $request->link,
             'file' => $fileName ?? null,
             'content' => $request->content,
-            'status' => Pengetahuan::STATUS_DRAFT,
+            'status' => Article::STATUS_DRAFT,
         ]);
 
         if (isset($validated['tags'])) {
@@ -83,8 +85,8 @@ class StudentPengetahuanController extends Controller
                 $res = Tag::firstOrCreate(['name' => $tag]);
                 array_push($tags, $res->id);
             }
-            $pengetahuan = Pengetahuan::where('slug', $result->slug)->first();
-            $pengetahuan->pengetahuanTags()->attach($tags);
+            $pengetahuan = Article::where('slug', $result->slug)->first();
+            $pengetahuan->articleTags()->attach($tags);
             $pengetahuan->save();
         }
 
@@ -99,7 +101,7 @@ class StudentPengetahuanController extends Controller
 
     public function edit($slug)
     {
-        $pengetahuan = Pengetahuan::where('slug', $slug)->with('enrollment.course')->first();
+        $pengetahuan = Article::where('slug', $slug)->with('enrollment.course')->first();
         if (!$pengetahuan) {
             return redirect()->back()->with(['message' => __('Pengetahuan not found'), 'alert-type' => 'error']);
         }
@@ -110,16 +112,25 @@ class StudentPengetahuanController extends Controller
 
     public function update($slug, StudentPelatihanUpdateRequest $request)
     {
-        $pengetahuan = Pengetahuan::where('slug', $slug)->with('enrollment.course')->first();
+        $pengetahuan = Article::where('slug', $slug)->with('enrollment.course')->first();
         if (!$pengetahuan) {
             return redirect()->back()->with(['message' => __('Pengetahuan not found'), 'alert-type' => 'error']);
         }
 
-        if ($pengetahuan->status != Pengetahuan::STATUS_DRAFT && $pengetahuan->status != Pengetahuan::STATUS_VERIFICATION) {
+        if ($pengetahuan->status != Article::STATUS_DRAFT && $pengetahuan->status != Article::STATUS_VERIFICATION) {
             return redirect()->back()->with(['message' => __('Pengetahuan cannot be updated because it has status ' . $pengetahuan->status . ''), 'alert-type' => 'error']);
         }
 
-        $path = 'pengetahuan/' . $pengetahuan->enrollment->course->id;
+        if ($request->enrollment != null) {
+            $enrollment = Enrollment::where('user_id', userAuth()->id)->where('id', $request->enrollment)->first();
+            if (!$enrollment) {
+                return redirect()->back()->with(['message' => __('Enrollment not found'), 'alert-type' => 'error']);
+            }
+        }
+        
+
+        $path = 'pengetahuan';
+
         if ($request->category == 'video') {
             $request->validate([
                 'link' => 'required|url',
@@ -149,10 +160,10 @@ class StudentPengetahuanController extends Controller
         DB::beginTransaction();
 
         $result = $pengetahuan->update([
-            'slug' => generateUniqueSlug(Pengetahuan::class, $request->title),
-            'user_id' => userAuth()->id,
+            'slug' => generateUniqueSlug(Article::class, $request->title),
+            'author_id' => userAuth()->id,
             'category' => $request->category,
-            'enrollment_id' => $pengetahuan->enrollment_id,
+            'enrollment_id' => isset($request->enrollment_id) ? $enrollment->id : $pengetahuan->enrollment_id,
             'title' => $request->title,
             'thumbnail' => $thumbnailName,
             'visibility' => $request->visibility,
@@ -160,7 +171,7 @@ class StudentPengetahuanController extends Controller
             'link' => $request->link,
             'file' => $fileName ?? null,
             'content' => $request->content,
-            'status' => Pengetahuan::STATUS_DRAFT,
+            'status' => Article::STATUS_DRAFT,
         ]);
 
         if (isset($validated['tags'])) {
@@ -184,7 +195,7 @@ class StudentPengetahuanController extends Controller
 
     public function view($id)
     {
-        $pengetahuan = Pengetahuan::where('id', $id)->first();
+        $pengetahuan = Article::where('id', $id)->first();
         if (Storage::disk('public')->exists($pengetahuan->thumbnail)) {
             return Storage::disk('public')->response($pengetahuan->thumbnail);
         } else {

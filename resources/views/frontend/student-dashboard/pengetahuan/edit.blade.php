@@ -44,8 +44,7 @@
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
-                                    <label for="enrollment">Pelatihan
-                                        <code>*</code></label>
+                                    <label for="enrollment">Pelatihan</label>
                                     <select name="enrollment" class="form-control select2">
                                         <option value="">{{ __('Select') }}</option>
                                         @foreach ($enrollments as $enrollment)
@@ -141,13 +140,8 @@
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
-                                    <label for="Tags">{{ __('Tags') }}
-                                        <code>*</code></label>
-                                    <input type="text" class="form-control tags" name="tags[]"
-                                        value="{{ old('tags') }}">
-                                    @error('tags')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                    <label for="Tags">{{ __('Tags') }}</label>
+                                    <input type="text" class="form-control tags" name="tags[]" multiple>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2 mb-4">

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('author_id')->constrained('users')->onDelete('cascade')->nullable(false);
             $table->foreignId('verificator_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('enrollment_id')->nullable()->constrained('enrollments')->onDelete('set null');
             $table->string('thumbnail')->nullable();
             $table->string('title')->nullable(false);
             $table->string('slug')->unique();

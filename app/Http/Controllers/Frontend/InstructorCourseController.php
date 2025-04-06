@@ -427,10 +427,39 @@ class InstructorCourseController extends Controller
             ->with('instructor', 'participant')
             ->firstOrFail();
 
-        // if ($request->ajax()) {
-        return response()->json($data);
-        // }
+        if ($request->ajax()) {
+            return response()->json($data);
+        }
 
-        // abort(404);
+        abort(404);
+    }
+
+    public function feedbackResponseRtl(Request $request)
+    {
+
+        $request->validate([
+            'instructor_response' => 'required',
+            'score' => 'required|numeric',
+        ], [
+            'instructor_response.required' => 'Respon instruktur dibutuhkan',
+            'score.required' => 'Skor dibutuhkan',
+            'score.numeric' => 'Skor harus berupa angka',
+        ]);
+
+        $response = FollowUpActionResponse::findOrFail($request->participant_response_id);
+        if ($response->score) {
+            return response()->json([
+                'message' => 'Respon telah disimpan',
+            ], 400);
+        }
+        $response->instructor_response = $request->instructor_response;
+        $response->score = $request->score;
+        $response->instructor_id = auth()->id();
+        $response->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Respon berhasil disimpan',
+        ]);
     }
 }

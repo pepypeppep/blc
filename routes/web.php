@@ -256,6 +256,9 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             return response()->file($path);
         })->name('courses.rtl-file');
 
+        //feedbackResponseRtl
+        Route::post('courses/feedback-response-rtl', [InstructorCourseController::class, 'feedbackResponseRtl'])->name('courses.feedback-response-rtl');
+
 
 
         // Route::post('courses/create', [InstructorCourseController::class, 'store'])->name('courses.store');

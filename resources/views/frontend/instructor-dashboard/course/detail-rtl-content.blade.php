@@ -151,24 +151,6 @@
             <!-- [ Row 2 ] end -->
         </div>
     </div>
-    {{-- <div class="modal fade" id="participantResponseModal" tabindex="-1" aria-labelledby="participantResponseModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" style="border: 1px solid #dee2e6">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="participantResponseModalLabel">Pratinjau File PDF Saat ini</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-0">
-                    <code>
-
-                    </code>
-                    <iframe src="https://pdfobject.com/pdf/sample.pdf" style="width: 100%; height: 100vh;"
-                        frameborder="0"></iframe>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 
     <!-- Modal -->
     <div class="modal fade" id="participantResponseModal" tabindex="-1" aria-labelledby="participantResponseModalLabel"
@@ -176,12 +158,18 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="border: 1px solid #dee2e6">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="participantResponseModalLabel">Pratinjau File PDF Saat ini</h5>
+                    <h5 class="modal-title" id="participantResponseModalLabel">Rencana Tindak Lanjut Peserta </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
                     <form id="instructorFeedbackForm">
+                        <input type="hidden" id="participantResponseId" name="participant_response_id">
                         <div class="p-3">
+
+                            <div class="mb-3">
+                                <label for="participantName" class="form-label"><b>Nama Peserta</b></label>
+                                <p class="text-muted" id="participantName"></p>
+                            </div>
                             <div class="mb-3">
                                 <label for="participantResponse" class="form-label"><b>Ringkasan Peserta</b></label>
                                 <p class="text-muted" id="participantResponse"></p>
@@ -203,7 +191,7 @@
                                 <input type="number" class="form-control" id="score" min="0"
                                     max="100">
                             </div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <button type="submit" id="saveFeedbackBtn" class="btn btn-primary">Simpan</button>
 
                         </div>
                     </form>
@@ -211,6 +199,7 @@
             </div>
         </div>
     </div>
+    <!-- End Modal -->
 @endsection
 
 @push('styles')
@@ -283,6 +272,26 @@
             padding: 10px;
         }
 
+        input:read-only,
+        textarea:read-only {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            border-color: #ced4da;
+            cursor: not-allowed;
+            /* Disable the cursor */
+            box-shadow: none;
+            /* Remove Bootstrap focus shadow */
+            outline: none;
+            /* Remove focus outline */
+        }
+
+        input:read-only:focus,
+        textarea:read-only:focus {
+            box-shadow: none;
+            /* Remove any focus shadows */
+            outline: none;
+        }
+
 
         .modal-backdrop {
             background-color: rgba(0, 0, 0, 0.4);
@@ -341,46 +350,132 @@
             // Initialize DataTable
             $('#enrollmentsTable').DataTable();
 
-            // Initialize DataTable
+            // Initialize RTL Table with columnDefs
             $('#rtlTable').DataTable({
-
                 "columnDefs": [{
                     "orderable": false,
                     "targets": [3]
                 }]
             });
-        });
 
-
-
-        $(document).on('click', '.preview-existing-btn', function() {
-            // let id = $(this).data('id');
-
-            // Ambil URL route dari attribute data-url (lihat HTML button-nya nanti)
-            let url = $(this).data('url');
-            alert(url);
-
-            $.ajax({
-                url: url,
-                type: 'GET',
-                success: function(response) {
-                    console.log(response);
-
-
-                    // Tampilkan file PDF di iframe
-                    $('#participantPdfIframe').attr('src',
-                        '{{ url('instructor/courses/rtl-file/') }}/' + response.participant_file);
-
-                    $('#participantResponse').text(response.participant_response || '');
-                    $('#score').val(response.score || '');
-
-                    const modal = new bootstrap.Modal(document.getElementById(
-                        'participantResponseModal'));
-                    modal.show();
-                },
-                error: function() {
-                    alert('Gagal mengambil data file.');
+            // CSRF setup for AJAX
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            // Handle preview button click
+            $(document).on('click', '.preview-existing-btn', function() {
+                let url = $(this).data('url');
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(response) {
+                        $('#participantPdfIframe').attr('src',
+                            '{{ url('instructor/courses/rtl-file/') }}/' + response
+                            .participant_file);
+
+                        $('#participantResponse').text(response.participant_response || '');
+                        $('#participantName').text(response.participant.name || '');
+                        $('#score').val(response.score || '');
+                        $('#participantResponseId').val(response.id || '');
+                        $('#instructorResponse').val(response.instructor_response || '');
+
+                        if (response.score != null) {
+                            $('#score').attr('readonly', true);
+                            $('#instructorResponse').attr('readonly', true);
+                            $('#saveFeedbackBtn').css('display', 'none');
+
+                        } else {
+                            $('#score').attr('readonly', false);
+                            $('#instructorResponse').attr('readonly', false);
+                            $('#saveFeedbackBtn').css('display', 'block');
+                        }
+
+                        const modal = new bootstrap.Modal(document.getElementById(
+                            'participantResponseModal'));
+                        modal.show();
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Gagal mengambil data file.',
+                        });
+                    }
+                });
+            });
+
+            // Handle instructor feedback form submission
+            $('#instructorFeedbackForm').on('submit', function(e) {
+                e.preventDefault();
+
+                let participantResponseId = $('#participantResponseId').val();
+                let instructorResponse = $('#instructorResponse').val();
+                let score = $('#score').val();
+
+                Swal.fire({
+                    title: 'Yakin ingin menyimpan?',
+                    html: "Pastikan semua data sudah benar.<br>Data tidak dapat diubah setelah disimpan.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, simpan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('instructor.courses.feedback-response-rtl') }}',
+                            type: 'POST',
+                            data: {
+                                participant_response_id: participantResponseId,
+                                instructor_response: instructorResponse,
+                                score: score
+                            },
+                            success: function(response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Feedback berhasil disimpan.'
+                                }).then(() => {
+                                    $('#participantResponseModal').modal(
+                                        'hide');
+                                    ('#rtlTable').DataTable().ajax.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                if (xhr.status === 422) {
+                                    let errors = xhr.responseJSON.errors;
+                                    let html =
+                                        '<ul class="list-unstyled ps-0 text-danger">';
+                                    $.each(errors, function(key, value) {
+                                        html += `<li>${value}</li>`;
+                                    });
+                                    html += '</ul>';
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal!',
+                                        html: html
+                                    });
+                                } else if (xhr.status === 400) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal!',
+                                        text: xhr.responseJSON.message
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal!',
+                                        text: 'Terjadi kesalahan saat menyimpan.'
+                                    });
+                                    console.error(xhr.responseText);
+                                }
+                            }
+                        });
+                    }
+                });
             });
         });
     </script>

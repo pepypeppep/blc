@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Order\app\Models\Enrollment;
 use Illuminate\Http\JsonResponse;
+use App\Events\UserBadgeUpdated;
 
 class CourseVerificationController extends Controller
 {
@@ -44,6 +45,8 @@ class CourseVerificationController extends Controller
                     'notes' => $validated['status'] == 0 ? $validated['reason'] : null,
                 ]);
         }
+
+        event(new UserBadgeUpdated($request->user_ids));
 
         return response()->json(['message' => 'Enrollment status updated successfully.']);
     }

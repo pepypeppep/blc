@@ -20,6 +20,7 @@ use Modules\Course\app\Models\CourseLevel;
 use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
 use Modules\Course\app\Http\Requests\CourseStoreRequest;
+use App\Events\UserBadgeUpdated;
 
 class CourseController extends Controller
 {
@@ -287,7 +288,7 @@ class CourseController extends Controller
 
     function storeFinish(Request $request)
     {
-        // dd($request->participants);
+        // dd($request->participants); 
         checkAdminHasPermissionAndThrowException('course.management');
         $course = Course::findOrFail($request->course_id);
         $course->message_for_reviewer = $request->message_for_reviewer;
@@ -303,6 +304,9 @@ class CourseController extends Controller
         Enrollment::whereIn('user_id', $removedEnrollments)->where('course_id', $course->id)->delete();
 
         $course->save();
+
+        event(new UserBadgeUpdated($request->participants));
+        
     }
 
     function getInstructors(Request $request)

@@ -38,7 +38,8 @@
                                         <div><i class="fas fa-users"></i> Belum Unggah: <span class="text-danger"><b>
                                                     {{ $notSubmittedCount }} </b> </span> Peserta
                                         </div>
-                                        <div><i class="fas fa-users"></i> Total Peserta: &nbsp;&nbsp; <b> {{ $totalParticipants }} </b>
+                                        <div><i class="fas fa-users"></i> Total Peserta: &nbsp;&nbsp; <b>
+                                                {{ $totalParticipants }} </b>
                                             Peserta
                                         </div>
 
@@ -129,7 +130,10 @@
                                                     </td>
 
                                                     <td>
-                                                        <a href="javascript:;" class="ms-2">
+                                                        <a href="javascript:;" class="ms-2 preview-existing-btn"
+                                                            data-url="{{ route('instructor.courses.response-rtl', $submission->id) }}"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#participantResponseModal" title="Preview">
                                                             <i class='fas fa-eye'></i></a>
                                                     </td>
 
@@ -145,6 +149,66 @@
                 </div>
             </div>
             <!-- [ Row 2 ] end -->
+        </div>
+    </div>
+    {{-- <div class="modal fade" id="participantResponseModal" tabindex="-1" aria-labelledby="participantResponseModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="border: 1px solid #dee2e6">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="participantResponseModalLabel">Pratinjau File PDF Saat ini</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <code>
+
+                    </code>
+                    <iframe src="https://pdfobject.com/pdf/sample.pdf" style="width: 100%; height: 100vh;"
+                        frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+
+    <!-- Modal -->
+    <div class="modal fade" id="participantResponseModal" tabindex="-1" aria-labelledby="participantResponseModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="border: 1px solid #dee2e6">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="participantResponseModalLabel">Pratinjau File PDF Saat ini</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <form id="instructorFeedbackForm">
+                        <div class="p-3">
+                            <div class="mb-3">
+                                <label for="participantResponse" class="form-label"><b>Ringkasan Peserta</b></label>
+                                <p class="text-muted" id="participantResponse"></p>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="participantPdfIframe" class="form-label"><b>File PDF Peserta</b></label>
+                                <iframe id="participantPdfIframe" src="" style="width: 100%; height: 80vh;"
+                                    frameborder="0"></iframe>
+
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="instructorResponse" class="form-label">Catatan dari Pelatih</label>
+                                <textarea class="form-control" id="instructorResponse" rows="6"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="score" class="form-label">Skor</label>
+                                <input type="number" class="form-control" id="score" min="0"
+                                    max="100">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -200,7 +264,6 @@
             transform: scale(1.2);
         }
 
-
         .image-container {
             position: relative;
             height: 200px;
@@ -218,6 +281,48 @@
         .title-background {
             background-color: #e9ecef;
             padding: 10px;
+        }
+
+
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Transparan biar nggak terlalu gelap */
+            z-index: -9999;
+            /* Lebih rendah dari modal */
+        }
+
+        .modal.show {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            /* Lebih tinggi dari backdrop */
+        }
+
+        .modal-dialog {
+            padding-top: 10px;
+            max-width: 55%;
+            width: 55%;
+            height: 75%;
+            margin: 0;
+        }
+
+        .modal-content {
+            height: 100%;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            z-index: 1050;
+            /* Lebih tinggi dari backdrop */
+        }
+
+        .modal-body {
+            overflow: auto;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+            /* Disable scroll body belakang modal */
         }
     </style>
 @endpush
@@ -243,6 +348,39 @@
                     "orderable": false,
                     "targets": [3]
                 }]
+            });
+        });
+
+
+
+        $(document).on('click', '.preview-existing-btn', function() {
+            // let id = $(this).data('id');
+
+            // Ambil URL route dari attribute data-url (lihat HTML button-nya nanti)
+            let url = $(this).data('url');
+            alert(url);
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(response) {
+                    console.log(response);
+
+
+                    // Tampilkan file PDF di iframe
+                    $('#participantPdfIframe').attr('src',
+                        '{{ url('instructor/courses/rtl-file/') }}/' + response.participant_file);
+
+                    $('#participantResponse').text(response.participant_response || '');
+                    $('#score').val(response.score || '');
+
+                    const modal = new bootstrap.Modal(document.getElementById(
+                        'participantResponseModal'));
+                    modal.show();
+                },
+                error: function() {
+                    alert('Gagal mengambil data file.');
+                }
             });
         });
     </script>

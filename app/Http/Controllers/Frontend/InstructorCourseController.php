@@ -377,8 +377,6 @@ class InstructorCourseController extends Controller
         abort(404);
     }
 
-
-
     public function detailRtl($course_id, $rtl_id)
     {
         $rtl = FollowUpAction::where('id', $rtl_id)
@@ -389,14 +387,15 @@ class InstructorCourseController extends Controller
             ->where('course_id', $course_id)
             ->first();
 
-        $enrollments = $rtl->course->enrollments()->with(['user'])->get();
+        $enrollments = $rtl->course->enrollments()
+            ->where('has_access', 1)
+            ->with(['user'])->get();
 
         $totalParticipants = $enrollments->count();
 
         $submissions = FollowUpActionResponse::where('follow_up_action_id', $rtl_id)
             ->with('instructor', 'participant')
             ->get();
-
 
         // Ambil ID peserta yang sudah ada di submissions
         $submittedUserIds = $submissions->pluck('participant.id')->toArray();
@@ -419,5 +418,19 @@ class InstructorCourseController extends Controller
             'notSubmittedCount',
             'totalParticipants'
         ));
+    }
+
+    public function getResponeRtl(Request $request, $id)
+    {
+
+        $data = FollowUpActionResponse::where('id', $id)
+            ->with('instructor', 'participant')
+            ->firstOrFail();
+
+        // if ($request->ajax()) {
+        return response()->json($data);
+        // }
+
+        // abort(404);
     }
 }

@@ -5,6 +5,7 @@ namespace Modules\PendidikanLanjutan\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\PendidikanLanjutan\app\Models\Study;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use Modules\PendidikanLanjutan\app\Models\VacancySchedule;
 
 class VacancySeeder extends Seeder
 {
@@ -68,5 +69,12 @@ class VacancySeeder extends Seeder
         foreach ($data as $item) {
             Vacancy::create($item);
         }
+
+        VacancySchedule::create([
+            'start_at' => now(),
+            'end_at' => now()->addDays(30),
+            'year' => now()->year,
+            'description' => 'Test',
+        ]);
     }
 }

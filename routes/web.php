@@ -140,6 +140,9 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::put('continuing-education-registration/{id}/report/{report_id}', [StudentPendidikanLanjutanController::class, 'vacancyReportUpdate'])->name('continuing-education.registration.report.update');
         Route::delete('continuing-education-registration/{id}/report/{report_id}', [StudentPendidikanLanjutanController::class, 'vacancyReportDelete'])->name('continuing-education.registration.report.delete');
         Route::get('continuing-education-registration/{id}/report/{report_id}', [StudentPendidikanLanjutanController::class, 'vacancyReportView'])->name('continuing-education.registration.report.view');
+        Route::post('continuing-education-registration/{vacancy_attachment_id}/update-requirement-activation', [StudentPendidikanLanjutanController::class, 'uploadRequirementActivation'])->name('continuing-education.registration.update-requirement-activation');
+        Route::delete('continuing-education-registration/{vacancy_attachment_id}/delete-requirement-activation/{user_activation_id}', [StudentPendidikanLanjutanController::class, 'deleteRequirementActivation'])->name('continuing-education.registration.delete-requirement-activation');
+        Route::get('continuing-education-registration/{vacancy_attachment_id}/view-requirement-activation/{user_activation_id}', [StudentPendidikanLanjutanController::class, 'viewRequirementActivation'])->name('continuing-education.registration.view-requirement-activation');
 
 
         /** follow up action routes */

@@ -38,6 +38,9 @@
                         </div>
                     </div>
                     <div class="content-badges">
+                        @php
+                            $userBadges = userAuth()->badges ?? collect();
+                        @endphp
                         @if($userBadges->isNotEmpty())
                             <ul class="badge-list">
                                 @foreach($userBadges as $badge)

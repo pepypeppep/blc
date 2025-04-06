@@ -331,7 +331,10 @@ class InstructorCourseController extends Controller
 
         if ($request->ajax()) {
             //datatables course with enrollments
-            $enrollments = $course->enrollments()->with(['user'])->get();
+            $enrollments = $course->enrollments()
+                ->where('has_access', 1)
+                ->with(['user'])->get();
+
             return DataTables::of($enrollments)
                 ->addColumn('name', function ($enrollment) {
                     return $enrollment->user->name;
@@ -344,10 +347,6 @@ class InstructorCourseController extends Controller
                 })
                 ->make(true);
         }
-
-        // if (Storage::exists($course->thumbnail)) { // assume you save the path in column database named `path`
-        //     return response()->file(Storage::path($course->thumbnail));
-        // }
 
         return view('frontend.instructor-dashboard.course.detail-content', compact('course'));
     }
@@ -383,6 +382,9 @@ class InstructorCourseController extends Controller
     public function detailRtl($course_id, $rtl_id)
     {
         $rtl = FollowUpAction::where('id', $rtl_id)
+            ->whereHas('course.enrollments', function ($query) {
+                $query->where('has_access', 1);
+            })
             ->with('course', 'chapter', 'course.enrollments')
             ->where('course_id', $course_id)
             ->first();

@@ -10,12 +10,6 @@
                     {{ __('Dashboard') }}
                 </a>
             </li>
-            <li class="{{ Route::is('student.pengetahuan.*') ? 'active' : '' }}">
-                <a href="{{ route('student.pengetahuan.index') }}">
-                    <img src="{{ asset('uploads/website-images/dashboard.svg') }}">
-                    {{ __('Pengetahuan') }}
-                </a>
-            </li>
             <li class="">
                 <a class="d-flex align-items-center text-decoration-none" data-bs-toggle="collapse" href="#courseMenu"
                     role="button" aria-expanded="true" aria-controls="courseMenu" id="courseMenuToggle">
@@ -23,31 +17,31 @@
                     {{ __('Course') }}
                     <i class="fa fa-chevron-down ms-auto collapse-icon " style="font-size: 10px;"></i>
                 </a>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
                     id="courseMenu">
                     <li class="{{ Route::is('student.enrolled-courses') ? 'active' : '' }}">
                         <a href="{{ route('student.enrolled-courses') }}">
                             <i class="flaticon-mortarboard"></i>{{ __('Enrolled Courses') }}</a>
                     </li>
                 </ul>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
                     id="courseMenu">
                     <li class="{{ Route::is('student.reviews.index') ? 'active' : '' }}">
                         <a href="{{ route('student.reviews.index') }}">
                             <img src="{{ asset('uploads/website-images/reviews.svg') }}">{{ __('Reviews') }}</a>
                     </li>
                 </ul>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
                     id="courseMenu">
                     <li class="{{ Route::is('student.quiz-attempts') ? 'active' : '' }}">
                         <a href="{{ route('student.quiz-attempts') }}">
                             <img src="{{ asset('uploads/website-images/quiz.svg') }}">{{ __('My Quiz Attempts') }}</a>
                     </li>
                 </ul>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
                     id="courseMenu">
-                    <li>
-                        <a href="javascript:void(0);">
+                    <li class="{{ Route::is('student.follow-up-action.index') ? 'active' : '' }}">
+                        <a href="{{ route('student.follow-up-action.index') }}">
                             <i class="fa fa-receipt"></i>{{ __('FollowUpAction') }}</a>
                     </li>
                 </ul>

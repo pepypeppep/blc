@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FollowUpAction extends Model
@@ -28,5 +29,11 @@ class FollowUpAction extends Model
     function chapter(): BelongsTo
     {
         return $this->belongsTo(CourseChapter::class, 'chapter_id', 'id');
+    }
+
+    //relationship has one to follow up action response
+    function followUpActionResponse(): HasOne
+    {
+        return $this->hasOne(FollowUpActionResponse::class, 'follow_up_action_id', 'id');
     }
 }

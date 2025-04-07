@@ -177,7 +177,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             return response()->file($path);
         })->name('follow-up-action.files');
 
-        // Route::resource('follow-up-action', StudentFollowUpActionController::class);
+        Route::resource('follow-up-action', StudentFollowUpActionController::class);
         // Route::get('follow-up-action/create', [StudentFollowUpActionController::class, 'create'])->name('follow-up-action.create');
 
         /** learning routes */

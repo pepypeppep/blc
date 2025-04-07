@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('author_id')->constrained('users')->onDelete('cascade')->nullable(false);
             $table->foreignId('verificator_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('enrollment_id')->nullable()->constrained('enrollments')->onDelete('set null');
             $table->string('thumbnail')->nullable();
             $table->string('title')->nullable(false);
             $table->string('slug')->unique();
@@ -22,6 +23,8 @@ return new class extends Migration
             $table->longText('content');
             $table->text('description');
             $table->string('status')->default('draft');
+            $table->string('link')->nullable();
+            $table->string('file')->nullable();
             $table->string('instansi')->nullable();
             $table->bigInteger('views')->default(0);
             $table->string('visibility')->default('public');

@@ -17,31 +17,31 @@
                     {{ __('Course') }}
                     <i class="fa fa-chevron-down ms-auto collapse-icon " style="font-size: 10px;"></i>
                 </a>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
                     id="courseMenu">
                     <li class="{{ Route::is('student.enrolled-courses') ? 'active' : '' }}">
                         <a href="{{ route('student.enrolled-courses') }}">
                             <i class="flaticon-mortarboard"></i>{{ __('Enrolled Courses') }}</a>
                     </li>
                 </ul>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
                     id="courseMenu">
                     <li class="{{ Route::is('student.reviews.index') ? 'active' : '' }}">
                         <a href="{{ route('student.reviews.index') }}">
                             <img src="{{ asset('uploads/website-images/reviews.svg') }}">{{ __('Reviews') }}</a>
                     </li>
                 </ul>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
                     id="courseMenu">
                     <li class="{{ Route::is('student.quiz-attempts') ? 'active' : '' }}">
                         <a href="{{ route('student.quiz-attempts') }}">
                             <img src="{{ asset('uploads/website-images/quiz.svg') }}">{{ __('My Quiz Attempts') }}</a>
                     </li>
                 </ul>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
                     id="courseMenu">
-                    <li class="{{ Route::is('student.follow-up-action.index') ? 'active' : '' }}">
-                        <a href="{{ route('student.follow-up-action.index') }}">
+                    <li>
+                        <a href="javascript:void(0);">
                             <i class="fa fa-receipt"></i>{{ __('FollowUpAction') }}</a>
                     </li>
                 </ul>

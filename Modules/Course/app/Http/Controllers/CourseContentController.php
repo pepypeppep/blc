@@ -24,9 +24,11 @@ class CourseContentController extends Controller
     {
         $request->validate([
             'title' => ['required', 'max:255'],
+            'jp' => ['required', 'min:1']
         ], [
             'title.required' => __('Title is required'),
             'title.max' => __('Title is too long'),
+            'jp.required' => __('JP is required'),
         ]);
 
         $chapter = new CourseChapter();
@@ -35,6 +37,7 @@ class CourseContentController extends Controller
         $chapter->instructor_id = Course::find($courseId)->instructor_id;
         $chapter->status = 'active';
         $chapter->order = CourseChapter::where('course_id', $courseId)->max('order') + 1;
+        $chapter->jp = $request->jp;
         $chapter->save();
 
         return redirect()->back()->with(['messege' => __('Chapter created successfully'), 'alert-type' => 'success']);
@@ -48,9 +51,20 @@ class CourseContentController extends Controller
 
     function chapterUpdate(Request $request, string $chapterId)
     {
+        $request->validate([
+            'title' => ['required', 'max:255'],
+            'jp' => ['required', 'min:1']
+        ], [
+            'title.required' => __('Title is required'),
+            'title.max' => __('Title is too long'),
+            'jp.required' => __('JP is required'),
+            'jp.min' => __('JP is too short'),
+        ]);
+
         checkAdminHasPermissionAndThrowException('course.management');
         $chapter = CourseChapter::findOrFail($chapterId);
         $chapter->title = $request->title;
+        $chapter->jp = $request->jp;
         $chapter->save();
         return redirect()->back()->with(['messege' => __('Updated successfully'), 'alert-type' => 'success']);
     }

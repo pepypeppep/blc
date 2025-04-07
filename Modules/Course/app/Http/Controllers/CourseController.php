@@ -296,16 +296,26 @@ class CourseController extends Controller
 
         // delete and add enrollments
         $enrollments = $course->enrollments()->pluck('user_id')->toArray();
-        $newEnrollments = array_diff($request->participants, $enrollments);
-        $removedEnrollments = array_diff($enrollments, $request->participants);
+        $participants = is_array($request->participants) ? $request->participants : [];
+        $newEnrollments = array_diff($participants, $enrollments);
+        $removedEnrollments = array_diff($enrollments, $participants);
         foreach ($newEnrollments as $enrollment) {
-            $course->enrollments()->create(['user_id' => $enrollment]);
+            $course->enrollments()->create([
+                'user_id' => $enrollment,
+                'has_access' => 1
+            ]);
         }
         Enrollment::whereIn('user_id', $removedEnrollments)->where('course_id', $course->id)->delete();
 
         $course->save();
 
-        event(new UserBadgeUpdated($request->participants));
+        if (!empty($newEnrollments)) {
+            event(new UserBadgeUpdated($newEnrollments));
+        }
+        
+        if (!empty($removedEnrollments)) {
+        event(new UserBadgeUpdated($removedEnrollments));
+        }
         
     }
 

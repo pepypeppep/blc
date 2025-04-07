@@ -133,6 +133,13 @@
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
+                                    <label for="description">{{ __('description') }}
+                                        <code>*</code></label>
+                                    <textarea name="description" class="text-editor form-control summernote">{{ $pengetahuan->description }}</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <div class="form-group">
                                     <label for="content">{{ __('Content') }}
                                         <code>*</code></label>
                                     <textarea name="content" class="text-editor form-control summernote">{{ $pengetahuan->content }}</textarea>
@@ -154,9 +161,9 @@
                             </div>
                             <div class="col-md-12 mt-2 mb-4">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="allow_comment"
-                                        id="allow_comment" @if ($pengetahuan->allow_comment) checked @endif>
-                                    <label class="form-check-label" for="allow_comment">
+                                    <input class="form-check-input" type="checkbox" name="allow_comments"
+                                        id="allow_comments" @if ($pengetahuan->allow_comments) checked @endif>
+                                    <label class="form-check-label" for="allow_comments">
                                         {{ __('Allow Comments') }}
                                     </label>
                                 </div>

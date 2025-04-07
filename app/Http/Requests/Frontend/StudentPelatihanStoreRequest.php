@@ -12,6 +12,7 @@ class StudentPelatihanStoreRequest extends FormRequest
             'category' => 'required|in:blog,document,video',
             'enrollment' => 'nullable|exists:enrollments,id',
             'title' => 'required',
+            'description' => 'required',
             'thumbnail' => 'required|mimes:jpg,jpeg,png|max:2048',
             'visibility' => 'required|in:public,internal',
             'link' => 'required_if:category,video',
@@ -29,6 +30,7 @@ class StudentPelatihanStoreRequest extends FormRequest
         return [
             'category.required' => __('The category field is required'),
             'title.required' => __('The title field is required'),
+            'description.required' => __('The description field is required'),
             'thumbnail.required' => __('The thumbnail field is required'),
             'visibility.required' => __('The visibility field is required'),
             'file.required_if' => __('The file field is required'),

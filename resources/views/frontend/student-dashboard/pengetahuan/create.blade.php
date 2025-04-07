@@ -132,6 +132,19 @@
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
+                                    <label for="description">{{ __('description') }}
+                                        <code>*</code></label>
+                                    <textarea name="description" class="text-editor form-control summernote">
+@if (old('description'))
+{{ old('description') }}
+@else
+#
+@endif
+</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <div class="form-group">
                                     <label for="content">{{ __('Content') }}
                                         <code>*</code></label>
                                     <textarea name="content" class="text-editor form-control summernote">

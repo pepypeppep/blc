@@ -22,7 +22,10 @@ class StudentPengetahuanController extends Controller
 
     public function create(): View
     {
-        $enrollments = Enrollment::where('user_id', userAuth()->id)->with('course')->get();
+        $user = userAuth();
+        $enrollments = Enrollment::where('user_id', $user->id)->whereHas('course', function ($q) {
+            $q->where('is_approved', 'approved')->where('status', 'active');
+        })->with('course')->get();
         $tags = Tag::all();
         return view('frontend.student-dashboard.pengetahuan.create', compact('enrollments', 'tags'));
     }
@@ -36,8 +39,23 @@ class StudentPengetahuanController extends Controller
             }
         }
 
+        DB::beginTransaction();
 
-        $path = 'pengetahuan';
+        $result = Article::create([
+            'slug' => generateUniqueSlug(Article::class, $request->title) . '_' . now()->timestamp,
+            'author_id' => userAuth()->id,
+            'category' => $request->category,
+            'enrollment_id' => $request->enrollment != null ? $enrollment->id : null,
+            'title' => $request->title,
+            'description' => $request->description,
+            'visibility' => $request->visibility,
+            'allow_comments' => $request->allow_comments == '1' ? '1' : '0',
+            'link' => $request->link,
+            'content' => $request->content,
+            'status' => Article::STATUS_DRAFT,
+        ]);
+
+        $path = 'pengetahuan/' . now()->year . '/' . now()->month . '/' . $result->id . '/';
         if ($request->category == 'video') {
             $request->validate([
                 'link' => 'required|url',
@@ -48,8 +66,8 @@ class StudentPengetahuanController extends Controller
             ]);
 
             $file = $request->file('file');
-            $fileName = $path . "/" . now()->month . "_" . "document_" . str_replace([' ', '/'], '_', $request->title) . "_" . str_replace(' ', '_', userAuth()->name) . "." . $file->getClientOriginalExtension();
-            Storage::disk('public')->put($fileName, file_get_contents($file));
+            $fileName = $path . "document_" . str_replace([' ', '/'], '_', $request->title) . "_" . str_replace(' ', '_', userAuth()->name) . "." . $file->getClientOriginalExtension();
+            Storage::disk('private')->put($fileName, file_get_contents($file));
         }
         if ($request->category == 'blog') {
             $request->validate([
@@ -59,24 +77,12 @@ class StudentPengetahuanController extends Controller
 
         $thumbnail = $request->file('thumbnail');
 
-        $thumbnailName = $path . "/" . now()->month . "_" . "thumbnail_" . str_replace([' ', '/'], '_', $request->title) . "_" . str_replace(' ', '_', userAuth()->name) . "." . $thumbnail->getClientOriginalExtension();
-        Storage::disk('public')->put($thumbnailName, file_get_contents($thumbnail));
+        $thumbnailName = $path . "thumbnail_" . str_replace([' ', '/'], '_', $request->title) . "_" . str_replace(' ', '_', userAuth()->name) . "." . $thumbnail->getClientOriginalExtension();
+        Storage::disk('private')->put($thumbnailName, file_get_contents($thumbnail));
 
-
-        DB::beginTransaction();
-        $result = Article::create([
-            'slug' => generateUniqueSlug(Article::class, $request->title) . '_' . now()->timestamp,
-            'author_id' => userAuth()->id,
-            'category' => $request->category,
-            'enrollment_id' => $request->enrollment != null ? $enrollment->id : null,
-            'title' => $request->title,
+        $result->update([
             'thumbnail' => $thumbnailName,
-            'visibility' => $request->visibility,
-            'allow_comment' => $request->allow_comment == '1' ? '1' : '0',
-            'link' => $request->link,
             'file' => $fileName ?? null,
-            'content' => $request->content,
-            'status' => Article::STATUS_DRAFT,
         ]);
 
         if (isset($request->tags)) {
@@ -128,35 +134,32 @@ class StudentPengetahuanController extends Controller
                 return redirect()->back()->with(['messege' => __('Enrollment not found'), 'alert-type' => 'error']);
             }
         }
-        
 
-        $path = 'pengetahuan';
 
-        if ($request->category == 'video') {
-            $request->validate([
-                'link' => 'required|url',
-            ]);
-        } elseif ($request->category == 'document') {
-            $request->validate([
-                'file' => 'required|mimes:pdf|max:10240',
-            ]);
+        $path = 'pengetahuan/' . now()->year . '/' . now()->month . '/' . $pengetahuan->id . '/';
 
+        if ($request->category == 'document' && $request->file('file') !== null) {
             $file = $request->file('file');
-            $fileName = $path . "/" . now()->month . "_" . "document_" . str_replace([' ', '/'], '_', $request->title) . "_" . str_replace(' ', '_', userAuth()->name) . "." . $file->getClientOriginalExtension();
-            Storage::disk('public')->put($fileName, file_get_contents($file));
+            $fileName = $path . "document_" . str_replace([' ', '/'], '_', $request->title) . "_" . str_replace(' ', '_', userAuth()->name) . "." . $file->getClientOriginalExtension();
+            Storage::disk('private')->put($fileName, file_get_contents($file));
         }
+
+
         if ($request->category == 'blog') {
             $request->validate([
                 'content' => 'required',
             ]);
         }
-        $thumbnail = $request->file('thumbnail');
-        if ($thumbnail) {
-            $thumbnailName = $path . "/" . now()->month . "_" . "thumbnail_" . str_replace([' ', '/'], '_', $request->title) . "_" . str_replace(' ', '_', userAuth()->name) . "." . $thumbnail->getClientOriginalExtension();
-            Storage::disk('public')->put($thumbnailName, file_get_contents($thumbnail));
-        } else {
-            $thumbnailName = $pengetahuan->thumbnail;
+        if (null !== $request->file('thumbnail')) {
+            $thumbnail = $request->file('thumbnail');
+            if ($thumbnail) {
+                $thumbnailName = $path . "thumbnail_" . str_replace([' ', '/'], '_', $request->title) . "_" . str_replace(' ', '_', userAuth()->name) . "." . $thumbnail->getClientOriginalExtension();
+                Storage::disk('private')->put($thumbnailName, file_get_contents($thumbnail));
+            } else {
+                $thumbnailName = $pengetahuan->thumbnail;
+            }
         }
+
 
         DB::beginTransaction();
 
@@ -166,11 +169,12 @@ class StudentPengetahuanController extends Controller
             'category' => $request->category,
             'enrollment_id' => isset($request->enrollment_id) ? $enrollment->id : $pengetahuan->enrollment_id,
             'title' => $request->title,
-            'thumbnail' => $thumbnailName,
+            'description' => $request->description,
+            'thumbnail' => $thumbnailName ?? $pengetahuan->thumbnail,
             'visibility' => $request->visibility,
-            'allow_comment' => $request->allow_comment == 'on' ? '1' : '0',
-            'link' => $request->link,
-            'file' => $fileName ?? null,
+            'allow_comments' => $request->allow_comments == 'on' ? '1' : '0',
+            'link' => $request->link ?? $pengetahuan->link,
+            'file' => $fileName ?? $pengetahuan->file,
             'content' => $request->content,
             'status' => Article::STATUS_DRAFT,
         ]);
@@ -181,8 +185,7 @@ class StudentPengetahuanController extends Controller
                 $res = Tag::firstOrCreate(['name' => $tag]);
                 array_push($tags, $res->id);
             }
-            $pengetahuan->pengetahuanTags()->attach($tags);
-            $pengetahuan->save();
+            $pengetahuan->articleTags()->sync($tags);
         }
 
         if ($result) {
@@ -197,8 +200,8 @@ class StudentPengetahuanController extends Controller
     public function view($id)
     {
         $pengetahuan = Article::where('id', $id)->first();
-        if (Storage::disk('public')->exists($pengetahuan->thumbnail)) {
-            return Storage::disk('public')->response($pengetahuan->thumbnail);
+        if (Storage::disk('private')->exists($pengetahuan->thumbnail)) {
+            return Storage::disk('private')->response($pengetahuan->thumbnail);
         } else {
             abort(404);
         }

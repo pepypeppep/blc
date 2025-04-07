@@ -72,7 +72,22 @@ class UpdateUserBadgeJob implements ShouldQueue
                     $user->badges()->attach($badge->id, ['category' => $badgeCategory]);
                 }
             } else {
-                $user->badges()->wherePivot('category', $badgeCategory)->detach($badge->id);
+                $maxBadge = Badge::where('key', 'like', "$badgeCategory%")
+                    ->orderByDesc('condition_to')
+                    ->first();
+
+                if ($maxBadge && $categoryCount >= $maxBadge->condition_from) {
+                    $existingBadge = $user->badges()
+                        ->wherePivot('category', $badgeCategory)
+                        ->first();
+            
+                    if (!$existingBadge || $existingBadge->id !== $maxBadge->id) {
+                        $user->badges()->detach($existingBadge?->id);
+                        $user->badges()->attach($maxBadge->id, ['category' => $badgeCategory]);
+                    }
+                } else {
+                    $user->badges()->wherePivot('category', $badgeCategory)->detach($badge->id);
+                }
             }
         }
     }

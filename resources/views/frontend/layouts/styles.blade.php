@@ -127,7 +127,7 @@
 }
 
 .notification-title {
-    font-weight: 500;
+    font-weight: bold;
     color: #333;
     margin-bottom: 3px;
 }

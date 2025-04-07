@@ -130,7 +130,8 @@
                                                     </td>
 
                                                     <td>
-                                                        <a href="javascript:;" class="ms-2 preview-existing-btn"
+                                                        <a href="javascript:void(0);" class="ms-2 preview-existing-btn"
+                                                            id="previewRtlBtn"
                                                             data-url="{{ route('instructor.courses.response-rtl', $submission->id) }}"
                                                             title="Preview">
                                                             <i class='fas fa-eye'></i></a>
@@ -157,14 +158,13 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="border: 1px solid #dee2e6">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="participantResponseModalLabel">Rencana Tindak Lanjut Peserta </h5>
+                    <h5 class="modal-title" id="participantResponseModalLabel">Rencana Tindak Lanjut Peserta</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
                     <form id="instructorFeedbackForm">
                         <input type="hidden" id="participantResponseId" name="participant_response_id">
                         <div class="p-3">
-
                             <div class="mb-3">
                                 <label for="participantName" class="form-label"><b>Nama Peserta</b></label>
                                 <p class="text-muted" id="participantName"></p>
@@ -173,14 +173,11 @@
                                 <label for="participantResponse" class="form-label"><b>Ringkasan Peserta</b></label>
                                 <p class="text-muted" id="participantResponse"></p>
                             </div>
-
                             <div class="mb-3">
                                 <label for="participantPdfIframe" class="form-label"><b>File PDF Peserta</b></label>
                                 <iframe id="participantPdfIframe" src="" style="width: 100%; height: 80vh;"
                                     frameborder="0"></iframe>
-
                             </div>
-
                             <div class="mb-3">
                                 <label for="instructorResponse" class="form-label">Catatan dari Pelatih</label>
                                 <textarea class="form-control" id="instructorResponse" rows="6"></textarea>
@@ -191,7 +188,6 @@
                                     max="100">
                             </div>
                             <button type="submit" id="saveFeedbackBtn" class="btn btn-primary">Simpan</button>
-
                         </div>
                     </form>
                 </div>
@@ -430,6 +426,27 @@
                         });
                     }
                 });
+            });
+
+
+            // Pindahkan fokus ke tombol luar modal setelah modal ditutup
+            const modalEl = document.getElementById('participantResponseModal');
+
+            // Gunakan event HIDE, bukan HIDDEN
+            modalEl.addEventListener('hide.bs.modal', function() {
+                // Cari elemen yang sedang fokus
+                const active = document.activeElement;
+
+                // Kalau elemen itu ada di dalam modal, blur dia
+                if (modalEl.contains(active)) {
+                    active.blur();
+                }
+            });
+
+            // Setelah modal bener-bener tertutup, pindahin fokus ke luar
+            modalEl.addEventListener('hidden.bs.modal', function() {
+                const fallback = document.getElementById('previewRtlBtn');
+                if (fallback) fallback.focus();
             });
 
 

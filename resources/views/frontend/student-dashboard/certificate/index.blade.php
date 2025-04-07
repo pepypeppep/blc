@@ -8,9 +8,11 @@
     <title>{{ __('Certificate') }}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100..900&family=Noto+Sans+Bengali:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
         body {
-            font-family: 'Noto Sans Bengali','Noto Sans','Noto Sans Arabic', sans-serif;
+            font-family: 'Noto Sans Bengali', 'Noto Sans', 'Noto Sans Arabic', sans-serif;
         }
+
         @foreach ($certificateItems as $item)
             #{{ $item->element_id }} {
                 left: {{ $item->x_position }}px;
@@ -90,9 +92,13 @@
             @endif
 
             @if ($certificate->description)
-                <div id="signature" class="draggable-element"><img
+                <div id="signature" class="draggable-element">
+                    {{-- image below is slow  and consume a lot of memory --}}
+                    {{--  <img style="width: 100px; height: 100px;"
                         src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path($certificate->signature))) }}"
-                        alt=""></div>
+                        alt="">
+                        --}}
+                </div>
             @endif
         </div>
     </div>

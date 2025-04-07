@@ -18,6 +18,10 @@ use Modules\Order\app\Models\Enrollment;
 use Modules\Order\app\Models\Order;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
+use iio\libmergepdf\Merger;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class StudentDashboardController extends Controller
 {
@@ -96,9 +100,7 @@ class StudentDashboardController extends Controller
 
     function downloadCertificate(string $id)
     {
-        $certificate = CertificateBuilder::first();
-        $certificateItems = CertificateBuilderItem::all();
-        $course = Course::withTrashed()->find($id);
+        $course = Course::withTrashed()->findOrFail($id);
 
         $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
             $q->where('course_id', $course->id);
@@ -114,27 +116,59 @@ class StudentDashboardController extends Controller
 
         $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
 
-        if ($courseCompletedPercent != 100) {
-            return abort(404);
-        }
+        // if ($courseCompletedPercent != 100) {
+        //     return abort(404);
+        // }
 
-        $html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate'))->render();
 
-        $html = str_replace('[student_name]', userAuth()->name, $html);
-        $html = str_replace('[platform_name]', Cache::get('setting')->app_name, $html);
-        $html = str_replace('[course]', $course->title, $html);
-        $html = str_replace('[date]', formatDate($completed_date), $html);
-        $html = str_replace('[instructor_name]', $course->instructor->name, $html);
+        $certificate = CertificateBuilder::findOrFail($course->certificate_id);
+        $certificateItems = $certificate->items;
+
+
+        // $now = now();
+        $pdf1Data = Pdf::loadView('frontend.student-dashboard.certificate.index',  compact('certificateItems', 'certificate'))
+            ->setPaper('A4', 'landscape')->setWarnings(false)->output();
+        // Log::info('render pdf 1 took ' . now()->diffInSeconds($now));
+        $pdf2Data = Pdf::loadView('frontend.student-dashboard.certificate.summary',  compact('certificateItems', 'certificate'))
+            ->setPaper('A4', 'portrait')->setWarnings(false)->output();
+
+        $m = new Merger();
+        $m->addRaw($pdf1Data);
+        $m->addRaw($pdf2Data);
+        $output = $m->merge();
+
+        // $fallback = $this->fallbackName($filename);
+
+
+        return new Response($output, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline',
+        ]);
+
+        // file_put_contents('informes/test_' . $user->id . '.pdf', $m->merge());
+        return 'ok';
+
+        $html = view(
+            'frontend.student-dashboard.certificate.index',
+            compact('certificateItems', 'certificate')
+        )->render();
+
+        // $html = str_replace('[student_name]', userAuth()->name, $html);
+        // $html = str_replace('[platform_name]', Cache::get('setting')->app_name, $html);
+        // $html = str_replace('[course]', $course->title, $html);
+        // $html = str_replace('[date]', formatDate($completed_date), $html);
+        // $html = str_replace('[instructor_name]', $course->instructor->name, $html);
 
         // Initialize Dompdf
         $dompdf = new Dompdf(array('enable_remote' => true));
 
         // Load HTML content
         $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
+        // $dompdf->setPaper('A4', 'portrait');
 
         $dompdf->render();
-        $dompdf->stream("certificate.pdf");
-        return redirect()->back();
+
+        return   $dompdf->stream();
+        // return redirect()->back();
     }
 }

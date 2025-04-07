@@ -15,4 +15,8 @@ class CertificateBuilder extends Model
      */
     protected $guarded = [];
 
+    public function items()
+    {
+        return $this->hasMany(CertificateBuilderItem::class);
+    }
 }

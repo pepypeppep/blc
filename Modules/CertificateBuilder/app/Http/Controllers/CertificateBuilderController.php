@@ -224,10 +224,12 @@ class CertificateBuilderController extends Controller
         foreach ($certificateItems as $item) {
             $item->delete();
         }
-        if (Storage::disk('private')->exists($certificate->background)) {
+
+        if (filled($certificate->background) && Storage::disk('private')->exists($certificate->background)) {
             Storage::disk('private')->delete($certificate->background);
         }
-        if (Storage::disk('private')->exists($certificate->background2)) {
+
+        if (filled($certificate->background2) && Storage::disk('private')->exists($certificate->background2)) {
             Storage::disk('private')->delete($certificate->background2);
         }
         $certificate->delete();

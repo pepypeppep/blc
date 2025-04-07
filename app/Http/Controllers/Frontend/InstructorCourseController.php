@@ -11,12 +11,10 @@ use App\Models\CourseChapterItem;
 use App\Models\CourseSelectedLevel;
 use App\Rules\ValidateDiscountRule;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use App\Models\CourseSelectedLanguage;
 use App\Models\CoursePartnerInstructor;
 use Illuminate\Support\Facades\Session;
 use Modules\Order\app\Models\Enrollment;
-use App\Models\CourseSelectedFilterOption;
 use App\Models\FollowUpAction;
 use App\Models\FollowUpActionResponse;
 use Carbon\Carbon;
@@ -26,6 +24,7 @@ use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
 use Modules\Course\app\Models\CourseDeleteRequest;
 use Yajra\DataTables\Facades\DataTables;
+
 
 class InstructorCourseController extends Controller
 {
@@ -385,13 +384,16 @@ class InstructorCourseController extends Controller
             })
             ->with('course', 'chapter', 'course.enrollments')
             ->where('course_id', $course_id)
-            ->first();
+            ->firstOrFail();
 
-        $enrollments = $rtl->course->enrollments()
-            ->where('has_access', 1)
-            ->with(['user'])->get();
+        $totalParticipants = 0;
+        if ($rtl && $rtl->course) {
+            $enrollments = $rtl->course->enrollments()
+                ->where('has_access', 1)
+                ->with(['user'])->get();
 
-        $totalParticipants = $enrollments->count();
+            $totalParticipants = $enrollments->count();
+        }
 
         $submissions = FollowUpActionResponse::where('follow_up_action_id', $rtl_id)
             ->with('instructor', 'participant')
@@ -420,19 +422,40 @@ class InstructorCourseController extends Controller
         ));
     }
 
-    public function getResponeRtl(Request $request, $id)
+    public function getResponeRtl($id)
     {
+        $data = FollowUpActionResponse::with('instructor', 'participant')
+            ->find($id);
 
-        $data = FollowUpActionResponse::where('id', $id)
-            ->with('instructor', 'participant')
-            ->firstOrFail();
-
-        if ($request->ajax()) {
-            return response()->json($data);
+        if (!$data) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
         }
 
-        abort(404);
+        if (empty($data->participant_file)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'File tidak ditemukan.',
+            ], 404);
+        }
+
+        $path = storage_path('app/private/rtl/' . $data->participant_file);
+        if (!file_exists($path)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'File tidak ditemukan di direktori.',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
     }
+
+
 
     public function feedbackResponseRtl(Request $request)
     {
@@ -449,6 +472,7 @@ class InstructorCourseController extends Controller
         $response = FollowUpActionResponse::findOrFail($request->participant_response_id);
         if ($response->score) {
             return response()->json([
+                'status' => 'failed',
                 'message' => 'Respon telah disimpan',
             ], 400);
         }

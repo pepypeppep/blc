@@ -250,7 +250,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             $path = storage_path('app/private/rtl/' . $filename);
 
             if (!file_exists($path)) {
-                abort(404);
+                return redirect('/frontend/img/no_file.svg'); // ini mengarah ke URL publik
             }
 
             return response()->file($path);

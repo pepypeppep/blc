@@ -132,8 +132,7 @@
                                                     <td>
                                                         <a href="javascript:;" class="ms-2 preview-existing-btn"
                                                             data-url="{{ route('instructor.courses.response-rtl', $submission->id) }}"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#participantResponseModal" title="Preview">
+                                                            title="Preview">
                                                             <i class='fas fa-eye'></i></a>
                                                     </td>
 
@@ -369,44 +368,68 @@
             $(document).on('click', '.preview-existing-btn', function() {
                 let url = $(this).data('url');
 
+                // Pastikan modal tertutup di awal
+                const modalElement = document.getElementById('participantResponseModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+
                 $.ajax({
                     url: url,
                     type: 'GET',
                     success: function(response) {
-                        $('#participantPdfIframe').attr('src',
-                            '{{ url('instructor/courses/rtl-file/') }}/' + response
-                            .participant_file);
+                        if (response.status != 'success' || !response.data || !response.data
+                            .participant_file) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: 'Data tidak lengkap atau file tidak ditemukan.',
+                            });
+                            bootstrap.Modal.getOrCreateInstance(modalElement).hide();
 
-                        $('#participantResponse').text(response.participant_response || '');
-                        $('#participantName').text(response.participant.name || '');
-                        $('#score').val(response.score || '');
-                        $('#participantResponseId').val(response.id || '');
-                        $('#instructorResponse').val(response.instructor_response || '');
-
-                        if (response.score != null) {
-                            $('#score').attr('readonly', true);
-                            $('#instructorResponse').attr('readonly', true);
-                            $('#saveFeedbackBtn').css('display', 'none');
-
+                            return;
                         } else {
-                            $('#score').attr('readonly', false);
-                            $('#instructorResponse').attr('readonly', false);
-                            $('#saveFeedbackBtn').css('display', 'block');
+                            const data = response.data;
+
+                            $('#participantPdfIframe').attr('src',
+                                '{{ url('instructor/courses/rtl-file/') }}/' + data
+                                .participant_file);
+                            $('#participantResponse').text(data.participant_response || '');
+                            $('#participantName').text(data.participant.name || '');
+                            $('#score').val(data.score || '');
+                            $('#participantResponseId').val(data.id || '');
+                            $('#instructorResponse').val(data.instructor_response || '');
+
+                            const isScored = data.score != null;
+                            $('#score').prop('readonly', isScored);
+                            $('#instructorResponse').prop('readonly', isScored);
+                            $('#saveFeedbackBtn').toggle(!isScored);
+
+                            // Show modal setelah valid
+                            bootstrap.Modal.getOrCreateInstance(modalElement).show();
                         }
 
-                        const modal = new bootstrap.Modal(document.getElementById(
-                            'participantResponseModal'));
-                        modal.show();
+
                     },
-                    error: function() {
+                    error: function(xhr) {
+                        let message = 'Gagal mengambil data';
+                        if (xhr.status === 404) {
+                            message = 'File tidak ditemukan';
+                        }
+
+                        bootstrap.Modal.getOrCreateInstance(modalElement).hide();
+
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal',
-                            text: 'Gagal mengambil data file.',
+                            text: message,
                         });
                     }
                 });
             });
+
+
 
             // Handle instructor feedback form submission
             $('#instructorFeedbackForm').on('submit', function(e) {
@@ -441,7 +464,7 @@
                                 }).then(() => {
                                     $('#participantResponseModal').modal(
                                         'hide');
-                                    ('#rtlTable').DataTable().ajax.reload();
+                                    window.location.reload();
                                 });
                             },
                             error: function(xhr) {

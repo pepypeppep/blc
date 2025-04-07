@@ -15,4 +15,9 @@ class CourseProgress extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    public function chapter()
+    {
+        return $this->belongsTo(CourseChapter::class);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\CourseChapter;
 use App\Models\CourseChapterItem;
 use App\Models\CourseProgress;
 use App\Models\CourseReview;
@@ -102,6 +103,10 @@ class StudentDashboardController extends Controller
     {
         $course = Course::withTrashed()->findOrFail($id);
 
+        $courseChapers = CourseChapter::where('course_id', $course->id)
+            ->where('status', 'active')
+            ->get();
+
         $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
             $q->where('course_id', $course->id);
         })->count();
@@ -116,6 +121,7 @@ class StudentDashboardController extends Controller
 
         $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
 
+        // TODO: enable this on production
         // if ($courseCompletedPercent != 100) {
         //     return abort(404);
         // }
@@ -125,11 +131,23 @@ class StudentDashboardController extends Controller
         $certificateItems = $certificate->items;
 
 
+        // return view('frontend.student-dashboard.certificate.summary',  compact('course', 'certificateItems', 'certificate', 'courseChapers'));
+
         // $now = now();
-        $pdf1Data = Pdf::loadView('frontend.student-dashboard.certificate.index',  compact('certificateItems', 'certificate'))
+        $page1Html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate'))->render();
+
+        $page1Html = str_replace('[student_name]', userAuth()->name, $page1Html);
+        $page1Html = str_replace('[platform_name]', Cache::get('setting')->app_name, $page1Html);
+        $page1Html = str_replace('[course]', $course->title, $page1Html);
+        $page1Html = str_replace('[date]', formatDate($completed_date), $page1Html);
+        $page1Html = str_replace('[instructor_name]', $course->instructor->name, $page1Html);
+
+        $pdf1Data = Pdf::loadHTML($page1Html)
             ->setPaper('A4', 'landscape')->setWarnings(false)->output();
         // Log::info('render pdf 1 took ' . now()->diffInSeconds($now));
-        $pdf2Data = Pdf::loadView('frontend.student-dashboard.certificate.summary',  compact('certificateItems', 'certificate'))
+
+        $page2Html = view('frontend.student-dashboard.certificate.summary', compact('course', 'certificateItems', 'certificate', 'courseChapers'))->render();
+        $pdf2Data = Pdf::loadHTML($page2Html)
             ->setPaper('A4', 'portrait')->setWarnings(false)->output();
 
         $m = new Merger();
@@ -144,31 +162,5 @@ class StudentDashboardController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline',
         ]);
-
-        // file_put_contents('informes/test_' . $user->id . '.pdf', $m->merge());
-        return 'ok';
-
-        $html = view(
-            'frontend.student-dashboard.certificate.index',
-            compact('certificateItems', 'certificate')
-        )->render();
-
-        // $html = str_replace('[student_name]', userAuth()->name, $html);
-        // $html = str_replace('[platform_name]', Cache::get('setting')->app_name, $html);
-        // $html = str_replace('[course]', $course->title, $html);
-        // $html = str_replace('[date]', formatDate($completed_date), $html);
-        // $html = str_replace('[instructor_name]', $course->instructor->name, $html);
-
-        // Initialize Dompdf
-        $dompdf = new Dompdf(array('enable_remote' => true));
-
-        // Load HTML content
-        $dompdf->loadHtml($html);
-        // $dompdf->setPaper('A4', 'portrait');
-
-        $dompdf->render();
-
-        return   $dompdf->stream();
-        // return redirect()->back();
     }
 }

@@ -159,11 +159,11 @@
                                                     </td>
                                                     <td>
                                                         <button class="btn btn-primary btn-sm m-1 updateStatus"
-                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="1">
+                                                            data-id="{{ $enrollmentUser->user->id }}" data-course-id="{{ $id }}" data-status="1">
                                                             <i class="fa fa-check" aria-hidden="true"></i> Terima
                                                         </button>
                                                         <button class="btn btn-danger btn-sm m-1 updateStatus"
-                                                            data-id="{{ $enrollmentUser->user->id }}" data-status="0">
+                                                            data-id="{{ $enrollmentUser->user->id }}" data-course-id="{{ $id }}" data-status="0">
                                                             <i class="fa fa-times" aria-hidden="true"></i> Tolak
                                                         </button>
                                                     </td>
@@ -216,7 +216,7 @@
     @push('js')
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                function showReasonModal(userIds, status) {
+                function showReasonModal(userIds, status, courseId) {
                     let title;
                     let isReasonRequired = false;
 
@@ -245,12 +245,12 @@
                         }
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            showConfirmation(userIds, status, result.value);
+                            showConfirmation(userIds, status, result.value, courseId);
                         }
                     });
                 }
 
-                function showConfirmation(userIds, status, reason) {
+                function showConfirmation(userIds, status, reason, courseId) {
                     let message;
                     if (status === 1) {
                         message = "Peserta akan diterima.";
@@ -271,12 +271,12 @@
                         cancelButtonText: "Batal"
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            updateEnrollment(userIds, status, reason);
+                            updateEnrollment(userIds, status, reason, courseId);
                         }
                     });
                 }
 
-                async function updateEnrollment(userIds, status, reason) {
+                async function updateEnrollment(userIds, status, reason, courseId) {
                     if (userIds.length === 0) {
                         return Swal.fire("Peringatan", "Pilih minimal 1 peserta.", "warning");
                     }
@@ -290,6 +290,7 @@
                             },
                             body: JSON.stringify({
                                 user_ids: userIds,
+                                course_id: courseId,
                                 status: status,
                                 reason: reason || null // Alasan opsional untuk diterima
                             })
@@ -314,12 +315,13 @@
                 document.querySelectorAll(".updateStatus").forEach(button => {
                     button.addEventListener("click", function() {
                         let userId = this.dataset.id;
+                        let courseId = this.dataset.courseId;
                         let status = this.dataset.status === "1" ? 1 : (this.dataset.status === "0" ?
                             0 : null);
                         if (status === 1) {
-                            showConfirmation([userId], status, '')
+                            showConfirmation([userId], status, '', courseId)
                         } else {
-                            showReasonModal([userId], status);
+                            showReasonModal([userId], status, courseId);
                         }
                     });
                 });

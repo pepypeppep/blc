@@ -34,12 +34,14 @@ class CourseVerificationController extends Controller
     {
         $validated = $request->validate([
             'user_ids' => 'required|array',
+            'course_id' => 'required|exists:courses,id',
             'status' => 'nullable|in:0,1',
             'reason' => 'nullable|string'
         ]);
 
         foreach ($validated['user_ids'] as $userId) {
             Enrollment::where('user_id', $userId)
+                ->where('course_id', $validated['course_id'])
                 ->update([
                     'has_access' => $validated['status'],
                     'notes' => $validated['status'] == 0 ? $validated['reason'] : null,

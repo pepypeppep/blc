@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\UserStatus;
 use App\Models\JitsiSetting;
 use Laravel\Sanctum\HasApiTokens;
+use Modules\Badges\app\Models\Badge;
 use Modules\Order\app\Models\Order;
 use Illuminate\Notifications\Notifiable;
 use Modules\LiveChat\app\Models\Message;
@@ -80,6 +81,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password'          => 'hashed',
     ];
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'user_badge')
+                    ->withPivot('category')
+                    ->withTimestamps();
+    }
+
     public function favoriteCourses()
     {
         return $this->belongsToMany(Course::class, 'favorite_course_user')->withTimestamps();

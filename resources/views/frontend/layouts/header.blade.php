@@ -147,8 +147,7 @@
                                                 fill="currentcolor" />
                                         </svg>
 
-                                        <select class="form-select select_js w_150px"
-                                            aria-label="Default select example" name="main_category">
+                                        <select class="form-select select_js w_150px" aria-label="Default select example" name="main_category">
                                             <option selected disabled>{{ __('Categories') }}</option>
                                             @foreach ($categories as $category)
                                                 <option @selected(request('main_category') == $category->slug) value="{{ $category->slug }}">
@@ -166,6 +165,69 @@
                             </div>
                             <div class="tgmenu__action">
                                 <ul class="list-wrap">
+                                    <!-- Notification Dropdown -->
+                                    <li class="notification-icon">
+                                        <a href="javascript:;" class="cart-count notification-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.37 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.64 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z" fill="currentColor"/>
+                                            </svg>
+                                            <span class="mini-cart-count">3</span>
+                                        </a>
+                                        <ul class="dropdown-menu notification-dropdown">
+                                            <li class="dropdown-header">
+                                                <span>Notifications</span>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <!-- Notification Items (max 7) -->
+                                            <li>
+                                                <a href="#">
+                                                    <div class="notification-item">
+                                                        <div class="notification-icon bg-primary">
+                                                            <i class="fas fa-bell"></i>
+                                                        </div>
+                                                        <div class="notification-content">
+                                                            <span class="notification-title">New course added</span>
+                                                            <span class="notification-time">2 hours ago</span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <div class="notification-item">
+                                                        <div class="notification-icon bg-success">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </div>
+                                                        <div class="notification-content">
+                                                            <span class="notification-title">Your course was approved</span>
+                                                            <span class="notification-time">5 hours ago</span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <div class="notification-item">
+                                                        <div class="notification-icon bg-warning">
+                                                            <i class="fas fa-exclamation-triangle"></i>
+                                                        </div>
+                                                        <div class="notification-content">
+                                                            <span class="notification-title">Payment received</span>
+                                                            <span class="notification-time">1 day ago</span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <li>
+                                                <a href="#" class="text-center view-all-notifications">
+                                                    View All Notifications
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
+                                    <!-- Existing User Icon -->
                                     <li class="mini-cart-icon user_icon">
                                         <a href="javascript:;" class="cart-count">
                                             <img src="{{ asset('frontend/img/icons/menu_user.svg') }}" alt="img">

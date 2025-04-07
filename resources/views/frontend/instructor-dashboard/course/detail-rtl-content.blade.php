@@ -368,6 +368,9 @@
             $(document).on('click', '.preview-existing-btn', function() {
                 let url = $(this).data('url');
 
+                // Reset fokus supaya gak error "aria-hidden"
+                document.activeElement.blur();
+
                 // Pastikan modal tertutup di awal
                 const modalElement = document.getElementById('participantResponseModal');
                 const modalInstance = bootstrap.Modal.getInstance(modalElement);
@@ -410,7 +413,6 @@
                             bootstrap.Modal.getOrCreateInstance(modalElement).show();
                         }
 
-
                     },
                     error: function(xhr) {
                         let message = 'Gagal mengambil data';
@@ -419,6 +421,7 @@
                         }
 
                         bootstrap.Modal.getOrCreateInstance(modalElement).hide();
+                        document.activeElement.blur();
 
                         Swal.fire({
                             icon: 'error',

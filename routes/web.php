@@ -169,7 +169,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             return response()->file($path);
         })->name('follow-up-action.files');
 
-        Route::resource('follow-up-action', StudentFollowUpActionController::class);
+        // Route::resource('follow-up-action', StudentFollowUpActionController::class);
         // Route::get('follow-up-action/create', [StudentFollowUpActionController::class, 'create'])->name('follow-up-action.create');
 
         /** learning routes */
@@ -244,9 +244,33 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         // Route::get('courses/create/{id}/step/{step?}', [InstructorCourseController::class, 'edit'])->name('courses.edit');
         // Route::get('courses/{id}/edit', [InstructorCourseController::class, 'editView'])->name('courses.edit-view');
 
+        // Route statis terlebih dahulu
         Route::get('courses/get-filters/{category_id}', [InstructorCourseController::class, 'getFiltersByCategory'])->name('courses.get-filters');
         Route::get('courses/get-instructors', [InstructorCourseController::class, 'getInstructors'])->name('courses.get-instructors');
+        Route::get('courses/response-rtl/{id}', [InstructorCourseController::class, 'getResponeRtl'])->name('courses.response-rtl');
+
+        // Route yang lebih spesifik (2 parameter)
+        Route::get('courses/{course_id}/detail-rtl/{rtl_id}', [InstructorCourseController::class, 'detailRtl'])->name('courses.detail-rtl');
+
+        // Route yang memiliki 1 parameter, urutkan sesuai fungsi
+        Route::get('courses/{id}/list-rtl', [InstructorCourseController::class, 'getRtl'])->name('courses.list-rtl');
         Route::get('courses/{id}/detail', [InstructorCourseController::class, 'detail'])->name('courses.detail');
+
+        // Route file RTL (bisa di akhir karena tidak konflik dengan yang lain)
+        Route::get('courses/rtl-file/{filename}', function ($filename) {
+            $path = storage_path('app/private/rtl/' . $filename);
+
+            if (!file_exists($path)) {
+                return redirect('/frontend/img/no_file.svg'); // ini mengarah ke URL publik
+            }
+
+            return response()->file($path);
+        })->name('courses.rtl-file');
+
+        //feedbackResponseRtl
+        Route::post('courses/feedback-response-rtl', [InstructorCourseController::class, 'feedbackResponseRtl'])->name('courses.feedback-response-rtl');
+
+
 
         // Route::post('courses/create', [InstructorCourseController::class, 'store'])->name('courses.store');
         // Route::post('courses/update', [InstructorCourseController::class, 'update'])->name('courses.update');

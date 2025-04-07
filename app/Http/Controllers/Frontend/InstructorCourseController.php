@@ -11,12 +11,12 @@ use App\Models\CourseChapterItem;
 use App\Models\CourseSelectedLevel;
 use App\Rules\ValidateDiscountRule;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
 use App\Models\CourseSelectedLanguage;
 use App\Models\CoursePartnerInstructor;
 use Illuminate\Support\Facades\Session;
 use Modules\Order\app\Models\Enrollment;
-use App\Models\CourseSelectedFilterOption;
+use App\Models\FollowUpAction;
+use App\Models\FollowUpActionResponse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Modules\Course\app\Models\CourseLevel;
@@ -24,6 +24,7 @@ use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
 use Modules\Course\app\Models\CourseDeleteRequest;
 use Yajra\DataTables\Facades\DataTables;
+
 
 class InstructorCourseController extends Controller
 {
@@ -329,7 +330,10 @@ class InstructorCourseController extends Controller
 
         if ($request->ajax()) {
             //datatables course with enrollments
-            $enrollments = $course->enrollments()->with(['user'])->get();
+            $enrollments = $course->enrollments()
+                ->where('has_access', 1)
+                ->with(['user'])->get();
+
             return DataTables::of($enrollments)
                 ->addColumn('name', function ($enrollment) {
                     return $enrollment->user->name;
@@ -343,10 +347,143 @@ class InstructorCourseController extends Controller
                 ->make(true);
         }
 
-        // if (Storage::exists($course->thumbnail)) { // assume you save the path in column database named `path`
-        //     return response()->file(Storage::path($course->thumbnail));
-        // }
-
         return view('frontend.instructor-dashboard.course.detail-content', compact('course'));
+    }
+
+    public function getRtl(Request $request, $id)
+    {
+        $data = CourseChapterItem::query()
+            ->whereHas(
+                'chapter',
+                function ($query) use ($id) {
+                    $query->where('course_id', $id);
+                }
+            )
+            ->with('followUpAction', 'chapter')
+            ->where('type', 'rtl')
+            ->get();
+
+        if ($request->ajax()) {
+            return DataTables::of($data)
+
+                ->addColumn('action', function ($row) {
+
+                    $detail = route('instructor.courses.detail-rtl', ['course_id' => $row->chapter->course_id, 'rtl_id' => $row->followUpAction->id]);
+                    return "<a href='{$detail}' title='Detail'><i class='fas fa-eye'></i></a>";
+                })
+                ->make(true);
+        }
+        abort(404);
+    }
+
+    public function detailRtl($course_id, $rtl_id)
+    {
+        $rtl = FollowUpAction::where('id', $rtl_id)
+            ->whereHas('course.enrollments', function ($query) {
+                $query->where('has_access', 1);
+            })
+            ->with('course', 'chapter', 'course.enrollments')
+            ->where('course_id', $course_id)
+            ->firstOrFail();
+
+        $totalParticipants = 0;
+        if ($rtl && $rtl->course) {
+            $enrollments = $rtl->course->enrollments()
+                ->where('has_access', 1)
+                ->with(['user'])->get();
+
+            $totalParticipants = $enrollments->count();
+        }
+
+        $submissions = FollowUpActionResponse::where('follow_up_action_id', $rtl_id)
+            ->with('instructor', 'participant')
+            ->get();
+
+        // Ambil ID peserta yang sudah ada di submissions
+        $submittedUserIds = $submissions->pluck('participant.id')->toArray();
+        // Hitung jumlah peserta yang sudah mengumpulkan
+        $submittedCount = count($submittedUserIds);
+
+        // Filter enrollments agar hanya peserta yang belum ada di submissions
+        $enrollments = $enrollments->filter(function ($enrollment) use ($submittedUserIds) {
+            return !in_array($enrollment->user->id, $submittedUserIds);
+        });
+
+        $notSubmittedCount = $enrollments->count();
+
+
+        return view('frontend.instructor-dashboard.course.detail-rtl-content', compact(
+            'rtl',
+            'enrollments',
+            'submissions',
+            'submittedCount',
+            'notSubmittedCount',
+            'totalParticipants'
+        ));
+    }
+
+    public function getResponeRtl($id)
+    {
+        $data = FollowUpActionResponse::with('instructor', 'participant')
+            ->find($id);
+
+        if (!$data) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
+
+        if (empty($data->participant_file)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'File tidak ditemukan.',
+            ], 404);
+        }
+
+        $path = storage_path('app/private/rtl/' . $data->participant_file);
+        if (!file_exists($path)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'File tidak ditemukan di direktori.',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
+        ]);
+    }
+
+
+
+    public function feedbackResponseRtl(Request $request)
+    {
+
+        $request->validate([
+            'instructor_response' => 'required',
+            'score' => 'required|numeric',
+        ], [
+            'instructor_response.required' => 'Respon instruktur dibutuhkan',
+            'score.required' => 'Skor dibutuhkan',
+            'score.numeric' => 'Skor harus berupa angka',
+        ]);
+
+        $response = FollowUpActionResponse::findOrFail($request->participant_response_id);
+        if ($response->score) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Respon telah disimpan',
+            ], 400);
+        }
+        $response->instructor_response = $request->instructor_response;
+        $response->score = $request->score;
+        $response->instructor_id = auth()->id();
+        $response->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Respon berhasil disimpan',
+        ]);
     }
 }

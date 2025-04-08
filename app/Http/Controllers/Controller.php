@@ -41,6 +41,11 @@ use Illuminate\Routing\Controller as BaseController;
  *     name="Pendidikan Lanjutan",
  *     description="Pendidikan Lanjutan API Endpoints"
  * )
+ * 
+ * @OA\Tag(
+ *     name="Article",
+ *     description="Pengetahuan API Endpoints"
+ * )
  *
  * */
 class Controller extends BaseController

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Order\app\Models\Enrollment;
 use Illuminate\Http\JsonResponse;
+use App\Events\UserBadgeUpdated;
 
 class CourseVerificationController extends Controller
 {
@@ -33,17 +34,21 @@ class CourseVerificationController extends Controller
     {
         $validated = $request->validate([
             'user_ids' => 'required|array',
+            'course_id' => 'required|exists:courses,id',
             'status' => 'nullable|in:0,1',
             'reason' => 'nullable|string'
         ]);
 
         foreach ($validated['user_ids'] as $userId) {
             Enrollment::where('user_id', $userId)
+                ->where('course_id', $validated['course_id'])
                 ->update([
                     'has_access' => $validated['status'],
                     'notes' => $validated['status'] == 0 ? $validated['reason'] : null,
                 ]);
         }
+
+        event(new UserBadgeUpdated($request->user_ids));
 
         return response()->json(['message' => 'Enrollment status updated successfully.']);
     }

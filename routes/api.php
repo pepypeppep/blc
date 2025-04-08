@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\CertificateApiController;
+use App\Http\Controllers\Api\CourseApiController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\CourseApiController;
 use App\Http\Controllers\Api\ReviewApiController;
@@ -56,5 +57,10 @@ Route::name('api.')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'index']);
             Route::get('/{id}', [PendidikanLanjutanController::class, 'show']);
         });
+    });
+
+    // Article
+    Route::name('article.')->group(function () {
+        Route::get('/articles', [ArticleController::class, 'index'])->name('index');
     });
 });

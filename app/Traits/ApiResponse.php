@@ -18,7 +18,7 @@ trait ApiResponse
     protected function successResponse(
         $data = [],
         ?string $message = null,
-        int $code = 200
+        int $code = 200,
     ): JsonResponse {
         $meta = [];
 

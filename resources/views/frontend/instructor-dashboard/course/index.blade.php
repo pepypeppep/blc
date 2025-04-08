@@ -69,9 +69,10 @@
                                                                     </a>
                                                                 </li> --}}
                                                             </ul>
-
-                                                            <h5 class="title">{{ $course->title }}
-                                                            </h5>
+                                                            <a href="{{ route('instructor.courses.detail', $course->id) }}">
+                                                                <h5 class="title">{{ $course->title }}
+                                                                </h5>
+                                                            </a>
                                                             <div class="courses__item-content-bottom">
                                                                 <div class="author-two">
                                                                     <a href="javascript:;"><img

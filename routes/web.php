@@ -30,6 +30,7 @@ use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
+use App\Http\Controllers\Frontend\StudentPengetahuanController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -129,6 +130,16 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         // Route::get('order-details/{id}', [StudentOrderController::class, 'show'])->name('order.show');
         // Route::get('order/invoice/{id}', [StudentOrderController::class, 'printInvoice'])->name('order.print-invoice');
 
+        Route::group(['prefix' => 'pengetahuan', 'as' => 'pengetahuan.'], function () {
+            Route::get('/', [StudentPengetahuanController::class, 'index'])->name('index');
+            Route::get('create', [StudentPengetahuanController::class, 'create'])->name('create');
+            Route::post('store', [StudentPengetahuanController::class, 'store'])->name('store');
+            Route::get('edit/{slug}', [StudentPengetahuanController::class, 'edit'])->name('edit');
+            Route::put('update/{slug}', [StudentPengetahuanController::class, 'update'])->name('update');
+            Route::delete('destroy/{id}', [StudentPengetahuanController::class, 'destroy'])->name('destroy');
+            Route::get('view/{id}', [StudentPengetahuanController::class, 'view'])->name('view.file');
+        });
+
 
         Route::get('reviews', [StudentReviewController::class, 'index'])->name('reviews.index');
         Route::get('reviews/{id}', [StudentReviewController::class, 'show'])->name('reviews.show');
@@ -164,7 +175,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             return response()->file($path);
         })->name('follow-up-action.files');
 
-        Route::resource('follow-up-action', StudentFollowUpActionController::class);
+        // Route::resource('follow-up-action', StudentFollowUpActionController::class);
         // Route::get('follow-up-action/create', [StudentFollowUpActionController::class, 'create'])->name('follow-up-action.create');
 
         /** learning routes */
@@ -240,9 +251,33 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         // Route::get('courses/create/{id}/step/{step?}', [InstructorCourseController::class, 'edit'])->name('courses.edit');
         // Route::get('courses/{id}/edit', [InstructorCourseController::class, 'editView'])->name('courses.edit-view');
 
+        // Route statis terlebih dahulu
         Route::get('courses/get-filters/{category_id}', [InstructorCourseController::class, 'getFiltersByCategory'])->name('courses.get-filters');
         Route::get('courses/get-instructors', [InstructorCourseController::class, 'getInstructors'])->name('courses.get-instructors');
+        Route::get('courses/response-rtl/{id}', [InstructorCourseController::class, 'getResponeRtl'])->name('courses.response-rtl');
+
+        // Route yang lebih spesifik (2 parameter)
+        Route::get('courses/{course_id}/detail-rtl/{rtl_id}', [InstructorCourseController::class, 'detailRtl'])->name('courses.detail-rtl');
+
+        // Route yang memiliki 1 parameter, urutkan sesuai fungsi
+        Route::get('courses/{id}/list-rtl', [InstructorCourseController::class, 'getRtl'])->name('courses.list-rtl');
         Route::get('courses/{id}/detail', [InstructorCourseController::class, 'detail'])->name('courses.detail');
+
+        // Route file RTL (bisa di akhir karena tidak konflik dengan yang lain)
+        Route::get('courses/rtl-file/{filename}', function ($filename) {
+            $path = storage_path('app/private/rtl/' . $filename);
+
+            if (!file_exists($path)) {
+                return redirect('/frontend/img/no_file.svg'); // ini mengarah ke URL publik
+            }
+
+            return response()->file($path);
+        })->name('courses.rtl-file');
+
+        //feedbackResponseRtl
+        Route::post('courses/feedback-response-rtl', [InstructorCourseController::class, 'feedbackResponseRtl'])->name('courses.feedback-response-rtl');
+
+
 
         // Route::post('courses/create', [InstructorCourseController::class, 'store'])->name('courses.store');
         // Route::post('courses/update', [InstructorCourseController::class, 'update'])->name('courses.update');

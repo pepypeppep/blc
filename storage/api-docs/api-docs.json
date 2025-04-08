@@ -1572,9 +1572,29 @@
                 "tags": [
                     "Pendidikan Lanjutan"
                 ],
-                "summary": "Get all pendidikan lanjutan",
-                "description": "Get all pendidikan lanjutan",
+                "summary": "Get pendidikan lanjutan",
+                "description": "Get pendidikan lanjutan",
                 "operationId": "80a44854f67d53a2d9e18811e7ee1afb",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response"

@@ -14,9 +14,27 @@ class PendidikanLanjutanController extends Controller
     /**
      * @OA\Get(
      *     path="/pendidikan-lanjutan",
-     *     summary="Get all pendidikan lanjutan",
-     *     description="Get all pendidikan lanjutan",
+     *     summary="Get pendidikan lanjutan",
+     *     description="Get pendidikan lanjutan",
      *     tags={"Pendidikan Lanjutan"},
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Per page",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="query",
+     *         description="User id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -27,11 +45,12 @@ class PendidikanLanjutanController extends Controller
     {
         try {
             $perPage = $request->get('per_page', 10);
+            $user = User::where('id', $request->user_id)->firstOrFail();
             $schedule = VacancySchedule::where('year', now()->year)
                 ->where('start_at', '<=', now())
                 ->where('end_at', '>=', now())
                 ->first();
-            $vacancies = Vacancy::where('instansi_id', userAuth()->instansi_id)
+            $vacancies = Vacancy::where('instansi_id', $user->instansi_id)
                 ->where('year', $schedule->year ?? -1)->paginate($perPage);
 
             return response()->json([

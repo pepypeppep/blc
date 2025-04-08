@@ -13,21 +13,22 @@ use App\Http\Controllers\Frontend\LearningController;
 use App\Http\Controllers\Frontend\AboutPageController;
 use App\Http\Controllers\Frontend\CoursePageController;
 use App\Http\Controllers\Global\CloudStorageController;
+use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Frontend\CourseContentController;
 use App\Http\Controllers\Frontend\StudentReviewController;
-use App\Http\Controllers\Frontend\BecomeInstructorController;
 use App\Http\Controllers\Frontend\FollowUpActionController;
+use App\Http\Controllers\Frontend\BecomeInstructorController;
 use App\Http\Controllers\Frontend\InstructorCourseController;
 use App\Http\Controllers\Frontend\InstructorPayoutController;
 use App\Http\Controllers\Frontend\StudentDashboardController;
 use App\Http\Controllers\Frontend\TinymceImageUploadController;
 use App\Http\Controllers\Frontend\InstructorDashboardController;
 use App\Http\Controllers\Frontend\InstructorLessonQnaController;
+use App\Http\Controllers\Frontend\StudentFollowUpActionController;
 use App\Http\Controllers\Frontend\StudentProfileSettingController;
 use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
-use App\Http\Controllers\Frontend\StudentFollowUpActionController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
 use App\Http\Controllers\Frontend\StudentPengetahuanController;
 
@@ -90,6 +91,10 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
     Route::get('change-theme/{name}', [HomePageController::class, 'changeTheme'])->name('change-theme');
 
+    Route::get('/notifications', [NotificationController::class, 'list'])->name('notification.list');
+    Route::get('/notifications/counter', [NotificationController::class, 'getNotificationCount'])->name('notification.counter');
+    Route::get('/notifications/read', [NotificationController::class, 'read'])->name('notification.read');
+
     /**
      * ============================================================================
      * Student Dashboard Routes
@@ -98,6 +103,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
     Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' => 'student.'], function () {
         Route::get('dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
+        Route::get('notifications', [NotificationController::class, 'list'])->name('notifications');
         // Profile setting routes
         // Route::get('setting', [StudentProfileSettingController::class, 'index'])->name('setting.index');
         // Route::put('setting/profile', [StudentProfileSettingController::class, 'updateProfile'])->name('setting.profile.update');
@@ -214,6 +220,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
     Route::group(['middleware' => ['auth', 'verified', 'approved.instructor', 'role:instructor'], 'prefix' => 'instructor', 'as' => 'instructor.'], function () {
         Route::get('dashboard', [InstructorDashboardController::class, 'index'])->name('dashboard');
+        Route::get('notifications', [NotificationController::class, 'list'])->name('notifications');
         // Profile setting routes
         // Route::get('setting', [InstructorProfileSettingController::class, 'index'])->name('setting.index');
         // Route::put('setting/profile', [InstructorProfileSettingController::class, 'updateProfile'])->name('setting.profile.update');

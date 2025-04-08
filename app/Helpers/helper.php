@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Models\Course;
 use App\Enums\ThemeList;
 use Illuminate\Support\Str;
@@ -892,5 +893,44 @@ if (!function_exists('employee_detail')) {
                 'bup' => null
             ];
         }
+    }
+}
+
+
+
+if (!function_exists('sendNotification')) {
+    function sendNotification(Request $request)
+    {
+        $firebaseToken = User::where('id', $request->user_id)->whereNotNull('fcm_token')->pluck('fcm_token')->all();
+
+        $SERVER_API_KEY = env('FCM_SERVER_KEY');
+
+        $data = [
+            "registration_ids" => $firebaseToken,
+            "notification" => [
+                // "title" => $request->title,
+                // "body" => $request->body,
+                "message" => $request->message,
+            ]
+        ];
+
+        $dataString = json_encode($data);
+
+        $headers = [
+            'Authorization: key=' . $SERVER_API_KEY,
+            'Content-Type: application/json',
+        ];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+
+        $response = curl_exec($ch);
+
+        // return back()->with('success', 'Notification send successfully.');
     }
 }

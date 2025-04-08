@@ -102,6 +102,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
     Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' => 'student.'], function () {
         Route::get('dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
+        Route::get('notifications', [NotificationController::class, 'list'])->name('notifications');
         // Profile setting routes
         // Route::get('setting', [StudentProfileSettingController::class, 'index'])->name('setting.index');
         // Route::put('setting/profile', [StudentProfileSettingController::class, 'updateProfile'])->name('setting.profile.update');
@@ -208,6 +209,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
     Route::group(['middleware' => ['auth', 'verified', 'approved.instructor', 'role:instructor'], 'prefix' => 'instructor', 'as' => 'instructor.'], function () {
         Route::get('dashboard', [InstructorDashboardController::class, 'index'])->name('dashboard');
+        Route::get('notifications', [NotificationController::class, 'list'])->name('notifications');
         // Profile setting routes
         // Route::get('setting', [InstructorProfileSettingController::class, 'index'])->name('setting.index');
         // Route::put('setting/profile', [InstructorProfileSettingController::class, 'updateProfile'])->name('setting.profile.update');

@@ -17,6 +17,12 @@ class NotificationController extends Controller
             $counter = Notification::where('user_id', $user->id)->where('is_read', 0)->count();
 
             return view('frontend.partials.notification-list', compact('notifications', 'counter'));
+        } else {
+            $user = userAuth();
+            $notifications = Notification::where('user_id', $user->id)->orderByDesc('id')->paginate();
+            $counter = Notification::where('user_id', $user->id)->where('is_read', 0)->count();
+
+            return view('frontend.pages.notification-show', compact('notifications', 'counter'));
         }
     }
 

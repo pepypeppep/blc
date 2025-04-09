@@ -212,6 +212,8 @@ class CourseContentController extends Controller
                 'course_id' => $request->course_id,
                 'title' => $request->title,
                 'description' => $request->description,
+                'start_date' => $request->start_date,
+                'due_date' => $request->end_date,
             ]);
         }
 
@@ -462,16 +464,32 @@ class CourseContentController extends Controller
     function updateFollowUpAction(Request $request, string $followUpActionId)
     {
         $request->validate([
-            'title'     => ['required', 'string'],
-            'description'     => ['nullable', 'string'],
+            'title'        => ['required', 'string'],
+            'description'  => ['nullable', 'string'],
+            'start_date'   => ['required', 'date', 'before_or_equal:end_date'],
+            'end_date'     => ['required', 'date', 'after_or_equal:start_date'],
         ], [
-            'title.required'     => __('Judul Wajib diisi'),
+            'title.required'         => 'Judul wajib diisi.',
+            'title.string'           => 'Judul harus berupa teks.',
+
+            'description.string'     => 'Deskripsi harus berupa teks.',
+
+            'start_date.required'    => 'Tanggal mulai wajib diisi.',
+            'start_date.date'        => 'Tanggal mulai tidak valid.',
+            'start_date.before_or_equal' => 'Tanggal mulai harus sebelum atau sama dengan tanggal selesai.',
+
+            'end_date.required'      => 'Tanggal selesai wajib diisi.',
+            'end_date.date'          => 'Tanggal selesai tidak valid.',
+            'end_date.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
         ]);
+
 
         $followUpAction = FollowUpAction::findOrFail($followUpActionId);
         $followUpAction->update([
             'title' => $request->title,
             'description' => $request->description,
+            'start_date' => $request->start_date,
+            'due_date' => $request->end_date
         ]);
 
 

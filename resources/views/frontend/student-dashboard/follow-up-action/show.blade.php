@@ -12,76 +12,61 @@
                         <tbody>
                             <tr>
                                 <td>Kursus</td>
-                                <td>
-                                    {{ $item->course->title }}
-                                </td>
+                                <td>{{ $item->course->title }}</td>
                             </tr>
                             <tr>
                                 <td>Materi</td>
-                                <td>
-                                    {{ $item->chapter->title }}
-                                </td>
+                                <td>{{ $item->chapter->title }}</td>
                             </tr>
                             <tr>
                                 <td>Topik RTL</td>
-                                <td>
-                                    {{ $item->title }}
-                                </td>
+                                <td>{{ $item->title }}</td>
                             </tr>
                             @if ($item->followUpActionResponse)
                                 <tr>
                                     <td>Ringkasan </td>
-                                    <td>
-                                        {!! $item->followUpActionResponse->participant_response !!}
-                                    </td>
-
+                                    <td>{!! $item->followUpActionResponse->participant_response !!}</td>
                                 </tr>
                                 @if ($item->followUpActionResponse->score != null)
                                     <tr>
                                         <td>Skor</td>
-                                        <td>
-                                            {!! $item->followUpActionResponse->score !!}
-                                        </td>
+                                        <td>{!! $item->followUpActionResponse->score !!}</td>
                                     </tr>
                                     <tr>
                                         <td nowrap>Response Assesor</td>
-                                        <td>
-                                            {!! $item->followUpActionResponse->instructor_response !!}
-                                        </td>
-
+                                        <td>{!! $item->followUpActionResponse->instructor_response !!}</td>
                                     </tr>
                                     <tr>
                                         <td nowrap>Assesor</td>
-                                        <td>
-                                            {!! $item->followUpActionResponse->instructor->name !!}
-                                        </td>
-
+                                        <td>{!! $item->followUpActionResponse->instructor->name !!}</td>
                                     </tr>
                                 @endif
                             @endif
-
                         </tbody>
                     </table>
                 </div>
 
-                @if ($item->followUpActionResponse)
-                    <div class="card shadow-sm border-0  mt-4">
-                        <div class="card-header bg-primary text-white ">
-                            <h5 class="mb-0 text-white">
-                                <i class="fa fa-file"></i> File Rencana Tindak Lanjut
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <iframe
-                                src="{{ route('student.follow-up-action.files', $item->followUpActionResponse->participant_file) }}"
-                                class="w-100 border" style="height: 600px;"></iframe>
-                        </div>
-                    </div>
-                @endif
+                @php
+                    use Carbon\Carbon;
+                    $startDate = Carbon::parse($item->start_date);
+                    $endDate = Carbon::parse($item->due_date);
+                    $now = Carbon::now();
+                    $response = $item->followUpActionResponse;
+                @endphp
 
-                @if (!$item->followUpActionResponse)
-                    <div class="card shadow-sm border-0  mt-4">
-                        <div class="card-header bg-primary text-white ">
+                @if ($now->lt($startDate))
+                    <div class="alert alert-warning mt-4">
+                        <strong>Perhatian:</strong> Belum periode pengisian data untuk Rencana Tindak Lanjut. Mulai pada
+                        <strong>{{ $startDate->translatedFormat('d F Y') }}</strong>.
+                    </div>
+                @elseif ($now->gt($endDate) && !$response)
+                    <div class="alert alert-danger mt-4">
+                        <strong>Perhatian:</strong> Periode pengisian Rencana Tindak Lanjut akan berakhir pada
+                        <strong>{{ $endDate->translatedFormat('d F Y') }}</strong>.
+                    </div>
+                @elseif (!$response)
+                    <div class="card shadow-sm border-0 mt-4">
+                        <div class="card-header bg-primary text-white">
                             <h5 class="mb-0 text-white">
                                 <i class="fa-solid fa-square-plus"></i> Masukan Data Rencana Tindak Lanjut
                             </h5>
@@ -93,10 +78,8 @@
                                 <input type="hidden" name="follow_up_action_id" value="{{ $item->id }}">
 
                                 <div class="form-group">
-
                                     <div class="mt-2">
                                         <label for="fileSurat" class="form-label">Unggah File Rencana Tindak Lanjut</label>
-                                        <!-- Upload Section -->
                                         <div class="upload-card">
                                             <i class="fas fa-cloud-upload-alt"></i>
                                             <h5 class="mb-3">Pilih berkas atau drag & drop di sini</h5>
@@ -105,25 +88,17 @@
                                             <label for="fileInput">Telusuri Berkas</label>
                                         </div>
 
-                                        <!-- File Info Section -->
                                         <div id="fileInfo" style="display: none;">
                                             <div class="file-info">
                                                 <div class="d-flex align-items-center">
-                                                    <!-- Font Awesome Icon PDF -->
                                                     <i class="fas fa-file-pdf fa-lg"></i>
                                                     <span id="fileName" class="fw-bold"></span>
                                                 </div>
                                                 <div class="file-actions">
-                                                    <!-- Preview Button -->
                                                     <button type="button" id="previewBtn" data-bs-toggle="modal"
-                                                        data-bs-target="#previewModal" title="Preview">
-                                                        Pratinjau
-                                                    </button>
-                                                    <!-- Delete Button -->
+                                                        data-bs-target="#previewModal" title="Preview">Pratinjau</button>
                                                     <button type="button" class="text-danger" id="deleteBtn"
-                                                        title="Hapus">
-                                                        Hapus
-                                                    </button>
+                                                        title="Hapus">Hapus</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -132,26 +107,26 @@
                                         <small class="text-danger d-block">{{ $message }}</small>
                                     @enderror
                                 </div>
+
                                 <div class="form-group mt-3">
                                     <label for="catatan">Resume Rencana Tindak Lanjut</label>
-
                                     <input type="hidden" name="summary" id="summary">
                                     <div id="editor"></div>
                                     <br>
-
                                     @error('summary')
                                         <small class="text-danger d-block">{{ $message }}</small>
                                     @enderror
                                 </div>
+
                                 <button type="submit" class="bg-primary text-white">Simpan</button>
                             </form>
                         </div>
                     </div>
                 @endif
 
-                @if ($item->followUpActionResponse && $item->followUpActionResponse->score == null)
-                    <div class="card shadow-sm border-0  mt-4">
-                        <div class="card-header bg-primary text-white ">
+                @if ($response && $response->score === null && $now->between($startDate, $endDate))
+                    <div class="card shadow-sm border-0 mt-4">
+                        <div class="card-header bg-primary text-white">
                             <h5 class="mb-0 text-white">
                                 <i class="fa fa-edit"></i> Ubah Data Rencana Tindak Lanjut
                             </h5>
@@ -164,10 +139,8 @@
                                 <input type="hidden" name="follow_up_action_id" value="{{ $item->id }}">
 
                                 <div class="form-group">
-
                                     <div class="mt-2">
                                         <label for="fileSurat" class="form-label">Unggah File Rencana Tindak Lanjut</label>
-                                        <!-- Upload Section -->
                                         <div class="upload-card">
                                             <i class="fas fa-cloud-upload-alt"></i>
                                             <h5 class="mb-3">Pilih berkas atau drag & drop di sini</h5>
@@ -176,26 +149,17 @@
                                             <label for="fileInput">Telusuri Berkas</label>
                                         </div>
 
-
-                                        <!-- File Info Section -->
                                         <div id="fileInfo" style="display: none;">
                                             <div class="file-info">
                                                 <div class="d-flex align-items-center">
-                                                    <!-- Font Awesome Icon PDF -->
                                                     <i class="fas fa-file-pdf fa-lg"></i>
                                                     <span id="fileName" class="fw-bold"></span>
                                                 </div>
                                                 <div class="file-actions">
-                                                    <!-- Preview Button -->
                                                     <button type="button" id="previewBtn" data-bs-toggle="modal"
-                                                        data-bs-target="#previewModal" title="Preview">
-                                                        Pratinjau
-                                                    </button>
-                                                    <!-- Delete Button -->
+                                                        data-bs-target="#previewModal" title="Preview">Pratinjau</button>
                                                     <button type="button" class="text-danger" id="deleteBtn"
-                                                        title="Hapus">
-                                                        Hapus
-                                                    </button>
+                                                        title="Hapus">Hapus</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -210,21 +174,32 @@
                                     <input type="hidden" name="summary" id="summary">
                                     <div id="editor"></div>
                                     <br>
-
                                     @error('summary')
                                         <small class="text-danger d-block">{{ $message }}</small>
                                     @enderror
                                 </div>
+
                                 <button type="submit" class="bg-primary text-white">Simpan</button>
                             </form>
                         </div>
                     </div>
                 @endif
 
+                @if ($response)
+                    <div class="card shadow-sm border-0 mt-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0 text-white">
+                                <i class="fa fa-file"></i> File Rencana Tindak Lanjut
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <iframe src="{{ route('student.follow-up-action.files', $response->participant_file) }}"
+                                class="w-100 border" style="height: 600px;"></iframe>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
-
-
     </div>
 
     <!-- Modal for PDF Preview -->

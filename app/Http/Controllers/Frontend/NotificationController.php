@@ -49,19 +49,6 @@ class NotificationController extends Controller
         }
     }
 
-    public function updateDeviceToken(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'fcm_token' => 'required|string',
-        ]);
-
-        $user = User::find($request->user_id);
-        $user->update(['fcm_token' => $request->fcm_token]);
-
-        return response()->json(['message' => 'Device token updated successfully']);
-    }
-
     function sendNotification(Request $request)
     {
         $request['user_id'] = 1;

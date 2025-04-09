@@ -95,7 +95,6 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::get('/notifications/counter', [NotificationController::class, 'getNotificationCount'])->name('notification.counter');
     Route::get('/notifications/read', [NotificationController::class, 'read'])->name('notification.read');
 
-    Route::put('/update-device-token', [NotificationController::class, 'updateDeviceToken'])->name('firebase.update.token');
     // Route::get('/send-fcm-notification', [NotificationController::class, 'sendNotification'])->name('firebase.send.notification');
 
     /**

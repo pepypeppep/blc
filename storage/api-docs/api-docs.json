@@ -1884,6 +1884,48 @@
                     }
                 }
             }
+        },
+        "/update-device-token": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Update device token",
+                "description": "Update device token",
+                "operationId": "3fc5783a02edc0b6c37587effcd17cb7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "description": "User ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "fcm_token": {
+                                        "description": "FCM token",
+                                        "type": "string",
+                                        "example": "fcm token"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Device token updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "tags": [
@@ -1906,6 +1948,10 @@
         {
             "name": "Article",
             "description": "Pengetahuan API Endpoints"
+        },
+        {
+            "name": "Notifications",
+            "description": "Notifications"
         }
     ]
 }

@@ -997,21 +997,31 @@ class CourseApiController extends Controller
     public function categories()
     {
         try {
-            $categories = CourseCategory::active()->whereNull('parent_id')->with(['translation', 'subCategories' => function ($query) {
-                $query->with('translation');
-            }])->get();
-            $categories = $categories->map(function ($category) {
-                return [
-                    'id' => $category->id,
-                    'name' => $category->translation->name,
-                    'children' => $category->subCategories->map(function ($child) {
-                        return [
-                            'id' => $child->id,
-                            'name' => $child->translation->name
-                        ];
-                    })->toArray()
-                ];
-            })->toArray();
+            // $categories = CourseCategory::active()->whereNull('parent_id')->with(['translation', 'subCategories' => function ($query) {
+            //     $query->with('translation');
+            // }])->get();
+            // $categories = $categories->map(function ($category) {
+            //     return [
+            //         'id' => $category->id,
+            //         'name' => $category->translation->name,
+            //         'children' => $category->subCategories->map(function ($child) {
+            //             return [
+            //                 'id' => $child->id,
+            //                 'name' => $child->translation->name
+            //             ];
+            //         })->toArray()
+            //     ];
+            // })->toArray();
+            $categories = CourseCategory::active()
+                ->with(['translation', 'subCategories.translation'])
+                ->whereNull('parent_id')
+                ->get()
+                ->each(function ($category) {
+                    $category->loadCount('courses');
+                    $category->subCategories->each->loadCount('courses');
+                    $category->courses_count = $category->courses_count + $category->subCategories->sum('courses_count');
+                });
+
             return response()->json([
                 'success' => true,
                 'message' => 'Categories retrieved successfully',

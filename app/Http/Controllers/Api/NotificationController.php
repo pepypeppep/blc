@@ -10,6 +10,50 @@ use Illuminate\Http\Request;
 class NotificationController extends Controller
 {
     /**
+     * @OA\Post(
+     *     path="/update-device-token",
+     *     summary="Update device token",
+     *     description="Update device token",
+     *     tags={"Notifications"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="user_id",
+     *                 type="integer",
+     *                 example=1,
+     *                 description="User ID"
+     *             ),
+     *             @OA\Property(
+     *                 property="fcm_token",
+     *                 type="string",
+     *                 example="fcm token",
+     *                 description="FCM token"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Device token updated successfully"
+     *     )
+     * )
+     */
+    public function updateDeviceToken(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'fcm_token' => 'required|string',
+        ]);
+
+        $user = User::find($request->user_id);
+        $user->update(['fcm_token' => $request->fcm_token]);
+
+        return response()->json(['message' => 'Device token updated successfully']);
+    }
+
+    /**
      * @OA\Get(
      *     path="/notifications",
      *     summary="Get notification list",

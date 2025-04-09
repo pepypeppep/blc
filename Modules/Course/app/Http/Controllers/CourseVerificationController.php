@@ -46,6 +46,24 @@ class CourseVerificationController extends Controller
                     'has_access' => $validated['status'],
                     'notes' => $validated['status'] == 0 ? $validated['reason'] : null,
                 ]);
+
+            if ($validated['status'] == 1) {
+                $status = "Telah disetujui oleh Admin";
+            } else {
+                $status = "Telah ditolak oleh Admin";
+            }
+
+            // Send notification
+            sendNotification([
+                'user_id' => $userId,
+                'title' => 'Permintaan bergabung pelatihan',
+                'body' => "Permintaan bergabung pelatihan Anda " . $status,
+                'link' => route('student.enrolled-courses'),
+                'path' => [
+                    'module' => 'course',
+                    'id' => $validated['course_id']
+                ]
+            ]);
         }
 
         event(new UserBadgeUpdated($request->user_ids));
@@ -56,14 +74,12 @@ class CourseVerificationController extends Controller
 
     public function rejectedList($id)
     {
-
         $submenu = 'Verifikasi Rejected';
         $rejectedUsers = Enrollment::with('user', 'course')
             ->where('course_id', $id)
             ->where('has_access', 0)
             ->whereNotNull('has_access')
             ->get();
-
 
         return view('course::course-verification.rejected', compact('rejectedUsers', 'submenu'));
     }

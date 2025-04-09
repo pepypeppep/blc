@@ -125,6 +125,20 @@ class VacancyParticipantController extends Controller
             ]);
             vacancyLog($request);
 
+            if ($request->status != 'draft_verification' && $request->status != 'draft_assessment') {
+                // Send notification
+                sendNotification([
+                    'user_id' => $vacancyUser->user_id,
+                    'title' => $name,
+                    'body' => $name . " " . $request->description ?? "Telah diverifikasi oleh Admin",
+                    'link' => route('student.continuing-education.registration.show', $vacancyUser->id),
+                    'path' => [
+                        'module' => 'pendidikan-lanjutan',
+                        'id' => $vacancyUser->id
+                    ]
+                ]);
+            }
+
             // Commit transaction
             DB::commit();
 
@@ -243,6 +257,24 @@ class VacancyParticipantController extends Controller
             ]);
             vacancyLog($request);
 
+            if ($request->statusReport == 'accepted') {
+                $status = "diterima";
+            } elseif ($request->statusReport == 'rejected') {
+                $status = "ditolak";
+            }
+
+            // Send notification
+            sendNotification([
+                'user_id' => $vacancyReport->vacancy_user_id,
+                'title' => "Verifikasi Laporan",
+                'body' => "Laporan Anda " . $status . " oleh Admin." . $request->description,
+                'link' => route('student.continuing-education.registration.show', $vacancyReport->vacancy_user_id),
+                'path' => [
+                    'module' => 'pendidikan-lanjutan',
+                    'id' => $vacancyReport->vacancy_user_id
+                ]
+            ]);
+
             // Commit transaction
             DB::commit();
 
@@ -279,11 +311,29 @@ class VacancyParticipantController extends Controller
             // Update Vacancy Report Log
             $request->merge([
                 'vacancy_user_id' => $activation->vacancy_user_id,
-                'name' => "Verifikasi Laporan",
+                'name' => "Verifikasi Berkas Aktivasi",
                 'status' => $request->activation_status,
                 'description' => $request->description
             ]);
             vacancyLog($request);
+
+            if ($request->activation_status == 'accepted') {
+                $status = "diterima";
+            } elseif ($request->activation_status == 'rejected') {
+                $status = "ditolak";
+            }
+
+            // Send notification
+            sendNotification([
+                'user_id' => $activation->vacancy_user_id,
+                'title' => "Verifikasi Berkas Aktivasi",
+                'body' => "Berkas Aktivasi Anda " . $status . " oleh Admin." . $request->description,
+                'link' => route('student.continuing-education.registration.show', $activation->vacancy_user_id),
+                'path' => [
+                    'module' => 'pendidikan-lanjutan',
+                    'id' => $activation->vacancy_user_id
+                ]
+            ]);
 
             // Commit transaction
             DB::commit();

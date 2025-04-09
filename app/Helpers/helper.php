@@ -25,9 +25,11 @@ use Modules\Currency\app\Models\MultiCurrency;
 use Modules\GlobalSetting\app\Models\CustomCode;
 use Modules\BasicPayment\app\Models\BasicPayment;
 use App\Exceptions\AccessPermissionDeniedException;
+use App\Models\Notification;
 use Modules\BasicPayment\app\Models\PaymentGateway;
 use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
+use Google\Client as GoogleClient;
 
 function file_upload(UploadedFile $file, string $path = 'uploads/custom-images/', string | null $oldFile = '', bool $optimize = false)
 {
@@ -899,38 +901,85 @@ if (!function_exists('employee_detail')) {
 
 
 if (!function_exists('sendNotification')) {
-    function sendNotification(Request $request)
+    function sendNotification($data)
     {
-        $firebaseToken = User::where('id', $request->user_id)->whereNotNull('fcm_token')->pluck('fcm_token')->all();
+        $notif = Notification::create([
+            'user_id' => $data['user_id'],
+            'title' => $data['title'],
+            'message' => strip_tags($data['body']),
+            'link' => $data['link'],
+            'path' => json_encode($data['path'])
+        ]);
 
-        $SERVER_API_KEY = env('FCM_SERVER_KEY');
+        $data['title'] = '[BLC] Pemberitahuan';
 
-        $data = [
-            "registration_ids" => $firebaseToken,
-            "notification" => [
-                // "title" => $request->title,
-                // "body" => $request->body,
-                "message" => $request->message,
-            ]
-        ];
+        // $request->validate([
+        //     'user_id' => 'required|exists:users,id',
+        //     'title' => 'required|string', //Nama aplikasi
+        //     'body' => 'required|string', //Teks pemberitahuan
+        // ]);
 
-        $dataString = json_encode($data);
+        $user = User::find($data['user_id']);
+        $fcm = $user->fcm_token;
+
+        if (!$fcm) {
+            return response()->json(['message' => 'User does not have a device token'], 400);
+        }
+
+        $title = $data['title'];
+        $description = strip_tags($data['body']);
+        // $projectId = config('services.fcm.project_id'); # INSERT COPIED PROJECT ID
+        $projectId = 'bantul-lms';
+
+        $credentialsFilePath = Storage::path('json/bantul-lms-firebase.json');
+        $client = new GoogleClient();
+        $client->setAuthConfig($credentialsFilePath);
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+        $client->refreshTokenWithAssertion();
+        $token = $client->getAccessToken();
+
+        $access_token = $token['access_token'];
 
         $headers = [
-            'Authorization: key=' . $SERVER_API_KEY,
-            'Content-Type: application/json',
+            "Authorization: Bearer $access_token",
+            'Content-Type: application/json'
         ];
 
+        $data = [
+            "message" => [
+                "token" => $fcm,
+                "notification" => [
+                    "title" => $title,
+                    "body" => $description,
+                    "link" => $data['link'],
+                    "path" => $data['path']
+                ],
+            ]
+        ];
+        $payload = json_encode($data);
+        dd($payload);
+
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_URL, "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send");
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
-
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_VERBOSE, true); // Enable verbose output for debugging
         $response = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
 
-        // return back()->with('success', 'Notification send successfully.');
+        if ($err) {
+            return response()->json([
+                'message' => 'Curl Error: ' . $err
+            ], 500);
+        } else {
+            return response()->json([
+                'message' => 'Notification has been sent',
+                'response' => json_decode($response, true)
+            ]);
+        }
     }
 }

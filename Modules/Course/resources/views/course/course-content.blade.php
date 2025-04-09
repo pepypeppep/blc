@@ -62,6 +62,7 @@
                                                                     <span class="icon-container"><i
                                                                             class="far fa-folder"></i></span>
                                                                     <p class="mb-0 ms-2 bold-text">{{ $chapter->title }}
+                                                                        ({{ $chapter->jp }} {{ __('hours') }})
                                                                     </p>
                                                                 </div>
                                                             </div>

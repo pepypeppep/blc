@@ -16,7 +16,8 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
-
+use Modules\Course\app\Models\CourseLevel;
+use Modules\Course\app\Models\CourseLevelTranslation;
 
 class CourseSeeder extends Seeder
 {
@@ -432,7 +433,7 @@ class CourseSeeder extends Seeder
             $course->demo_video_source = "https://www.youtube.com/watch?v=MHhIzIgFgJo";
             $course->description = "<p>Laravel 10: Build Realtime Messaging App From Scratch (2024)</p>\r\n<p>Are you ready to take your Laravel skills to the next level? In this course, you will build a complete <strong>Realtime Messaging System</strong> project from scratch using Laravel 10 and Pusher. This project-based course is designed to help you become a professional Laravel developer and give you a competitive edge in the job market.</p>\r\n<p><strong>Why Learn Laravel 10?</strong></p>\r\n<p>Laravel 10 is the latest version of the popular PHP framework and comes packed with new features and improvements, making it faster and more efficient than ever before. It's easy to learn and has a huge community, making it the perfect choice for building robust and scalable web applications.</p>\r\n<p><strong>What Will You Learn?</strong></p>\r\n<p>In this course, you will learn how to build a feature-rich <strong>Realtime Messaging</strong> platform with advanced functionalities such as:</p>\r\n<ul>\r\n<li>User to User Live Chat</li>\r\n<li>Pusher Implementation</li>\r\n<li>Server Side Event Broadcasting</li>\r\n<li>Laravel Echo Implementation</li>\r\n<li>Working with Private Cannels</li>\r\n<li>Working with Presence Channels</li>\r\n<li>Listening Events From Client Side</li>\r\n<li>Request Debouncing</li>\r\n<li>Live Search</li>\r\n<li>Live Image Sending</li>\r\n<li>Ajax Scroll to Paginate</li>\r\n<li>Message Delete Feature</li>\r\n<li>Add Contact to Favorites</li>\r\n<li>Dynamic Image Gallery</li>\r\n<li>Profile Update Feature</li>\r\n<li>Personal Inbox</li>\r\n<li>Laravel Brezze For Auth</li>\r\n<li>And More</li>\r\n</ul>\r\n<p><strong>Why Choose This Course?</strong></p>\r\n<p>Unlike other courses that only cover the basics, this course is designed to help you build a complete, real-world project from scratch. You will not only learn how to write code, but also gain valuable insights into project management and best practices. Plus, you will have access to the complete source code of the project and lifetime access to the course materials.</p>\r\n<p>What's more, once you have completed this course, you will have a highly marketable skill set and the potential to earn a high income as a professional Laravel developer.</p>\r\n<p>Enroll now and take the first step towards building your dream <strong>Job Portal</strong> platform with Laravel 10!</p>\r\n<h2>Who this course is for:</h2>\r\n<ul>\r\n<li>Aspiring developers who want to become proficient in Laravel.</li>\r\n<li>Web developers who want to take their Laravel/PHP skills to the next level.</li>\r\n<li>Students who want to gain practical experience in building modern app with Laravel.</li>\r\n<li>University students who need to complete a project assignment using Laravel.</li>\r\n<li>Developers who want to learn about realtime features implementations</li>\r\n</ul>\r\n<p>&nbsp;</p>";
             $course->capacity = NULL;
-            $course->price = rand(50, 200);
+            $course->jp = rand(1, 72);
             $course->discount = null;
             $course->certificate = 1;
             $course->downloadable = 0;
@@ -592,6 +593,43 @@ class CourseSeeder extends Seeder
                 }
             }
         }
+
+        // Create course levels
+        CourseLevel::create([
+            'id' => '1',
+            'slug' => 'pemula',
+            'status' => '1',
+        ]);
+
+        CourseLevelTranslation::create([
+            'course_level_id' => '1',
+            'lang_code' => 'id',
+            'name' => 'Pemula',
+        ]);
+
+        CourseLevel::create([
+            'id' => '2',
+            'slug' => 'menengah',
+            'status' => '1',
+        ]);
+
+        CourseLevelTranslation::create([
+            'course_level_id' => '2',
+            'lang_code' => 'id',
+            'name' => 'Menengah',
+        ]);
+
+        CourseLevel::create([
+            'id' => '3',
+            'slug' => 'mahir',
+            'status' => '1',
+        ]);
+
+        CourseLevelTranslation::create([
+            'course_level_id' => '3',
+            'lang_code' => 'id',
+            'name' => 'Mahir',
+        ]);
     }
 
     public function getRandomFilename()

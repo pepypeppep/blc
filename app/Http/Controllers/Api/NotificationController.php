@@ -139,15 +139,11 @@ class NotificationController extends Controller
     {
         try {
             $user = User::where('id', $request->user_id)->first();
-            $notifications = Notification::where('user_id', $user->id)->limit(5)->orderByDesc('id')->get();
-            $counter = Notification::where('user_id', $user->id)->where('is_read', 0)->count();
+            $notifications = Notification::where('user_id', $user->id)->orderByDesc('id')->paginate(1);
 
             return response()->json([
                 'status' => 'success',
-                'data' => [
-                    'notifications' => $notifications,
-                    'counter' => $counter
-                ]
+                'data' => $notifications
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

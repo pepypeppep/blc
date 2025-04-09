@@ -147,8 +147,7 @@
                                                 fill="currentcolor" />
                                         </svg>
 
-                                        <select class="form-select select_js w_150px"
-                                            aria-label="Default select example" name="main_category">
+                                        <select class="form-select select_js w_150px" aria-label="Default select example" name="main_category">
                                             <option selected disabled>{{ __('Categories') }}</option>
                                             @foreach ($categories as $category)
                                                 <option @selected(request('main_category') == $category->slug) value="{{ $category->slug }}">
@@ -166,6 +165,10 @@
                             </div>
                             <div class="tgmenu__action">
                                 <ul class="list-wrap">
+                                    <!-- Notification Dropdown -->
+                                    <li class="notification-icon" id="notificationList"></li>
+
+                                    <!-- Existing User Icon -->
                                     <li class="mini-cart-icon user_icon">
                                         <a href="javascript:;" class="cart-count">
                                             <img src="{{ asset('frontend/img/icons/menu_user.svg') }}" alt="img">

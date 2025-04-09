@@ -400,7 +400,6 @@ class CourseContentController extends Controller
 
     function chapterLessonDestroy(string $chapterItemId)
     {
-        dd($chapterItemId);
         $chapterItem = CourseChapterItem::findOrFail($chapterItemId);
         abort_if($chapterItem->instructor_id != auth('web')->user()->id, 403, __('unauthorized access'));
 
@@ -414,7 +413,6 @@ class CourseContentController extends Controller
             $quiz->delete();
             $chapterItem->delete();
         } else if ($chapterItem->type == 'rtl') {
-            dd('a');
             $followUpAction = $chapterItem->followUpAction;
             if ($followUpAction) {
                 $followUpAction->delete();

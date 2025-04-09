@@ -16,11 +16,17 @@ class FollowUpAction extends Model
         'course_id',
         'title',
         'description',
+        'start_date',
         'due_date',
     ];
 
     function course(): BelongsTo
     {
         return $this->belongsTo(Course::class, 'course_id', 'id')->withTrashed();
+    }
+
+    function chapter(): BelongsTo
+    {
+        return $this->belongsTo(CourseChapter::class, 'chapter_id', 'id');
     }
 }

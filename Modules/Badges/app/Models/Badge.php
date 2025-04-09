@@ -12,4 +12,11 @@ class Badge extends Model
 
     protected $guarded = [];
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_badge')
+                    ->withPivot('category')
+                    ->withTimestamps();
+    }
+
 }

@@ -1,12 +1,14 @@
 <?php
 
-use App\Http\Controllers\Api\CertificateApiController;
-use App\Http\Controllers\Api\CourseApiController;
-use App\Http\Controllers\Api\HomeController;
-use App\Http\Controllers\Api\ReviewApiController;
-use App\Http\Controllers\Api\PendidikanLanjutanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\CourseApiController;
+use App\Http\Controllers\Api\ReviewApiController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\CertificateApiController;
+use App\Http\Controllers\Api\PendidikanLanjutanController;
 
 Route::middleware('auth:sso-api')->get('/hello', function (Request $request) {
 
@@ -23,6 +25,9 @@ Route::name('api.')->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('privacy-policy');
     Route::get('/terms-and-conditions', [HomeController::class, 'termsAndConditions'])->name('terms-and-conditions');
+
+    Route::get('/notifications', [NotificationController::class, 'list'])->name('notification.list');
+    Route::get('/notifications/read', [NotificationController::class, 'read'])->name('notification.read');
 
     // Course
     Route::get('/courses', [CourseApiController::class, 'courses'])->name('courses');
@@ -52,5 +57,10 @@ Route::name('api.')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'index']);
             Route::get('/{id}', [PendidikanLanjutanController::class, 'show']);
         });
+    });
+
+    // Article
+    Route::name('article.')->group(function () {
+        Route::get('/articles', [ArticleController::class, 'index'])->name('index');
     });
 });

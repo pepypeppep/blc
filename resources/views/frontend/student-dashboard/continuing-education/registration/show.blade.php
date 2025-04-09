@@ -7,6 +7,15 @@
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title">
             <h4 class="title">{{ __('Detail Pendaftaran Tugas Belajar') }}</h4>
+            @if ($vacancy->status === VacancyUser::STATUS_DONE)
+                <div class="col-md-12 mb-2">
+                    <div class="alert alert-success">
+                        <div class="alert-body">
+                            Pencantuman Gelar dapat dilakukan melalui laman SIASN BKN
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
         <div class="row mb-4">
             <div class="col-lg-12">
@@ -31,6 +40,7 @@
                                         $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
                                             $vacancy->status === VacancyUser::STATUS_DONE ||
                                             $vacancy->status === VacancyUser::STATUS_REPORT ||
+                                            $vacancy->status === VacancyUser::STATUS_ACTIVATION ||
                                             $vacancy->status === VacancyUser::STATUS_EXTEND)
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link" id="itemSix-tab" data-bs-toggle="tab"
@@ -45,6 +55,14 @@
                                                 tabindex="-1">Laporan</button>
                                         </li>
                                     @endif
+                                    @if ($vacancy->status === VacancyUser::STATUS_DONE || $vacancy->status === VacancyUser::STATUS_ACTIVATION)
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="pengaktifan-tab" data-bs-toggle="tab"
+                                                data-bs-target="#pengaktifan-tab-pane" type="button" role="tab"
+                                                aria-controls="pengaktifan-tab-pane" aria-selected="false"
+                                                tabindex="-1">Pengaktifan</button>
+                                        </li>
+                                    @endif
                                 </ul>
                             </div>
                             <div class="tab-content" id="myTabContent">
@@ -54,9 +72,13 @@
                                     $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
                                         $vacancy->status === VacancyUser::STATUS_DONE ||
                                         $vacancy->status === VacancyUser::STATUS_REPORT ||
+                                        $vacancy->status === VacancyUser::STATUS_ACTIVATION ||
                                         $vacancy->status === VacancyUser::STATUS_EXTEND)
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.lampiran')
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.laporan')
+                                @endif
+                                @if ($vacancy->status === VacancyUser::STATUS_DONE || $vacancy->status === VacancyUser::STATUS_ACTIVATION)
+                                    @include('frontend.student-dashboard.continuing-education.registration.partials.pengaktifan')
                                 @endif
                             </div>
                         </div>
@@ -175,6 +197,19 @@
             var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
                 return new bootstrap.Popover(popoverTriggerEl);
             });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            if (@js($vacancy->status) === @js(VacancyUser::STATUS_DONE)) {
+                swal.fire({
+                    title: 'Pencantuman Gelar',
+                    text: 'Pencantuman Gelar dapat dilakukan melalui laman SIASN BKN',
+                    icon: 'success',
+                    button: 'OK',
+                });
+            }
         });
     </script>
 @endpush

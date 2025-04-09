@@ -60,6 +60,7 @@ class DatabaseSeeder extends Seeder
             CurrencySeeder::class,
 
             PendidikanLanjutanDatabaseSeeder::class,
+            TagSeeder::class,
         ]);
     }
 }

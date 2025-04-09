@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\VacancyReport;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Frontend\StudentActivationRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
@@ -18,6 +19,7 @@ use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use Modules\PendidikanLanjutan\app\Models\VacancySchedule;
 use App\Http\Requests\Frontend\StudentVacancyReportRequest;
 use App\Http\Requests\Frontend\UploadRequirementFileRequest;
+use Modules\PendidikanLanjutan\app\Models\VacancyActivation;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyMasterReportFiles;
@@ -57,7 +59,9 @@ class StudentPendidikanLanjutanController extends Controller
         $lampirans = VacancyAttachment::lampiran()->where('vacancy_id', $vacancy->vacancy_id)->get();
         $reports = VacancyReport::where('vacancy_user_id', $vacancy->id)->orderBy('name')->get();
         $reportsFiles = VacancyMasterReportFiles::where('is_active', 1)->get();
-        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancy', 'logs', 'attachments', 'lampirans', 'reports', 'reportsFiles'));
+        $activations = VacancyAttachment::aktivasi()->where('vacancy_id', $vacancy->vacancy_id)->get();
+        $userActivation = VacancyActivation::where('vacancy_user_id', $vacancy->id)->get();
+        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancy', 'logs', 'attachments', 'lampirans', 'reports', 'reportsFiles', 'activations', 'userActivation'));
     }
 
     // detail pendidikan
@@ -97,6 +101,7 @@ class StudentPendidikanLanjutanController extends Controller
         })->get();
 
         $meetCondition = (count($vacancyTakeConditions) == count($vacancyConditions));
+
 
         return view('frontend.student-dashboard.continuing-education.show', compact('vacancy', 'vacancyUser', 'vacancyConditions', 'meetCondition', 'passAgeLimit', 'passEmployeeGrade'));
     }
@@ -376,6 +381,110 @@ class StudentPendidikanLanjutanController extends Controller
         }
 
         $filePath = Storage::disk('private')->path($vacancyReport->file);
+        return response()->file($filePath);
+    }
+
+    public function uploadRequirementActivation(StudentActivationRequest $request, $vacancyAttachmentId)
+    {
+        $vacancyAttachment = VacancyAttachment::findOrFail($vacancyAttachmentId);
+
+        if ($vacancyAttachment->category != 'aktivasi') {
+            return redirect()->back()->with(['messege' => 'Pendidikan tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $vacancyAttachment->vacancy_id)->with('vacancy')->first();
+
+        if (!$vacancyUser) {
+            return redirect()->back()->with(['messege' => 'Pendidikan tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        if ($vacancyUser->status == VacancyUser::STATUS_REGISTER) {
+            return redirect()->back()->with(['messege' => 'Anda belum terdaftar', 'alert-type' => 'error']);
+        }
+
+        if ($vacancyUser->status == VacancyUser::STATUS_VERIFICATION) {
+            return redirect()->back()->with(['messege' => 'Anda belum diverifikasi', 'alert-type' => 'error']);
+        }
+
+        $vacancyActivation = VacancyActivation::where('vacancy_user_id', $vacancyUser->id)->where('vacancy_attachment_id', $vacancyAttachment->id)->first();
+
+        $file = $request->file('file');
+        $fileName = "pendidikan_lanjutan/" . now()->year . "/aktivasi" . "/" . $vacancyUser->vacancy_id . "/" . now()->month . "_" . str_replace([' ', '/'], '_', $vacancyAttachment->name) . "_" . str_replace(' ', '_', userAuth()->name) . ".pdf";
+
+
+        if ($vacancyActivation) {
+            Storage::disk('private')->delete($vacancyActivation->file);
+            Storage::disk('private')->put($fileName, file_get_contents($file));
+            $result = $vacancyActivation->update([
+                'file' => $fileName,
+                'status' => 'pending',
+            ]);
+            if (!$result) {
+                return redirect()->back()->with(['messege' => 'Upload file gagal', 'alert-type' => 'error']);
+            }
+
+            VacancyLogs::create([
+                'vacancy_user_id' => $vacancyUser->id,
+                'name' => 'Update file aktivasi',
+                'description' => $vacancyAttachment->name . ' telah diupdate',
+                'status' => 'success',
+            ]);
+
+            return redirect()->back()->with(['messege' => 'File berhasil diupdate', 'alert-type' => 'success']);
+        }
+
+        Storage::disk('private')->put($fileName, file_get_contents($file));
+        $result = VacancyActivation::create([
+            'vacancy_user_id' => $vacancyUser->id,
+            'vacancy_attachment_id' => $vacancyAttachment->id,
+            'name' => $fileName,
+            'file' => $fileName,
+            'status' => 'pending',
+        ]);
+        if (!$result) {
+            return redirect()->back()->with(['messege' => 'Upload file gagal', 'alert-type' => 'error']);
+        }
+        VacancyLogs::create([
+            'vacancy_user_id' => $vacancyUser->id,
+            'name' => 'Upload file aktivasi',
+            'description' => $vacancyAttachment->name . ' telah diupload',
+            'status' => 'success',
+        ]);
+        return redirect()->back()->with(['messege' => 'Upload file berhasil', 'alert-type' => 'success']);
+    }
+
+    public function deleteRequirementActivation($vacancyAttachmentId, $userActivationId)
+    {
+        $vacancyAttachment = VacancyAttachment::findOrFail($vacancyAttachmentId);
+        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $vacancyAttachment->vacancy_id)->with('vacancy')->first();
+        $vacancyActivation = VacancyActivation::findOrFail($userActivationId);
+
+        if ($vacancyActivation->vacancy_user_id != $vacancyUser->id) {
+            return redirect()->back()->with(['messege' => 'File tidak ditemukan', 'alert-type' => 'error']);
+        }
+        if ($vacancyActivation->vacancy_attachment_id != $vacancyAttachment->id) {
+            return redirect()->back()->with(['messege' => 'File tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        Storage::disk('private')->delete($vacancyActivation->file);
+        $vacancyActivation->delete();
+        return redirect()->back()->with(['messege' => 'File berhasil dihapus', 'alert-type' => 'success']);
+    }
+
+    public function viewRequirementActivation($vacancyAttachmentId, $userActivationId)
+    {
+        $vacancyAttachment = VacancyAttachment::findOrFail($vacancyAttachmentId);
+        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $vacancyAttachment->vacancy_id)->with('vacancy')->first();
+        $vacancyActivation = VacancyActivation::findOrFail($userActivationId);
+
+        if ($vacancyActivation->vacancy_user_id != $vacancyUser->id) {
+            return redirect()->back()->with(['messege' => 'File tidak ditemukan', 'alert-type' => 'error']);
+        }
+        if ($vacancyActivation->vacancy_attachment_id != $vacancyAttachment->id) {
+            return redirect()->back()->with(['messege' => 'File tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        $filePath = Storage::disk('private')->path($vacancyActivation->file);
         return response()->file($filePath);
     }
 }

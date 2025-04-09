@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('vacancy_activations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('vacancy_user_id')->constrained('vacancy_users')->cascadeOnDelete();
+            $table->unsignedBigInteger('vacancy_attachment_id')->cascadeOnDelete();
             $table->string('name');
             $table->string('file');
             $table->string('status')->default('review');

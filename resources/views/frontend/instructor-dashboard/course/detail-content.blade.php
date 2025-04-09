@@ -80,7 +80,16 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="participants-tab" data-bs-toggle="tab"
                                 data-bs-target="#participants-tab-pane" type="button" role="tab"
-                                aria-controls="participants-tab-pane" aria-selected="false">{{ __('Peserta') }}</button>
+                                aria-controls="participants-tab-pane" aria-selected="false">{{ __('Peserta') }}
+                                <span class="badge rounded-pill bg-info text-white">
+                                    {{ $course->enrollments->count() == 0 ? 0 : $course->enrollments->count() }} 
+                                </span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="rtl-tab" data-bs-toggle="tab" data-bs-target="#rtl-tab-pane"
+                                type="button" role="tab" aria-controls="rtl-tab-pane"
+                                aria-selected="false">{{ __('Rencana Tindak Lanjut') }}</button>
                         </li>
 
                     </ul>
@@ -103,8 +112,9 @@
                                         <div class="accordion-item">
                                             <h2 class="accordion-header" id="heading{{ $chapter->id }}">
                                                 <button class="accordion-button collapsed" type="button"
-                                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ $chapter->id }}"
-                                                    aria-expanded="false" aria-controls="collapse{{ $chapter->id }}">
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#collapse{{ $chapter->id }}" aria-expanded="false"
+                                                    aria-controls="collapse{{ $chapter->id }}">
                                                     {{ $loop->iteration }}. {{ $chapter?->title }}
                                                 </button>
                                             </h2>
@@ -231,13 +241,25 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($course->enrollments as $enrollment)
-                                            <tr>
-                                                <td>{{ $enrollment->user->name }}</td>
-                                                <td>{{ $enrollment->user->email }}</td>
-                                                <td>{{ $enrollment->created_at->format('d/m/Y') }}</td>
-                                            </tr>
-                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="rtl-tab-pane" role="tabpanel" aria-labelledby="rtl-tab"
+                            tabindex="0">
+                            <div class="courses__overview-wrap border-0" style="border-radius: 0%">
+                                <h3 class="title">{{ __('Daftar Rencana Tindak Lanjut') }}</h3>
+
+                                <table id="rtlTable" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th> Materi</th>
+                                            <th> Rencana Tindak Lanjut</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                     </tbody>
                                 </table>
 
@@ -249,163 +271,135 @@
                 </div>
 
             </div>
-            {{-- <div class="col-md-4">
-                <div class="card">
-                    <div class="image-container">
-                        <img alt="Two people practicing Taekwondo with neon lights in the background" class="card-img-top"
-                            src="{{ asset($course->thumbnail) }}"
-                            onerror="this.onerror=null; this.src='{{ asset('frontend/img/bg/video_bg.jpg') }}'" />
-                        <div class="play-button">
-                            @if ($course->demo_video_source)
-                                <a href="{{ $course->demo_video_source }}" class="popup-video"
-                                    style="color: #dfe4ea; hover: color: #a4b0be;" aria-label="{{ $course?->title }}">
-                                    <i class="fas fa-play-circle">
-                                    </i>
-                                </a>
-                            @endif
-
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex flex-wrap mb-2">
-                            @foreach ($course->levels as $level)
-                                <span class="badge bg-info me-1" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;">
-                                    {{ $level->level->slug }}
-                                </span>
-                            @endforeach
-                        </div>
-                        <ul class="list-unstyled">
-
-                            <li style="padding: 5px; margin-bottom: 5px;">
-                                <i class="far fa-clock "></i>Durasi Pelatihan {{ $course->duration }} Menit
-                            </li>
-
-                            <li style="padding: 5px; margin-bottom: 5px;">
-                                <i class="fas fa-users "></i>
-                                {{ $course->capacity ? $course->capacity . ' Peserta' : 'Tanpa Batas' }}
-                            </li>
-                            <li style="padding: 5px; margin-bottom: 5px;">
-                                @if ($course->qna == 1)
-                                    <i class="fas fa-check-circle text-success"></i> Tanya Jawab
-                                @else
-                                    <i class="fas fa-times-circle text-danger"></i> Tanya Jawab
-                                @endif
-                            </li>
-                            <li style="padding: 5px; margin-bottom: 5px;">
-                               
-                            </li>
-                        </ul>
-
-                    </div>
-                </div>
-            </div> --}}
         </div>
-    @endsection
+    </div>
+@endsection
 
 
 
-    @push('styles')
-        <!-- datatables -->
-        <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-        <style>
-            .contact-card {
-                transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            }
+@push('styles')
+    <!-- datatables -->
+    <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        .contact-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
 
-            .contact-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            }
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
 
-            .social-icon {
-                transition: all 0.3s ease;
-                cursor: pointer;
-            }
+        .social-icon {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
 
-            .social-icon:hover {
-                transform: scale(1.2);
-            }
+        .social-icon:hover {
+            transform: scale(1.2);
+        }
 
-            .play-button a {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 60px;
-                height: 60px;
-                background-color: rgba(255, 0, 0, 0.8);
-                /* Warna merah transparan */
-                color: white;
-                border-radius: 50%;
-                transition: all 0.3s ease-in-out;
-                text-decoration: none;
-            }
+        .play-button a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 0, 0, 0.8);
+            /* Warna merah transparan */
+            color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease-in-out;
+            text-decoration: none;
+        }
 
-            .play-button a i {
-                font-size: 2rem;
-                transition: transform 0.3s ease-in-out;
-            }
+        .play-button a i {
+            font-size: 2rem;
+            transition: transform 0.3s ease-in-out;
+        }
 
-            .play-button a:hover {
-                background-color: rgba(255, 0, 0, 1);
-                /* Warna merah solid saat hover */
-                transform: scale(1.1);
-            }
+        .play-button a:hover {
+            background-color: rgba(255, 0, 0, 1);
+            /* Warna merah solid saat hover */
+            transform: scale(1.1);
+        }
 
-            .play-button a:hover i {
-                transform: scale(1.2);
-            }
+        .play-button a:hover i {
+            transform: scale(1.2);
+        }
 
 
-            .image-container {
-                position: relative;
-                height: 200px;
-                overflow: hidden;
-            }
+        .image-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
 
-            .image-container img {
-                position: absolute;
-                top: -20px;
-                left: 0;
-                width: 100%;
-                height: auto;
-            }
+        .image-container img {
+            position: absolute;
+            top: -20px;
+            left: 0;
+            width: 100%;
+            height: auto;
+        }
 
-            .title-background {
-                background-color: #e9ecef;
-                padding: 10px;
-            }
-        </style>
-    @endpush
+        .title-background {
+            background-color: #e9ecef;
+            padding: 10px;
+        }
+    </style>
+@endpush
 
-    @push('scripts')
-        <script src="{{ asset('global/js/jquery-ui.min.js') }}"></script>
-        <script src="{{ asset('global/js/jquery.ui.touch-punch.min.js') }}"></script>
-        <script src="{{ asset('frontend/js/default/courses.js') }}?v={{ $setting?->version }}"></script>
-        <!-- datatables -->
-        <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script>
+@push('scripts')
+    <script src="{{ asset('global/js/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('global/js/jquery.ui.touch-punch.min.js') }}"></script>
+    <script src="{{ asset('frontend/js/default/courses.js') }}?v={{ $setting?->version }}"></script>
+    <!-- datatables -->
+    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script>
 
-        <script>
-            $(document).ready(function() {
-                // Initialize DataTable
-                $('#enrollmentsTable').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: "{{ route('instructor.courses.detail', ['id' => $course->id]) }}",
-                    columns: [{
-                            data: 'name',
-                            name: 'name'
-                        },
-                        {
-                            data: 'email',
-                            name: 'email'
-                        },
-                        {
-                            data: 'created_at',
-                            name: 'created_at'
-                        }
-                    ]
-                });
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#enrollmentsTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('instructor.courses.detail', ['id' => $course->id]) }}",
+                columns: [{
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    }
+                ]
             });
-        </script>
-    @endpush
+
+            $('#rtlTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('instructor.courses.list-rtl', ['id' => $course->id]) }}",
+                columns: [{
+                        data: 'chapter.title',
+                        name: 'chapter.title'
+                    },
+                    {
+                        data: 'follow_up_action.title',
+                        name: 'follow_up_action.title'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
+            });
+        });
+    </script>
+@endpush

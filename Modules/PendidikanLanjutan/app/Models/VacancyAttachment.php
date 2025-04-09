@@ -33,6 +33,11 @@ class VacancyAttachment extends Model
         return $this->where('category', 'lampiran');
     }
 
+    public function scopeAktivasi()
+    {
+        return $this->where('category', 'aktivasi');
+    }
+
     public function attachment()
     {
         return $this->hasMany(VacancyUserAttachment::class);

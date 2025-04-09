@@ -10,6 +10,12 @@
                     {{ __('Dashboard') }}
                 </a>
             </li>
+            <li class="{{ Route::is('student.pengetahuan.*') ? 'active' : '' }}">
+                <a href="{{ route('student.pengetahuan.index') }}">
+                    <img src="{{ asset('uploads/website-images/dashboard.svg') }}">
+                    {{ __('Pengetahuan') }}
+                </a>
+            </li>
             <li class="">
                 <a class="d-flex align-items-center text-decoration-none" data-bs-toggle="collapse" href="#courseMenu"
                     role="button" aria-expanded="true" aria-controls="courseMenu" id="courseMenuToggle">
@@ -17,31 +23,31 @@
                     {{ __('Course') }}
                     <i class="fa fa-chevron-down ms-auto collapse-icon " style="font-size: 10px;"></i>
                 </a>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
                     id="courseMenu">
                     <li class="{{ Route::is('student.enrolled-courses') ? 'active' : '' }}">
                         <a href="{{ route('student.enrolled-courses') }}">
                             <i class="flaticon-mortarboard"></i>{{ __('Enrolled Courses') }}</a>
                     </li>
                 </ul>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
                     id="courseMenu">
                     <li class="{{ Route::is('student.reviews.index') ? 'active' : '' }}">
                         <a href="{{ route('student.reviews.index') }}">
                             <img src="{{ asset('uploads/website-images/reviews.svg') }}">{{ __('Reviews') }}</a>
                     </li>
                 </ul>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
                     id="courseMenu">
                     <li class="{{ Route::is('student.quiz-attempts') ? 'active' : '' }}">
                         <a href="{{ route('student.quiz-attempts') }}">
                             <img src="{{ asset('uploads/website-images/quiz.svg') }}">{{ __('My Quiz Attempts') }}</a>
                     </li>
                 </ul>
-                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') || Route::is('student.follow-up-action.index') ? 'show' : '' }}"
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.enrolled-courses') || Route::is('student.reviews.index') || Route::is('student.quiz-attempts') ? 'show' : '' }}"
                     id="courseMenu">
-                    <li class="{{ Route::is('student.follow-up-action.index') ? 'active' : '' }}">
-                        <a href="{{ route('student.follow-up-action.index') }}">
+                    <li>
+                        <a href="javascript:void(0);">
                             <i class="fa fa-receipt"></i>{{ __('FollowUpAction') }}</a>
                     </li>
                 </ul>
@@ -91,6 +97,14 @@
     </div>
     <nav class="dashboard__sidebar-menu">
         <ul class="list-wrap">
+            <li>
+                <a href="{{ route('student.notifications') }}">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.37 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.64 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z" fill="currentColor"/>
+                    </svg>
+                    {{ __('Notifications') }}
+                </a>
+            </li>
             <li>
                 <a href="{{ route('logout') }}" onclick="event.preventDefault(); $('#logout-form').trigger('submit');">
                     <img src="{{ asset('uploads/website-images/logout.svg') }}">

@@ -105,6 +105,27 @@ class VacancyAttachmentSeeder extends Seeder
                 'max_size' => 10000,
                 'category' => 'lampiran'
             ]);
+            VacancyAttachment::create([
+                'vacancy_id' => $vacancy->id,
+                'name' => 'Ijazah',
+                'type' => 'pdf',
+                'max_size' => 10000,
+                'category' => 'aktivasi'
+            ]);
+            VacancyAttachment::create([
+                'vacancy_id' => $vacancy->id,
+                'name' => 'Transkrip Nilai',
+                'type' => 'pdf',
+                'max_size' => 10000,
+                'category' => 'aktivasi'
+            ]);
+            VacancyAttachment::create([
+                'vacancy_id' => $vacancy->id,
+                'name' => 'Surat Pengantar dari Perangkat Daerah',
+                'type' => 'pdf',
+                'max_size' => 10000,
+                'category' => 'aktivasi'
+            ]);
         }
     }
 }

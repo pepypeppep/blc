@@ -136,19 +136,17 @@ $(document).ready(function () {
                                 (file_info.live.type === "zoom" &&
                                     file_info.course.instructor.zoom_credential)
                             ) {
-                                btnHtml += `<a href="${
-                                    base_url +
+                                btnHtml += `<a href="${base_url +
                                     "/student/learning/" +
                                     file_info.course.slug +
                                     "/" +
                                     file_info.id
-                                }" class="btn btn-two me-2">${open_w_txt}</a>`;
+                                    }" class="btn btn-two me-2">${open_w_txt}</a>`;
                             } else {
-                                btnHtml += `<p>${
-                                    file_info.live.type === "zoom"
-                                        ? "Zoom"
-                                        : "Jitsi"
-                                } ${cre_mi_txt}</p>`;
+                                btnHtml += `<p>${file_info.live.type === "zoom"
+                                    ? "Zoom"
+                                    : "Jitsi"
+                                    } ${cre_mi_txt}</p>`;
                             }
                             if (
                                 file_info.live.type === "zoom" &&
@@ -167,8 +165,7 @@ $(document).ready(function () {
                         playerHtml = `<div class="resource-file">
                         <div class="file-info">
                             <div class="text-center">
-                            <img src="${
-                                base_url + "/frontend/img/online-learning.png"
+                            <img src="${base_url + "/frontend/img/online-learning.png"
                             }" alt="">
                                 ${btnHtml}
                             </div>
@@ -228,11 +225,10 @@ $(document).ready(function () {
                     file_info.storage == "iframe" ||
                     file_info.type == "document"
                 ) {
-                    playerHtml = `<iframe class="iframe-video" src="${
-                        file_info.type == "document"
-                            ? base_url + file_info.file_path
-                            : file_info.file_path
-                    }" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="vjs-watermark"><img src="${watermark}"></div><div class="vjs-poster custom-poster"></div>`;
+                    playerHtml = `<iframe class="iframe-video" src="${file_info.type == "document"
+                        ? base_url + file_info.file_path
+                        : file_info.file_path
+                        }" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="vjs-watermark"><img src="${watermark}"></div><div class="vjs-poster custom-poster"></div>`;
                 } else if (file_info.type == "quiz") {
                     playerHtml = `<div class="resource-file">
                     <div class="file-info">
@@ -244,6 +240,18 @@ $(document).ready(function () {
                         </div>
                     </div>
                 </div>`;
+                } else {
+
+                    playerHtml = `<div class="resource-file">
+                        <div class="file-info">
+                            <div class="text-center">
+                                <img src="/uploads/website-images/announcement.svg" alt="rencana tindak lanjut">
+                                <h6 class="mt-2">${file_info.title}</h6>
+                                <p>Buka Halaman RTL untuk info lebih lanjut</p>
+                                <a href="/student/learning/follow-up-action/${file_info.id}" class="btn btn-primary">Mulai Mengisi RTL</a>
+                            </div>
+                        </div>
+                    </div>`;
                 }
 
                 // Resetting any existing player instance
@@ -266,7 +274,7 @@ $(document).ready(function () {
                 // load qna's
                 fetchQuestions(courseId, lessonId, 1, true);
             },
-            error: function (xhr, status, error) {},
+            error: function (xhr, status, error) { },
         });
     });
 

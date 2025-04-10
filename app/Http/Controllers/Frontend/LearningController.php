@@ -18,16 +18,20 @@ use App\Rules\CustomRecaptcha;
 use App\Models\CourseChapterItem;
 use App\Models\CourseChapterLesson;
 use App\Http\Controllers\Controller;
+use App\Models\FollowUpAction;
+use App\Models\FollowUpActionResponse;
 use Illuminate\Support\Facades\Cache;
 use App\Traits\GenerateSecureLinkTrait;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class LearningController extends Controller
 {
     use GenerateSecureLinkTrait;
     function index(string $slug)
     {
+
 
         $course = Course::active()->with([
             'chapters',
@@ -100,6 +104,7 @@ class LearningController extends Controller
 
     function getFileInfo(Request $request)
     {
+
         // set progress status
         CourseProgress::where('course_id', $request->courseId)->update(['current' => 0]);
         $progress = CourseProgress::updateOrCreate(
@@ -184,6 +189,16 @@ class LearningController extends Controller
                     'file_info' => $fileInfo,
                 ]);
             }
+        } else if ($request->type == 'rtl') {
+
+            $fileInfo = array_merge(FollowUpAction::query()->findOrFail($request->lessonId)->toArray(), ['type' => 'rtl']);
+
+
+            return response()->json([
+
+                // 'view'      => view('frontend.pages.learning-player.partials.rtl-card')->render(),
+                'file_info' => $fileInfo,
+            ]);
         } else {
             $fileInfo = array_merge(Quiz::findOrFail($request->lessonId)->toArray(), ['type' => 'quiz']);
 
@@ -353,6 +368,8 @@ class LearningController extends Controller
         return view('frontend.pages.learning-player.quiz-index', compact('quiz', 'attempt'));
     }
 
+
+
     function quizStore(Request $request, string $id)
     {
         $grad = 0;
@@ -389,6 +406,86 @@ class LearningController extends Controller
 
         return view('frontend.pages.learning-player.quiz-result', compact('quiz', 'attempt', 'quizResult'));
     }
+
+    function rtlIndex(string $id)
+    {
+
+        $item = FollowUpAction::findOrFail($id);
+
+        $response = FollowUpActionResponse::where('follow_up_action_id', $id)->where('participant_id', userAuth()->id)->first();
+
+        //if due data lebih dari hari ini
+        if (Carbon::parse($item->start_date)->isFuture()) {
+            return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
+                'alert-type' => 'error',
+                'message'    => __('Belum dimulai pada tanggal :date', ['date' => Carbon::parse($item->start_date)->toFormattedDateString()]),
+            ]);
+        }
+        if (Carbon::parse($item->due_date)->isPast()) {
+            return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
+                'alert-type' => 'error',
+                // 'message'    => __('Due date expired on :date', ['date' => Carbon::parse($quiz->due_date)->toFormattedDateString()]),
+                'message'    => __('Batas waktu telah berakhir pada tanggal :date', ['date' => Carbon::parse($item->due_date)->toFormattedDateString()]),
+            ]);
+        }
+
+        return view('frontend.pages.learning-player.rtl-index', compact('item', 'response'));
+    }
+
+    public function rtlStore(Request $request, string $id)
+    {
+        // Check if a response exists (for update)
+        $response = FollowUpActionResponse::where('follow_up_action_id', $id)
+            ->where('participant_id', userAuth()->id)->first();
+
+        // If no response exists, we are creating a new entry
+        if (!$response) {
+            $response = new FollowUpActionResponse;
+            $response->follow_up_action_id = $id;
+            $response->participant_id = userAuth()->id;
+        }
+
+        // If it's a new entry, the file is required
+        $rules = [
+            'summary' => $response->exists ? 'sometimes' : 'required',
+            'file_path' => $response->exists ? 'sometimes|mimes:pdf|max:30720' : 'required|mimes:pdf|max:30720',
+        ];
+
+        // Validate the incoming requests
+        $request->validate($rules, [
+            'summary.required' => 'Ringkasan harus diisi',
+            'file_path.required' => 'Wajib Mengunggah file pdf',
+            'file_path.sometimes' => 'File opsional, jika ada harus berupa PDF',
+            'file_path.mimes' => 'File harus berupa pdf',
+            'file_path.max' => 'Ukuran file maksimal 30 MB',
+        ]);
+
+        // Set the participant's response summary
+        $response->participant_response = $request->summary;
+
+        // Handle file upload if there is a file
+        if ($request->hasFile('file_path')) {
+            $file = $request->file('file_path');
+
+            // Bersihkan karakter khusus
+            $fileOriginalName = $file->getClientOriginalName();
+            $fileSanitizedName = preg_replace('/[^A-Za-z0-9\-]/', '-', pathinfo($fileOriginalName, PATHINFO_FILENAME));
+            $fileExtension = $file->getClientOriginalExtension();
+            $fileName = 'rtl/' . Auth::user()->name . '' . Auth::user()->id . '-' . $fileSanitizedName . '.' . $fileExtension;
+
+            $file->storeAs('private', $fileName, 'local');
+
+            $response->participant_file = Auth::user()->name . '' . Auth::user()->id . '-' . $fileSanitizedName . '.' . $fileExtension;
+        }
+
+        // Save the response
+        if ($response->save()) {
+            return redirect()->back()->with('success', 'Rencana tindak lanjut berhasil disimpan.');
+        }
+
+        return redirect()->back()->withInput()->withErrors('Rencana tindak lanjut gagal disimpan.');
+    }
+
 
     function addReview(Request $request)
     {

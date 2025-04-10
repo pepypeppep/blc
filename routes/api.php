@@ -37,6 +37,7 @@ Route::name('api.')->group(function () {
     Route::get('/courses/{courseId}/get-thumbnail', [CourseApiController::class, 'getCourseThumbnail'])->name('courses.get-thumbnail');
     Route::get('/courses-popular', [CourseApiController::class, 'popularCourses'])->name('courses.popular');
     Route::get('/courses-categories', [CourseApiController::class, 'categories'])->name('courses.categories');
+    Route::get('/courses-child-categories', [CourseApiController::class, 'childCategories'])->name('courses.categories.child');
     Route::get('/courses-levels', [CourseApiController::class, 'levels'])->name('courses.levels');
     Route::get('/courses/{slug}/reviews', [CourseApiController::class, 'reviews'])->name('courses.reviews');
     Route::post('/courses/{slug}/reviews', [CourseApiController::class, 'reviewsStore'])->name('courses.reviews.store');

@@ -988,6 +988,61 @@
                 }
             }
         },
+        "/courses-child-categories": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get course child categories",
+                "description": "Get course child categories",
+                "operationId": "964f90c1911c75186fae6985dd825746",
+                "responses": {
+                    "200": {
+                        "description": "Child categories retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Laravel Fundamentals"
+                                            },
+                                            "parent_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "children": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 2
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Laravel Fundamentals"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/courses-levels": {
             "get": {
                 "tags": [
@@ -1682,6 +1737,48 @@
                 }
             }
         },
+        "/update-device-token": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Update device token",
+                "description": "Update device token",
+                "operationId": "559c6f45cc05a19e32c1fefdbc8a7d26",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "description": "User ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "fcm_token": {
+                                        "description": "FCM token",
+                                        "type": "string",
+                                        "example": "fcm token"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Device token updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/notifications": {
             "get": {
                 "tags": [
@@ -1883,48 +1980,6 @@
                         "description": "Successful response"
                     }
                 }
-            }
-        },
-        "/update-device-token": {
-            "post": {
-                "tags": [
-                    "Notifications"
-                ],
-                "summary": "Update device token",
-                "description": "Update device token",
-                "operationId": "3fc5783a02edc0b6c37587effcd17cb7",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "user_id": {
-                                        "description": "User ID",
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "fcm_token": {
-                                        "description": "FCM token",
-                                        "type": "string",
-                                        "example": "fcm token"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Device token updated successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
             }
         }
     },

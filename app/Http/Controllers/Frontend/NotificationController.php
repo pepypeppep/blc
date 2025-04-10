@@ -53,7 +53,7 @@ class NotificationController extends Controller
     {
         $request['user_id'] = 1;
         $request['title'] = '[BLC] Pemberitahuan';
-        $request['body'] = "Pemberitahuan dari Admin";
+        $request['body'] = "Pemberitahuan dari Admin " . now()->format('d-m-Y H:i:s');
 
         $request->validate([
             'user_id' => 'required|exists:users,id',

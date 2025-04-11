@@ -17,6 +17,13 @@ use Illuminate\Routing\Controller as BaseController;
  *      )
  * )
  *
+ * @OA\SecurityScheme(
+ *     securityScheme="bearer",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
+ *
  * @OA\Server(
  *     url="/api",
  *     description="API Server"
@@ -41,7 +48,7 @@ use Illuminate\Routing\Controller as BaseController;
  *     name="Pendidikan Lanjutan",
  *     description="Pendidikan Lanjutan API Endpoints"
  * )
- * 
+ *
  * @OA\Tag(
  *     name="Article",
  *     description="Pengetahuan API Endpoints"

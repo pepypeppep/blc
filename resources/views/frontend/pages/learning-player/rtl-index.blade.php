@@ -213,7 +213,7 @@
                             </div>
                         </div>
 
-                        @if ($response->score !== null)
+                        @if ($response && $response->score !== null)
                             <!-- Score Information -->
                             <div class="card mb-4">
                                 <div class="card-body">

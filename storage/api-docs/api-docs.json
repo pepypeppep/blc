@@ -310,12 +310,12 @@
                         }
                     },
                     {
-                        "name": "price",
+                        "name": "jp",
                         "in": "query",
-                        "description": "Filter by price",
+                        "description": "Filter by minimum Jam Pelajaran",
                         "required": false,
                         "schema": {
-                            "type": "string",
+                            "type": "integer",
                             "enum": [
                                 "free",
                                 "paid"
@@ -337,11 +337,7 @@
                         "description": "Sort by id",
                         "required": false,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ]
+                            "type": "string"
                         }
                     },
                     {
@@ -413,7 +409,7 @@
                                                     "type": "string",
                                                     "example": "This course covers the basics of Laravel and how to build a simple CRUD application."
                                                 },
-                                                "price": {
+                                                "jp": {
                                                     "type": "integer",
                                                     "example": 0
                                                 },
@@ -722,7 +718,7 @@
                                                     "type": "string",
                                                     "example": "This course covers the basics of Laravel and how to build a simple CRUD application."
                                                 },
-                                                "price": {
+                                                "jp": {
                                                     "type": "integer",
                                                     "example": 0
                                                 },
@@ -1969,6 +1965,41 @@
                         "name": "user_id",
                         "in": "query",
                         "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/pendidikan-lanjutan/{id}/logs": {
+            "get": {
+                "tags": [
+                    "Pendidikan Lanjutan"
+                ],
+                "summary": "Get pendidikan lanjutan logs",
+                "description": "Get pendidikan lanjutan logs",
+                "operationId": "38ea3623e072c36294703d9d3ce25ded",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Vacancy id",
                         "required": true,
                         "schema": {
                             "type": "integer"

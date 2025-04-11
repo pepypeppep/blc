@@ -33,7 +33,6 @@ class SSOController extends Controller
             $accessTokenResponseBody = $keycloakUser->accessTokenResponseBody;
             $accessToken = $accessTokenResponseBody['access_token'];
             $refreshToken = $accessTokenResponseBody['refresh_token'];
-            dd($accessToken);
 
 
             /**

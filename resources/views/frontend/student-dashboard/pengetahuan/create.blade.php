@@ -47,10 +47,8 @@
                                     <label for="enrollment">Pelatihan</label>
                                     <select name="enrollment" class="form-control select2">
                                         <option value="">{{ __('Select') }}</option>
-                                        @foreach ($enrollments as $enrollment)
-                                            <option value="{{ $enrollment->id }}"
-                                                @if (old('enrollment') == $enrollment->id) selected @endif>
-                                                {{ $enrollment->course->title }}</option>
+                                        @foreach ($completedCourses as $enrollment)
+                                            <option value="{{ $enrollment->id }}"@if (old('enrollment') == $enrollment->id) selected @endif>{{ $enrollment->course->title }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -82,7 +80,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
                                     <label for="is_visible">{{ __('Visibilitas') }}
@@ -134,26 +131,14 @@
                                 <div class="form-group">
                                     <label for="description">{{ __('description') }}
                                         <code>*</code></label>
-                                    <textarea name="description" class="text-editor form-control summernote">
-@if (old('description'))
-{{ old('description') }}
-@else
-#
-@endif
-</textarea>
+                                    <textarea name="description" class="text-editor form-control summernote">@if (old('description')){{ old('description') }}@else#@endif</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
                                     <label for="content">{{ __('Content') }}
                                         <code>*</code></label>
-                                    <textarea name="content" class="text-editor form-control summernote">
-@if (old('content'))
-{{ old('content') }}
-@else
-#
-@endif
-</textarea>
+                                    <textarea name="content" class="text-editor form-control summernote">@if (old('content')){{ old('content') }}@else#@endif</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2">
@@ -177,9 +162,9 @@
                                 </div>
                             </div>
                         </div>
+                        <button class="btn btn-primary" type="submit">{{ __('Save') }}</button>
+                    </form>
                 </div>
-                <button class="btn btn-primary" type="submit">{{ __('Save') }}</button>
-                </form>
             </div>
         </div>
     </div>

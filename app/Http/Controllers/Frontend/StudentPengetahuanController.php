@@ -16,18 +16,27 @@ class StudentPengetahuanController extends Controller
 {
     public function index(): View
     {
-        $pengetahuans = Article::where('author_id', userAuth()->id)->with('enrollment.course')->get();
+        $pengetahuans = Article::where('author_id', userAuth()->id)->with('enrollment.course')->orderBy('created_at', 'desc')->get();
         return view('frontend.student-dashboard.pengetahuan.index', compact('pengetahuans'));
+    }
+
+    public function show($slug): View
+    {
+        $pengetahuan = Article::where('slug', $slug)->with('enrollment.course')->first();
+        return view('frontend.student-dashboard.pengetahuan.show', compact('pengetahuan'));
     }
 
     public function create(): View
     {
         $user = userAuth();
-        $enrollments = Enrollment::where('user_id', $user->id)->whereHas('course', function ($q) {
-            $q->where('is_approved', 'approved')->where('status', 'active');
-        })->with('course')->get();
+        $enrollments = Enrollment::where('user_id', $user->id)->with('course')->get();
+        $completedCourses = $enrollments->filter(function ($enrollment) {
+            return $enrollment->course->iscompleted();
+        });
+
+
         $tags = Tag::all();
-        return view('frontend.student-dashboard.pengetahuan.create', compact('enrollments', 'tags'));
+        return view('frontend.student-dashboard.pengetahuan.create', compact('completedCourses', 'tags'));
     }
 
     public function store(StudentPelatihanStoreRequest $request)
@@ -112,9 +121,18 @@ class StudentPengetahuanController extends Controller
         if (!$pengetahuan) {
             return redirect()->back()->with(['messege' => __('Pengetahuan not found'), 'alert-type' => 'error']);
         }
-        $enrollments = Enrollment::where('user_id', userAuth()->id)->with('course')->get();
+
+        if ($pengetahuan->status != Article::STATUS_DRAFT && $pengetahuan->status != Article::STATUS_REJECTED) {
+            return abort(404);
+        }
+
+        $user = userAuth();
+        $enrollments = Enrollment::where('user_id', $user->id)->with('course')->get();
+        $completedCourses = $enrollments->filter(function ($enrollment) {
+            return $enrollment->course->iscompleted();
+        });
         $tags = Tag::all();
-        return view('frontend.student-dashboard.pengetahuan.edit', compact('pengetahuan', 'enrollments', 'tags'));
+        return view('frontend.student-dashboard.pengetahuan.edit', compact('pengetahuan', 'completedCourses', 'tags'));
     }
 
     public function update($slug, StudentPelatihanUpdateRequest $request)
@@ -205,5 +223,27 @@ class StudentPengetahuanController extends Controller
         } else {
             abort(404);
         }
+    }
+
+    public function ajukanPengetahuan($slug)
+    {
+        $pengetahuan = Article::where('slug', $slug)->where('author_id', userAuth()->id)->first();
+
+        if (!$pengetahuan) {
+            return redirect()->back()->with(['messege' => __('Pengetahuan not found'), 'alert-type' => 'error']);
+        }
+
+        if ($pengetahuan->status == Article::STATUS_PUBLISHED) {
+            return redirect()->back()->with(['messege' => __('Pengetahuan already published'), 'alert-type' => 'error']);
+        }
+
+        if ($pengetahuan->status == Article::STATUS_VERIFICATION) {
+            return redirect()->back()->with(['messege' => __('Pengetahuan sedang diverifikasi'), 'alert-type' => 'error']);
+        }
+
+        $pengetahuan->status = Article::STATUS_VERIFICATION;
+        $pengetahuan->save();
+
+        return redirect()->route('student.pengetahuan.index')->with(['messege' => __('Pengetahuan berhasil diajukan untuk diverifikasi'), 'alert-type' => 'success']);
     }
 }

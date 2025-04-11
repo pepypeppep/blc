@@ -23,6 +23,7 @@ return new class extends Migration
             $table->longText('content');
             $table->text('description');
             $table->string('status')->default('draft');
+            $table->string('note')->nullable();
             $table->string('link')->nullable();
             $table->string('file')->nullable();
             $table->string('instansi')->nullable();

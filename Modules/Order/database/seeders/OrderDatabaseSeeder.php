@@ -3,7 +3,7 @@
 namespace Modules\Order\database\seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Modules\Order\app\Models\Enrollment;
 
 class OrderDatabaseSeeder extends Seeder
 {
@@ -11,6 +11,8 @@ class OrderDatabaseSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void {
-        // $this->call([]);
+        $this->call([
+            Enrollment::class,
+        ]);
     }
 }

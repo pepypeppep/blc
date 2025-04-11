@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Modules\Article\database\seeders\ArticleDatabaseSeeder;
+use Modules\Article\database\seeders\ArticleSeeder;
 use Modules\Badges\database\seeders\BadgeSeeder;
 use Modules\Currency\database\seeders\CurrencySeeder;
 use Modules\Language\database\seeders\LanguageSeeder;
@@ -18,6 +20,7 @@ use Modules\Frontend\database\seeders\FeaturedInstructorSectionSeeder;
 use Modules\InstructorRequest\database\seeders\InstructorRequestSeeder;
 use Modules\CertificateBuilder\database\seeders\CertificateBuilderSeeder;
 use Modules\CertificateBuilder\database\seeders\CertificateBuilderItemSeeder;
+use Modules\Order\database\seeders\EnrollmentSeeder;
 use Modules\PendidikanLanjutan\database\seeders\PendidikanLanjutanDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -61,6 +64,8 @@ class DatabaseSeeder extends Seeder
 
             PendidikanLanjutanDatabaseSeeder::class,
             TagSeeder::class,
+            EnrollmentSeeder::class,
+            ArticleDatabaseSeeder::class
         ]);
     }
 }

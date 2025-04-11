@@ -47,7 +47,7 @@
                                     <label for="enrollment">Pelatihan</label>
                                     <select name="enrollment" class="form-control select2">
                                         <option value="">{{ __('Select') }}</option>
-                                        @foreach ($enrollments as $enrollment)
+                                        @foreach ($completedCourses as $enrollment)
                                             <option value="{{ $enrollment->id }}"
                                                 @if ($pengetahuan->enrollment_id == $enrollment->id) selected @endif>
                                                 {{ $enrollment->course->title }}</option>

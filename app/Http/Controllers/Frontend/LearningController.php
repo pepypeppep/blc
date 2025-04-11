@@ -326,6 +326,7 @@ class LearningController extends Controller
         $userId = userAuth()->id;
         // $numberOfQuestions = 20;
         $quiz = Quiz::withCount('questions')->findOrFail($id);
+  
 
         // Cek apakah user sudah memiliki soal tersimpan di session
         if (session()->has("quiz_$id" . "_user_$userId")) {
@@ -356,11 +357,10 @@ class LearningController extends Controller
             ]);
         }
 
-        //if due data lebih dari hari ini
-        if (Carbon::parse($quiz->due_date)->isPast()) {
+        // if due data lebih dari hari ini
+        if (Carbon::today()->gt(Carbon::parse($quiz->due_date))) {
             return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
                 'alert-type' => 'error',
-                // 'message'    => __('Due date expired on :date', ['date' => Carbon::parse($quiz->due_date)->toFormattedDateString()]),
                 'message'    => __('Batas waktu telah berakhir pada tanggal :date', ['date' => Carbon::parse($quiz->due_date)->toFormattedDateString()]),
             ]);
         }

@@ -33,6 +33,7 @@ class SSOController extends Controller
             $accessTokenResponseBody = $keycloakUser->accessTokenResponseBody;
             $accessToken = $accessTokenResponseBody['access_token'];
             $refreshToken = $accessTokenResponseBody['refresh_token'];
+            dd($accessToken);
 
 
             /**
@@ -93,5 +94,55 @@ class SSOController extends Controller
             report($th);
             abort(400, 'invalid request');
         }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/whoami",
+     *     summary="Get current user information",
+     *     tags={"Auth"},
+     *     security={{"bearer": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="User information",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="id",
+     *                 type="integer",
+     *                 example=1
+     *             ),
+     *             @OA\Property(
+     *                 property="name",
+     *                 type="string",
+     *                 example="John Doe"
+     *             ),
+     *             @OA\Property(
+     *                 property="email",
+     *                 type="string",
+     *                 example="john@example.com"
+     *             ),
+     *             @OA\Property(
+     *                 property="instansi",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     example="PT. Example"
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function whoami(Request $request)
+    {
+        $user = User::with('instansi:id,name')->where('id', $request->user()->id)->first();
+        return $user;
     }
 }

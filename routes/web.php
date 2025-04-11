@@ -205,10 +205,11 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::post('add-review', [LearningController::class, 'addReview'])->name('add-review');
         Route::get('fetch-reviews/{course_id}', [LearningController::class, 'fetchReviews'])->name('fetch-reviews');
 
-        /** download certificate route */
-        Route::get('download-certificate/{id}', [StudentDashboardController::class, 'downloadCertificate'])->name('download-certificate');
-        // request sign certificate
+        /** certificate routes  */
+        Route::get('download-certificate/{enrollment}', [StudentDashboardController::class, 'downloadCertificate'])->name('download-certificate');
         Route::get('request-sign-certificate/{enrollment}', [StudentDashboardController::class, 'requestSignCertificate'])->name('request-sign-certificate');
+
+
         Route::view('wishlist', 'frontend.wishlist.index')->name('wishlist');
 
         /** general service **/

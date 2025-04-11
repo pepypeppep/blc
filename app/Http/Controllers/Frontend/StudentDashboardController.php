@@ -28,6 +28,7 @@ use iio\libmergepdf\Merger;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -88,6 +89,7 @@ class StudentDashboardController extends Controller
 
         $attachment = $vacancy->users->firstWhere('id', auth()->id())?->pivot->sk_file;
 
+
         // if (!$attachment) {
         //     return redirect()->back()->with('error', __('No attachment found.'));
         // }
@@ -120,8 +122,22 @@ class StudentDashboardController extends Controller
      */
     function downloadCertificate(Enrollment $enrollment)
     {
+        // validate ownership
+        if ($enrollment->user_id !==  Auth::user()->id) {
+            return redirect()->back()->with(['messege' => __('Unauthorized'), 'alert-type' => 'error']);
+        }
+
         $pdfPath = $enrollment->certificate_path;
-        dd($pdfPath);
+        if (!$pdfPath) {
+            return redirect()->back()->with(['messege' => __('Certificate not found'), 'alert-type' => 'error']);
+        }
+
+        // check if file exists
+        if (!Storage::disk('private')->exists($pdfPath)) {
+            return redirect()->back()->with(['messege' => __('Certificate file not found'), 'alert-type' => 'error']);
+        }
+
+        return Storage::disk('private')->response($pdfPath);
     }
 
 

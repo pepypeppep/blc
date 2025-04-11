@@ -102,7 +102,7 @@
                                                                     </li>
                                                                 @elseif ($enroll->certificate_status == 'signed')
                                                                     <li class="ms-auto">
-                                                                        <a class="success-button"
+                                                                        <a class="success-button" target="_blank"
                                                                             href="{{ route('student.download-certificate', $enroll->id) }}"><i
                                                                                 class="certificate fas fa-signature"
                                                                                 style="color: #fafdff;"></i>

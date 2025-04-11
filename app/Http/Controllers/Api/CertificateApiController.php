@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\CourseChapterItem;
 use App\Models\CourseProgress;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Modules\CertificateBuilder\app\Models\CertificateBuilder;
 use Modules\CertificateBuilder\app\Models\CertificateBuilderItem;
 use Modules\Order\app\Models\Enrollment;
@@ -145,8 +146,16 @@ class CertificateApiController extends Controller
             return response(['success' => false, 'message' => 'File size must be less than 5mb'], 400);
         }
 
-        // store file
-        $path = $file->storeAs(sprintf('certificates/%s', now()->year), sprintf('%s-certificate.pdf', $enrollmentID));
+        $path = Storage::disk('private')->putFileAs(
+            sprintf('certificates/%s', now()->year),
+            $file,
+            sprintf('%s-certificate.pdf', $enrollmentID),
+        );
+
+        if (!$path) {
+            return response(['success' => false, 'message' => 'File upload failed'], 500);
+        }
+
         $enrollment->certificate_path = $path;
         $enrollment->certificate_status = 'signed';
         $enrollment->save();

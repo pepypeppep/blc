@@ -58,6 +58,7 @@ Route::name('api.')->group(function () {
         Route::prefix('pendidikan-lanjutan')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'index']);
             Route::get('/{id}', [PendidikanLanjutanController::class, 'show']);
+            Route::get('/{id}/logs', [PendidikanLanjutanController::class, 'logs']);
         });
     });
 

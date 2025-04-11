@@ -177,7 +177,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             return response()->file($path);
         })->name('follow-up-action.files');
 
-        // Route::resource('follow-up-action', StudentFollowUpActionController::class);
+        Route::resource('follow-up-action', StudentFollowUpActionController::class);
         // Route::get('follow-up-action/create', [StudentFollowUpActionController::class, 'create'])->name('follow-up-action.create');
 
         /** learning routes */
@@ -187,10 +187,15 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::post('learning/make-lesson-complete', [LearningController::class, 'makeLessonComplete'])->name('make-lesson-complete');
         Route::get('learning/resource-download/{id}', [LearningController::class, 'downloadResource'])->name('download-resource');
 
+        Route::get('learning/follow-up-action/{id}', [LearningController::class, 'rtlIndex'])->name('rtl.index');
+        Route::post('learning/follow-up-action/{id}', [LearningController::class, 'rtlStore'])->name('rtl.store');
+
         Route::get('learning/quiz/{id}', [LearningController::class, 'quizIndex'])->name('quiz.index');
         Route::post('learning/quiz/{id}', [LearningController::class, 'quizStore'])->name('quiz.store');
         Route::get('learning/quiz-result/{id}/{result_id}', [LearningController::class, 'quizResult'])->name('quiz.result');
         Route::get('learning/{slug}/{lesson_id}', [LearningController::class, 'liveSession'])->name('learning.live');
+
+
 
         /** qna routes */
         Route::post('create-question', [QnaController::class, 'create'])->name('qna.create');

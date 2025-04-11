@@ -310,12 +310,12 @@
                         }
                     },
                     {
-                        "name": "price",
+                        "name": "jp",
                         "in": "query",
-                        "description": "Filter by price",
+                        "description": "Filter by minimum Jam Pelajaran",
                         "required": false,
                         "schema": {
-                            "type": "string",
+                            "type": "integer",
                             "enum": [
                                 "free",
                                 "paid"
@@ -337,11 +337,7 @@
                         "description": "Sort by id",
                         "required": false,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ]
+                            "type": "string"
                         }
                     },
                     {
@@ -413,7 +409,7 @@
                                                     "type": "string",
                                                     "example": "This course covers the basics of Laravel and how to build a simple CRUD application."
                                                 },
-                                                "price": {
+                                                "jp": {
                                                     "type": "integer",
                                                     "example": 0
                                                 },
@@ -722,7 +718,7 @@
                                                     "type": "string",
                                                     "example": "This course covers the basics of Laravel and how to build a simple CRUD application."
                                                 },
-                                                "price": {
+                                                "jp": {
                                                     "type": "integer",
                                                     "example": 0
                                                 },
@@ -961,6 +957,61 @@
                                             "name": {
                                                 "type": "string",
                                                 "example": "Laravel"
+                                            },
+                                            "children": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 2
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Laravel Fundamentals"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/courses-child-categories": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get course child categories",
+                "description": "Get course child categories",
+                "operationId": "964f90c1911c75186fae6985dd825746",
+                "responses": {
+                    "200": {
+                        "description": "Child categories retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Laravel Fundamentals"
+                                            },
+                                            "parent_id": {
+                                                "type": "integer",
+                                                "example": 1
                                             },
                                             "children": {
                                                 "type": "array",
@@ -1682,6 +1733,48 @@
                 }
             }
         },
+        "/update-device-token": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Update device token",
+                "description": "Update device token",
+                "operationId": "559c6f45cc05a19e32c1fefdbc8a7d26",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "description": "User ID",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "fcm_token": {
+                                        "description": "FCM token",
+                                        "type": "string",
+                                        "example": "fcm token"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Device token updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/notifications": {
             "get": {
                 "tags": [
@@ -1885,46 +1978,101 @@
                 }
             }
         },
-        "/update-device-token": {
-            "post": {
+        "/pendidikan-lanjutan/{id}/logs": {
+            "get": {
                 "tags": [
-                    "Notifications"
+                    "Pendidikan Lanjutan"
                 ],
-                "summary": "Update device token",
-                "description": "Update device token",
-                "operationId": "3fc5783a02edc0b6c37587effcd17cb7",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "user_id": {
-                                        "description": "User ID",
-                                        "type": "integer",
-                                        "example": 1
+                "summary": "Get pendidikan lanjutan logs",
+                "description": "Get pendidikan lanjutan logs",
+                "operationId": "38ea3623e072c36294703d9d3ce25ded",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Vacancy id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/whoami": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get current user information",
+                "operationId": "41501ec807331b7d09067a6a4f9eeb15",
+                "responses": {
+                    "200": {
+                        "description": "User information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "john@example.com"
+                                        },
+                                        "instansi": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "PT. Example"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     },
-                                    "fcm_token": {
-                                        "description": "FCM token",
-                                        "type": "string",
-                                        "example": "fcm token"
-                                    }
-                                },
-                                "type": "object"
+                                    "type": "object"
+                                }
                             }
                         }
                     }
                 },
-                "responses": {
-                    "200": {
-                        "description": "Device token updated successfully"
-                    }
-                },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearer": []
                     }
                 ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     },
@@ -1952,6 +2100,10 @@
         {
             "name": "Notifications",
             "description": "Notifications"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
         }
     ]
 }

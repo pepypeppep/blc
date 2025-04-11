@@ -1038,6 +1038,80 @@ class CourseApiController extends Controller
 
     /**
      * @OA\Get(
+     *     path="/courses-child-categories",
+     *     summary="Get course child categories",
+     *     description="Get course child categories",
+     *     tags={"Courses"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Child categories retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string",
+     *                     example="Laravel Fundamentals"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="parent_id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="children",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(
+     *                             property="id",
+     *                             type="integer",
+     *                             example=2
+     *                         ),
+     *                         @OA\Property(
+     *                             property="name",
+     *                             type="string",
+     *                             example="Laravel Fundamentals"
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function childCategories()
+    {
+        try {
+            $categories = CourseCategory::active()
+                ->with(['translation', 'parentCategory.translation'])
+                ->whereNotNull('parent_id')
+                ->get()
+                ->each(function ($category) {
+                    $category->loadCount('courses');
+                    $category->courses_count;
+                });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Child categories retrieved successfully',
+                'data' => $categories
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve child categories',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
      *     path="/courses-levels",
      *     summary="Get course levels",
      *     description="Get course levels",

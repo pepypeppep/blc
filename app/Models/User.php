@@ -61,6 +61,7 @@ class User extends Authenticatable
         'unor_id',
         'username',
         'verification_token',
+        'fcm_token',
     ];
 
     /**
@@ -86,8 +87,8 @@ class User extends Authenticatable
     public function badges()
     {
         return $this->belongsToMany(Badge::class, 'user_badge')
-                    ->withPivot('category')
-                    ->withTimestamps();
+            ->withPivot('category')
+            ->withTimestamps();
     }
 
     public function favoriteCourses()

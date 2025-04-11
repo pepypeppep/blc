@@ -28,6 +28,7 @@ class Enrollment extends Model
         return $this->belongsTo(Course::class, 'course_id', 'id');
     }
 
+
     /**
      * Get the user that owns the Enrollment
      *

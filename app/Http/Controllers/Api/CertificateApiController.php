@@ -26,9 +26,9 @@ class CertificateApiController extends Controller
                     $q->select('id', 'name');
                 }
             ])
-            ->where('user_id', $user_id)
-            ->orderByDesc('id')
-            ->get();
+                ->where('user_id', $user_id)
+                ->orderByDesc('id')
+                ->get();
 
             if ($enrollments->isEmpty()) {
                 return response()->json([
@@ -96,12 +96,61 @@ class CertificateApiController extends Controller
                 'message' => 'Daftar sertifikat ditemukan.',
                 'data' => $certificates,
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    // bantaraCallback
+    public function bantaraCallback(Request $request)
+    {
+        // validate request header key
+        $key = $request->header('Authorization');
+        if (!$key) {
+            return response(['success' => false, 'message' => 'Invalid request header key'], 403);
+        }
+
+        // trim bearer
+        $key = str_replace('Bearer ', '', $key);
+
+        // validate key
+        if ($key !== env('BANTARA_CALLBACK_KEY')) {
+            return response(['success' => false, 'message' => 'Invalid request header key'], 403);
+        }
+
+        $enrollmentID = $request->query('enrollment_id');
+
+        $enrollment = Enrollment::find($enrollmentID);
+
+        if (!$enrollment) {
+            return response(['success' => false, 'message' => 'Enrollment not found'], 404);
+        }
+
+        $file = $request->file('file');
+
+        if (!$file) {
+            return response(['success' => false, 'message' => 'File not found'], 404);
+        }
+
+        // check if file is pdf
+        if ($file->getClientOriginalExtension() !== 'pdf') {
+            return response(['success' => false, 'message' => 'File must be pdf'], 400);
+        }
+
+        // check if file size is less than 5mb
+        if ($file->getSize() > 5 * 1024 * 1024) {
+            return response(['success' => false, 'message' => 'File size must be less than 5mb'], 400);
+        }
+
+        // store file
+        $path = $file->storeAs(sprintf('certificates/%s', now()->year), sprintf('%s-certificate.pdf', $enrollmentID));
+        $enrollment->certificate_path = $path;
+        $enrollment->certificate_status = 'signed';
+        $enrollment->save();
+
+        return response(['success' => true, 'message' => 'File uploaded successfully'], 200);
     }
 }

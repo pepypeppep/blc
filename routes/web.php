@@ -207,6 +207,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
         /** download certificate route */
         Route::get('download-certificate/{id}', [StudentDashboardController::class, 'downloadCertificate'])->name('download-certificate');
+        // request sign certificate
+        Route::get('request-sign-certificate/{enrollment}', [StudentDashboardController::class, 'requestSignCertificate'])->name('request-sign-certificate');
         Route::view('wishlist', 'frontend.wishlist.index')->name('wishlist');
 
         /** general service **/

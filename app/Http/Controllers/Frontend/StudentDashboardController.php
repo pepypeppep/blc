@@ -20,9 +20,18 @@ use Modules\Order\app\Models\Order;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Exceptions\InvalidFormatException;
+use Dompdf\Exception;
+use DOMException;
+use Exception as GlobalException;
 use iio\libmergepdf\Merger;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class StudentDashboardController extends Controller
 {
@@ -32,7 +41,7 @@ class StudentDashboardController extends Controller
         $totalQuizAttempts = QuizResult::where('user_id', userAuth()->id)->count();
         $totalReviews = CourseReview::where('user_id', userAuth()->id)->count();
         $orders = Order::where('buyer_id', userAuth()->id)->orderBy('id', 'desc')->take(10)->get();
-        
+
         return view('frontend.student-dashboard.index', compact(
             'totalEnrolledCourses',
             'totalQuizAttempts',
@@ -98,69 +107,130 @@ class StudentDashboardController extends Controller
         return view('frontend.student-dashboard.continuing-education.registration.show');
     }
 
-
-    function downloadCertificate(string $id)
+    /**
+     * Download Signed Certificate
+     * @param string $id 
+     * @return Response 
+     * @throws ModelNotFoundException 
+     * @throws InvalidFormatException 
+     * @throws BindingResolutionException 
+     * @throws Exception 
+     * @throws DOMException 
+     * @throws GlobalException 
+     */
+    function downloadCertificate(Enrollment $enrollment)
     {
-        $course = Course::withTrashed()->findOrFail($id);
-
-        $courseChapers = CourseChapter::where('course_id', $course->id)
-            ->where('status', 'active')
-            ->get();
-
-        $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
-            $q->where('course_id', $course->id);
-        })->count();
-
-        $courseLectureCompletedByUser = CourseProgress::where('user_id', userAuth()->id)
-            ->where('course_id', $course->id)->where('watched', 1)->latest();
-
-        $completed_date = formatDate($courseLectureCompletedByUser->first()?->created_at);
-
-        $courseLectureCompletedByUser = CourseProgress::where('user_id', userAuth()->id)
-            ->where('course_id', $course->id)->where('watched', 1)->count();
-
-        $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
-
-        // TODO: enable this on production
-        // if ($courseCompletedPercent != 100) {
-        //     return abort(404);
-        // }
+        $pdfPath = $enrollment->certificate_path;
+        dd($pdfPath);
+    }
 
 
-        $certificate = CertificateBuilder::findOrFail($course->certificate_id);
-        $certificateItems = $certificate->items;
+
+    /**
+     * requestSignCertificate
+     * Generate certificate pdf file and send to Bantara API endpoint
+     * 
+     * @param string $id 
+     * @return Response 
+     * @throws ModelNotFoundException 
+     * @throws InvalidFormatException 
+     * @throws BindingResolutionException 
+     * @throws Exception 
+     * @throws DOMException 
+     * @throws GlobalException 
+     */
+    function requestSignCertificate(Enrollment $enrollment)
+    {
+        try {
+            $course = $enrollment->course;
+
+            if (null == $course) {
+                return redirect()->back()->with(['messege' => __('Course not found'), 'alert-type' => 'error']);
+            }
+
+            $courseChapers = CourseChapter::where('course_id', $course->id)
+                ->where('status', 'active')
+                ->get();
+
+            $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
+                $q->where('course_id', $course->id);
+            })->count();
+
+            $courseLectureCompletedByUser = CourseProgress::where('user_id', userAuth()->id)
+                ->where('course_id', $course->id)->where('watched', 1)->latest();
+
+            $completed_date = formatDate($courseLectureCompletedByUser->first()?->created_at);
+
+            $courseLectureCompletedByUser = CourseProgress::where('user_id', userAuth()->id)
+                ->where('course_id', $course->id)->where('watched', 1)->count();
+
+            $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
+
+            // TODO: enable this on production
+            // if ($courseCompletedPercent != 100) {
+            //     return abort(404);
+            // }
 
 
-        // return view('frontend.student-dashboard.certificate.summary',  compact('course', 'certificateItems', 'certificate', 'courseChapers'));
+            $certificate = CertificateBuilder::findOrFail($course->certificate_id);
+            $certificateItems = $certificate->items;
 
-        // $now = now();
-        $page1Html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate'))->render();
+            // $now = now();
+            $page1Html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate'))->render();
 
-        $page1Html = str_replace('[student_name]', userAuth()->name, $page1Html);
-        $page1Html = str_replace('[platform_name]', Cache::get('setting')->app_name, $page1Html);
-        $page1Html = str_replace('[course]', $course->title, $page1Html);
-        $page1Html = str_replace('[date]', formatDate($completed_date), $page1Html);
-        $page1Html = str_replace('[instructor_name]', $course->instructor->name, $page1Html);
+            $page1Html = str_replace('[student_name]', userAuth()->name, $page1Html);
+            $page1Html = str_replace('[platform_name]', Cache::get('setting')->app_name, $page1Html);
+            $page1Html = str_replace('[course]', $course->title, $page1Html);
+            $page1Html = str_replace('[date]', formatDate($completed_date), $page1Html);
+            $page1Html = str_replace('[instructor_name]', $course->instructor->name, $page1Html);
 
-        $pdf1Data = Pdf::loadHTML($page1Html)
-            ->setPaper('A4', 'landscape')->setWarnings(false)->output();
-        // Log::info('render pdf 1 took ' . now()->diffInSeconds($now));
+            $pdf1Data = Pdf::loadHTML($page1Html)
+                ->setPaper('A4', 'landscape')->setWarnings(false)->output();
+            // Log::info('render pdf 1 took ' . now()->diffInSeconds($now));
 
-        $page2Html = view('frontend.student-dashboard.certificate.summary', compact('course', 'certificateItems', 'certificate', 'courseChapers'))->render();
-        $pdf2Data = Pdf::loadHTML($page2Html)
-            ->setPaper('A4', 'portrait')->setWarnings(false)->output();
+            $page2Html = view('frontend.student-dashboard.certificate.summary', compact('course', 'certificateItems', 'certificate', 'courseChapers'))->render();
+            $pdf2Data = Pdf::loadHTML($page2Html)
+                ->setPaper('A4', 'portrait')->setWarnings(false)->output();
 
-        $m = new Merger();
-        $m->addRaw($pdf1Data);
-        $m->addRaw($pdf2Data);
-        $output = $m->merge();
-
-        // $fallback = $this->fallbackName($filename);
+            $m = new Merger();
+            $m->addRaw($pdf1Data);
+            $m->addRaw($pdf2Data);
+            $output = $m->merge();
 
 
-        return new Response($output, 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline',
-        ]);
+            // send to Bantara API endpoint
+            $response = Http::attach(
+                'file',
+                $output,
+                'certificate.pdf',
+                ['Content-Type' => 'application/pdf']
+            )
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . env('BANTARA_CLIENT_SECRET'),
+                ])
+                ->post('https://bantara.bantulkab.go.id/internal/v1/tte/documents', [
+                    'signer_nik' => env('BANTARA_SIGNER_NIK'),
+                    'title' => sprintf("Sertifikat Pelatihan %s an %s", $course->title, $enrollment->user->name),
+                    'description' => $enrollment->user->name,
+                    'callback_url' => sprintf("%s/?enrollment_id=%s", route('api.bantara-callback'), $enrollment->id),
+                    'callback_key' => env('BANTARA_CALLBACK_KEY'),
+                ]);
+
+
+
+            if ($response->failed()) {
+                Log::error($response->body());
+                return redirect()->back()->with(['messege' => 'Terjadi kesalahan dalam pengiriman sertifikat ke Bantara', 'alert-type' => 'error']);
+            }
+
+
+            $enrollment->certificate_status = 'requested';
+            $enrollment->save();
+
+            return redirect()->back()->with(['messege' => 'Sertifikat berhasil dikirim ke Bantara', 'alert-type' => 'success']);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return redirect()->back()->with(['messege' => $e->getMessage(), 'alert-type' => 'error']);
+        }
     }
 }

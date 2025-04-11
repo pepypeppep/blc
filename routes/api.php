@@ -11,7 +11,6 @@ use App\Http\Controllers\Api\CertificateApiController;
 use App\Http\Controllers\Api\PendidikanLanjutanController;
 
 Route::middleware('auth:sso-api')->get('/hello', function (Request $request) {
-
     return [
         'message' => sprintf("Hello my username is %s", $request->user()->username)
     ];
@@ -64,4 +63,7 @@ Route::name('api.')->group(function () {
     Route::name('article.')->group(function () {
         Route::get('/articles', [ArticleController::class, 'index'])->name('index');
     });
+
+    // Bantara Callback
+    Route::post('/bantara-callback', [CertificateApiController::class, 'bantaraCallback'])->name('bantara-callback');
 });

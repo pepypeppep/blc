@@ -5,6 +5,7 @@ use App\Http\Controllers\Frontend\QnaController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Frontend\ArticleController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\CheckOutController;
 use App\Http\Controllers\Frontend\FavoriteController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Frontend\BecomeInstructorController;
 use App\Http\Controllers\Frontend\InstructorCourseController;
 use App\Http\Controllers\Frontend\InstructorPayoutController;
 use App\Http\Controllers\Frontend\StudentDashboardController;
+use App\Http\Controllers\Frontend\StudentPengetahuanController;
 use App\Http\Controllers\Frontend\TinymceImageUploadController;
 use App\Http\Controllers\Frontend\InstructorDashboardController;
 use App\Http\Controllers\Frontend\InstructorLessonQnaController;
@@ -30,7 +32,6 @@ use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
-use App\Http\Controllers\Frontend\StudentPengetahuanController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -71,6 +72,11 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::get('all-instructors', [HomePageController::class, 'allInstructors'])->name('all-instructors');
     Route::get('instructor-details/{id}/{slug?}', [HomePageController::class, 'instructorDetails'])->name('instructor-details');
     Route::post('quick-connect/{id}', [HomePageController::class, 'quickConnect'])->name('quick-connect');
+
+    /** Article Routes */
+    Route::get('article', [ArticleController::class, 'index'])->name('article');
+    Route::get('article/{slug}', [ArticleController::class, 'show'])->name('article.show');
+    Route::post('article/submit-comment', [ArticleController::class, 'submitComment'])->name('article.submit-comment');
 
     /** About page routes */
     Route::get('about-us', [AboutPageController::class, 'index'])->name('about-us');

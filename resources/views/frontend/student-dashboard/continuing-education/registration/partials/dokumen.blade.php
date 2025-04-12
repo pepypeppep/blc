@@ -32,7 +32,7 @@
                                     </form>
                                 @endif
                                 <a target="_blank"
-                                    href="{{ route('vacancies-participant.get.file', [$attachment->vacancyattachment->id, auth()->user()->id]) }}"
+                                    href="{{ route('student.continuing-education.attachment.view', [$attachment->vacancyattachment->id, auth()->user()->id]) }}"
                                     class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
                                     <i class="fas fa-eye"></i> {{ __('View') }}
                                 </a>

@@ -175,6 +175,17 @@ class StudentPendidikanLanjutanController extends Controller
         return redirect()->back()->withFragment('attachment_container')->with(['messege' => __('Upload file requirement successfully'), 'alert-type' => 'success']);
     }
 
+    public function viewRequirementFile($id)
+    {
+        $attachment = VacancyUserAttachment::with('vacancyattachment')->findOrFail($id);
+
+        if (!$attachment) {
+            return abort(404);
+        }
+
+        return response()->file(storage_path('app/private/' . $attachment->file));
+    }
+
     // pengajuan pendaftaran
     public function register(Request $request, $vacancyId)
     {

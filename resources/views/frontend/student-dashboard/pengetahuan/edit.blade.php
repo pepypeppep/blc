@@ -8,8 +8,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="row">
-                    <form action="{{ route('student.pengetahuan.update', ['slug' => $pengetahuan->slug]) }}" method="POST"
-                        class="instructor__profile-form course-form" enctype="multipart/form-data">
+                    <form id="update-form" action="{{ route('student.pengetahuan.update', ['slug' => $pengetahuan->slug]) }}"
+                        method="POST" class="instructor__profile-form course-form" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -45,7 +45,7 @@
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
                                     <label for="enrollment">Pelatihan</label>
-                                    <select name="enrollment" class="form-control select2">
+                                    <select name="enrollment" class="form-control select2" disabled>
                                         <option value="">{{ __('Select') }}</option>
                                         @foreach ($completedCourses as $enrollment)
                                             <option value="{{ $enrollment->id }}"
@@ -118,8 +118,7 @@
                                             name="file_name" value="{{ $pengetahuan->file }}"
                                             onclick="$('#file').trigger('click');">
                                         <input id="file" name="file" class="form-control d-none" type="file"
-                                            onchange="$('#file_name').val(this.files[0].name)"
-                                            accept=".pdf">
+                                            onchange="$('#file_name').val(this.files[0].name)" accept=".pdf">
                                     </div>
                                 </div>
                             </div>
@@ -167,9 +166,18 @@
                                 </div>
                             </div>
                         </div>
+                    </form>
                 </div>
-                <button class="btn btn-primary" type="submit">{{ __('Save') }}</button>
-                </form>
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary" form="update-form" type="submit">{{ __('Save') }}</button>
+                    <form id="delete-form" action="{{ route('student.pengetahuan.destroy', $pengetahuan->slug) }}"
+                        method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn bg-danger text-white" type="button"
+                            onclick="deletePengetahuan()">{{ __('Hapus') }}</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -198,5 +206,22 @@
                 }
             }).trigger('change');
         });
+
+        function deletePengetahuan() {
+            swal.fire({
+                title: "Apakah kamu yakin ingin menghapus pengetahuan ini?",
+                text: "Anda tidak dapat mengembalikan pengetahuan ini!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "##5751e1",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, Hapus!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form').submit();
+                }
+            })
+        }
     </script>
 @endpush

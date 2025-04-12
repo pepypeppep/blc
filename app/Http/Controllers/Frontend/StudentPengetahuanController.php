@@ -127,6 +127,26 @@ class StudentPengetahuanController extends Controller
         }
     }
 
+    public function destroy($slug)
+    {
+        $pengetahuan = Article::where('slug', $slug)->first();
+        if (!$pengetahuan) {
+            return redirect()->back()->with(['messege' => __('Pengetahuan not found'), 'alert-type' => 'error']);
+        }
+        if ($pengetahuan->status != Article::STATUS_DRAFT && $pengetahuan->status != Article::STATUS_REJECTED) {
+            return abort(404);
+        }
+        if ($pengetahuan->author_id != userAuth()->id) {
+            return redirect()->back()->with(['messege' => __('You are not allowed to delete this pengetahuan'), 'alert-type' => 'error']);
+        }
+        $result = $pengetahuan->delete();
+        if ($result) {
+            return redirect()->route('student.pengetahuan.index')->with(['messege' => __('Pengetahuan deleted successfully'), 'alert-type' => 'success']);
+        } else {
+            return redirect()->back()->with(['messege' => __('Pengetahuan deleted failed'), 'alert-type' => 'error']);
+        }
+    }
+
     public function edit($slug)
     {
         $pengetahuan = Article::where('slug', $slug)->with(['enrollment.course', 'articleTags'])->first();
@@ -140,12 +160,6 @@ class StudentPengetahuanController extends Controller
 
         $user = userAuth();
         $enrollments = Enrollment::where('user_id', $user->id)->with('course')->get();
-        $articles = Article::where('author_id', $user->id)->with('enrollment.course')->get();
-        $alreadyTakenCourses = $articles->pluck('enrollment.course')->unique()->pluck('id')->toArray();
-
-        $enrollments = $enrollments->filter(function ($enrollment) use ($alreadyTakenCourses) {
-            return !in_array($enrollment->course->id, $alreadyTakenCourses);
-        });
         $completedCourses = $enrollments->filter(function ($enrollment) {
             return $enrollment->course->iscompleted();
         });

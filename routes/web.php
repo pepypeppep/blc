@@ -140,7 +140,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             Route::get('edit/{slug}', [StudentPengetahuanController::class, 'edit'])->name('edit');
             Route::put('update/{slug}', [StudentPengetahuanController::class, 'update'])->name('update');
             Route::put('/{slug}/ajukan', [StudentPengetahuanController::class, 'ajukanPengetahuan'])->name('ajukan');
-            Route::delete('destroy/{id}', [StudentPengetahuanController::class, 'destroy'])->name('destroy');
+            Route::delete('destroy/{slug}', [StudentPengetahuanController::class, 'destroy'])->name('destroy');
             Route::get('view/{id}', [StudentPengetahuanController::class, 'view'])->name('view.file');
         });
 

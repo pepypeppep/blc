@@ -83,12 +83,18 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="courses__item-bottom">
-                                                                    <div class="button">
-                                                                        <a href="{{ route('student.pengetahuan.destroy', $pengetahuan->slug) }}"
-                                                                            class="already-enrolled-btn" data-id="">
-                                                                            <i class="fa fa-trash"></i>
-                                                                        </a>
-                                                                    </div>
+                                                                    <form id="delete-form-{{ $pengetahuan->id }}"
+                                                                        action="{{ route('student.pengetahuan.destroy', $pengetahuan->slug) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <div class="button">
+                                                                            <a onclick="deletePengetahuan(event, {{ $pengetahuan->id }})"
+                                                                                class="already-enrolled-btn bg-danger" data-id="">
+                                                                                <i class="fa fa-trash text-white"></i>
+                                                                            </a>
+                                                                        </div>
+                                                                    </form>
                                                                 </div>
                                                             @else
                                                                 <div class="courses__item-bottom">
@@ -134,21 +140,42 @@
 @endsection
 
 @push('styles')
-<style>
-    .watermark {
-        font-size: 4rem;
-        font-weight: bold;
-        transform: translate(-50%, -50%) rotate(-45deg);
-        /* Center and diagonal placement */
-        top: 50%;
-        left: 50%;
-        position: absolute;
-        z-index: 2;
-        pointer-events: none;
-        padding: 10px;
-        /* Adds spacing inside the border */
-        white-space: nowrap;
-        /* Prevents text wrapping */
-    }
-</style>
+    <style>
+        .watermark {
+            font-size: 4rem;
+            font-weight: bold;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            /* Center and diagonal placement */
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            z-index: 2;
+            pointer-events: none;
+            padding: 10px;
+            /* Adds spacing inside the border */
+            white-space: nowrap;
+            /* Prevents text wrapping */
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    <script>
+        function deletePengetahuan(event, id) {
+            swal.fire({
+                title: "Apakah kamu yakin ingin menghapus pengetahuan ini?",
+                text: "Anda tidak dapat mengembalikan pengetahuan ini!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "##5751e1",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, Hapus!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            })
+        }
+    </script>
 @endpush

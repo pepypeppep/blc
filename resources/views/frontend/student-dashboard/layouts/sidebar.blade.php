@@ -76,7 +76,7 @@
                         class="list-group-item ps-3 text-sm {{ Route::is('student.continuing-education.registration') ? 'active' : '' }}">
                         <a href="{{ route('student.continuing-education.registration') }}">
                             <span class="ps-2">
-                                - {{ __('Pendaftaran') }}
+                                - {{ __('Riwayat Pendaftaran') }}
                             </span>
                         </a>
                     </li>

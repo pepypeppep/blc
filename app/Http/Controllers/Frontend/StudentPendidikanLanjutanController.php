@@ -487,4 +487,55 @@ class StudentPendidikanLanjutanController extends Controller
         $filePath = Storage::disk('private')->path($vacancyActivation->file);
         return response()->file($filePath);
     }
+
+    // pengajuan pendaftaran
+    public function ajukanKembali(Request $request, $vacancyId)
+    {
+        $vacancy = Vacancy::findOrFail($vacancyId);
+
+        if (!$vacancy) {
+            return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        $vacancyAttachments = VacancyAttachment::syarat()->where('vacancy_id', $vacancy->id)->where('is_active', 1)->get();
+
+        if (!$vacancyAttachments) {
+            return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $vacancy->id)->first();
+
+        $closedDate = $vacancy->close_at;
+
+        if ($closedDate < now()) {
+            return redirect()->back()->with(['messege' => 'Pendaftaran sudah ditutup', 'alert-type' => 'error']);
+        }
+
+        if ($vacancy->users()->where('user_id', userAuth()->id)->whereNotIn('status', [VacancyUser::STATUS_REJECTED])->exists()) {
+            return redirect()->back()->with(['messege' => 'Anda sudah terdaftar', 'alert-type' => 'error']);
+        }
+
+        DB::beginTransaction();
+
+        $vacancyUser->update([
+            'status' => VacancyUser::STATUS_VERIFICATION,
+        ]);
+
+        $request->merge([
+            'vacancy_user_id' => $vacancyUser->id,
+            'name' => 'Pengajuan kembali',
+            'status' => $vacancyUser->status,
+            'description' => 'Telah melakukan perbaikan syarat pendaftaran',
+        ]);
+
+        vacancyLog($request);
+
+        if (!$vacancyUser) {
+            DB::rollBack();
+            return redirect()->back()->with(['messege' => 'Pengajuan kembali gagal', 'alert-type' => 'error']);
+        }
+
+        DB::commit();
+        return redirect('student/continuing-education-registration/' . $vacancyUser->id)->with(['message' => 'Pengajuan kembali berhasil', 'alert-type' => 'success']);
+    }
 }

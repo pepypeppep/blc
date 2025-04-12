@@ -158,6 +158,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('continuing-education', [StudentPendidikanLanjutanController::class, 'index'])->name('continuing-education');
         Route::get('continuing-education/{id}', [StudentPendidikanLanjutanController::class, 'continuingEducationDetail'])->name('continuing-education.show');
         Route::post('continuing-education/{id}/register', [StudentPendidikanLanjutanController::class, 'register'])->name('continuing-education.register');
+        Route::put('continuing-education/{id}/ajukan-kembali', [StudentPendidikanLanjutanController::class, 'ajukanKembali'])->name('continuing-education.ajukanKembali');
         Route::post('continuing-education-attachment/{id}', [StudentPendidikanLanjutanController::class, 'uploadRequirementFile'])->name('continuing-education.attachment');
         Route::get('continuing-education-registration', [StudentPendidikanLanjutanController::class, 'registered'])->name('continuing-education.registration');
         Route::get('continuing-education-registration/{id}', [StudentPendidikanLanjutanController::class, 'registeredDetail'])->name('continuing-education.registration.show');

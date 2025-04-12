@@ -90,10 +90,26 @@ class NotificationController extends Controller
         $data = [
             "message" => [
                 "token" => $fcm,
+                "data" => [
+                    "link" => "http://127.0.0.1:8000/student/continuing-education-registration/1",
+                    "path" => json_encode(["module" => "pendidikan-lanjutan", "id" => 1]),
+                    "sender" => json_encode([
+                        "name" => "BLC Administrator"
+                    ]),
+                    "timestamp" => now()->toISOString()
+                ],
                 "notification" => [
                     "title" => $title,
                     "body" => $description,
                 ],
+                // "android" => [
+                //     "priority" => "high"
+                // ],
+                // "apns" => [
+                //     "headers" => [
+                //         "apns-priority" => "10"
+                //     ]
+                // ]
             ]
         ];
         $payload = json_encode($data);

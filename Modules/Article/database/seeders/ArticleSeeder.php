@@ -4,9 +4,9 @@ namespace Modules\Article\database\seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Modules\Article\app\Models\Article;
 use Modules\Order\app\Models\Enrollment;
+use Faker\Factory as Faker;
 
 class ArticleSeeder extends Seeder
 {
@@ -15,6 +15,7 @@ class ArticleSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = Faker::create();
         $articleCategory = ['blog','document','video'];
         $visibility = ['public','internal'];
         $statuses = ['draft','published','rejected','verification'];
@@ -23,20 +24,23 @@ class ArticleSeeder extends Seeder
         for ($i = 1; $i <= 23; $i++) {
             $cat = $articleCategory[rand(0, 2)];
             $user = $users->random()->id;
+            $status = $statuses[rand(0, 3)];
+            $title = $faker->sentence();
             Article::create([
-                'slug' => Str::random(10) . '_' . now()->timestamp,
+                'slug' => $title . '_' . now()->timestamp,
                 'author_id' => $user,
                 'enrollment_id' => optional($enrollments->where('user_id', $user)->first())->id,
                 'category' => $cat,
-                'title' => Str::random(10),
-                'description' => Str::random(20),
+                'title' => $title,
+                'description' => $faker->paragraph(),
                 'visibility' => $visibility[rand(0, 1)],
                 'allow_comments' => rand(0, 1),
-                'link' => $cat == 'video' ? Str::random(10) : null,
-                'thumbnail' => 'https://images.tokopedia.net/img/cache/500-square/VqbcmM/2025/3/27/f0d70eee-f1d1-4751-b7d3-a1fe3ff69a07.jpg.webp?ect=4g',
-                'file' => $cat == 'document' ? Str::random(10) : null,
-                'content' => Str::random(20),
-                'status' => $statuses[rand(0, 3)]
+                'link' => $cat == 'video' ? $faker->url : null,
+                'thumbnail' => $faker->imageUrl(),
+                'file' => $cat == 'document' ? $faker->url : null,
+                'content' => $faker->paragraph(),
+                'status' => $status,
+                'note' => $status == 'rejected' ? $faker->paragraph() : null
             ]);
         }
     }

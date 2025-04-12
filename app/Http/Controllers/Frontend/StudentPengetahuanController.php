@@ -22,7 +22,7 @@ class StudentPengetahuanController extends Controller
 
     public function show($slug): View
     {
-        $pengetahuan = Article::where('slug', $slug)->with('enrollment.course')->first();
+        $pengetahuan = Article::where('slug', $slug)->with(['enrollment.course', 'articleTags'])->first();
         return view('frontend.student-dashboard.pengetahuan.show', compact('pengetahuan'));
     }
 
@@ -30,6 +30,13 @@ class StudentPengetahuanController extends Controller
     {
         $user = userAuth();
         $enrollments = Enrollment::where('user_id', $user->id)->with('course')->get();
+        $articles = Article::where('author_id', $user->id)->with('enrollment.course')->get();
+        $alreadyTakenCourses = $articles->pluck('enrollment.course')->unique()->pluck('id')->toArray();
+
+        $enrollments = $enrollments->filter(function ($enrollment) use ($alreadyTakenCourses) {
+            return !in_array($enrollment->course->id, $alreadyTakenCourses);
+        });
+
         $completedCourses = $enrollments->filter(function ($enrollment) {
             return $enrollment->course->iscompleted();
         });
@@ -46,6 +53,11 @@ class StudentPengetahuanController extends Controller
             if (!$enrollment) {
                 return redirect()->back()->with(['messege' => __('Enrollment not found'), 'alert-type' => 'error']);
             }
+
+            $article = Article::where('enrollment_id', $enrollment->id)->first();
+            if ($article) {
+                return redirect()->back()->with(['messege' => __('Pengetahuan already created for this enrollment'), 'alert-type' => 'error']);
+            }
         }
 
         DB::beginTransaction();
@@ -58,7 +70,7 @@ class StudentPengetahuanController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'visibility' => $request->visibility,
-            'allow_comments' => $request->allow_comments == '1' ? '1' : '0',
+            'allow_comments' => $request->allow_comments == 'on' ? '1' : '0',
             'link' => $request->link,
             'content' => $request->content,
             'status' => Article::STATUS_DRAFT,
@@ -128,6 +140,12 @@ class StudentPengetahuanController extends Controller
 
         $user = userAuth();
         $enrollments = Enrollment::where('user_id', $user->id)->with('course')->get();
+        $articles = Article::where('author_id', $user->id)->with('enrollment.course')->get();
+        $alreadyTakenCourses = $articles->pluck('enrollment.course')->unique()->pluck('id')->toArray();
+
+        $enrollments = $enrollments->filter(function ($enrollment) use ($alreadyTakenCourses) {
+            return !in_array($enrollment->course->id, $alreadyTakenCourses);
+        });
         $completedCourses = $enrollments->filter(function ($enrollment) {
             return $enrollment->course->iscompleted();
         });
@@ -150,6 +168,13 @@ class StudentPengetahuanController extends Controller
             $enrollment = Enrollment::where('user_id', userAuth()->id)->where('id', $request->enrollment)->first();
             if (!$enrollment) {
                 return redirect()->back()->with(['messege' => __('Enrollment not found'), 'alert-type' => 'error']);
+            }
+
+            if ($pengetahuan->enrollment_id != $enrollment->id) {
+                $article = Article::where('enrollment_id', $enrollment->id)->first();
+                if ($article) {
+                    return redirect()->back()->with(['messege' => __('Pengetahuan already created for this enrollment'), 'alert-type' => 'error']);
+                }
             }
         }
 
@@ -217,7 +242,7 @@ class StudentPengetahuanController extends Controller
 
     public function view($id)
     {
-        $pengetahuan = Article::where('id', $id)->first();
+        $pengetahuan = Article::with('enrollment.course')->where('id', $id)->first();
         if (Storage::disk('private')->exists($pengetahuan->thumbnail)) {
             return Storage::disk('private')->response($pengetahuan->thumbnail);
         } else {

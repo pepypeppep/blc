@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Modules\InstructorRequest\app\Models\InstructorRequest;
+use Faker\Factory as Faker;
 
 class TagSeeder extends Seeder
 {
@@ -13,9 +13,10 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 24; $i++) {
+        $faker = Faker::create();
+        for ($i = 1; $i <= 8; $i++) {
             DB::table('tags')->insert([
-                'name' => 'Tag ' . fake()->word() . $i,
+                'name' => $faker->word,
             ]);
         }
     }

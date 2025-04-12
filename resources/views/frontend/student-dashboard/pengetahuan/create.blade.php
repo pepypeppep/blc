@@ -115,13 +115,13 @@
                                             name="file_name" value="#" onclick="$('#file').trigger('click');">
                                         <input id="file" name="file" class="form-control d-none" type="file"
                                             onchange="$('#file_name').val(this.files[0].name)"
-                                            accept=".pdf, .docx, .pptx">
+                                            accept=".pdf">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2" id="link-field">
                                 <div class="form-group">
-                                    <label for="link">{{ __('Link Materi') }}
+                                    <label for="link">{{ __('Link Learning Material') }}
                                         <code>*</code></label>
                                     <input id="link" name="link" type="url" class="form-control"
                                         placeholder="example" value="{{ old('link') }}">
@@ -129,16 +129,16 @@
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
-                                    <label for="description">{{ __('description') }}
+                                    <label for="description">{{ __('Description') }}
                                         <code>*</code></label>
-                                    <textarea name="description" class="text-editor form-control summernote">@if (old('description')){{ old('description') }}@else#@endif</textarea>
+                                    <textarea name="description" class="text-editor form-control summernote">@if (old('description')){{ old('description') }}@endif</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
                                     <label for="content">{{ __('Content') }}
                                         <code>*</code></label>
-                                    <textarea name="content" class="text-editor form-control summernote">@if (old('content')){{ old('content') }}@else#@endif</textarea>
+                                    <textarea name="content" class="text-editor form-control summernote">@if (old('content')){{ old('content') }}@endif</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2">
@@ -155,9 +155,9 @@
                             <div class="col-md-12 mt-2 mb-4">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" name="allow_comments"
-                                        id="allow_comments" value="yes" checked>
+                                        id="allow_comments" checked>
                                     <label class="form-check-label" for="allow_comments">
-                                        {{ __('Allow Comments') }}
+                                        {{ __('Allow Comment') }}
                                     </label>
                                 </div>
                             </div>

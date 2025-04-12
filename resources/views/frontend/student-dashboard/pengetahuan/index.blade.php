@@ -34,7 +34,9 @@
                                                         <h5 class="title"><a
                                                                 href="{{ route('student.pengetahuan.show', $pengetahuan->slug) }}">{{ $pengetahuan->title }}</a>
                                                         </h5>
-                                                        <h6 class="sub-title">{!! clean($pengetahuan->description) !!}</h6>
+                                                        <h6 class="sub-title">
+                                                            {!! Str::limit(clean($pengetahuan->description), 75, '...') !!}
+                                                        </h6>
                                                         <div>
                                                             @foreach ($pengetahuan->articleTags as $tag)
                                                                 <span

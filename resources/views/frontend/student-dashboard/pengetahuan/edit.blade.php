@@ -105,7 +105,7 @@
                             </div>
                             <div class="col-md-12 mt-2" id="file-upload-field">
                                 <div class="form-group">
-                                    <label for="file">{{ __('Upload Dokument Materi') }}
+                                    <label for="file">{{ __('Upload Dokumen Materi') }}
                                         <code>*</code></label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1"
@@ -119,7 +119,7 @@
                                             onclick="$('#file').trigger('click');">
                                         <input id="file" name="file" class="form-control d-none" type="file"
                                             onchange="$('#file_name').val(this.files[0].name)"
-                                            accept=".pdf, .docx, .pptx">
+                                            accept=".pdf">
                                     </div>
                                 </div>
                             </div>
@@ -153,8 +153,6 @@
                                             <option value="{{ $tag->name }}"
                                                 @if ($pengetahuan->articleTags->contains('name', $tag->name)) selected @endif>
                                                 {{ $tag->name }}</option>
-                                            {{-- <option value="{{ $tag->name }}">
-                                                {{ $tag->name }}</option> --}}
                                         @endforeach
                                     </select>
                                 </div>
@@ -164,7 +162,7 @@
                                     <input class="form-check-input" type="checkbox" name="allow_comments"
                                         id="allow_comments" @if ($pengetahuan->allow_comments) checked @endif>
                                     <label class="form-check-label" for="allow_comments">
-                                        {{ __('Allow Comments') }}
+                                        {{ __('Allow Comment') }}
                                     </label>
                                 </div>
                             </div>

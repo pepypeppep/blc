@@ -9,13 +9,15 @@ use App\Http\Controllers\Api\ReviewApiController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\CertificateApiController;
 use App\Http\Controllers\Api\PendidikanLanjutanController;
+use App\Http\Controllers\Auth\SSOController;
 
 Route::middleware('auth:sso-api')->get('/hello', function (Request $request) {
-
     return [
         'message' => sprintf("Hello my username is %s", $request->user()->username)
     ];
 });
+
+Route::middleware('auth:sso-api')->get('/whoami', [SSOController::class, 'whoami'])->name('whoami');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -58,6 +60,7 @@ Route::name('api.')->group(function () {
         Route::prefix('pendidikan-lanjutan')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'index']);
             Route::get('/{id}', [PendidikanLanjutanController::class, 'show']);
+            Route::get('/{id}/logs', [PendidikanLanjutanController::class, 'logs']);
         });
     });
 

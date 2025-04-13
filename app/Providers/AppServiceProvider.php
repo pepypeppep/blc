@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Enums\ThemeList;
+use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Blade;
@@ -75,6 +77,20 @@ class AppServiceProvider extends ServiceProvider
 
         // Register guards
         Auth::viaRequest('keycloak', function (Request $request) {
+            if ($request->header('x-username') && App::environment() == 'local') {
+                $username = $request->header('x-username');
+                $user = User::where('username', $username)->first();
+                if ($user) {
+                    return $user;
+                }
+
+                // $user = Admin::where('username', $username)->first();
+                // if ($user) {
+                //     return $user;
+                // }
+                return null;
+            }
+
             try {
                 $provider = Socialite::driver('keycloak');
                 $userData = $provider

@@ -4,12 +4,8 @@
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between align-items-center">
             <h4 class="title d-flex justify-content-between align-items-center w-100">
-                {{ __('Daftar Program Pendidikan Lanjutan') }}
-                <span class="dashboard__content-title-button">
-                    <a href="{{ route('student.follow-up-action.create') }}" class="btn btn-sm btn-primary">
-                        <i class="fa fa-plus"></i> {{ __('Buat Rencana Tindak Lanjut') }}
-                    </a>
-                </span>
+                {{ __('Daftar Topik Rencana Tindak Lanjut (RTL)') }}
+
             </h4>
         </div>
 
@@ -17,66 +13,62 @@
         <div class="row">
             <div class="col-12">
                 <div class="dashboard__review-table table-responsive">
-                    <table class="table table-borderless">
+                    <table id="enrollmentsRtlTable" class="table table-borderless">
                         <thead>
                             <tr>
-                                <th>{{ __('#') }}</th>
                                 <th width="30%">{{ __('Kursus') }}</th>
-                                <th width="20%">{{ __('Ringkasan') }}</th>
-                                <th width="20%">{{ __('Dibuat') }}</th>
+                                <th width="20%">{{ __('Materi') }}</th>
+                                <th width="20%">{{ __('Topik RTL') }}</th>
                                 <th>{{ __('Action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($items as $key => $item)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->course->title }}</td>
-                                    <td>{!! Str::words($item->summary, 8) !!} ...</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}</td>
-                                    <td>
-                                        <a href="{{ route('student.follow-up-action.show', $item->id) }}"
-                                            class="align-middle" data-bs-toggle="tooltip" title="Lihat selengkapnya">
-                                            <i class="fas fa-eye"></i> {{ __('View') }}
-                                        </a>
 
-                                        <a href="{{ route('student.follow-up-action.edit', $item->id) }}"
-                                            class="align-middle" data-bs-toggle="tooltip" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-
-
-                                        <button type="button" class="delete-item "
-                                            style="width: 32px; height: 32px; background-color: #dc3545; color: #fff; border-radius: 50%; 
-                                                       border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;"
-                                            data-id="{{ $item->id }}"
-                                            data-url="{{ route('student.follow-up-action.destroy', $item->id) }}"
-                                            data-bs-toggle="tooltip" title="Hapus">
-                                            <i class="fa fa-trash text-white"></i>
-                                        </button>
-
-                                    </td>
-
-
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center">{{ __('No data found!') }}</td>
-                                </tr>
-                            @endforelse
                         </tbody>
                     </table>
                 </div>
-                {{ $items->links() }}
+
             </div>
         </div>
     </div>
 @endsection
 
-
+@push('styles')
+    <!-- datatables -->
+    <link href="https://cdn.datatables.net/2.2.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+@endpush
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- datatables -->
+    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.2.1/js/dataTables.bootstrap5.min.js"></script>
+
     <script>
+        $('#enrollmentsRtlTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('student.follow-up-action.index') }}",
+            columns: [{
+                    data: 'course.title',
+                    name: 'course.title'
+                },
+                {
+                    data: 'chapter.title',
+                    name: 'chapter.title'
+                },
+                {
+                    data: 'title',
+                    name: 'title'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    searchable: false,
+                    orderable: false
+                }
+            ]
+        });
+
         $(document).ready(function() {
             $(".delete-item").click(function() {
                 let itemId = $(this).data("id");

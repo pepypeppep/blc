@@ -231,6 +231,8 @@ class CourseContentController extends Controller
                 'chapter_item_id' => $chapterItem->id,
                 'title'           => $request->title,
                 'description'     => $request->description,
+                'start_date' => $request->start_date,
+                'due_date' => $request->end_date,
             ]);
         }
 

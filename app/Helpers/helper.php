@@ -948,12 +948,27 @@ if (!function_exists('sendNotification')) {
         $data = [
             "message" => [
                 "token" => $fcm,
+                "data" => [
+                    "link" => $data['link'],
+                    // "path" => json_encode(["module" => "pendidikan-lanjutan", "id" => 1]),
+                    "path" => json_encode($data['path']),
+                    "sender" => json_encode([
+                        "name" => "BLC Administrator"
+                    ]),
+                    "timestamp" => now()->toISOString()
+                ],
                 "notification" => [
                     "title" => $title,
-                    "body" => $description,
-                    "link" => $data['link'],
-                    "path" => $data['path']
+                    "body" => $description
                 ],
+                // "android" => [
+                //     "priority" => "high"
+                // ],
+                // "apns" => [
+                //     "headers" => [
+                //         "apns-priority" => "10"
+                //     ]
+                // ]
             ]
         ];
         $payload = json_encode($data);

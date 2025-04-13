@@ -4,8 +4,10 @@ namespace Modules\Menubuilder\app\Enums;
 
 use Illuminate\Support\Collection;
 
-enum DefaultMenusEnum: string {
-    public static function getAll(): Collection {
+enum DefaultMenusEnum: string
+{
+    public static function getAll(): Collection
+    {
         $all_default_menus = [
             (object) [
                 'name' => __('Home'),
@@ -15,9 +17,13 @@ enum DefaultMenusEnum: string {
                 'name' => __('Courses'),
                 'url' => '/courses',
             ],
+            // (object) [
+            //     'name' => __('Blog'),
+            //     'url' => '/blog',
+            // ],
             (object) [
-                'name' => __('Blog'),
-                'url' => '/blog',
+                'name' => __('Pengetahuan'),
+                'url' => '/article',
             ],
             (object) [
                 'name' => __('About Us'),
@@ -32,6 +38,6 @@ enum DefaultMenusEnum: string {
                 'url' => '/all-instructors',
             ],
         ];
-        return collect( $all_default_menus );
+        return collect($all_default_menus);
     }
 }

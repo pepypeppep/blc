@@ -11,9 +11,28 @@
                     @if ($attachment->category == 'syarat')
                         <tr>
                             <td width="100%">{{ $attachment->vacancyattachment->name }}</td>
-                            <td class="text-center">
+                            <td class="d-flex align-items-center justify-content-between gap-2">
+                                @if ($vacancy->status === VacancyUser::STATUS_REJECTED)
+                                    <form id="{{ $attachment->vacancyattachment->id }}_form_action"
+                                        action="{{ route('student.continuing-education.attachment', $attachment->vacancyattachment->id) }}"
+                                        method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        <input id="{{ $attachment->vacancyattachment->id }}_file" type="file"
+                                            name="file"
+                                            @if ($attachment->vacancyattachment->type == 'pdf') accept="application/pdf" @endif
+                                            class="form-control me-2"
+                                            onchange="$('#{{ $attachment->vacancyattachment->id }}_form_action').trigger('submit')"
+                                            hidden />
+                                        <button onclick="$('#{{ $attachment->vacancyattachment->id }}_file').click()"
+                                            type="button" class="align-middle border-0 text-white rounded-circle"
+                                            style="background-color: var(--tg-theme-primary);" data-bs-toggle="tooltip"
+                                            title="Unggah Ulang Berkas">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+                                    </form>
+                                @endif
                                 <a target="_blank"
-                                    href="{{ route('vacancies-participant.get.file', [$attachment->vacancyattachment->id, auth()->user()->id]) }}"
+                                    href="{{ route('student.continuing-education.attachment.view', [$attachment->vacancyattachment->id, auth()->user()->id]) }}"
                                     class="align-middle" data-bs-toggle="tooltip" title="Lihat Berkas">
                                     <i class="fas fa-eye"></i> {{ __('View') }}
                                 </a>
@@ -77,6 +96,16 @@
                                 {!! $logs->where('status', 'rejected')->last()->description !!}
                             @endif
                         </div>
+                    </div>
+                    <div>
+                        <form action="{{ route('student.continuing-education.ajukanKembali', $vacancy->id) }}" method="POST"
+                            class="d-inline">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn mt-4 mb-3">
+                                {{ __('Ajukan Perbaikan') }} <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             @else

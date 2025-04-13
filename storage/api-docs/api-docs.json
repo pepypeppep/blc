@@ -310,12 +310,12 @@
                         }
                     },
                     {
-                        "name": "price",
+                        "name": "jp",
                         "in": "query",
-                        "description": "Filter by price",
+                        "description": "Filter by minimum Jam Pelajaran",
                         "required": false,
                         "schema": {
-                            "type": "string",
+                            "type": "integer",
                             "enum": [
                                 "free",
                                 "paid"
@@ -337,11 +337,7 @@
                         "description": "Sort by id",
                         "required": false,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "asc",
-                                "desc"
-                            ]
+                            "type": "string"
                         }
                     },
                     {
@@ -413,7 +409,7 @@
                                                     "type": "string",
                                                     "example": "This course covers the basics of Laravel and how to build a simple CRUD application."
                                                 },
-                                                "price": {
+                                                "jp": {
                                                     "type": "integer",
                                                     "example": 0
                                                 },
@@ -722,7 +718,7 @@
                                                     "type": "string",
                                                     "example": "This course covers the basics of Laravel and how to build a simple CRUD application."
                                                 },
-                                                "price": {
+                                                "jp": {
                                                     "type": "integer",
                                                     "example": 0
                                                 },
@@ -1981,6 +1977,103 @@
                     }
                 }
             }
+        },
+        "/pendidikan-lanjutan/{id}/logs": {
+            "get": {
+                "tags": [
+                    "Pendidikan Lanjutan"
+                ],
+                "summary": "Get pendidikan lanjutan logs",
+                "description": "Get pendidikan lanjutan logs",
+                "operationId": "38ea3623e072c36294703d9d3ce25ded",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Vacancy id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/whoami": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get current user information",
+                "operationId": "41501ec807331b7d09067a6a4f9eeb15",
+                "responses": {
+                    "200": {
+                        "description": "User information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "john@example.com"
+                                        },
+                                        "instansi": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "PT. Example"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
         }
     },
     "tags": [
@@ -2007,6 +2100,10 @@
         {
             "name": "Notifications",
             "description": "Notifications"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
         }
     ]
 }

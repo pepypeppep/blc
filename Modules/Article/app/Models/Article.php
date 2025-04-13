@@ -11,12 +11,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Order\app\Models\Enrollment;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Article extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    protected $appends = ['thumbnail_url', 'document_url'];
 
     public const STATUS_DRAFT = "draft";
     public const STATUS_PUBLISHED = "published";
@@ -55,7 +58,6 @@ class Article extends Model
         ];
     }
 
-
     public function comments(): ?HasMany
     {
         return $this->hasMany(ArticleComment::class, 'article_id');
@@ -71,6 +73,16 @@ class Article extends Model
         return $this->hasMany(ArticleTag::class, 'article_id');
     }
 
+    /**
+     * Get all of the reviews for the Article
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ArticleComment::class, 'article_id');
+    }
+
     public function enrollment()
     {
         return $this->belongsTo(Enrollment::class);
@@ -79,5 +91,36 @@ class Article extends Model
     public function articleTags(): ?BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'article_tags', 'article_id', 'tag_id')->select('id', 'name');
+    }
+
+
+    public function scopeIsPublished($query)
+    {
+        return $query->where('status', self::STATUS_PUBLISHED);
+    }
+
+    public function reviewsRating()
+    {
+        // $reviews = $this->reviews;
+        // $sum = $reviews->sum('stars');
+        // $count = $reviews->count();
+        // if ($count == 0) {
+        //     return 0.0;
+        // }
+        // return round($sum / $count, 1);
+    }
+
+    protected function thumbnailUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->thumbnail ? route('student.pengetahuan.view.file', ['id' => $this->id]) : null,
+        );
+    }
+
+    protected function documentUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->file ? route('student.pengetahuan.view.pdf', ['id' => $this->id]) : null,
+        );
     }
 }

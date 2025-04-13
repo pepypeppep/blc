@@ -102,6 +102,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::get('/notifications/read', [NotificationController::class, 'read'])->name('notification.read');
 
     Route::get('/send-fcm-notification', [NotificationController::class, 'sendNotification'])->name('firebase.send.notification');
+    Route::get('/student/pengetahuan/view/{id}', [StudentPengetahuanController::class, 'view'])->name('student.pengetahuan.view.file');
+    Route::get('/student/pengetahuan/document/{id}', [StudentPengetahuanController::class, 'document'])->name('student.pengetahuan.view.pdf');
 
     /**
      * ============================================================================
@@ -147,7 +149,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             Route::put('update/{slug}', [StudentPengetahuanController::class, 'update'])->name('update');
             Route::put('/{slug}/ajukan', [StudentPengetahuanController::class, 'ajukanPengetahuan'])->name('ajukan');
             Route::delete('destroy/{slug}', [StudentPengetahuanController::class, 'destroy'])->name('destroy');
-            Route::get('view/{id}', [StudentPengetahuanController::class, 'view'])->name('view.file');
+            // Route::get('view/{id}', [StudentPengetahuanController::class, 'view'])->name('view.file');
         });
 
 

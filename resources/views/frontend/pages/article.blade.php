@@ -16,10 +16,11 @@
                             <div class="col-xl-4 col-md-6">
                                 <div class="blog__post-item shine__animate-item">
                                     <div class="blog__post-thumb">
-                                        <a href="{{ route('article.show', $article->slug) }}" class="shine__animate-link blog"><img
-                                                src="{{ asset($article->thumbnail) }}" alt="img"></a>
-                                        <a href="{{ route('blogs', ['category' => $article->category->slug]) }}"
-                                            class="post-tag">{{ $article->category->translation->title }}</a>
+                                        <a href="{{ route('article.show', $article->slug) }}" class="shine__animate-link blog">
+                                            <img src="{{ $article->thumbnail_url }}" alt="img">
+                                        </a>
+                                        <a href="{{ route('article', ['category' => $article->category]) }}"
+                                            class="post-tag">{{ $article->category }}</a>
                                     </div>
                                     <div class="courses__item-content">
                                         <ul
@@ -27,14 +28,14 @@
                                             <li><i class="flaticon-calendar"></i> {{ formatDate($article->created_at) }}</li>
 
                                             <li class="d-flex align-items-center">
-                                                <span class="me-2"><i class="fas fa-eye"></i>652</span>
+                                                <span class="me-2"><i class="fas fa-eye"></i>{{ $article->views }}</span>
                                                 <span class="border-start px-2"></span>
-                                                <span><i class="fas fa-star" style="color: #FFC107"></i> 5.0</span>
+                                                <span><i class="fas fa-star" style="color: #FFC107"></i> {{ $article->reviewsRating() }}</span>
                                             </li>
                                         </ul>
                                         <h5 class="title">
                                             <a
-                                                href="{{ route('article.show', $article->slug) }}">{{ truncate($article->translation->title, 50) }}</a>
+                                                href="{{ route('article.show', $article->slug) }}">{{ truncate($article->title, 50) }}</a>
                                         </h5>
                                         <ul class="list-wrap list-unstyled">
                                             <li class="d-flex align-items-center">
@@ -106,14 +107,14 @@
                                 <div class="rc-post-item">
                                     <div class="rc-post-thumb">
                                         <a href="{{ route('article.show', $article->slug) }}">
-                                            <img class="h_60px" src="{{ asset($article->thumbnail) }}" alt="img">
+                                            <img class="h_60px" src="{{ $article->thumbnail_url }}" alt="img">
                                         </a>
                                     </div>
                                     <div class="rc-post-content">
                                         <span class="date"><i class="flaticon-calendar"></i>
                                             {{ formatDate($article->created_at) }}</span>
                                         <h4 class="title"><a
-                                                href="{{ route('article.show', $article->slug) }}">{{ truncate($article->translation->title, 30) }}</a>
+                                                href="{{ route('article.show', $article->slug) }}">{{ truncate($article->title, 30) }}</a>
                                         </h4>
                                     </div>
                                 </div>

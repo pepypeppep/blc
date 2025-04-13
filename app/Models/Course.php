@@ -94,6 +94,20 @@ class Course extends Model
         return $this->hasMany(Enrollment::class, 'course_id', 'id');
     }
 
+    function iscompleted(): bool
+    {
+        $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) {
+            $q->where('course_id', $this->id);
+        })->count();
+
+        $courseLectureCompletedByUser = CourseProgress::where('user_id', userAuth()->id)
+            ->where('course_id', $this->id)->where('watched', 1)->count();
+
+        $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
+
+        return $courseCompletedPercent == 100;
+    }
+
     protected function thumbnailUrl(): Attribute
     {
         return Attribute::make(

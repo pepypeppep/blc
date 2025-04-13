@@ -2,6 +2,7 @@
 
 namespace Modules\Article\app\Models;
 
+use App\Models\Course;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -252,7 +252,7 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         try {
-            $articles = Article::with('articleTags');
+            $articles = Article::with('articleTags')->with('author')->with('enrollment.course');
 
             if ($request->keyword) {
                 $articles = $articles->where(function ($query) use ($request) {

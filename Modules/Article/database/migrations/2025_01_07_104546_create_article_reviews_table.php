@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('author_id');
             $table->tinyInteger('stars')->default(0);
             $table->text('description');
+            $table->string('status')->default('published');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

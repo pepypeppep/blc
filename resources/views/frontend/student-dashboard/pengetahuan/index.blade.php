@@ -34,6 +34,9 @@
                                                         <h5 class="title"><a
                                                                 href="{{ route('student.pengetahuan.show', $pengetahuan->slug) }}">{{ $pengetahuan->title }}</a>
                                                         </h5>
+                                                        @if ($pengetahuan->enrollment)
+                                                        <span><strong>Pelatihan:</strong> {{ optional(optional($pengetahuan->enrollment)->course)->title }}</span>
+                                                        @endif
                                                         <h6 class="sub-title">
                                                             {!! Str::limit(clean($pengetahuan->description), 75, '...') !!}
                                                         </h6>
@@ -131,6 +134,9 @@
                             @empty
                                 <h6 class="text-center">{{ __('Belum Memiliki Pengetahuan') }}</h6>
                             @endforelse
+                            <div class="d-flex justify-content-center">
+                                {{ $pengetahuans->links() }}
+                            </div>
                         </div>
                     </div>
                 </div>

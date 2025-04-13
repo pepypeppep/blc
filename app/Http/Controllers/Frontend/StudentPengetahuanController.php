@@ -16,7 +16,7 @@ class StudentPengetahuanController extends Controller
 {
     public function index(): View
     {
-        $pengetahuans = Article::where('author_id', userAuth()->id)->with('enrollment.course')->orderBy('created_at', 'desc')->get();
+        $pengetahuans = Article::where('author_id', userAuth()->id)->with('enrollment.course')->orderBy('created_at', 'desc')->paginate(5);
         return view('frontend.student-dashboard.pengetahuan.index', compact('pengetahuans'));
     }
 

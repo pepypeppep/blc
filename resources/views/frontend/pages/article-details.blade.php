@@ -47,7 +47,7 @@
                                     <li><i class="flaticon-user-1"></i> {{ __('by') }} <a
                                             href="javascript:;">{{ $article->author->name }}</a></li>
                                     <li><i class="flaticon-clock"></i>
-                                        {{ calculateReadingTime($article->description) }} {{ __('Min Read') }}
+                                        {{ calculateReadingTime($article->description) }} {{ __('View') }}
                                     </li>
                                     <li><i class="far fa-comment-alt"></i> {{ count($comments) }} {{ __('Comments') }}
                                     </li>
@@ -93,7 +93,7 @@
                     </div>
                     <div class="blog__post-author">
                         <div class="blog__post-author-thumb">
-                            <a href="#"><img src="{{ asset($article->author->image) }}" alt="img"></a>
+                            <a href="#"><img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $article->author->nip }}.jpg" alt="img"></a>
                         </div>
                         <div class="blog__post-author-content">
                             <span class="designation">{{ __('Author') }}</span>
@@ -114,14 +114,14 @@
                                         <li>
                                             <div class="comments-box">
                                                 <div class="comments-avatar">
-                                                    <img src="{{ asset($comment->user->image) }}" alt="img">
+                                                    <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $comment->user->nip }}.jpg" alt="img">
                                                 </div>
                                                 <div class="comments-text">
                                                     <div class="avatar-name">
                                                         <h6 class="name">{{ $comment->user->name }}</h6>
                                                         <span class="date">{{ formatDate($comment->created_at) }}</span>
                                                     </div>
-                                                    <p>{{ $comment->comment }}</p>
+                                                    <p>{{ $comment->description }}</p>
                                                 </div>
                                             </div>
                                         </li>

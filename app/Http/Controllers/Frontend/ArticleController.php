@@ -9,7 +9,7 @@ use App\Models\Tag;
 use Illuminate\Support\Facades\Cache;
 use Modules\Article\app\Models\Article;
 use Modules\Article\app\Models\ArticleTag;
-use Modules\Article\app\Models\ArticleComment;
+use Modules\Article\app\Models\ArticleReview;
 
 class ArticleController extends Controller
 {
@@ -32,18 +32,18 @@ class ArticleController extends Controller
 
         $tags = Tag::has('articles')->get();
         $categories = ['blog', 'document', 'video'];
-        $popularArticles = Article::isPublished()->withCount('comments')->orderBy('comments_count', 'desc')->limit(5)->get();
+        $popularArticles = Article::isPublished()->withCount('reviews')->orderBy('reviews_count', 'desc')->limit(5)->get();
 
         return view('frontend.pages.article', compact('articles', 'tags', 'categories', 'popularArticles'));
     }
 
     function show(string $slug)
     {
-        $article = Article::where('slug', $slug)->isPublished()->firstOrFail();
+        $article = Article::with('reviews')->where('slug', $slug)->isPublished()->firstOrFail();
         $latestBlogs = Article::where('slug', '!=', $slug)->isPublished()->orderBy('created_at', 'desc')->limit(8)->get();
         $categories = ['blog', 'document', 'video'];
         $tags = Tag::has('articles')->get();
-        $comments = ArticleComment::whereHas('post', function ($query) use ($slug) {
+        $comments = ArticleReview::with('user')->whereHas('post', function ($query) use ($slug) {
             $query->where('slug', $slug);
         })->orderBy('created_at', 'desc')->get();
 
@@ -61,7 +61,7 @@ class ArticleController extends Controller
             'g-recaptcha-response.required' => __('The reCAPTCHA verification is required'),
             'g-recaptcha-response.recaptcha' => __('The reCAPTCHA verification failed'),
         ]);
-        $comment = new ArticleComment();
+        $comment = new ArticleReview();
 
         $comment->article_id = $request->article_id;
         $comment->user_id = userAuth()->id;

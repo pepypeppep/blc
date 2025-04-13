@@ -94,6 +94,12 @@ class Article extends Model
         return $query->where('status', self::STATUS_PUBLISHED);
     }
 
+    public function reviewsRating(): float
+    {
+        $rating = $this->reviews->avg('stars');
+        return number_format((float)$rating, 1, '.', '');
+    }
+
     protected function thumbnailUrl(): Attribute
     {
         return Attribute::make(

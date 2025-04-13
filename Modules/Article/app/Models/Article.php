@@ -21,6 +21,7 @@ class Article extends Model
 
     protected $appends = ['thumbnail_url', 'document_url'];
 
+    
     public const STATUS_DRAFT = "draft";
     public const STATUS_PUBLISHED = "published";
     public const STATUS_REJECTED = "rejected";

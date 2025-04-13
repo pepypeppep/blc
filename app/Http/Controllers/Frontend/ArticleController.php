@@ -28,7 +28,8 @@ class ArticleController extends Controller
                 $query->where('name', request('tags'));
             });
         });
-        $articles = $query->where(['status' => 1])->orderBy('created_at', 'desc')->paginate(9);
+        $articles = $query->where(['status' => 'published'])->orderBy('created_at', 'desc')->first();
+        dd($articles);
 
         $tags = Tag::has('articles')->get();
         $categories = ['blog', 'document', 'video'];

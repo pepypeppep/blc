@@ -16,10 +16,11 @@
                             <div class="col-xl-4 col-md-6">
                                 <div class="blog__post-item shine__animate-item">
                                     <div class="blog__post-thumb">
-                                        <a href="{{ route('article.show', $article->slug) }}" class="shine__animate-link blog"><img
-                                                src="{{ asset($article->thumbnail) }}" alt="img"></a>
-                                        <a href="{{ route('blogs', ['category' => $article->category->slug]) }}"
-                                            class="post-tag">{{ $article->category->translation->title }}</a>
+                                        <a href="{{ route('article.show', $article->slug) }}" class="shine__animate-link blog">
+                                            {{-- <img src="{{ asset($article->thumbnail) }}" alt="img"> --}}
+                                        </a>
+                                        <a href="{{ route('blogs', ['category' => $article->category]) }}"
+                                            class="post-tag">{{ $article->category }}</a>
                                     </div>
                                     <div class="courses__item-content">
                                         <ul
@@ -34,7 +35,7 @@
                                         </ul>
                                         <h5 class="title">
                                             <a
-                                                href="{{ route('article.show', $article->slug) }}">{{ truncate($article->translation->title, 50) }}</a>
+                                                href="{{ route('article.show', $article->slug) }}">{{ truncate($article->title, 50) }}</a>
                                         </h5>
                                         <ul class="list-wrap list-unstyled">
                                             <li class="d-flex align-items-center">
@@ -54,7 +55,7 @@
                         {{ $articles->links() }}
                     </nav>
                 </div>
-                <div class="col-xl-3 col-lg-4">
+                {{-- <div class="col-xl-3 col-lg-4">
                     <aside class="blog-sidebar">
                         <div class="blog-widget widget_search">
                             <div class="sidebar-search-form">
@@ -113,7 +114,7 @@
                                         <span class="date"><i class="flaticon-calendar"></i>
                                             {{ formatDate($article->created_at) }}</span>
                                         <h4 class="title"><a
-                                                href="{{ route('article.show', $article->slug) }}">{{ truncate($article->translation->title, 30) }}</a>
+                                                href="{{ route('article.show', $article->slug) }}">{{ truncate($article->title, 30) }}</a>
                                         </h4>
                                     </div>
                                 </div>
@@ -122,7 +123,7 @@
                             @endforelse
                         </div>
                     </aside>
-                </div>
+                </div> --}}
             </div>
         </div>
     </section>

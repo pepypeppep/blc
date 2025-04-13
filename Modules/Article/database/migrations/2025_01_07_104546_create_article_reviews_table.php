@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('article_comments', function (Blueprint $table) {
+        Schema::create('article_reviews', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('article_id');
             $table->unsignedBigInteger('author_id');
+            $table->tinyInteger('stars')->default(0);
             $table->text('description');
             $table->timestamps();
         });
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('article_comments');
+        Schema::dropIfExists('article_reviews');
     }
 };

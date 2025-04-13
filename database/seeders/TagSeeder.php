@@ -15,8 +15,8 @@ class TagSeeder extends Seeder
     {
         $faker = Faker::create();
         for ($i = 1; $i <= 8; $i++) {
-            DB::table('tags')->insert([
-                'name' => $faker->word,
+            DB::table('tags')->updateOrInsert([
+                'name' => $faker->unique()->word,
             ]);
         }
     }

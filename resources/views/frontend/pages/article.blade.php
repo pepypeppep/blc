@@ -28,9 +28,9 @@
                                             <li><i class="flaticon-calendar"></i> {{ formatDate($article->created_at) }}</li>
 
                                             <li class="d-flex align-items-center">
-                                                <span class="me-2"><i class="fas fa-eye"></i>652</span>
+                                                <span class="me-2"><i class="fas fa-eye"></i>{{ $article->views }}</span>
                                                 <span class="border-start px-2"></span>
-                                                <span><i class="fas fa-star" style="color: #FFC107"></i> 5.0</span>
+                                                <span><i class="fas fa-star" style="color: #FFC107"></i> {{ $article->reviewsRating() }}</span>
                                             </li>
                                         </ul>
                                         <h5 class="title">
@@ -55,7 +55,7 @@
                         {{ $articles->links() }}
                     </nav>
                 </div>
-                {{-- <div class="col-xl-3 col-lg-4">
+                <div class="col-xl-3 col-lg-4">
                     <aside class="blog-sidebar">
                         <div class="blog-widget widget_search">
                             <div class="sidebar-search-form">
@@ -107,7 +107,7 @@
                                 <div class="rc-post-item">
                                     <div class="rc-post-thumb">
                                         <a href="{{ route('article.show', $article->slug) }}">
-                                            <img class="h_60px" src="{{ asset($article->thumbnail) }}" alt="img">
+                                            <img class="h_60px" src="{{ $article->thumbnail_url }}" alt="img">
                                         </a>
                                     </div>
                                     <div class="rc-post-content">
@@ -123,7 +123,7 @@
                             @endforelse
                         </div>
                     </aside>
-                </div> --}}
+                </div>
             </div>
         </div>
     </section>

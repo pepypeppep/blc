@@ -51,8 +51,8 @@
                                     </li>
                                     <li><i class="far fa-comment-alt"></i> {{ count($comments) }} {{ __('Comments') }}
                                     </li>
-                                    <li><i class="fas fa-star"></i> 5.0 </li>
-                                    <li><i class="far fa-eye"></i> {{ __('654') }}
+                                    <li><i class="fas fa-star"></i> {{ $article->reviewsRating() }} </li>
+                                    <li><i class="far fa-eye"></i> {{ $article->views }}
                                 </ul>
                             </div>
                             <h3 class="title">{{ $article->title }}</h3>
@@ -206,6 +206,24 @@
                                                     class="flaticon-angle-right"></i>{{ $category }}</a>
                                         </li>
                                     @endforeach
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="blog-widget">
+                            <h4 class="widget-title">{{ __('Tags') }}</h4>
+                            <div class="shop-cat-list">
+                                <ul class="list-wrap">
+                                    @forelse($tags as $tag)
+                                        <li>
+                                            <a href="{{ route('article', ['tag' => $tag->name]) }}"><i
+                                                    class="flaticon-angle-right"></i>{{ ucfirst($tag->name) }}</a>
+                                        </li>
+                                    @empty
+                                        <li>
+                                            {{ __('No Tag Found') }}
+                                        </li>
+                                    @endforelse
 
                                 </ul>
                             </div>

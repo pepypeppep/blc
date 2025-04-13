@@ -28,11 +28,11 @@ class ArticleController extends Controller
                 $query->where('name', request('tags'));
             });
         });
-        $articles = $query->where(['status' => 'published'])->orderBy('created_at', 'desc')->paginate(9);
+        $articles = $query->isPublished()->orderBy('created_at', 'desc')->paginate(9);
 
         $tags = Tag::has('articles')->get();
         $categories = ['blog', 'document', 'video'];
-        $popularArticles = Article::withCount('comments')->orderBy('comments_count', 'desc')->limit(8)->get();
+        $popularArticles = Article::isPublished()->withCount('comments')->orderBy('comments_count', 'desc')->limit(5)->get();
 
         return view('frontend.pages.article', compact('articles', 'tags', 'categories', 'popularArticles'));
     }

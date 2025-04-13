@@ -73,6 +73,16 @@ class Article extends Model
         return $this->hasMany(ArticleTag::class, 'article_id');
     }
 
+    /**
+     * Get all of the reviews for the Article
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ArticleComment::class, 'article_id');
+    }
+
     public function enrollment()
     {
         return $this->belongsTo(Enrollment::class);
@@ -87,6 +97,17 @@ class Article extends Model
     public function scopeIsPublished($query)
     {
         return $query->where('status', self::STATUS_PUBLISHED);
+    }
+
+    public function reviewsRating()
+    {
+        // $reviews = $this->reviews;
+        // $sum = $reviews->sum('stars');
+        // $count = $reviews->count();
+        // if ($count == 0) {
+        //     return 0.0;
+        // }
+        // return round($sum / $count, 1);
     }
 
     protected function thumbnailUrl(): Attribute

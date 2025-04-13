@@ -1,25 +1,25 @@
 @extends('frontend.layouts.master')
-@section('meta_title', $blog->translation->title . ' || ' . $setting->app_name)
+@section('meta_title', $article->title . ' || ' . $setting->app_name)
 
 @push('custom_meta')
-    <meta name="description" content="{{ $blog->translation->seo_description }}">
-    <meta property="keywords" content="{{ getTags(json_decode($blog->tags)) }}" />
-    <meta property="og:title" content="{{ $blog->translation->seo_title }}" />
-    <meta property="og:description" content="{{ $blog->translation->seo_description }}" />
-    <meta property="og:image" content="{{ asset($blog->image) }}" />
+    <meta name="description" content="{{ $article->description }}">
+    <meta property="keywords" content="{{ $article->tags }}" />
+    <meta property="og:title" content="{{ $article->title }}" />
+    <meta property="og:description" content="{{ $article->description }}" />
+    <meta property="og:image" content="{{ $article->thumbnail_url }}" />
     <meta property="og:URL" content="{{ url()->current() }}" />
     <meta property="og:type" content="website" />
 @endpush
 @push('styles')
     <link rel="stylesheet" href="{{ asset('frontend/css/shareon.min.css') }}">
 @endpush
-@section('meta_title', $setting->app_name . ' | ' . $blog->title)
+@section('meta_title', $setting->app_name . ' | ' . $article->title)
 @section('contents')
     <!-- breadcrumb-area -->
     <x-frontend.breadcrumb :title="__('Detail Pengetahuan')" :links="[
         ['url' => route('home'), 'text' => __('Home')],
         ['url' => route('blogs'), 'text' => __('Pengetahuan')],
-        ['url' => '', 'text' => $blog->title],
+        ['url' => '', 'text' => $article->title],
     ]" />
     <!-- breadcrumb-area-end -->
 
@@ -30,16 +30,24 @@
                 <div class="col-xl-9 col-lg-8">
                     <div class="blog__details-wrapper">
                         <div class="blog__details-thumb">
-                            <img src="{{ asset($blog->image) }}" alt="img">
+                            @if ($article->category == 'video')
+                                <iframe class="w-100" style="height: 70vh" src="https://www.youtube.com/embed/0ewXRjPa5Tk" allowfullscreen></iframe>
+                            @elseif ($article->category == 'document')
+                                <object data="{{ $article->document_url }}" type="application/pdf" width="100%" height="600">
+                                    <p><a href="{{ $article->document_url }}">Download PDF</a></p>
+                                </object>
+                            @else
+                                <img src="{{ $article->thumbnail_url }}" alt="img">
+                            @endif
                         </div>
                         <div class="blog__details-content">
                             <div class="blog__post-meta">
                                 <ul class="list-wrap">
-                                    <li><i class="flaticon-calendar"></i> {{ formatDate($blog->created_at) }}</li>
+                                    <li><i class="flaticon-calendar"></i> {{ formatDate($article->created_at) }}</li>
                                     <li><i class="flaticon-user-1"></i> {{ __('by') }} <a
-                                            href="javascript:;">{{ $blog->author->name }}</a></li>
+                                            href="javascript:;">{{ $article->author->name }}</a></li>
                                     <li><i class="flaticon-clock"></i>
-                                        {{ calculateReadingTime($blog->translation->description) }} {{ __('Min Read') }}
+                                        {{ calculateReadingTime($article->description) }} {{ __('Min Read') }}
                                     </li>
                                     <li><i class="far fa-comment-alt"></i> {{ count($comments) }} {{ __('Comments') }}
                                     </li>
@@ -47,19 +55,19 @@
                                     <li><i class="far fa-eye"></i> {{ __('654') }}
                                 </ul>
                             </div>
-                            <h3 class="title">{{ $blog->translation->title }}</h3>
+                            <h3 class="title">{{ $article->title }}</h3>
                             <p>
-                                {!! clean($blog->translation->description) !!}
+                                {!! clean($article->description) !!}
                             </p>
                             <div class="blog__details-bottom">
                                 <div class="row">
                                     <div class="col-xl-6 col-md-7">
                                         <div class="tg-post-tag">
-                                            @if($blog->tags)
+                                            @if($article->tags)
                                             <h5 class="tag-title">{{ __('Tags ') }}:</h5>
                                             <ul class="list-wrap p-0 mb-0">
-                                                @foreach (json_decode($blog->tags) ?? [] as $tag)
-                                                    <li><a href="javascript:;">{{ $tag->value }}</a></li>
+                                                @foreach ($article->tags ?? [] as $tag)
+                                                    <li><a href="javascript:;">{{ $tag->tag->name }}</a></li>
                                                 @endforeach
                                             </ul>
                                             @endif
@@ -85,12 +93,12 @@
                     </div>
                     <div class="blog__post-author">
                         <div class="blog__post-author-thumb">
-                            <a href="#"><img src="{{ asset($blog->author->image) }}" alt="img"></a>
+                            <a href="#"><img src="{{ asset($article->author->image) }}" alt="img"></a>
                         </div>
                         <div class="blog__post-author-content">
                             <span class="designation">{{ __('Author') }}</span>
-                            <h5 class="name">{{ $blog->author->name }}</h5>
-                            <p>{{ $blog->author->bio }}</p>
+                            <h5 class="name">{{ $article->author->name }}</h5>
+                            <p>{{ $article->author->bio }}</p>
                         </div>
                     </div>
                     <div class="blog-post-comment">
@@ -122,57 +130,59 @@
                                 @endforeach
                             </div>
                         </div>
-                        @auth
-                            <div class="comment-respond">
-                                <h4 class="comment-reply-title">{{ __('Post a comment') }}</h4>
-                                <div class="comment-note">
-                                    <p>{{ __('Please keep your comment under 1000 characters') }}</p>
-                                </div>
-                                <form action="{{ route('blog.submit-comment') }}" class="comment-form" method="post">
-                                    @csrf
-                                    <input type="hidden" name="blog_id" value="{{ $blog->id }}">
-                                    <div class="form-grp mb-3">
-                                        <label for="">Rating</label>
-                                        <select name="rating" id="" required="">
-                                            <option value="5">5</option>
-                                            <option value="4">4</option>
-                                            <option value="3">3</option>
-                                            <option value="2">2</option>
-                                            <option value="1">1</option>
-                                        </select>
+                        @if ($article->allow_comments == 1)
+                            @auth
+                                <div class="comment-respond">
+                                    <h4 class="comment-reply-title">{{ __('Post a comment') }}</h4>
+                                    <div class="comment-note">
+                                        <p>{{ __('Please keep your comment under 1000 characters') }}</p>
                                     </div>
-                                    <div class="comment-field">
-                                        <label for="">Komentar</label>
-
-                                        <textarea placeholder="{{ __('Tulis Komentar') }}" name="comment"></textarea>
-                                    </div>
-                                    <!-- g-recaptcha -->
-                                    @if (Cache::get('setting')->recaptcha_status === 'active')
-                                        <div class="form-grp mt-3">
-                                            <div class="g-recaptcha"
-                                                data-sitekey="{{ Cache::get('setting')->recaptcha_site_key }}"></div>
+                                    <form action="{{ route('blog.submit-comment') }}" class="comment-form" method="post">
+                                        @csrf
+                                        <input type="hidden" name="blog_id" value="{{ $article->id }}">
+                                        <div class="form-grp mb-3">
+                                            <label for="">Rating</label>
+                                            <select name="rating" id="" required="">
+                                                <option value="5">5</option>
+                                                <option value="4">4</option>
+                                                <option value="3">3</option>
+                                                <option value="2">2</option>
+                                                <option value="1">1</option>
+                                            </select>
                                         </div>
-                                    @endif
+                                        <div class="comment-field">
+                                            <label for="">Komentar</label>
 
-                                    <p class="form-submit"></p>
-                                    <button class="btn btn-two arrow-btn">{{ __('Post Comment') }} <img
-                                            src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
-                                            class="injectable"></button>
-                                </form>
-                            </div>
-                        @else
-                            <div class="alert alert-primary d-flex align-items-center" role="alert">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                    class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16"
-                                    role="img" aria-label="Warning:">
-                                    <path
-                                        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-                                </svg>
-                                <div>
-                                    {{ __('Please login to comment') }}
+                                            <textarea placeholder="{{ __('Tulis Komentar') }}" name="comment"></textarea>
+                                        </div>
+                                        <!-- g-recaptcha -->
+                                        @if (Cache::get('setting')->recaptcha_status === 'active')
+                                            <div class="form-grp mt-3">
+                                                <div class="g-recaptcha"
+                                                    data-sitekey="{{ Cache::get('setting')->recaptcha_site_key }}"></div>
+                                            </div>
+                                        @endif
+
+                                        <p class="form-submit"></p>
+                                        <button class="btn btn-two arrow-btn">{{ __('Post Comment') }} <img
+                                                src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
+                                                class="injectable"></button>
+                                    </form>
                                 </div>
-                            </div>
-                        @endauth
+                            @else
+                                <div class="alert alert-primary d-flex align-items-center" role="alert">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                        class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16"
+                                        role="img" aria-label="Warning:">
+                                        <path
+                                            d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                    </svg>
+                                    <div>
+                                        {{ __('Please login to comment') }}
+                                    </div>
+                                </div>
+                            @endauth
+                        @endif
                     </div>
 
                 </div>
@@ -190,10 +200,10 @@
                             <h4 class="widget-title">{{ __('Categories') }}</h4>
                             <div class="shop-cat-list">
                                 <ul class="list-wrap">
-                                    @foreach ($categories->sortBy('translation.title') as $category)
+                                    @foreach ($categories as $category)
                                         <li>
-                                            <a href="{{ route('blogs', ['category' => $category->slug]) }}"><i
-                                                    class="flaticon-angle-right"></i>{{ $category->translation->title }}</a>
+                                            <a href="{{ route('article', ['category' => $category]) }}"><i
+                                                    class="flaticon-angle-right"></i>{{ $category }}</a>
                                         </li>
                                     @endforeach
 
@@ -202,18 +212,18 @@
                         </div>
                         <div class="blog-widget">
                             <h4 class="widget-title">{{ __('Latest Post') }}</h4>
-                            @forelse($latestBlogs as $blog)
+                            @forelse($latestBlogs as $article)
                                 <div class="rc-post-item">
                                     <div class="rc-post-thumb">
-                                        <a href="{{ route('blog.show', $blog->slug) }}">
-                                            <img class="h_60px" src="{{ asset($blog->image) }}" alt="img">
+                                        <a href="{{ route('article.show', $article->slug) }}">
+                                            <img class="h_60px" src="{{ $article->thumbnail_url }}" alt="img">
                                         </a>
                                     </div>
                                     <div class="rc-post-content">
                                         <span class="date"><i class="flaticon-calendar"></i>
-                                            {{ formatDate($blog->created_at) }}</span>
+                                            {{ formatDate($article->created_at) }}</span>
                                         <h4 class="title"><a
-                                                href="{{ route('blog.show', $blog->slug) }}">{{ truncate($blog->translation->title, 30) }}</a>
+                                                href="{{ route('article.show', $article->slug) }}">{{ truncate($article->title, 30) }}</a>
                                         </h4>
                                     </div>
                                 </div>

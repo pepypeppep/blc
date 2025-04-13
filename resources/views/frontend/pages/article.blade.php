@@ -17,9 +17,9 @@
                                 <div class="blog__post-item shine__animate-item">
                                     <div class="blog__post-thumb">
                                         <a href="{{ route('article.show', $article->slug) }}" class="shine__animate-link blog">
-                                            {{-- <img src="{{ asset($article->thumbnail) }}" alt="img"> --}}
+                                            <img src="{{ $article->thumbnail_url }}" alt="img">
                                         </a>
-                                        <a href="{{ route('blogs', ['category' => $article->category]) }}"
+                                        <a href="{{ route('article', ['category' => $article->category]) }}"
                                             class="post-tag">{{ $article->category }}</a>
                                     </div>
                                     <div class="courses__item-content">

@@ -63,7 +63,7 @@ class StudentPengetahuanController extends Controller
         DB::beginTransaction();
 
         $result = Article::create([
-            'slug' => generateUniqueSlug(Article::class, $request->title) . '_' . now()->timestamp,
+            'slug' => generateUniqueSlug(Article::class, $request->title) . '-' . now()->timestamp,
             'author_id' => userAuth()->id,
             'category' => $request->category,
             'enrollment_id' => $request->enrollment != null ? $enrollment->id : null,
@@ -259,6 +259,16 @@ class StudentPengetahuanController extends Controller
         $pengetahuan = Article::with('enrollment.course')->where('id', $id)->first();
         if (Storage::disk('private')->exists($pengetahuan->thumbnail)) {
             return Storage::disk('private')->response($pengetahuan->thumbnail);
+        } else {
+            abort(404);
+        }
+    }
+
+    public function document($id)
+    {
+        $pengetahuan = Article::with('enrollment.course')->where('id', $id)->first();
+        if (Storage::disk('private')->exists($pengetahuan->file)) {
+            return Storage::disk('private')->response($pengetahuan->file);
         } else {
             abort(404);
         }

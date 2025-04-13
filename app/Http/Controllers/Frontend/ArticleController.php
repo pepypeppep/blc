@@ -28,8 +28,7 @@ class ArticleController extends Controller
                 $query->where('name', request('tags'));
             });
         });
-        $articles = $query->where(['status' => 'published'])->orderBy('created_at', 'desc')->first();
-        dd($articles);
+        $articles = $query->where(['status' => 'published'])->orderBy('created_at', 'desc')->paginate(9);
 
         $tags = Tag::has('articles')->get();
         $categories = ['blog', 'document', 'video'];
@@ -40,14 +39,15 @@ class ArticleController extends Controller
 
     function show(string $slug)
     {
-        $article = Article::where('slug', $slug)->whereHas('category', function ($q) {
-            $q->where('status', 1);
-        })->firstOrFail();
-        $latestBlogs = Article::where(['status' => 1])->where('id', '!=', $article->id)->orderBy('created_at', 'desc')->limit(8)->get();
-        $categories = ArticleTag::where('status', 1)->get();
-        $comments = ArticleComment::where(['article_id' => $article->id])->where('status', 1)->orderBy('created_at', 'desc')->get();
+        $article = Article::where('slug', $slug)->isPublished()->firstOrFail();
+        $latestBlogs = Article::where('slug', '!=', $slug)->isPublished()->orderBy('created_at', 'desc')->limit(8)->get();
+        $categories = ['blog', 'document', 'video'];
+        $tags = Tag::has('articles')->get();
+        $comments = ArticleComment::whereHas('post', function ($query) use ($slug) {
+            $query->where('slug', $slug);
+        })->orderBy('created_at', 'desc')->get();
 
-        return view('frontend.pages.article-details', compact('article', 'latestBlogs', 'categories', 'comments'));
+        return view('frontend.pages.article-details', compact('article', 'latestBlogs', 'categories', 'tags', 'comments'));
     }
 
     function submitComment(Request $request)

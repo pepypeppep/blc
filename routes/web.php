@@ -103,6 +103,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
     Route::get('/send-fcm-notification', [NotificationController::class, 'sendNotification'])->name('firebase.send.notification');
     Route::get('/student/pengetahuan/view/{id}', [StudentPengetahuanController::class, 'view'])->name('student.pengetahuan.view.file');
+    Route::get('/student/pengetahuan/document/{id}', [StudentPengetahuanController::class, 'document'])->name('student.pengetahuan.view.pdf');
 
     /**
      * ============================================================================

@@ -20,7 +20,7 @@
         <div class="wsus__course_video_player">
 
             {{-- Player --}}
-            <div class="video-payer position-relative">
+            {{-- <div class="video-payer position-relative">
                 <div class="player-placeholder">
                     <div class="preloader-two player">
                         <div class="loader-icon-two player"><img src="{{ asset(Cache::get('setting')->preloader) }}"
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             {{-- Bottom Panel --}}
             @include('frontend.pages.learning-player.bottom-panel')

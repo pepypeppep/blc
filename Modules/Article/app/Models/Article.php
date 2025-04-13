@@ -19,7 +19,7 @@ class Article extends Model
 
     protected $guarded = ['id'];
 
-    protected $appends = ['thumbnail_url'];
+    protected $appends = ['thumbnail_url', 'document_url'];
 
     public const STATUS_DRAFT = "draft";
     public const STATUS_PUBLISHED = "published";
@@ -83,10 +83,23 @@ class Article extends Model
         return $this->belongsToMany(Tag::class, 'article_tags', 'article_id', 'tag_id')->select('id', 'name');
     }
 
+
+    public function scopeIsPublished($query)
+    {
+        return $query->where('status', self::STATUS_PUBLISHED);
+    }
+
     protected function thumbnailUrl(): Attribute
     {
         return Attribute::make(
             get: fn() => $this->thumbnail ? route('student.pengetahuan.view.file', ['id' => $this->id]) : null,
+        );
+    }
+
+    protected function documentUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->file ? route('student.pengetahuan.view.pdf', ['id' => $this->id]) : null,
         );
     }
 }

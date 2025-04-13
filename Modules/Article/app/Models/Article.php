@@ -58,11 +58,6 @@ class Article extends Model
         ];
     }
 
-    public function comments(): ?HasMany
-    {
-        return $this->hasMany(ArticleComment::class, 'article_id');
-    }
-
     public function author(): ?BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
@@ -80,7 +75,7 @@ class Article extends Model
      */
     public function reviews(): HasMany
     {
-        return $this->hasMany(ArticleComment::class, 'article_id');
+        return $this->hasMany(ArticleReview::class, 'article_id');
     }
 
     public function enrollment()
@@ -97,17 +92,6 @@ class Article extends Model
     public function scopeIsPublished($query)
     {
         return $query->where('status', self::STATUS_PUBLISHED);
-    }
-
-    public function reviewsRating()
-    {
-        // $reviews = $this->reviews;
-        // $sum = $reviews->sum('stars');
-        // $count = $reviews->count();
-        // if ($count == 0) {
-        //     return 0.0;
-        // }
-        // return round($sum / $count, 1);
     }
 
     protected function thumbnailUrl(): Attribute

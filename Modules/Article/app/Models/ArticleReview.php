@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ArticleComment extends Model
+class ArticleReview extends Model
 {
     use HasFactory;
 
@@ -18,6 +18,7 @@ class ArticleComment extends Model
         'description',
         'author_id',
         'article_id',
+        'stars'
     ];
 
     public function post(): ?BelongsTo

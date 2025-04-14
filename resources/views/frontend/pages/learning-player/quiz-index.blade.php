@@ -11,6 +11,7 @@
             </div>
         </div>
 
+
         <div class="container">
             <div class="question-container">
                 <div class="row">
@@ -31,8 +32,13 @@
                                 <img src="{{ asset('uploads/website-images/test.png') }}">
                             </div>
                             <div class="card-body">
-                                <h6 class="card-title count">{{ $attempt }}/{{ $quiz->attempt }}</h6>
-                                <p class="card-text">{{ __('Attempts') }}</p>
+                                @if ($quiz->attempt != null)
+                                    <h6 class="card-title count">{{ $attempt }}/{{ $quiz->attempt }}</h6>
+                                    <p class="card-text">{{ __('Attempts') }}</p>
+                                @else
+                                    <h6 class="card-title count"><i class="fas fa-infinity"></i></h6>
+                                    <p class="card-text">{{ __('Attempts') }} Tak terbatas</p>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -48,6 +54,7 @@
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
+
                         <div class="card text-center">
                             <div class="info-col text-center">
                                 <img src="{{ asset('uploads/website-images/clock.png') }}">
@@ -76,12 +83,13 @@
             </div>
 
             <div class="card mt-3">
+                ini time {{ $quiz->time }}
                 <form action="{{ route('student.quiz.store', request('id')) }}" method="POST" class="question-form">
                     @csrf
                     <div class="card-body">
                         @foreach ($quiz->questions as $question)
                             <div class="question-box mt-4">
-                                <h6>{{ $loop->iteration }}. {{ $question->title }}</h6>
+                                <h6>{{ $loop->iteration }}. {!! $question->title !!}</h6>
                                 <div class="row">
                                     @foreach ($question->answers as $answer)
                                         <div class="col-md-6">
@@ -92,7 +100,7 @@
                                                             <input type="radio" name="question[{{ $question->id }}]"
                                                                 id="ans-{{ $answer->id }}" value="{{ $answer->id }}">
                                                         </span>
-                                                        <span class="subject">{{ $answer->title }}</span>
+                                                        <span class="subject">{!! $answer->title !!}</span>
                                                     </div>
                                                 </label>
                                             </div>

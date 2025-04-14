@@ -64,7 +64,7 @@ class ChapterLessonRequest extends FormRequest
         $rules = [
             'chapter'    => ['required', 'exists:course_chapters,id'],
             'title'      => ['required', 'max:255', 'string'],
-            'time_limit' => ['nullable', 'numeric', 'min:1'],
+            'time_limit' => ['required', 'numeric', 'min:1'],
             'attempts'   => ['nullable', 'numeric', 'min:1'],
             'due_date'  => ['required', 'date'],
             'pass_mark'  => ['required', 'numeric', 'min:1'],

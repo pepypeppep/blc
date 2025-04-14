@@ -31,14 +31,14 @@ class LearningController extends Controller
     use GenerateSecureLinkTrait;
     function index(string $slug)
     {
-
-
         $course = Course::active()->with([
             'chapters',
             'chapters.chapterItems',
             'chapters.chapterItems.lesson',
             'chapters.chapterItems.quiz',
+            'chapters.chapterItems.rtl',
         ])->withTrashed()->where('slug', $slug)->first();
+        // dd($course->toArray());
         Session::put('course_slug', $slug);
         Session::put('course_title', $course->title);
 
@@ -50,14 +50,22 @@ class LearningController extends Controller
 
         $alreadyWatchedLectures = CourseProgress::where('user_id', userAuth()->id)
             ->where('course_id', $course->id)
-            ->where('type', 'lesson')
+            // ->where('type', 'lesson')
             ->where('watched', 1)
             ->pluck('lesson_id')
             ->toArray();
+        // dd($alreadyWatchedLectures);
 
         $alreadyCompletedQuiz = CourseProgress::where('user_id', userAuth()->id)
             ->where('course_id', $course->id)
             ->where('type', 'quiz')
+            ->where('watched', 1)
+            ->pluck('lesson_id')
+            ->toArray();
+
+        $alreadyCompletedRtl = CourseProgress::where('user_id', userAuth()->id)
+            ->where('course_id', $course->id)
+            ->where('type', 'rtl')
             ->where('watched', 1)
             ->pluck('lesson_id')
             ->toArray();
@@ -98,7 +106,8 @@ class LearningController extends Controller
             'courseLectureCompletedByUser',
             'alreadyWatchedLectures',
             'alreadyCompletedQuiz',
-            'userHasReviewed'
+            'userHasReviewed',
+            'alreadyCompletedRtl'
         ));
     }
 
@@ -242,28 +251,30 @@ class LearningController extends Controller
             'type' => $request->type
         ])->first();
 
+        // dd($progress);
+
         // Jika progress ditemukan
         if ($progress) {
             // Cek apakah lesson sebelumnya sudah selesai jika ini adalah lesson
-            if ($request->type == 'lesson') {
-                // Cari lesson sebelumnya yang lebih kecil dari lesson_id saat ini
-                $previousLesson = CourseProgress::where([
-                    'user_id' => userAuth()->id,
-                    'course_id' => $progress->course_id,
-                    'type' => 'lesson',
-                ])
-                    ->where('lesson_id', '<', $request->lessonId) // lesson_id lebih kecil
-                    ->orderBy('lesson_id', 'desc') // Urutkan berdasarkan lesson_id terbesar
-                    ->first(); // Ambil yang paling besar yang lebih kecil dari lesson_id
+            // if ($request->type == 'lesson') {
+            // Cari lesson sebelumnya yang lebih kecil dari lesson_id saat ini
+            $previousLesson = CourseProgress::where([
+                'user_id' => userAuth()->id,
+                'course_id' => $progress->course_id,
+                'type' => $request->type,
+            ])
+                ->where('lesson_id', '<', $request->lessonId) // lesson_id lebih kecil
+                ->orderBy('lesson_id', 'desc') // Urutkan berdasarkan lesson_id terbesar
+                ->first(); // Ambil yang paling besar yang lebih kecil dari lesson_id
 
-                // Jika ada lesson sebelumnya dan status watched-nya masih 0
-                if ($previousLesson && $previousLesson->watched == 0) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => __('Please finish the previous lesson first.')
-                    ]);
-                }
+            // Jika ada lesson sebelumnya dan status watched-nya masih 0
+            if ($previousLesson && $previousLesson->watched == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => __('Please finish the previous lesson first.')
+                ]);
             }
+
 
             // Update status watched berdasarkan request status
             if ($progress->watched  == 1) {
@@ -326,7 +337,7 @@ class LearningController extends Controller
         $userId = userAuth()->id;
         // $numberOfQuestions = 20;
         $quiz = Quiz::withCount('questions')->findOrFail($id);
-  
+
 
         // Cek apakah user sudah memiliki soal tersimpan di session
         if (session()->has("quiz_$id" . "_user_$userId")) {
@@ -350,7 +361,7 @@ class LearningController extends Controller
         $quiz = Quiz::withCount('questions')->findOrFail($id);
         $quiz->setRelation('questions', $questions);
 
-        if ($attempt >= $quiz->attempt) {
+        if (!is_null($quiz->attempt) && $attempt >= $quiz->attempt) {
             return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
                 'alert-type' => 'error',
                 'messege' => __('You reached maximum attempt')

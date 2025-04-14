@@ -114,7 +114,8 @@
                                         </div>
                                     @elseif ($chapterItem->type == 'rtl')
                                         <div class="form-check">
-                                            <input class="form-check-input lesson-completed-checkbox" type="checkbox"
+                                            <input @checked(in_array($chapterItem->rtl->id, $alreadyCompletedRtl))
+                                                class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->rtl->id }}" value="1"
                                                 data-type="rtl">
                                             <label class="form-check-label lesson-item"

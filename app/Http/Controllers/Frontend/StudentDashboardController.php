@@ -192,7 +192,14 @@ class StudentDashboardController extends Controller
             $certificateItems = $certificate->items;
 
             // $now = now();
-            $page1Html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate'))->render();
+            $cover1Base64 = null;
+            if (filled($certificate->background)) {
+                if (!Storage::disk('private')->exists($certificate->background)) {
+                    return redirect()->back()->with(['messege' => __('Certificate background not found'), 'alert-type' => 'error']);
+                }
+                $cover1Base64 = base64_encode(file_get_contents(Storage::disk('private')->path($certificate->background)));
+            }
+            $page1Html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate', 'cover1Base64'))->render();
 
             $page1Html = str_replace('[student_name]', userAuth()->name, $page1Html);
             $page1Html = str_replace('[platform_name]', Cache::get('setting')->app_name, $page1Html);
@@ -204,7 +211,14 @@ class StudentDashboardController extends Controller
                 ->setPaper('A4', 'landscape')->setWarnings(false)->output();
             // Log::info('render pdf 1 took ' . now()->diffInSeconds($now));
 
-            $page2Html = view('frontend.student-dashboard.certificate.summary', compact('course', 'certificateItems', 'certificate', 'courseChapers'))->render();
+            $cover2Base64 = null;
+            if (filled($certificate->background2)) {
+                if (!Storage::disk('private')->exists($certificate->background2)) {
+                    return redirect()->back()->with(['messege' => __('Certificate background not found'), 'alert-type' => 'error']);
+                }
+                $cover2Base64 = base64_encode(file_get_contents(Storage::disk('private')->path($certificate->background2)));
+            }
+            $page2Html = view('frontend.student-dashboard.certificate.summary', compact('course', 'certificateItems', 'certificate', 'courseChapers', 'cover2Base64'))->render();
             $pdf2Data = Pdf::loadHTML($page2Html)
                 ->setPaper('A4', 'portrait')->setWarnings(false)->output();
 
@@ -212,6 +226,10 @@ class StudentDashboardController extends Controller
             $m->addRaw($pdf1Data);
             $m->addRaw($pdf2Data);
             $output = $m->merge();
+
+            // return output directly
+            // return response($output, 200)
+            //     ->header('Content-Type', 'application/pdf');
 
 
             // send to Bantara API endpoint
@@ -228,7 +246,7 @@ class StudentDashboardController extends Controller
                     'signer_nik' => env('BANTARA_SIGNER_NIK'),
                     'title' => sprintf("Sertifikat Pelatihan %s an %s", $course->title, $enrollment->user->name),
                     'description' => $enrollment->user->name,
-                    'callback_url' => sprintf("%s/?enrollment_id=%s", route('api.bantara-callback'), $enrollment->id),
+                    'callback_url' => sprintf("%s", route('api.bantara-callback', $enrollment)),
                     'callback_key' => env('BANTARA_CALLBACK_KEY'),
                 ]);
 

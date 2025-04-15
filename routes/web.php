@@ -206,7 +206,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('fetch-reviews/{course_id}', [LearningController::class, 'fetchReviews'])->name('fetch-reviews');
 
         /** certificate routes  */
-        Route::get('download-certificate/{enrollment}', [StudentDashboardController::class, 'downloadCertificate'])->name('download-certificate');
+        Route::get('download-certificate/{enrollment}.pdf', [StudentDashboardController::class, 'downloadCertificate'])->name('download-certificate');
         Route::get('request-sign-certificate/{enrollment}', [StudentDashboardController::class, 'requestSignCertificate'])->name('request-sign-certificate');
 
 

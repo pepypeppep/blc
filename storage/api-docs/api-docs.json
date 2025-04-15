@@ -264,6 +264,63 @@
                 }
             }
         },
+        "/api/bantara-callback/{enrollmentID}": {
+            "post": {
+                "tags": [
+                    "Bantara"
+                ],
+                "summary": "Post PDF file from Bantara",
+                "operationId": "921004124fedf71d29a8c2707d31acd0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "description": "PDF file from Bantara",
+                                        "type": "file",
+                                        "format": "binary"
+                                    },
+                                    "id": {
+                                        "description": "Document ID",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File uploaded successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/courses": {
             "get": {
                 "tags": [
@@ -2096,6 +2153,10 @@
         {
             "name": "Article",
             "description": "Pengetahuan API Endpoints"
+        },
+        {
+            "name": "Bantara",
+            "description": "Bantara"
         },
         {
             "name": "Notifications",

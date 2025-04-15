@@ -7,10 +7,20 @@
     <style>
         @page {
             size: A4 portrait;
+            margin: 0;
         }
 
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+
+            @if ($cover2Base64)
+                background-image: url("data:image/png;base64,{{ $cover2Base64 }}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+            @endif
         }
 
         .page-break {

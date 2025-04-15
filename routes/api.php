@@ -70,5 +70,5 @@ Route::name('api.')->group(function () {
     });
 
     // Bantara Callback
-    Route::post('/bantara-callback', [CertificateApiController::class, 'bantaraCallback'])->name('bantara-callback');
+    Route::post('/bantara-callback/{enrollment}', [CertificateApiController::class, 'bantaraCallback'])->name('bantara-callback');
 });

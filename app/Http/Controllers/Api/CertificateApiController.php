@@ -4,13 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Course;
 use App\Models\CourseChapterItem;
 use App\Models\CourseProgress;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-use Modules\CertificateBuilder\app\Models\CertificateBuilder;
-use Modules\CertificateBuilder\app\Models\CertificateBuilderItem;
 use Modules\Order\app\Models\Enrollment;
 
 class CertificateApiController extends Controller
@@ -105,8 +101,51 @@ class CertificateApiController extends Controller
         }
     }
 
-    // bantaraCallback
-    public function bantaraCallback(Request $request)
+    /**
+     * @OA\Post(
+     *     path="/api/bantara-callback/{enrollmentID}",
+     *     summary="Post PDF file from Bantara",
+     *     tags={"Bantara"},
+     *     security={{"bearer": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",   
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="file",
+     *                     format="binary",
+     *                     description="PDF file from Bantara",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="string",
+     *                     description="Document ID",
+     *                 ),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User information",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example="true"
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="File uploaded successfully"
+     *             ),
+     *         )
+     *     )
+     * )
+     */
+    public function bantaraCallback(Enrollment $enrollment, Request $request)
     {
         // validate request header key
         $key = $request->header('Authorization');
@@ -118,38 +157,26 @@ class CertificateApiController extends Controller
         $key = str_replace('Bearer ', '', $key);
 
         // validate key
-        if ($key !== env('BANTARA_CALLBACK_KEY')) {
-            return response(['success' => false, 'message' => 'Invalid request header key'], 403);
-        }
-
-        $enrollmentID = $request->query('enrollment_id');
-
-        $enrollment = Enrollment::find($enrollmentID);
-
-        if (!$enrollment) {
-            return response(['success' => false, 'message' => 'Enrollment not found'], 404);
+        if ($key !== env('BANTARA_CALLBACK_KEY') || $key = '' || $key === null) {
+            return response(['success' => false, 'message' => 'Invalid api key'], 403);
         }
 
         $file = $request->file('file');
-
-        if (!$file) {
-            return response(['success' => false, 'message' => 'File not found'], 404);
-        }
 
         // check if file is pdf
         if ($file->getClientOriginalExtension() !== 'pdf') {
             return response(['success' => false, 'message' => 'File must be pdf'], 400);
         }
 
-        // check if file size is less than 5mb
-        if ($file->getSize() > 5 * 1024 * 1024) {
-            return response(['success' => false, 'message' => 'File size must be less than 5mb'], 400);
+        // check if file size is less than 100mb
+        if ($file->getSize() > 100 * 1024 * 1024) {
+            return response(['success' => false, 'message' => 'File size must be less than 100mb'], 400);
         }
 
         $path = Storage::disk('private')->putFileAs(
             sprintf('certificates/%s', now()->year),
             $file,
-            sprintf('%s-certificate.pdf', $enrollmentID),
+            sprintf('%s-certificate.pdf', $enrollment->id),
         );
 
         if (!$path) {

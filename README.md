@@ -9,6 +9,10 @@ php artisan instansi:sync
 php artisan user:sync {instansi_id}
 ```
 
+## Environment variables
+
+BANTARA_SIGNER_NIK=123456 # NIK untuk signer, isi dengan nik kepala BKPSDM
+
 # Data User
 
 [x] 'alamat',

@@ -1,4 +1,4 @@
-@if (Module::isEnabled('Language') && Route::has('admin.articles.index'))
+@if (Module::isEnabled('Language') && Route::has('admin.knowledge.index'))
     <li
         class="nav-item dropdown {{ isRoute(['admin.articles.*', 'admin.article-category.*', 'admin.article-comment.*'], 'active') }}">
         <a href="javascript:void()" class="nav-link has-dropdown"><i
@@ -27,5 +27,10 @@
                 </li>
             @endadminCan
         </ul>
+    </li>
+    <li class="{{ isRoute('admin.knowledge.*', 'active') }}">
+        <a class="nav-link" href="{{ route('admin.knowledge.index') }}">
+            <i class="fas fa-book"></i><span>{{ __('Verification') }}</span>
+        </a>
     </li>
 @endif

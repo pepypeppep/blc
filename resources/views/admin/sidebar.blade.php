@@ -49,6 +49,13 @@
                 @endif
             @endif
 
+            @if (checkAdminHasPermission('knowledge.management'))
+                <li class="menu-header">{{ __('Manage Knowledge') }}</li>
+                @if (Module::isEnabled('Article') && checkAdminHasPermission('knowledge.management'))
+                    @include('article::sidebar')
+                @endif
+            @endif
+
             {{-- @if (checkAdminHasPermission('order.management') || checkAdminHasPermission('coupon.management') || checkAdminHasPermission('withdraw.management'))
                 <li class="menu-header">{{ __('Manage Orders') }}</li>
 

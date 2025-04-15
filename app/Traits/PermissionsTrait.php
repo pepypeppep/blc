@@ -324,6 +324,13 @@ trait PermissionsTrait
         ],
     ];
 
+    public static array $knowledgePermissions = [
+        'group_name' => 'knowledges',
+        'permissions' => [
+            'knowledge.management',
+        ],
+    ];
+
     private static function getSuperAdminPermissions(): array
     {
         $reflection = new ReflectionClass(__TRAIT__);

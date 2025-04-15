@@ -280,7 +280,7 @@
         }
 
         .rating-stars .star {
-            font-size: 1.5rem;
+            font-size: 2.5rem;
             color: #ccc;
             cursor: pointer;
             transition: color 0.3s ease;

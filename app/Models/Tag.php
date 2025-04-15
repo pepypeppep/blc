@@ -9,14 +9,14 @@ use Modules\Article\app\Models\Article;
 
 class Tag extends Model
 {
-   use HasFactory;
+    use HasFactory;
 
-   protected $fillable = ['name'];
-   protected $hidden = array('pivot');
+    protected $fillable = ['name'];
+    protected $hidden = array('pivot');
 
 
-   public function articles(): BelongsToMany
-   {
-      return $this->belongsToMany(Article::class);
-   }
+    public function articles(): BelongsToMany
+    {
+        return $this->belongsToMany(Article::class, 'article_tags', 'tag_id', 'article_id');
+    }
 }

@@ -50,8 +50,10 @@ class ChapterLessonRequest extends FormRequest
     {
         $rules = [
             'chapter'     => ['required', 'exists:course_chapters,id'],
-            'title'       => ['required', 'max:255'],
-            'description' => ['nullable', 'max:600'],
+            'title'       => ['required', 'max:125'],
+            'description' => ['nullable'],
+            'start_date'  => ['required', 'date', 'before_or_equal:end_date'],
+            'end_date'    => ['required', 'date', 'after_or_equal:start_date'],
         ];
 
         return $rules;
@@ -62,7 +64,7 @@ class ChapterLessonRequest extends FormRequest
         $rules = [
             'chapter'    => ['required', 'exists:course_chapters,id'],
             'title'      => ['required', 'max:255', 'string'],
-            'time_limit' => ['nullable', 'numeric', 'min:1'],
+            'time_limit' => ['required', 'numeric', 'min:1'],
             'attempts'   => ['nullable', 'numeric', 'min:1'],
             'due_date'  => ['required', 'date'],
             'pass_mark'  => ['required', 'numeric', 'min:1'],

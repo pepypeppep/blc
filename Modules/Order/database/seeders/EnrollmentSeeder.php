@@ -2,8 +2,9 @@
 
 namespace Modules\Order\database\seeders;
 
+use App\Models\Course;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Modules\Order\app\Models\Enrollment;
 
 class EnrollmentSeeder extends Seeder
@@ -13,10 +14,14 @@ class EnrollmentSeeder extends Seeder
      */
     public function run(): void
     {
-        Enrollment::create([
-            'user_id' => 1,
-            'course_id' => 1,
-            'has_access' => 1,
-        ]);
+        $users = User::where('role', 'student')->get();
+        $courses = Course::get();
+
+        for ($i = 1; $i <= 23; $i++) {
+            Enrollment::create([
+                'user_id' => $users->random()->id,
+                'course_id' => $courses->random()->id,
+            ]);
+        }
     }
 }

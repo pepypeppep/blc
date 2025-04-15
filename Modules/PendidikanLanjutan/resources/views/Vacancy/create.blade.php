@@ -33,6 +33,21 @@
                                     @csrf
                                     <div class="row mb-3">
                                         <div class="form-group col-md-8 offset-md-2">
+                                            <label>{{ __('Instansi') }} <span class="text-danger">*</span></label>
+                                            <select name="instansi_id" class="form-control select2" id="instansi_id">
+                                                <option value="">Pilih Instansi</option>
+                                                @foreach ($instansi as $in)
+                                                    <option value="{{ $in->id }}"
+                                                        {{ $in->id == old('instansi_id') ? 'selected' : '' }}>
+                                                        {{ $in->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('instansi_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group col-md-8 offset-md-2">
                                             <label for="year">{{ __('Tahun') }} <span
                                                     class="text-danger">*</span></label>
                                             <input type="number" name="year" id="year" class="form-control"

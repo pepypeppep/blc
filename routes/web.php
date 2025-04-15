@@ -5,6 +5,7 @@ use App\Http\Controllers\Frontend\QnaController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Frontend\ArticleController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\CheckOutController;
 use App\Http\Controllers\Frontend\FavoriteController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Frontend\BecomeInstructorController;
 use App\Http\Controllers\Frontend\InstructorCourseController;
 use App\Http\Controllers\Frontend\InstructorPayoutController;
 use App\Http\Controllers\Frontend\StudentDashboardController;
+use App\Http\Controllers\Frontend\StudentPengetahuanController;
 use App\Http\Controllers\Frontend\TinymceImageUploadController;
 use App\Http\Controllers\Frontend\InstructorDashboardController;
 use App\Http\Controllers\Frontend\InstructorLessonQnaController;
@@ -30,7 +32,6 @@ use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
-use App\Http\Controllers\Frontend\StudentPengetahuanController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -72,6 +73,11 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::get('instructor-details/{id}/{slug?}', [HomePageController::class, 'instructorDetails'])->name('instructor-details');
     Route::post('quick-connect/{id}', [HomePageController::class, 'quickConnect'])->name('quick-connect');
 
+    /** Article Routes */
+    Route::get('article', [ArticleController::class, 'index'])->name('article');
+    Route::get('article/{slug}', [ArticleController::class, 'show'])->name('article.show');
+    Route::post('article/submit-comment', [ArticleController::class, 'submitComment'])->name('article.submit-comment');
+
     /** About page routes */
     Route::get('about-us', [AboutPageController::class, 'index'])->name('about-us');
     /** Contact page routes */
@@ -96,6 +102,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::get('/notifications/read', [NotificationController::class, 'read'])->name('notification.read');
 
     Route::get('/send-fcm-notification', [NotificationController::class, 'sendNotification'])->name('firebase.send.notification');
+    Route::get('/student/pengetahuan/view/{id}', [StudentPengetahuanController::class, 'view'])->name('student.pengetahuan.view.file');
+    Route::get('/student/pengetahuan/document/{id}', [StudentPengetahuanController::class, 'document'])->name('student.pengetahuan.view.pdf');
 
     /**
      * ============================================================================
@@ -134,12 +142,14 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
         Route::group(['prefix' => 'pengetahuan', 'as' => 'pengetahuan.'], function () {
             Route::get('/', [StudentPengetahuanController::class, 'index'])->name('index');
+            Route::get('show/{slug}', [StudentPengetahuanController::class, 'show'])->name('show');
             Route::get('create', [StudentPengetahuanController::class, 'create'])->name('create');
             Route::post('store', [StudentPengetahuanController::class, 'store'])->name('store');
             Route::get('edit/{slug}', [StudentPengetahuanController::class, 'edit'])->name('edit');
             Route::put('update/{slug}', [StudentPengetahuanController::class, 'update'])->name('update');
-            Route::delete('destroy/{id}', [StudentPengetahuanController::class, 'destroy'])->name('destroy');
-            Route::get('view/{id}', [StudentPengetahuanController::class, 'view'])->name('view.file');
+            Route::put('/{slug}/ajukan', [StudentPengetahuanController::class, 'ajukanPengetahuan'])->name('ajukan');
+            Route::delete('destroy/{slug}', [StudentPengetahuanController::class, 'destroy'])->name('destroy');
+            // Route::get('view/{id}', [StudentPengetahuanController::class, 'view'])->name('view.file');
         });
 
 
@@ -152,7 +162,9 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::get('continuing-education', [StudentPendidikanLanjutanController::class, 'index'])->name('continuing-education');
         Route::get('continuing-education/{id}', [StudentPendidikanLanjutanController::class, 'continuingEducationDetail'])->name('continuing-education.show');
         Route::post('continuing-education/{id}/register', [StudentPendidikanLanjutanController::class, 'register'])->name('continuing-education.register');
+        Route::put('continuing-education/{id}/ajukan-kembali', [StudentPendidikanLanjutanController::class, 'ajukanKembali'])->name('continuing-education.ajukanKembali');
         Route::post('continuing-education-attachment/{id}', [StudentPendidikanLanjutanController::class, 'uploadRequirementFile'])->name('continuing-education.attachment');
+        Route::get('continuing-education-attachment/{id}', [StudentPendidikanLanjutanController::class, 'viewRequirementFile'])->name('continuing-education.attachment.view');
         Route::get('continuing-education-registration', [StudentPendidikanLanjutanController::class, 'registered'])->name('continuing-education.registration');
         Route::get('continuing-education-registration/{id}', [StudentPendidikanLanjutanController::class, 'registeredDetail'])->name('continuing-education.registration.show');
         Route::post('continuing-education-registration/{id}/report', [StudentPendidikanLanjutanController::class, 'vacancyReportSubmit'])->name('continuing-education.registration.report');
@@ -177,7 +189,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             return response()->file($path);
         })->name('follow-up-action.files');
 
-        // Route::resource('follow-up-action', StudentFollowUpActionController::class);
+        Route::resource('follow-up-action', StudentFollowUpActionController::class);
         // Route::get('follow-up-action/create', [StudentFollowUpActionController::class, 'create'])->name('follow-up-action.create');
 
         /** learning routes */
@@ -187,10 +199,15 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::post('learning/make-lesson-complete', [LearningController::class, 'makeLessonComplete'])->name('make-lesson-complete');
         Route::get('learning/resource-download/{id}', [LearningController::class, 'downloadResource'])->name('download-resource');
 
+        Route::get('learning/follow-up-action/{id}', [LearningController::class, 'rtlIndex'])->name('rtl.index');
+        Route::post('learning/follow-up-action/{id}', [LearningController::class, 'rtlStore'])->name('rtl.store');
+
         Route::get('learning/quiz/{id}', [LearningController::class, 'quizIndex'])->name('quiz.index');
         Route::post('learning/quiz/{id}', [LearningController::class, 'quizStore'])->name('quiz.store');
         Route::get('learning/quiz-result/{id}/{result_id}', [LearningController::class, 'quizResult'])->name('quiz.result');
         Route::get('learning/{slug}/{lesson_id}', [LearningController::class, 'liveSession'])->name('learning.live');
+
+
 
         /** qna routes */
         Route::post('create-question', [QnaController::class, 'create'])->name('qna.create');

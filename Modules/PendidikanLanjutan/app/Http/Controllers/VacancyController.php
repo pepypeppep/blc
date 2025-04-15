@@ -2,6 +2,7 @@
 
 namespace Modules\PendidikanLanjutan\app\Http\Controllers;
 
+use App\Models\Instansi;
 use Illuminate\Http\Request;
 use App\Imports\VacanciesImport;
 use Illuminate\Support\Facades\DB;
@@ -12,9 +13,9 @@ use Illuminate\Support\Facades\Storage;
 use Modules\PendidikanLanjutan\app\Models\Unor;
 use Modules\PendidikanLanjutan\app\Models\Study;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
-use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 
 class VacancyController extends Controller
 {
@@ -34,8 +35,9 @@ class VacancyController extends Controller
     public function create()
     {
         $studies = Study::all();
+        $instansi = Instansi::get();
 
-        return view('pendidikanlanjutan::Vacancy.create', compact('studies'));
+        return view('pendidikanlanjutan::Vacancy.create', compact('studies', 'instansi'));
     }
 
     /**
@@ -46,6 +48,7 @@ class VacancyController extends Controller
         // Validasi input
         $validated = $request->validate([
             'study_id' => 'required|integer|exists:studies,id',
+            'instansi_id' => 'required|integer|exists:instansis,id',
             'education_level' => 'required|string',
             'employment_grade' => 'required|string',
             'employment_status' => 'required|string',
@@ -60,6 +63,8 @@ class VacancyController extends Controller
         ], [
             'study_id.required' => 'Program studi wajib diisi.',
             'study_id.exists' => 'Program studi yang dipilih tidak valid.',
+            'instansi_id.required' => 'Instansi wajib diisi.',
+            'instansi_id.exists' => 'Instansi yang dipilih tidak valid.',
             'education_level.required' => 'Jenjang pendidikan wajib diisi.',
             'employment_grade.required' => 'Pangkat/Golongan pekerjaan wajib diisi.',
             'employment_status.required' => 'Status pekerjaan wajib diisi.',
@@ -75,6 +80,7 @@ class VacancyController extends Controller
             // Membuat vacancy baru
             $vacancy = Vacancy::create($request->only([
                 'study_id',
+                'instansi_id',
                 'education_level',
                 'employment_grade',
                 'employment_status',
@@ -130,8 +136,9 @@ class VacancyController extends Controller
         $vacancy = Vacancy::findOrFail($id);
         $studies = Study::all();
         $attachments = VacancyMasterAttachment::get();
+        $instansi = Instansi::get();
 
-        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy', 'studies', 'attachments'));
+        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy', 'instansi', 'studies', 'attachments'));
     }
 
     /**
@@ -142,6 +149,7 @@ class VacancyController extends Controller
         // Validasi input
         $validated = $request->validate([
             'study_id' => 'required|integer|exists:studies,id',
+            'instansi_id' => 'required|integer|exists:instansis,id',
             'education_level' => 'required|string',
             'employment_grade' => 'required|string',
             'employment_status' => 'required|string',
@@ -156,6 +164,8 @@ class VacancyController extends Controller
         ], [
             'study_id.required' => 'Program studi wajib diisi.',
             'study_id.exists' => 'Program studi yang dipilih tidak valid.',
+            'instansi_id.required' => 'Instansi wajib diisi.',
+            'instansi_id.exists' => 'Instansi yang dipilih tidak valid.',
             'education_level.required' => 'Jenjang pendidikan wajib diisi.',
             'employment_grade.required' => 'Pangkat/Golongan pekerjaan wajib diisi.',
             'employment_status.required' => 'Status pekerjaan wajib diisi.',
@@ -171,6 +181,7 @@ class VacancyController extends Controller
             $vacancy = Vacancy::findOrFail($id);
             $vacancy->update($request->only([
                 'study_id',
+                'instansi_id',
                 'education_level',
                 'employment_grade',
                 'employment_status',

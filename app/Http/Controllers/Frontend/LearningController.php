@@ -18,23 +18,27 @@ use App\Rules\CustomRecaptcha;
 use App\Models\CourseChapterItem;
 use App\Models\CourseChapterLesson;
 use App\Http\Controllers\Controller;
+use App\Models\FollowUpAction;
+use App\Models\FollowUpActionResponse;
 use Illuminate\Support\Facades\Cache;
 use App\Traits\GenerateSecureLinkTrait;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class LearningController extends Controller
 {
     use GenerateSecureLinkTrait;
     function index(string $slug)
     {
-
         $course = Course::active()->with([
             'chapters',
             'chapters.chapterItems',
             'chapters.chapterItems.lesson',
             'chapters.chapterItems.quiz',
+            'chapters.chapterItems.rtl',
         ])->withTrashed()->where('slug', $slug)->first();
+        // dd($course->toArray());
         Session::put('course_slug', $slug);
         Session::put('course_title', $course->title);
 
@@ -46,14 +50,22 @@ class LearningController extends Controller
 
         $alreadyWatchedLectures = CourseProgress::where('user_id', userAuth()->id)
             ->where('course_id', $course->id)
-            ->where('type', 'lesson')
+            // ->where('type', 'lesson')
             ->where('watched', 1)
             ->pluck('lesson_id')
             ->toArray();
+        // dd($alreadyWatchedLectures);
 
         $alreadyCompletedQuiz = CourseProgress::where('user_id', userAuth()->id)
             ->where('course_id', $course->id)
             ->where('type', 'quiz')
+            ->where('watched', 1)
+            ->pluck('lesson_id')
+            ->toArray();
+
+        $alreadyCompletedRtl = CourseProgress::where('user_id', userAuth()->id)
+            ->where('course_id', $course->id)
+            ->where('type', 'rtl')
             ->where('watched', 1)
             ->pluck('lesson_id')
             ->toArray();
@@ -94,12 +106,14 @@ class LearningController extends Controller
             'courseLectureCompletedByUser',
             'alreadyWatchedLectures',
             'alreadyCompletedQuiz',
-            'userHasReviewed'
+            'userHasReviewed',
+            'alreadyCompletedRtl'
         ));
     }
 
     function getFileInfo(Request $request)
     {
+
         // set progress status
         CourseProgress::where('course_id', $request->courseId)->update(['current' => 0]);
         $progress = CourseProgress::updateOrCreate(
@@ -184,6 +198,16 @@ class LearningController extends Controller
                     'file_info' => $fileInfo,
                 ]);
             }
+        } else if ($request->type == 'rtl') {
+
+            $fileInfo = array_merge(FollowUpAction::query()->findOrFail($request->lessonId)->toArray(), ['type' => 'rtl']);
+
+
+            return response()->json([
+
+                // 'view'      => view('frontend.pages.learning-player.partials.rtl-card')->render(),
+                'file_info' => $fileInfo,
+            ]);
         } else {
             $fileInfo = array_merge(Quiz::findOrFail($request->lessonId)->toArray(), ['type' => 'quiz']);
 
@@ -227,28 +251,30 @@ class LearningController extends Controller
             'type' => $request->type
         ])->first();
 
+        // dd($progress);
+
         // Jika progress ditemukan
         if ($progress) {
             // Cek apakah lesson sebelumnya sudah selesai jika ini adalah lesson
-            if ($request->type == 'lesson') {
-                // Cari lesson sebelumnya yang lebih kecil dari lesson_id saat ini
-                $previousLesson = CourseProgress::where([
-                    'user_id' => userAuth()->id,
-                    'course_id' => $progress->course_id,
-                    'type' => 'lesson',
-                ])
-                    ->where('lesson_id', '<', $request->lessonId) // lesson_id lebih kecil
-                    ->orderBy('lesson_id', 'desc') // Urutkan berdasarkan lesson_id terbesar
-                    ->first(); // Ambil yang paling besar yang lebih kecil dari lesson_id
+            // if ($request->type == 'lesson') {
+            // Cari lesson sebelumnya yang lebih kecil dari lesson_id saat ini
+            $previousLesson = CourseProgress::where([
+                'user_id' => userAuth()->id,
+                'course_id' => $progress->course_id,
+                'type' => $request->type,
+            ])
+                ->where('lesson_id', '<', $request->lessonId) // lesson_id lebih kecil
+                ->orderBy('lesson_id', 'desc') // Urutkan berdasarkan lesson_id terbesar
+                ->first(); // Ambil yang paling besar yang lebih kecil dari lesson_id
 
-                // Jika ada lesson sebelumnya dan status watched-nya masih 0
-                if ($previousLesson && $previousLesson->watched == 0) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => __('Please finish the previous lesson first.')
-                    ]);
-                }
+            // Jika ada lesson sebelumnya dan status watched-nya masih 0
+            if ($previousLesson && $previousLesson->watched == 0) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => __('Please finish the previous lesson first.')
+                ]);
             }
+
 
             // Update status watched berdasarkan request status
             if ($progress->watched  == 1) {
@@ -312,6 +338,7 @@ class LearningController extends Controller
         // $numberOfQuestions = 20;
         $quiz = Quiz::withCount('questions')->findOrFail($id);
 
+
         // Cek apakah user sudah memiliki soal tersimpan di session
         if (session()->has("quiz_$id" . "_user_$userId")) {
             $questions = session("quiz_$id" . "_user_$userId");
@@ -334,24 +361,25 @@ class LearningController extends Controller
         $quiz = Quiz::withCount('questions')->findOrFail($id);
         $quiz->setRelation('questions', $questions);
 
-        if ($attempt >= $quiz->attempt) {
+        if (!is_null($quiz->attempt) && $attempt >= $quiz->attempt) {
             return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
                 'alert-type' => 'error',
                 'messege' => __('You reached maximum attempt')
             ]);
         }
 
-        //if due data lebih dari hari ini
-        if (Carbon::parse($quiz->due_date)->isPast()) {
+        // if due data lebih dari hari ini
+        if (Carbon::today()->gt(Carbon::parse($quiz->due_date))) {
             return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
                 'alert-type' => 'error',
-                // 'message'    => __('Due date expired on :date', ['date' => Carbon::parse($quiz->due_date)->toFormattedDateString()]),
                 'message'    => __('Batas waktu telah berakhir pada tanggal :date', ['date' => Carbon::parse($quiz->due_date)->toFormattedDateString()]),
             ]);
         }
 
         return view('frontend.pages.learning-player.quiz-index', compact('quiz', 'attempt'));
     }
+
+
 
     function quizStore(Request $request, string $id)
     {
@@ -389,6 +417,86 @@ class LearningController extends Controller
 
         return view('frontend.pages.learning-player.quiz-result', compact('quiz', 'attempt', 'quizResult'));
     }
+
+    function rtlIndex(string $id)
+    {
+
+        $item = FollowUpAction::findOrFail($id);
+
+        $response = FollowUpActionResponse::where('follow_up_action_id', $id)->where('participant_id', userAuth()->id)->first();
+
+        //if due data lebih dari hari ini
+        if (Carbon::parse($item->start_date)->isFuture()) {
+            return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
+                'alert-type' => 'error',
+                'message'    => __('Belum dimulai pada tanggal :date', ['date' => Carbon::parse($item->start_date)->toFormattedDateString()]),
+            ]);
+        }
+        if (Carbon::parse($item->due_date)->isPast()) {
+            return redirect()->route('student.learning.index', Session::get('course_slug'))->with([
+                'alert-type' => 'error',
+                // 'message'    => __('Due date expired on :date', ['date' => Carbon::parse($quiz->due_date)->toFormattedDateString()]),
+                'message'    => __('Batas waktu telah berakhir pada tanggal :date', ['date' => Carbon::parse($item->due_date)->toFormattedDateString()]),
+            ]);
+        }
+
+        return view('frontend.pages.learning-player.rtl-index', compact('item', 'response'));
+    }
+
+    public function rtlStore(Request $request, string $id)
+    {
+        // Check if a response exists (for update)
+        $response = FollowUpActionResponse::where('follow_up_action_id', $id)
+            ->where('participant_id', userAuth()->id)->first();
+
+        // If no response exists, we are creating a new entry
+        if (!$response) {
+            $response = new FollowUpActionResponse;
+            $response->follow_up_action_id = $id;
+            $response->participant_id = userAuth()->id;
+        }
+
+        // If it's a new entry, the file is required
+        $rules = [
+            'summary' => $response->exists ? 'sometimes' : 'required',
+            'file_path' => $response->exists ? 'sometimes|mimes:pdf|max:30720' : 'required|mimes:pdf|max:30720',
+        ];
+
+        // Validate the incoming requests
+        $request->validate($rules, [
+            'summary.required' => 'Ringkasan harus diisi',
+            'file_path.required' => 'Wajib Mengunggah file pdf',
+            'file_path.sometimes' => 'File opsional, jika ada harus berupa PDF',
+            'file_path.mimes' => 'File harus berupa pdf',
+            'file_path.max' => 'Ukuran file maksimal 30 MB',
+        ]);
+
+        // Set the participant's response summary
+        $response->participant_response = $request->summary;
+
+        // Handle file upload if there is a file
+        if ($request->hasFile('file_path')) {
+            $file = $request->file('file_path');
+
+            // Bersihkan karakter khusus
+            $fileOriginalName = $file->getClientOriginalName();
+            $fileSanitizedName = preg_replace('/[^A-Za-z0-9\-]/', '-', pathinfo($fileOriginalName, PATHINFO_FILENAME));
+            $fileExtension = $file->getClientOriginalExtension();
+            $fileName = 'rtl/' . Auth::user()->name . '' . Auth::user()->id . '-' . $fileSanitizedName . '.' . $fileExtension;
+
+            $file->storeAs('private', $fileName, 'local');
+
+            $response->participant_file = Auth::user()->name . '' . Auth::user()->id . '-' . $fileSanitizedName . '.' . $fileExtension;
+        }
+
+        // Save the response
+        if ($response->save()) {
+            return redirect()->back()->with('success', 'Rencana tindak lanjut berhasil disimpan.');
+        }
+
+        return redirect()->back()->withInput()->withErrors('Rencana tindak lanjut gagal disimpan.');
+    }
+
 
     function addReview(Request $request)
     {

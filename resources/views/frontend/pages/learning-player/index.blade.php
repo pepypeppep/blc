@@ -114,17 +114,17 @@
                                         </div>
                                     @elseif ($chapterItem->type == 'rtl')
                                         <div class="form-check">
-                                            <input @checked(in_array($chapterItem->rtl->id, $alreadyCompletedQuiz))
+                                            <input @checked(in_array($chapterItem->rtl->id, $alreadyCompletedRtl))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->rtl->id }}" value="1"
-                                                data-type="quiz">
+                                                data-type="rtl">
                                             <label class="form-check-label lesson-item"
                                                 data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
-                                                data-lesson-id="{{ $chapterItem->rtl->id }}" data-type="quiz">
+                                                data-lesson-id="{{ $chapterItem->rtl->id }}" data-type="rtl">
                                                 {{ $chapterItem->rtl->title }}
                                                 <span>
-                                                    <img src="{{ asset('frontend/img/txt.png') }}"
-                                                        alt="video" class="img-fluid">
+                                                    <img src="{{ asset('frontend/img/txt.png') }}" alt="video"
+                                                        class="img-fluid">
                                                     --.--
                                                 </span>
                                             </label>
@@ -178,27 +178,35 @@
     <script src="{{ asset('frontend/js/custom-tinymce.js') }}"></script>
 @endpush
 @push('styles')
+    @php
+        $maxWidth = $setting?->max_width ?? '300';
+        $opacity = $setting?->opacity ?? '0.7';
+        $position = $setting?->position ?? 'top_right';
+        $watermarkStatus = property_exists($setting, 'watermark_status') ? $setting->watermark_status : 'inactive';
+
+        $positionCSS = '';
+        switch ($position) {
+            case 'top_left':
+                $positionCSS = 'top: 0; left: 0;';
+                break;
+            case 'bottom_right':
+                $positionCSS = 'bottom: 44px; right: 0;';
+                break;
+            case 'bottom_left':
+                $positionCSS = 'bottom: 44px; left: 0;';
+                break;
+            default:
+                $positionCSS = 'top: 0; right: 0;';
+        }
+
+        $display = $watermarkStatus === 'active' ? 'display: inline;' : '';
+    @endphp
+
     <style>
-.vjs-watermark {
-    max-width: {{ $setting?->max_width ?? '300' }}px;
-    opacity: {{ $setting?->opacity ?? '0.7' }} !important;
-    @php $position =$setting?->position ?? 'top_right'; @endphp
-    @if ($position === 'top_left')
-    top: 0;
-    left: 0;
-    @elseif ($position === 'bottom_right')
-    bottom: 44px;
-    right: 0;
-    @elseif ($position === 'bottom_left')
-    bottom: 44px;
-    left: 0;
-    @else
-    top: 0;
-    right: 0;
-    @endif
-    @if ((property_exists($setting, 'watermark_status') ? $setting?->watermark_status : 'inactive')  === 'active')
-    display:inline;
-    @endif
-}
+        .vjs-watermark {
+            max-width: {{ $maxWidth }}px;
+            opacity: {{ $opacity }} !important;
+            {!! $positionCSS !!} {!! $display !!}
+        }
     </style>
 @endpush

@@ -37,6 +37,20 @@
             </div>
         </div>
 
+        <div class="col-md-12">
+            <div class="form-grp">
+                <label for="start_date">{{ __('Tanggal Mulai') }} <code>*</code></label>
+                <input id="start_date" name="start_date" type="date" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-grp">
+                <label for="end_date">{{ __('Tanggal Selesai') }} <code>*</code></label>
+                <input id="end_date" name="end_date" type="date" class="form-control" />
+            </div>
+        </div>
+
         <div class="modal-footer">
             <button type="submit" class="btn btn-primary submit-btn">{{ __('Create') }}</button>
         </div>

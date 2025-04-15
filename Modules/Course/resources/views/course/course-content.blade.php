@@ -72,7 +72,7 @@
                                                             <div class="dropdown action-item">
                                                                 <span class="dropdown-toggle btn btn-small small-more-btn"
                                                                     data-toggle="dropdown" aria-expanded="false">
-                                                                    <i class="fas fa-plus"></i>
+                                                                    Tambah Materi
                                                                 </span>
                                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                                     <li><a class="dropdown-item add-lesson-btn"
@@ -238,20 +238,12 @@
                                                                                 </button>
                                                                                 <div
                                                                                     class="item-action course_quiz_item_action d-flex">
-                                                                                    <div class="dropdown action-item">
+                                                                                    <div class=" action-item">
                                                                                         <span
-                                                                                            class="dropdown-toggle btn btn-small small-more-btn"
-                                                                                            data-toggle="dropdown"
-                                                                                            aria-expanded="false">
-                                                                                            <i class="fas fa-plus"></i>
+                                                                                            class="btn btn-small small-more-btn add-quiz-question-btn">
+                                                                                            Tambah Soal
                                                                                         </span>
-                                                                                        <ul
-                                                                                            class="dropdown-menu dropdown-menu-end">
-                                                                                            <li><a class="dropdown-item add-quiz-question-btn"
-                                                                                                    data-quiz-id="{{ $chapterItem->quiz->id }}"
-                                                                                                    href="javascript:;">{{ __('Add Question') }}</a>
-                                                                                            </li>
-                                                                                        </ul>
+
                                                                                     </div>
                                                                                     <a href="javascript:;"
                                                                                         data-type="{{ $chapterItem->type }}"

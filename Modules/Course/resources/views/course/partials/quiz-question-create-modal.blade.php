@@ -50,7 +50,7 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary submit-btn">Simpan Kuis</button>
+            <button type="submit" class="btn btn-primary submit-btn">Simpan Pertanyaan</button>
         </div>
     </form>
 </div>

@@ -89,9 +89,9 @@
                                                 data-type="document">
                                                 {{ $chapterItem->lesson->title }}
                                                 <span>
-                                                    <img src="{{ asset('frontend/img/' . $chapterItem->lesson->file_type . '.png') }}"
+                                                    <img src="{{ asset('frontend/img/document.svg') }}"
                                                         alt="video" class="img-fluid">
-                                                    --.--
+
                                                 </span>
                                             </label>
                                         </div>
@@ -106,9 +106,9 @@
                                                 data-lesson-id="{{ $chapterItem->quiz->id }}" data-type="quiz">
                                                 {{ $chapterItem->quiz->title }}
                                                 <span>
-                                                    <img src="{{ asset('frontend/img/video_icon_black_2.png') }}"
-                                                        alt="video" class="img-fluid">
-                                                    --.--
+                                                    <img src="{{ asset('frontend/img/question.svg') }}" alt="video"
+                                                        class="img-fluid">
+
                                                 </span>
                                             </label>
                                         </div>
@@ -123,9 +123,9 @@
                                                 data-lesson-id="{{ $chapterItem->rtl->id }}" data-type="rtl">
                                                 {{ $chapterItem->rtl->title }}
                                                 <span>
-                                                    <img src="{{ asset('frontend/img/txt.png') }}" alt="video"
+                                                    <img src="{{ asset('frontend/img/rtl.svg') }}" alt="video"
                                                         class="img-fluid">
-                                                    --.--
+
                                                 </span>
                                             </label>
                                         </div>

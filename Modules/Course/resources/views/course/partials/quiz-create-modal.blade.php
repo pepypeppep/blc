@@ -34,15 +34,18 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="form-grp">
-                    <label for="time_limit">{{ __('Time Limit') }} </label>
-                    <input id="time_limit" name="time_limit" type="text" value="" class="form-control">
+                    <label for="time_limit">{{ __('Time Limit') }}
+                        <br /> <code>
+                            (diisi {{ __('in minutes') }})</code>
+                    </label>
+                    <input id="time_limit" name="time_limit" type="number" value="" class="form-control">
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-grp">
                     <label for="attempts">{{ __('Attempts') }} <br /> <code>
                             ({{ __('leave empty for unlimited') }})</code></label>
-                    <input id="attempts" name="attempts" type="text" value="" class="form-control">
+                    <input id="attempts" name="attempts" type="number" value="" class="form-control">
                 </div>
             </div>
             <div class="col-md-6 ">

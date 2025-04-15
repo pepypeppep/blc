@@ -333,7 +333,7 @@ class ArticleController extends Controller
     public function show($id)
     {
         try {
-            $article = Article::with('articleTags')->with('author')->with('enrollment.course')->where('id', $id)->first();
+            $article = Article::with('articleTags')->with('author')->with('enrollment.course')->where('id', $id)->where('status', Article::STATUS_PUBLISHED)->first();
 
             if (!$article) {
                 return $this->errorResponse('Article not found', [], 404);
@@ -390,7 +390,7 @@ class ArticleController extends Controller
     public function articleReviews($id)
     {
         try {
-            $article = Article::with('reviews')->where('id', $id)->first();
+            $article = Article::with('reviews')->where('id', $id)->where('status', Article::STATUS_PUBLISHED)->first();
 
             if (!$article) {
                 return $this->errorResponse('Article not found', [], 404);
@@ -404,7 +404,7 @@ class ArticleController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/articles/{id}/reviews",
+     *     path="/articles-reviews/{id}",
      *     summary="Add a review to an article",
      *     description="Add a review to an article",
      *     tags={"Articles"},
@@ -477,12 +477,18 @@ class ArticleController extends Controller
         ]);
 
         try {
-            $articleReview = new ArticleReview();
-            $articleReview->article_id = $id;
-            $articleReview->author_id = userAuth()->id;
-            $articleReview->description = $request->comment;
-            $articleReview->stars = $request->rating;
-            $articleReview->save();
+            $articleReview = ArticleReview::where('article_id', $id)->where('author_id', userAuth()->id);
+
+            if ($articleReview->exists()) {
+                return $this->errorResponse('You have already reviewed this article', [], 400);
+            }
+
+            $articleReview = ArticleReview::create([
+                'article_id' => $id,
+                'author_id' => userAuth()->id,
+                'comment' => $request->comment,
+                'stars' => $request->rating,
+            ]);
 
             return $this->successResponse([], 'Review added successfully', 201);
         } catch (\Exception $e) {

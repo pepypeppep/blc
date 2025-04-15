@@ -403,16 +403,14 @@
                         }
                     }
                 }
-            }
-        },
-        "/articles/{id}/reviews": {
+            },
             "post": {
                 "tags": [
                     "Articles"
                 ],
                 "summary": "Add a review to an article",
                 "description": "Add a review to an article",
-                "operationId": "41ea21d2d076d9d2abed5e2a801fb15b",
+                "operationId": "f49f2f906e97284d8415fd440a4dc259",
                 "parameters": [
                     {
                         "name": "id",

@@ -71,6 +71,8 @@ Route::name('api.')->group(function () {
         Route::get('/articles-popular', [ArticleController::class, 'popularArticles'])->name('popular');
         Route::get('/articles-tags', [ArticleController::class, 'articleTags'])->name('tags');
         Route::get('/articles-reviews/{id}', [ArticleController::class, 'articleReviews'])->name('reviews');
-        Route::post('/articles-reviews/{id}', [ArticleController::class, 'storeReviews'])->name('reviews.store');
+        Route::group(['middleware' => ['auth', 'verified']], function () {
+            Route::post('/articles-reviews/{id}', [ArticleController::class, 'storeReviews'])->name('reviews.store');
+        });
     });
 });

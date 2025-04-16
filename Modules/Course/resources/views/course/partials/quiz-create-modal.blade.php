@@ -38,14 +38,20 @@
                         <br /> <code>
                             (diisi {{ __('in minutes') }})</code>
                     </label>
-                    <input id="time_limit" name="time_limit" type="number" value="" class="form-control">
+                    <input id="time_limit" name="time_limit" value="" class="form-control" type="number"
+                        min="1" step="1" pattern="[0-9]*" class="form-control"
+                        onkeydown="return !['e', 'E', '+', '-', '.'].includes(event.key);"
+                        oninput="this.value = this.value.replace(/[eE\+\-\.]/g, '');">
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-grp">
                     <label for="attempts">{{ __('Attempts') }} <br /> <code>
                             ({{ __('leave empty for unlimited') }})</code></label>
-                    <input id="attempts" name="attempts" type="number" value="" class="form-control">
+                    <input id="attempts" name="attempts" value="" class="form-control" type="number"
+                        min="1" step="1" pattern="[0-9]*" class="form-control"
+                        onkeydown="return !['e', 'E', '+', '-', '.'].includes(event.key);"
+                        oninput="this.value = this.value.replace(/[eE\+\-\.]/g, '');">
                 </div>
             </div>
             <div class="col-md-6 ">
@@ -59,13 +65,20 @@
             <div class="col-md-6 ">
                 <div class="form-grp">
                     <label for="total_mark">{{ __('Total mark') }} <code>*</code></label>
-                    <input id="total_mark" name="total_mark" type="text" value="" class="form-control">
+                    <input id="total_mark" name="total_mark" type="number" min="1" step="1"
+                        pattern="[0-9]*" class="form-control"
+                        onkeydown="return !['e', 'E', '+', '-', '.'].includes(event.key);"
+                        oninput="this.value = this.value.replace(/[eE\+\-\.]/g, '');" value=""
+                        class="form-control">
                 </div>
             </div>
             <div class="col-md-6 ">
                 <div class="form-grp">
                     <label for="pass_mark">{{ __('Pass mark') }} <code>*</code></label>
-                    <input id="pass_mark" name="pass_mark" type="text" value="" class="form-control">
+                    <input id="pass_mark" name="pass_mark" type="number" min="1" step="1" pattern="[0-9]*"
+                        class="form-control" onkeydown="return !['e', 'E', '+', '-', '.'].includes(event.key);"
+                        oninput="this.value = this.value.replace(/[eE\+\-\.]/g, '');" value=""
+                        class="form-control">
                 </div>
             </div>
         </div>

@@ -240,6 +240,7 @@
                                                                                     class="item-action course_quiz_item_action d-flex">
                                                                                     <div class=" action-item">
                                                                                         <span
+                                                                                            data-quiz-id="{{ $chapterItem->quiz->id }}"
                                                                                             class="btn btn-small small-more-btn add-quiz-question-btn">
                                                                                             Tambah Soal
                                                                                         </span>

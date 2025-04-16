@@ -12,7 +12,10 @@
                     <label for="title" class="col-md-2 col-form-label">Bobot {{ __('Grade') }}
                         <code>*</code></label>
                     <div class="col-md-6">
-                        <input type="text" class="form-control" id="title" name="grade" value="">
+                        <input type="number" min="1" step="1" pattern="[0-9]*" class="form-control"
+                            onkeydown="return !['e', 'E', '+', '-', '.'].includes(event.key);"
+                            oninput="this.value = this.value.replace(/[eE\+\-\.]/g, '');" class="form-control"
+                            id="title" name="grade" value="">
                     </div>
                 </div>
             </div>

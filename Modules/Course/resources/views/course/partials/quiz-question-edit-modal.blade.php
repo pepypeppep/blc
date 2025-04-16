@@ -20,7 +20,9 @@
             <div class="form-group row">
                 <label class="col-md-2" for="title">Bobot {{ __('Grade') }} <code>*</code></label>
                 <div class="col-md-6">
-                    <input id="title" name="grade" type="text" class="form-control"
+                    <input id="title" name="grade" type="number" min="1" step="1" pattern="[0-9]*"
+                        class="form-control" onkeydown="return !['e', 'E', '+', '-', '.'].includes(event.key);"
+                        oninput="this.value = this.value.replace(/[eE\+\-\.]/g, '');" class="form-control"
                         value="{{ $question->grade }}">
                 </div>
             </div>

@@ -15,6 +15,10 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset(Cache::get('setting')?->favicon) }}">
     <!-- Place favicon.ico in the root directory -->
 
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+        integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- CSS here -->
     <link rel="stylesheet" href="{{ asset('frontend/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/animate.min.css') }}">
@@ -24,8 +28,8 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/spacing.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/tg-cursor.css') }}">
     <link rel="stylesheet" href="{{ asset('global/toastr/toastr.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/css/main.min.css') }}?v={{$setting?->version}}">
-    <link rel="stylesheet" href="{{ asset('frontend/css/frontend.min.css') }}?v={{$setting?->version}}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/main.min.css') }}?v={{ $setting?->version }}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/frontend.min.css') }}?v={{ $setting?->version }}">
     <style>
         :root {
             --tg-theme-primary: {{ $setting->primary_color }};
@@ -68,7 +72,7 @@
         var quiz_st_txt = "{{ __('Start Quiz') }}";
         var no_des_txt = "{{ __('No description') }}";
     </script>
-    
+
     <script src="{{ asset('global/js/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('frontend/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('frontend/js/tg-cursor.min.js') }}"></script>

@@ -22,7 +22,8 @@ class ArticleReview extends Model
         'description',
         'author_id',
         'article_id',
-        'stars'
+        'stars',
+        'status',
     ];
 
     public function post(): ?BelongsTo

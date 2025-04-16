@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class StudentDashboardController extends Controller
 {
@@ -199,7 +200,19 @@ class StudentDashboardController extends Controller
                 }
                 $cover1Base64 = base64_encode(file_get_contents(Storage::disk('private')->path($certificate->background)));
             }
-            $page1Html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate', 'cover1Base64'))->render();
+
+
+            $qrCodePublicURL = route('public.certificate', ['uuid' => $enrollment->uuid]);
+
+            $qrcodeData = QrCode::format('png')->size(200)
+                ->merge('/public/backend/img/logobantul.png')
+                ->generate(
+                    $qrCodePublicURL
+                );
+            $qrcodeData = 'data:image/png;base64,' . base64_encode($qrcodeData);
+
+
+            $page1Html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate', 'cover1Base64', 'qrcodeData'))->render();
 
             $page1Html = str_replace('[student_name]', userAuth()->name, $page1Html);
             $page1Html = str_replace('[platform_name]', Cache::get('setting')->app_name, $page1Html);

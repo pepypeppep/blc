@@ -317,11 +317,10 @@ class CourseController extends Controller
         if (!empty($newEnrollments)) {
             event(new UserBadgeUpdated($newEnrollments));
         }
-        
+
         if (!empty($removedEnrollments)) {
-        event(new UserBadgeUpdated($removedEnrollments));
+            event(new UserBadgeUpdated($removedEnrollments));
         }
-        
     }
 
     function getInstructors(Request $request)
@@ -363,7 +362,6 @@ class CourseController extends Controller
                 $query->where('name', 'like', '%' . $request->q . '%')
                     ->orWhere('email', 'like', '%' . $request->q . '%');
             })
-            ->where('id', '!=', auth()->id())
             ->get();
         return response()->json($students);
     }

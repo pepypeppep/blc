@@ -19,6 +19,7 @@ use App\Http\Controllers\Frontend\CourseContentController;
 use App\Http\Controllers\Frontend\StudentReviewController;
 use App\Http\Controllers\Frontend\FollowUpActionController;
 use App\Http\Controllers\Frontend\BecomeInstructorController;
+use App\Http\Controllers\Frontend\CertificateController;
 use App\Http\Controllers\Frontend\InstructorCourseController;
 use App\Http\Controllers\Frontend\InstructorPayoutController;
 use App\Http\Controllers\Frontend\StudentDashboardController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
+
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -104,6 +106,11 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::get('/send-fcm-notification', [NotificationController::class, 'sendNotification'])->name('firebase.send.notification');
     Route::get('/student/pengetahuan/view/{id}', [StudentPengetahuanController::class, 'view'])->name('student.pengetahuan.view.file');
     Route::get('/student/pengetahuan/document/{id}', [StudentPengetahuanController::class, 'document'])->name('student.pengetahuan.view.pdf');
+
+    // Public Certificate URL
+    Route::get("/public/certificate/{uuid}", [CertificateController::class, 'publicCertificate'])->name('public.certificate');
+
+
 
     /**
      * ============================================================================

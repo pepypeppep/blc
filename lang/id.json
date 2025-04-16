@@ -368,7 +368,7 @@
     "Comments": "Komentar",
     "Tags ": "Tag ",
     "Share": "Membagikan",
-    "Author": "Pengarang",
+    "Author": "Penulis",
     "Post a comment": "Kirimkan komentar",
     "Please keep your comment under 1000 characters": "Harap simpan komentar Anda di bawah 1000 karakter",
     "Comment": "Komentar",
@@ -2044,5 +2044,14 @@
     "Allow Comment": "Izinkan Komentar",
     "Link Learning Material": "Tautan Materi Belajar",
     "Enrollment not found": "Pendaftaran tidak ditemukan",
-    "Pengetahuan already created for this enrollment": "Pengetahuan sudah dibuat untuk pelatihan yang dipilih"
+    "Pengetahuan already created for this enrollment": "Pengetahuan sudah dibuat untuk pelatihan yang dipilih",
+    "Manage Knowledge": "Kelola Pengetahuan",
+    "Knowledges": "Pengetahuan",
+    "Knowledge List": "Daftar Pengetahuan",
+    "Knowledge Detail": "Detail Pengetahuan",
+    "Explain the reason for rejection...": "Berikan alasan penolakan...",
+    "Views": "Dilihat",
+    "Visibility": "Visibilitas",
+    "Published Date": "Tanggal Publish",
+    "Related Course": "Pelatihan Terkait"
 }

@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Article\app\Http\Controllers\ArticleCategoryController;
-use Modules\Article\app\Http\Controllers\ArticleCommentController;
+use Modules\Article\app\Http\Controllers\ArticleController;
+// use Modules\Article\app\Http\Controllers\ArticleCategoryController;
+// use Modules\Article\app\Http\Controllers\ArticleCommentController;
 
 // Route::middleware(['auth:admin', 'translation'])
 //     ->name('admin.')
@@ -17,3 +18,12 @@ use Modules\Article\app\Http\Controllers\ArticleCommentController;
 //         Route::resource('article-comment', ArticleCommentController::class)->names('article-comment')->only(['index', 'show', 'destroy']);
 //         Route::put('/article-comment/status-update/{id}', [ArticleCommentController::class, 'statusUpdate'])->name('article-comment.status-update');
 //     });
+
+Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
+    Route::prefix('knowledges')->as('knowledge.')->group(function () {
+
+        Route::get('/', [ArticleController::class, 'index'])->name('index');
+        Route::get('{id}', [ArticleController::class, 'show'])->name('detail');
+        Route::put('{id}/update-status', [ArticleController::class, 'updateStatus'])->name('update-status');
+    });
+});

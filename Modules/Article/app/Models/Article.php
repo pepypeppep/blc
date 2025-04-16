@@ -20,7 +20,7 @@ class Article extends Model
     protected $guarded = ['id'];
     protected $hidden = array('pivot');
 
-    protected $appends = ['thumbnail_url', 'document_url'];
+    protected $appends = ['thumbnail_url', 'document_url', 'embed_link'];
 
     
     public const STATUS_DRAFT = "draft";
@@ -113,6 +113,27 @@ class Article extends Model
     {
         return Attribute::make(
             get: fn() => $this->file ? route('student.pengetahuan.view.pdf', ['id' => $this->id]) : null,
+        );
+    }
+
+    protected function embedLink(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $link = $this->link;
+
+                if (strpos($link, 'youtube.com/watch') !== false) {
+                    parse_str(parse_url($link, PHP_URL_QUERY), $query);
+                    $videoId = $query['v'] ?? null;
+                } elseif (strpos($link, 'youtu.be/') !== false) {
+                    $path = parse_url($link, PHP_URL_PATH);
+                    $videoId = trim($path, '/');
+                } else {
+                    $videoId = null;
+                }
+
+                return $videoId ? "https://www.youtube.com/embed/{$videoId}" : $link;
+            }
         );
     }
 }

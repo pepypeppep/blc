@@ -18,6 +18,7 @@ class Article extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $hidden = array('pivot');
 
     protected $appends = ['thumbnail_url', 'document_url'];
 

@@ -17,9 +17,10 @@ class ArticleTagsSeeder extends Seeder
     public function run(): void
     {
         $articles = Article::get();
-
+        
         foreach ($articles as $article) {
-            $article->articleTags(Tag::limit(5)->get());
+            $tags = Tag::inRandomOrder()->limit(5)->get();
+            $article->articleTags()->sync($tags->pluck('id')->toArray());
         }
     }
 }

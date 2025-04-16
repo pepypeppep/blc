@@ -42,13 +42,11 @@
 
                         <div class="card-body">
                             @if ($article->category == 'video')
-                                <iframe class="w-100" style="height: 70vh" src="{{ $article->link }}" allowfullscreen></iframe>
+                                <iframe class="w-100" style="height: 70vh" src="{{ $article->embed_link }}" allowfullscreen></iframe>
                             @elseif ($article->category == 'document')
                                 <object data="{{ $article->document_url }}" type="application/pdf" width="100%" height="600">
                                     <p><a href="{{ $article->document_url }}">Download PDF</a></p>
-                                </object>
-                            @else
-                                <img src="{{ $article->thumbnail_url }}" alt="img" width="100%">
+                                </object>  
                             @endif
 
                             <div class="pt-3">
@@ -56,6 +54,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Related Course -->
+                    @if($article->enrollment_id != NULL)
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>{{ __('Related Course') }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <a href="{{ route('course.show', $article->enrollment->course->slug) }}" class="text-decoration-none text-dark" target="_blank">
+                                    <div class="d-flex align-items-center" style="gap: 1rem;">
+                                        <img src="{{ asset($article->enrollment->course->thumbnail) }}" alt="{{ $article->enrollment->course->title }}" style="width: 100px; height: 70px; object-fit: cover; border-radius: 0.25rem;">
+                                        <div class="d-flex align-items-center ml-2">
+                                            <h5 class="card-title m-0" style="font-size: 1rem;">{{ $article->enrollment->course->title }}</h5>
+                                            <i class="fa fa-chevron-circle-right ml-1"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    @endif
 
                     <!-- Verification -->
                     @if($article->status === 'verification')
@@ -82,6 +100,17 @@
 
                 <!-- Sidebar -->
                 <div class="col-lg-3">
+                    <!-- Thumbnail -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>{{ __('Thumbnail') }}</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <img src="{{ $article->thumbnail_url }}" alt="img" width="100%" style="cursor: pointer;"
+                                data-toggle="modal" data-target="#thumbnailModal">
+                        </div>
+                    </div>
+
                     <!-- Article Info -->
                     <div class="card">
                         <div class="card-header">
@@ -216,6 +245,22 @@
                     <button type="submit" class="btn btn-danger">{{ __('Reject') }}</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Preview -->
+<div class="modal fade" id="thumbnailModal" tabindex="-1" aria-labelledby="thumbnailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img src="{{ $article->thumbnail_url }}" alt="Thumbnail" class="w-100 mb-3" style="display: block; border-radius: 0;">
+                <div>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    {{ __('Close') }}
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -1,5 +1,5 @@
 @if (Module::isEnabled('Language') && Route::has('admin.knowledge.index'))
-    <li
+    <!-- <li
         class="nav-item dropdown {{ isRoute(['admin.articles.*', 'admin.article-category.*', 'admin.article-comment.*'], 'active') }}">
         <a href="javascript:void()" class="nav-link has-dropdown"><i
                 class="fas fa-newspaper"></i><span>{{ __('Manage Articles') }}</span></a>
@@ -27,7 +27,7 @@
                 </li>
             @endadminCan
         </ul>
-    </li>
+    </li> -->
     <li class="{{ isRoute('admin.knowledge.*', 'active') }}">
         <a class="nav-link" href="{{ route('admin.knowledge.index') }}">
             <i class="fas fa-book"></i><span>{{ __('Verification') }}</span>

@@ -21,7 +21,7 @@
         @endforeach
 
         @page {
-            size: A4 landscape;
+            size: 1123px 794px;
             margin: 0;
         }
 
@@ -107,9 +107,9 @@
             @if ($certificate->description)
                 <div id="signature" class="draggable-element">
                     {{--  TODO image generation below is slow and consume a lot of memory --}}
-                    {{--       <img style="width: 100px; height: 100px;"
+                 <img style="width: 100px; height: 100px;"
                         src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path($certificate->signature))) }}"
-                        alt=""> --}}
+                        alt=""> 
                 </div>
             @endif
         </div>

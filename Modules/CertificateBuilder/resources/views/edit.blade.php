@@ -38,7 +38,7 @@
                                     @method('PUT')
 
                                     <div class="form-group">
-                                        <label for="">{{ __('Front Image') }} <code>( 930px * 600px )
+                                        <label for="">{{ __('Front Image') }} <code>( 1123px * 794px )
                                                 *</code></label>
                                         <div id="image-preview-background" class="image-preview">
                                             <label for="image-upload-background"
@@ -67,7 +67,7 @@
 
                                     @if ($certificate->background2)
                                         <div class="form-group">
-                                            <label for="">{{ __('Back Image') }} <code>( 930px * 600px )
+                                            <label for="">{{ __('Back Image') }} <code>( 794px * 1123px )
                                                     *</code></label>
                                             <div id="image-preview-background2" class="image-preview">
                                                 <label for="image-upload-background2"
@@ -104,7 +104,7 @@
                             <div class="card-body">
                                 <p class="text-center text-danger">
                                     <strong>{{ __('Front Image') }}</strong>
-                                    {{ __('Background size will be ( 930px * 600px )') }}
+                                    {{ __('Background size will be ( 1123px * 794px )') }}
                                 </p>
                                 <div class="certificate-outer">
                                     <div class="table-responsive">
@@ -143,7 +143,7 @@
                                 <div class="card-body">
                                     <p class="text-center text-danger">
                                         <strong>{{ __('Back Image') }}</strong>
-                                        {{ __('Background size will be ( 930px * 600px )') }}
+                                        {{ __('Background size will be ( 794px * 1123px )') }}
                                     </p>
                                     <div class="certificate-outer">
                                         <div class="table-responsive">
@@ -166,14 +166,6 @@
                                                             {!! nl2br(clean($certificate->description)) !!}
                                                         </div>
                                                     @endif
-
-                                                    @if ($certificate->description)
-                                                        <div id="signature2" class="draggable-element2"><img
-                                                                style="width: 100px; height: 100px;"
-                                                                src="{{ asset('backend/img/QRCode.png') }}"
-                                                                alt="">
-                                                        </div>
-                                                    @endif
                                                 </div>
                                             </table>
                                         </div>
@@ -192,9 +184,7 @@
     <script src="{{ asset('global/js/jquery-ui.min.js') }}"></script>
 
     <script>
-        $(document).ready(function() {
-            $('#adminBurgerNavbar').click();
-        });
+        
         // Make draggable items draggable
         // Front Side
         $('.draggable-element').draggable({
@@ -284,11 +274,14 @@
         }
 
         .certificate-body {
-            width: 930px !important;
-            height: 600px !important;
+            width: 1123px !important;
+            height: 794px !important;
             background: rgb(231, 231, 231);
             position: relative;
             background-image: url({{ route('admin.certificate-builder.getBg', $certificate->id) }});
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .grid-overlay {
@@ -349,11 +342,14 @@
         }
 
         .certificate-body2 {
-            width: 930px !important;
-            height: 600px !important;
+            width: 794px !important;
+            height: 1123px !important;
             background: rgb(231, 231, 231);
             position: relative;
             background-image: url({{ route('admin.certificate-builder.getBg2', $certificate->id) }});
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .draggable-element2 {
@@ -386,6 +382,8 @@
         }
     </style>
 @endpush
+
+
 @push('js')
     <script src="{{ asset('backend/js/jquery.uploadPreview.min.js') }}"></script>
     <script>

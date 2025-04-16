@@ -327,7 +327,7 @@ trait PermissionsTrait
     public static array $knowledgePermissions = [
         'group_name' => 'knowledges',
         'permissions' => [
-            'knowledge.management',
+            'knowledge.verification',
         ],
     ];
 

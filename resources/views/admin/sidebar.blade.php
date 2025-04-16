@@ -49,9 +49,9 @@
                 @endif
             @endif
 
-            @if (checkAdminHasPermission('knowledge.management'))
+            @if (checkAdminHasPermission('knowledge.verification'))
                 <li class="menu-header">{{ __('Manage Knowledge') }}</li>
-                @if (Module::isEnabled('Article') && checkAdminHasPermission('knowledge.management'))
+                @if (Module::isEnabled('Article') && checkAdminHasPermission('knowledge.verification'))
                     @include('article::sidebar')
                 @endif
             @endif

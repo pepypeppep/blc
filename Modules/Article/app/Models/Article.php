@@ -18,9 +18,11 @@ class Article extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $hidden = array('pivot');
 
     protected $appends = ['thumbnail_url', 'document_url'];
 
+    
     public const STATUS_DRAFT = "draft";
     public const STATUS_PUBLISHED = "published";
     public const STATUS_REJECTED = "rejected";

@@ -50,7 +50,7 @@ use Illuminate\Routing\Controller as BaseController;
  * )
  *
  * @OA\Tag(
- *     name="Article",
+ *     name="Articles",
  *     description="Pengetahuan API Endpoints"
  * )
  *

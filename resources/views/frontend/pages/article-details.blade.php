@@ -31,9 +31,11 @@
                     <div class="blog__details-wrapper">
                         <div class="blog__details-thumb">
                             @if ($article->category == 'video')
-                                <iframe class="w-100" style="height: 70vh" src="https://www.youtube.com/embed/0ewXRjPa5Tk" allowfullscreen></iframe>
+                                <iframe class="w-100" style="height: 70vh" src="https://www.youtube.com/embed/0ewXRjPa5Tk"
+                                    allowfullscreen></iframe>
                             @elseif ($article->category == 'document')
-                                <object data="{{ $article->document_url }}" type="application/pdf" width="100%" height="600">
+                                <object data="{{ $article->document_url }}" type="application/pdf" width="100%"
+                                    height="600">
                                     <p><a href="{{ $article->document_url }}">Download PDF</a></p>
                                 </object>
                             @else
@@ -63,13 +65,13 @@
                                 <div class="row">
                                     <div class="col-xl-6 col-md-7">
                                         <div class="tg-post-tag">
-                                            @if($article->tags)
-                                            <h5 class="tag-title">{{ __('Tags ') }}:</h5>
-                                            <ul class="list-wrap p-0 mb-0">
-                                                @foreach ($article->tags ?? [] as $tag)
-                                                    <li><a href="javascript:;">{{ $tag->tag->name }}</a></li>
-                                                @endforeach
-                                            </ul>
+                                            @if ($article->tags)
+                                                <h5 class="tag-title">{{ __('Tags ') }}:</h5>
+                                                <ul class="list-wrap p-0 mb-0">
+                                                    @foreach ($article->tags ?? [] as $tag)
+                                                        <li><a href="javascript:;">{{ $tag->tag->name }}</a></li>
+                                                    @endforeach
+                                                </ul>
                                             @endif
                                         </div>
                                     </div>
@@ -93,7 +95,9 @@
                     </div>
                     <div class="blog__post-author">
                         <div class="blog__post-author-thumb">
-                            <a href="#"><img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $article->author->nip }}.jpg" alt="img"></a>
+                            <a href="#"><img
+                                    src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $article->author->nip }}.jpg"
+                                    alt="img"></a>
                         </div>
                         <div class="blog__post-author-content">
                             <span class="designation">{{ __('Author') }}</span>
@@ -103,10 +107,10 @@
                     </div>
                     <div class="blog-post-comment">
                         <div class="comment-wrap">
-                            @if(count($comments) > 0)
-                            <div class="comment-wrap-title">
-                                <h4 class="title">{{ count($comments) }} {{ __('Comments') }}</h4>
-                            </div>
+                            @if (count($comments) > 0)
+                                <div class="comment-wrap-title">
+                                    <h4 class="title">{{ count($comments) }} {{ __('Comments') }}</h4>
+                                </div>
                             @endif
                             <div class="latest-comments">
                                 @foreach ($comments as $comment)
@@ -114,7 +118,8 @@
                                         <li>
                                             <div class="comments-box">
                                                 <div class="comments-avatar">
-                                                    <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $comment->user->nip }}.jpg" alt="img">
+                                                    <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $comment->user->nip }}.jpg"
+                                                        alt="img">
                                                 </div>
                                                 <div class="comments-text">
                                                     <div class="avatar-name">
@@ -141,14 +146,17 @@
                                         @csrf
                                         <input type="hidden" name="blog_id" value="{{ $article->id }}">
                                         <div class="form-grp mb-3">
-                                            <label for="">Rating</label>
-                                            <select name="rating" id="" required="">
-                                                <option value="5">5</option>
-                                                <option value="4">4</option>
-                                                <option value="3">3</option>
-                                                <option value="2">2</option>
-                                                <option value="1">1</option>
-                                            </select>
+                                            <label for="">{{ __('Rate this course') }} <code>*</code></label>
+                                            <div class="d-flex align-items-center justify-content-start">
+                                                <div class="rating-stars d-flex justify-content-start flex-row-reverse">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        <input type="radio" id="star{{ $i }}" name="rating"
+                                                            value="{{ $i }}"
+                                                            {{ old('rating') == $i ? 'checked' : '' }} />
+                                                        <label for="star{{ $i }}" class="star">&#9733;</label>
+                                                    @endfor
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="comment-field">
                                             <label for="">Komentar</label>
@@ -171,9 +179,9 @@
                                 </div>
                             @else
                                 <div class="alert alert-primary d-flex align-items-center" role="alert">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                        class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16"
-                                        role="img" aria-label="Warning:">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
+                                        viewBox="0 0 16 16" role="img" aria-label="Warning:">
                                         <path
                                             d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
                                     </svg>
@@ -263,4 +271,28 @@
     <script>
         Shareon.init();
     </script>
+@endpush
+
+@push('styles')
+    <style>
+        .rating-stars {
+            gap: 5px;
+        }
+
+        .rating-stars .star {
+            font-size: 2.5rem;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .rating-stars input[type="radio"] {
+            display: none;
+        }
+
+        .rating-stars input[type="radio"]:checked~.star,
+        .rating-stars input[type="radio"]:checked+label~label {
+            color: #ffc107;
+        }
+    </style>
 @endpush

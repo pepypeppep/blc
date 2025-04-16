@@ -11,6 +11,10 @@ class ArticleReview extends Model
 {
     use HasFactory;
 
+
+    public const STATUS_PUBLISHED = "published";
+    public const STATUS_UNPUBLISHED = "unpublished";
+
     /**
      * The attributes that are mass assignable.
      */

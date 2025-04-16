@@ -67,6 +67,13 @@ Route::name('api.')->group(function () {
     // Article
     Route::name('article.')->group(function () {
         Route::get('/articles', [ArticleController::class, 'index'])->name('index');
+        Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('show');
+        Route::get('/articles-popular', [ArticleController::class, 'popularArticles'])->name('popular');
+        Route::get('/articles-tags', [ArticleController::class, 'articleTags'])->name('tags');
+        Route::get('/articles-reviews/{id}', [ArticleController::class, 'articleReviews'])->name('reviews');
+        Route::group(['middleware' => ['auth', 'verified']], function () {
+            Route::post('/articles-reviews/{id}', [ArticleController::class, 'storeReviews'])->name('reviews.store');
+        });
     });
 
     // Bantara Callback

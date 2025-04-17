@@ -936,6 +936,65 @@ class CourseApiController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/courses-favourite",
+     *     summary="Get favourite courses",
+     *     description="Get favourite courses",
+     *     tags={"Courses"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         description="User ID",
+     *         in="query",
+     *         name="user_id",
+     *         required=true,
+     *         example=1
+     *     ),
+     *     @OA\Parameter(
+     *         description="Items per page",
+     *         in="query",
+     *         name="per_page",
+     *         required=false,
+     *         example=10
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Favourite courses retrieved successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Favourite courses not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function favouriteCourses(Request $request)
+    {
+        try {
+            $courses = Course::with('instructor:id,name', 'category.translation')
+                ->where('status', 'active')
+                ->whereHas('favoriteBy', function ($query) use ($request) {
+                    $query->where('user_id', $request->user_id);
+                })
+                ->paginate($request->per_page ?? 10);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Retrieved favourite courses',
+                'data' => $courses
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve popular courses',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function getCourseThumbnail($courseId)
     {
         try {

@@ -20,7 +20,7 @@
                                                     <div class="courses__item-thumb courses__item-thumb-two">
                                                         <a href="{{ route('student.learning.index', $enroll->course->slug) }}"
                                                             class="shine__animate-link">
-                                                            <img src="{{ asset($enroll->course->thumbnail) }}"
+                                                            <img src="{{ $enroll->course->thumbnail_url }}"
                                                                 alt="img">
                                                         </a>
                                                     </div>
@@ -40,7 +40,8 @@
                                                         <div class="courses__item-content-bottom">
                                                             <div class="author-two">
                                                                 <a href="javascript:;"><img
-                                                                        src="{{ asset($enroll->course->instructor->image) }}"
+                                                                        {{-- src="{{ asset($enroll->course->instructor->image) }}" --}}
+                                                                        src="{{ asset('uploads/website-images/frontend-avatar.png') }}"
                                                                         alt="img">{{ $enroll->course->instructor->name }}</a>
                                                             </div>
                                                             <div class="avg-rating">

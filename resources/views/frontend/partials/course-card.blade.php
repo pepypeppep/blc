@@ -2,8 +2,8 @@
     <div class="col-xxl-4 col-md-6 col-lg-6 col-xl-6">
         <div class="courses__item shine__animate-item">
             <div class="courses__item-thumb">
-                <a href="{{ route('course.show', $course->slug) }}" class="shine__animate-link">
-                    <img src="{{ asset($course->thumbnail) }}" alt="img">
+                <a href="{{ route('course.show', $course?->slug) }}" class="shine__animate-link">
+                    <img src="{{ $course?->thumbnail_url }}" alt="img">
                 </a>
                 <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"
                     data-slug="{{ $course?->slug }}" aria-label="WishList">

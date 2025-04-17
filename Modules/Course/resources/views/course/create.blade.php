@@ -97,8 +97,7 @@
                                                     <div class="form-group">
                                                         <label for="jp">Jam Pelajaran (JP)
                                                             <code>*</code></label>
-                                                        <input id="jp" name="jp" type="text"
-                                                            class="form-control" value="{{ @$course?->jp }}">
+                                                        <input id="jp" name="jp" type="text" class="form-control" value="{{ @$course?->jp }}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-12">

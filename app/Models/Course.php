@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * 
+ *
  * @package App\Models
- * 
+ *
  * @property int $jp
  */
 class Course extends Model
@@ -35,7 +35,8 @@ class Course extends Model
     public function getFavoriteByClientAttribute()
     {
         if (auth()->guard('web')->check()) {
-            return $this->relationLoaded('favoriteBy') ? in_array(userAuth()->id, $this->favoriteBy->pluck('id')->toArray()) : false;
+            return in_array(userAuth()->id, $this->favoriteBy->pluck('id')->toArray());
+            // return $this->relationLoaded('favoriteBy') ? in_array(userAuth()->id, $this->favoriteBy->pluck('id')->toArray()) : false;
         }
 
         return false;

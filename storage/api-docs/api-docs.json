@@ -45,20 +45,6 @@
                         }
                     },
                     {
-                        "name": "status",
-                        "in": "query",
-                        "description": "Status of the article",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "draft",
-                                "published",
-                                "rejected"
-                            ]
-                        }
-                    },
-                    {
                         "name": "category",
                         "in": "query",
                         "description": "Category of the article",
@@ -422,6 +408,15 @@
                         }
                     },
                     {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "comment",
                         "in": "query",
                         "description": "Comment",
@@ -579,6 +574,63 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/bantara-callback/{enrollmentID}": {
+            "post": {
+                "tags": [
+                    "Bantara"
+                ],
+                "summary": "Post PDF file from Bantara",
+                "operationId": "921004124fedf71d29a8c2707d31acd0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "description": "PDF file from Bantara",
+                                        "type": "file",
+                                        "format": "binary"
+                                    },
+                                    "id": {
+                                        "description": "Document ID",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File uploaded successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/courses": {
@@ -1248,6 +1300,48 @@
                         }
                     }
                 }
+            }
+        },
+        "/courses-favourite": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get favourite courses",
+                "description": "Get favourite courses",
+                "operationId": "2b9e3aef000f4a5a47c2cfbe20ec359c",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User ID",
+                        "required": true,
+                        "example": 1
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "required": false,
+                        "example": 10
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Favourite courses retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Favourite courses not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/courses-categories": {

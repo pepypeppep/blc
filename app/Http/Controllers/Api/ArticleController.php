@@ -148,17 +148,17 @@ class ArticleController extends Controller
      *                     @OA\Property(
      *                         property="updated_at",
      *                         type="string",
-     *                         format="date-time",                         
+     *                         format="date-time",
      *                         example="2023-10-01T12:00:00Z"
      *                     ),
      *                     @OA\Property(
      *                         property="author",
      *                         type="object",
      *                         @OA\Property(
-     *                             property="id",                             
-     *                             type="integer",                             
+     *                             property="id",
+     *                             type="integer",
      *                             example=1
-     *                         ),                         
+     *                         ),
      *                         @OA\Property(
      *                             property="name",
      *                             type="string",
@@ -166,9 +166,9 @@ class ArticleController extends Controller
      *                         ),
      *                         @OA\Property(
      *                             property="email",
-     *                             type="string",                             
+     *                             type="string",
      *                             example="6sYHt@example.com"
-     *                         ),                         
+     *                         ),
      *                         @OA\Property(
      *                             property="created_at",
      *                             type="string",
@@ -191,18 +191,18 @@ class ArticleController extends Controller
      *                                 property="id",
      *                                 type="integer",
      *                                 example=1
-     *                             ),                             
+     *                             ),
      *                             @OA\Property(
      *                                 property="name",
      *                                 type="string",
      *                                 example="Tag Name"
-     *                             ),                             
+     *                             ),
      *                             @OA\Property(
      *                                 property="created_at",
      *                                 type="string",
      *                                 format="date-time",
      *                                 example="2023-10-01T12:00:00Z"
-     *                             ),                             
+     *                             ),
      *                             @OA\Property(
      *                                 property="updated_at",
      *                                 type="string",
@@ -393,7 +393,7 @@ class ArticleController extends Controller
     {
         try {
             $article = Article::with(['reviews' => function ($query) {
-                $query->where('status', ArticleReview::STATUS_PUBLISHED)->with('user:id,name');
+                $query->where('status', ArticleReview::STATUS_PUBLISHED)->with('user:id,name,created_at');
             }])->where('id', $id)->where('status', Article::STATUS_PUBLISHED)->first();
 
             if (!$article) {

@@ -1710,6 +1710,7 @@
     "Certificate size is too large": "Ukuran sertifikat terlalu besar",
     "Certificate must be a PDF, DOCX, DOC, JPG, JPEG or PNG file": "Sertifikat harus berupa file PDF, DOCX, DOC, JPG, JPEG atau PNG",
     "Certificate not found": "Sertifikat tidak ditemukan",
+    "Certificate background not found": "Latar belakang sertifikat tidak ditemukan",
     "Time limit must be at least 0 minute": "Batas waktu minimal harus 0 menit",
     "The payout account field is required.": "Bidang akun pembayaran wajib diisi.",
     "The payout information field is required.": "Bidang informasi pembayaran wajib diisi.",

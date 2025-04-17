@@ -253,17 +253,15 @@ class StudentDashboardController extends Controller
                 ['Content-Type' => 'application/pdf']
             )
                 ->withHeaders([
-                    'Authorization' => 'Bearer ' . env('BANTARA_CLIENT_SECRET'),
+                    'Authorization' => 'Bearer ' . appConfig('bantara_key'),
                 ])
-                ->post(sprintf('%s/internal/v1/tte/documents', env('BANTARA_URL')), [
-                    'signer_nik' => env('BANTARA_SIGNER_NIK'),
+                ->post(sprintf('%s/internal/v1/tte/documents', appConfig('bantara_url')), [
+                    'signer_nik' => appConfig('bantara_nik'),
                     'title' => sprintf("Sertifikat Pelatihan %s an %s", $course->title, $enrollment->user->name),
                     'description' => $enrollment->user->name,
                     'callback_url' => sprintf("%s", route('api.bantara-callback', $enrollment)),
-                    'callback_key' => env('BANTARA_CALLBACK_KEY'),
+                    'callback_key' => appConfig('bantara_callback_key'),
                 ]);
-
-
 
             if ($response->failed()) {
                 Log::error($response->body());

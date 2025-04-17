@@ -997,3 +997,17 @@ if (!function_exists('sendNotification')) {
         }
     }
 }
+
+
+if (!function_exists('appConfig')) {
+    function appConfig($key = null, $default = null)
+    {
+        $configs = app('appConfig');
+
+        if ($key === null) {
+            return $configs;
+        }
+
+        return $configs[$key] ?? $default;
+    }
+}

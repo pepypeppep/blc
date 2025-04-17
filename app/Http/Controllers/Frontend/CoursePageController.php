@@ -29,6 +29,11 @@ class CoursePageController extends Controller
     function fetchCourses(Request $request)
     {
         $query = Course::query();
+
+        if (!auth()->guard('web')->check()) {
+            $query->where('access', 'public');
+        }
+
         $query->where(['is_approved' => 'approved', 'status' => 'active']);
         $query->whereHas('category.parentCategory', function ($q) use ($request) {
             $q->where('status', 1);

@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-xl-9 col-lg-8">
                     <div class="courses__details-thumb">
-                        <img class="w-100" src="{{ asset($course->thumbnail) }}" alt="img">
+                        <img class="w-100" src="{{ $course->thumbnail_url }}" alt="img">
                         @if ($course->demo_video_source)
                             <a href="{{ $course->demo_video_source }}" class="popup-video"
                                 aria-label="{{ $course?->title }}"><i class="fas fa-play"></i></a>

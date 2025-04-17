@@ -19,6 +19,7 @@ use App\Http\Controllers\Frontend\CourseContentController;
 use App\Http\Controllers\Frontend\StudentReviewController;
 use App\Http\Controllers\Frontend\FollowUpActionController;
 use App\Http\Controllers\Frontend\BecomeInstructorController;
+use App\Http\Controllers\Frontend\CertificateController;
 use App\Http\Controllers\Frontend\InstructorCourseController;
 use App\Http\Controllers\Frontend\InstructorPayoutController;
 use App\Http\Controllers\Frontend\StudentDashboardController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
+
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -104,6 +106,11 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::get('/send-fcm-notification', [NotificationController::class, 'sendNotification'])->name('firebase.send.notification');
     Route::get('/student/pengetahuan/view/{id}', [StudentPengetahuanController::class, 'view'])->name('student.pengetahuan.view.file');
     Route::get('/student/pengetahuan/document/{id}', [StudentPengetahuanController::class, 'document'])->name('student.pengetahuan.view.pdf');
+
+    // Public Certificate URL
+    Route::get("/public/certificate/{uuid}", [CertificateController::class, 'publicCertificate'])->name('public.certificate');
+
+
 
     /**
      * ============================================================================
@@ -222,8 +229,11 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::post('add-review', [LearningController::class, 'addReview'])->name('add-review');
         Route::get('fetch-reviews/{course_id}', [LearningController::class, 'fetchReviews'])->name('fetch-reviews');
 
-        /** download certificate route */
-        Route::get('download-certificate/{id}', [StudentDashboardController::class, 'downloadCertificate'])->name('download-certificate');
+        /** certificate routes  */
+        Route::get('download-certificate/{enrollment}.pdf', [StudentDashboardController::class, 'downloadCertificate'])->name('download-certificate');
+        Route::get('request-sign-certificate/{enrollment}', [StudentDashboardController::class, 'requestSignCertificate'])->name('request-sign-certificate');
+
+
         Route::view('wishlist', 'frontend.wishlist.index')->name('wishlist');
 
         /** general service **/

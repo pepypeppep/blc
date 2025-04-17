@@ -7,11 +7,21 @@ use App\Models\Course;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Modules\Order\Database\factories\EnrollmentFactory;
 
 class Enrollment extends Model
 {
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::creating(function (Enrollment $enrollment) {
+            // sleep 1ms
+            usleep(1000);
+            $enrollment->uuid = Str::ulid();
+        });
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +37,7 @@ class Enrollment extends Model
     {
         return $this->belongsTo(Course::class, 'course_id', 'id');
     }
+
 
     /**
      * Get the user that owns the Enrollment

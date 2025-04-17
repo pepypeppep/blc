@@ -95,12 +95,28 @@
                                                                     class="flaticon-mortarboard"></i>{{ $enroll->course->enrollments()->count() }}
                                                             </li>
                                                             @if ($courseCompletedPercent == 100)
-                                                                <li class="ms-auto">
-                                                                    <a class="basic-button"
-                                                                        href="{{ route('student.download-certificate', $enroll->course->id) }}"><i
-                                                                            class="certificate fas fa-download"></i>
-                                                                        {{ __('Certificate') }}</a>
-                                                                </li>
+                                                                @if ($enroll->certificate_status == 'requested')
+                                                                    <li class="ms-auto">
+                                                                        {{-- certificate already requested --}}
+                                                                        <div>{{ __('Certificate Requested') }}</div>
+                                                                    </li>
+                                                                @elseif ($enroll->certificate_status == 'signed')
+                                                                    <li class="ms-auto">
+                                                                        <a class="success-button" target="_blank"
+                                                                            href="{{ route('student.download-certificate', $enroll->id) }}"><i
+                                                                                class="certificate fas fa-signature"
+                                                                                style="color: #fafdff;"></i>
+                                                                            {{ __('Download Certificate') }}</a>
+                                                                    </li>
+                                                                @else
+                                                                    <li class="ms-auto">
+                                                                        <a class="basic-button"
+                                                                            href="{{ route('student.request-sign-certificate', $enroll->id) }}"><i
+                                                                                class="certificate fas fa-signature"
+                                                                                style="color: #fafdff;"></i>
+                                                                            {{ __('Certificate Request') }}</a>
+                                                                    </li>
+                                                                @endif
                                                             @endif
                                                         </ul>
                                                     </div>
@@ -110,7 +126,7 @@
                                     </div>
                                 </div>
                             @empty
-                            <h6 class="text-center">{{ __('No Course Found') }}</h6>
+                                <h6 class="text-center">{{ __('No Course Found') }}</h6>
                             @endforelse
                         </div>
                     </div>

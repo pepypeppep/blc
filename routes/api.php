@@ -75,4 +75,7 @@ Route::name('api.')->group(function () {
             Route::post('/articles-reviews/{id}', [ArticleController::class, 'storeReviews'])->name('reviews.store');
         });
     });
+
+    // Bantara Callback
+    Route::post('/bantara-callback/{enrollment}', [CertificateApiController::class, 'bantaraCallback'])->name('bantara-callback');
 });

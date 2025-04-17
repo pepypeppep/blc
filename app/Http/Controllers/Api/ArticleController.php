@@ -41,16 +41,6 @@ class ArticleController extends Controller
      *         )
      *     ),
      *     @OA\Parameter(
-     *         name="status",
-     *         in="query",
-     *         required=false,
-     *         description="Status of the article",
-     *         @OA\Schema(
-     *             type="string",
-     *             enum={"draft", "published", "rejected"}
-     *         )
-     *     ),
-     *     @OA\Parameter(
      *         name="category",
      *         in="query",
      *         required=false,
@@ -255,7 +245,12 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         try {
-            $articles = Article::with('articleTags')->with('author')->with('enrollment.course');
+            $articles = Article::with('articleTags')
+                ->with('author')
+                ->withCount(['reviews as total_review'])
+                ->withAvg('reviews as rating', 'stars')
+                ->with('enrollment.course')
+                ->where('status', Article::STATUS_PUBLISHED);
 
             if ($request->keyword) {
                 $articles = $articles->where(function ($query) use ($request) {
@@ -263,10 +258,6 @@ class ArticleController extends Controller
                         ->orWhere('content', 'like', '%' . $request->keyword . '%')
                         ->orWhere('description', 'like', '%' . $request->keyword . '%');
                 });
-            }
-
-            if ($request->status) {
-                $articles = $articles->where('status', $request->status);
             }
 
             if ($request->category) {
@@ -333,7 +324,18 @@ class ArticleController extends Controller
     public function show($id)
     {
         try {
-            $article = Article::with('articleTags')->with('author')->with('enrollment.course')->where('id', $id)->where('status', Article::STATUS_PUBLISHED)->first();
+            $article = Article::with('articleTags')
+                ->with('author')
+                ->withCount(['reviews as total_review'])
+                ->withAvg('reviews as rating', 'stars')
+                ->with('enrollment.course')
+                ->where('id', $id)
+                ->where('status', Article::STATUS_PUBLISHED)
+                ->first();
+
+            if ($article) {
+                $article->rating = $article->rating ?? 0;
+            }
 
             if (!$article) {
                 return $this->errorResponse('Article not found', [], 404);
@@ -390,7 +392,9 @@ class ArticleController extends Controller
     public function articleReviews($id)
     {
         try {
-            $article = Article::with('reviews')->where('id', $id)->where('status', Article::STATUS_PUBLISHED)->first();
+            $article = Article::with(['reviews' => function ($query) {
+                $query->where('status', ArticleReview::STATUS_PUBLISHED)->with('user:id,name');
+            }])->where('id', $id)->where('status', Article::STATUS_PUBLISHED)->first();
 
             if (!$article) {
                 return $this->errorResponse('Article not found', [], 404);
@@ -412,6 +416,15 @@ class ArticleController extends Controller
      *         description="Article ID",
      *         in="path",
      *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="User ID",
+     *         in="query",
+     *         name="user_id",
      *         required=true,
      *         @OA\Schema(
      *             type="integer"
@@ -467,6 +480,7 @@ class ArticleController extends Controller
         $request->validate([
             'comment' => ['required', 'max:1000'],
             'rating' => ['required', 'numeric', 'min:1', 'max:5'],
+            'user_id' => ['required', 'exists:users,id'],
         ], [
             'comment.required' => __('The comment field is required'),
             'comment.max' => __('The comment must not be greater than 1000 characters'),
@@ -474,6 +488,8 @@ class ArticleController extends Controller
             'rating.numeric' => __('The rating must be a number'),
             'rating.min' => __('The rating must be greater than or equal to 1'),
             'rating.max' => __('The rating must be less than or equal to 5'),
+            'user_id.required' => __('The user id field is required'),
+            'user_id.exists' => __('The user id does not exist'),
         ]);
 
         try {
@@ -485,7 +501,7 @@ class ArticleController extends Controller
 
             $articleReview = ArticleReview::create([
                 'article_id' => $id,
-                'author_id' => userAuth()->id,
+                'author_id' => $request->user_id,
                 'comment' => $request->comment,
                 'stars' => $request->rating,
             ]);
@@ -557,9 +573,12 @@ class ArticleController extends Controller
     public function popularArticles()
     {
         try {
-            $articles = Article::withCount(['reviews' => function ($query) {
-                $query->where('status', 'published');
-            }])->orderByDesc('reviews_count')->limit(5)->get();
+            $articles = Article::with('author:id,name')
+                ->withCount(['reviews as total_review'])
+                ->withAvg('reviews as rating', 'stars')
+                ->where('status', 'published')
+                ->orderByDesc('total_review')
+                ->limit(5)->get();
             return $this->successResponse($articles, 'Popular articles fetched successfully');
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);

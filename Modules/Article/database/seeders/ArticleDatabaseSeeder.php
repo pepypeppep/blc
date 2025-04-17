@@ -13,7 +13,8 @@ class ArticleDatabaseSeeder extends Seeder
     {
         $this->call([
             ArticleSeeder::class,
-            ArticleTagsSeeder::class
+            ArticleTagsSeeder::class,
+            ArticleReviewsSeeder::class
         ]);
     }
 }

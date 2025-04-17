@@ -255,7 +255,7 @@ class StudentDashboardController extends Controller
                 ->withHeaders([
                     'Authorization' => 'Bearer ' . env('BANTARA_CLIENT_SECRET'),
                 ])
-                ->post('https://bantara.bantulkab.go.id/internal/v1/tte/documents', [
+                ->post(sprintf('%s/internal/v1/tte/documents', env('BANTARA_URL')), [
                     'signer_nik' => env('BANTARA_SIGNER_NIK'),
                     'title' => sprintf("Sertifikat Pelatihan %s an %s", $course->title, $enrollment->user->name),
                     'description' => $enrollment->user->name,

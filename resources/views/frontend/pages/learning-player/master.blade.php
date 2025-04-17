@@ -24,8 +24,8 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/spacing.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/tg-cursor.css') }}">
     <link rel="stylesheet" href="{{ asset('global/toastr/toastr.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('frontend/css/main.min.css') }}?v={{$setting?->version}}">
-    <link rel="stylesheet" href="{{ asset('frontend/css/frontend.min.css') }}?v={{$setting?->version}}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/main.min.css') }}?v={{ $setting?->version }}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/frontend.min.css') }}?v={{ $setting?->version }}">
     <style>
         :root {
             --tg-theme-primary: {{ $setting->primary_color }};
@@ -68,7 +68,7 @@
         var quiz_st_txt = "{{ __('Start Quiz') }}";
         var no_des_txt = "{{ __('No description') }}";
     </script>
-    
+
     <script src="{{ asset('global/js/jquery-3.7.1.min.js') }}"></script>
     <script src="{{ asset('frontend/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('frontend/js/tg-cursor.min.js') }}"></script>

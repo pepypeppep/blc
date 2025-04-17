@@ -29,7 +29,8 @@
                                     <label for="course_duration">{{ __('Course Duration (Minutes)') }}
                                         <code>*</code></label>
                                     <input id="course_duration" name="course_duration" type="text"
-                                        value="{{ $course?->duration }}">
+                                        oninput="this.value = Math.max(this.value, 1); this.value = (this.value < 1) ? 1 : this.value;"
+                                        min="1" step="1" pattern="[0-9]*" value="{{ $course?->duration }}">
                                 </div>
                             </div>
 

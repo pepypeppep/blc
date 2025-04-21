@@ -40,7 +40,7 @@ class LearningController extends Controller
             'chapters.chapterItems.quiz',
             'chapters.chapterItems.rtl',
         ])->withTrashed()->where('slug', $slug)->first();
-        // dd($course->toArray());
+
         Session::put('course_slug', $slug);
         Session::put('course_title', $course->title);
 

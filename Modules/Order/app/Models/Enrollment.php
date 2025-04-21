@@ -34,6 +34,7 @@ class Enrollment extends Model
         'tos_status' => 'tos_status',
     ];
 
+
     function course(): BelongsTo
     {
         return $this->belongsTo(Course::class, 'course_id', 'id');

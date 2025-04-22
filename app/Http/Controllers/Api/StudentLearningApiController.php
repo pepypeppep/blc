@@ -217,8 +217,8 @@ class StudentLearningApiController extends Controller
             // Set current progress
             CourseProgress::updateOrCreate(
                 [
-                    // 'user_id'    => $request->user()->id,
-                    'user_id'    => 2,
+                    'user_id'    => $request->user()->id,
+                    // 'user_id'    => 2,
                     'course_id'  => $request->courseId,
                     'chapter_id' => $request->chapterId,
                     'lesson_id'  => $request->lessonId,
@@ -362,15 +362,15 @@ class StudentLearningApiController extends Controller
             // Cari progress untuk lesson yang dimaksud
             $progress = CourseProgress::where([
                 'lesson_id' => $request->lessonId,
-                // 'user_id' => userAuth()->id,
-                'user_id' => 2,
+                'user_id' => $request->user()->id,
+                // 'user_id' => 2,
                 'type' => $request->type
             ])->first();
 
             if ($progress) {
 
                 $previousLesson = CourseProgress::where([
-                    'user_id' => userAuth()->id,
+                    'user_id' => $request->user()->id,
                     'course_id' => $progress->course_id,
                     'type' => $request->type,
                 ])
@@ -625,7 +625,7 @@ class StudentLearningApiController extends Controller
             }
 
             $quizResult = QuizResult::create([
-                'user_id' => userAuth()->id,
+                'user_id' => $request->user()->id,
                 'quiz_id' => $id,
                 'result' => json_encode($result),
                 'user_grade' => $grad,
@@ -693,10 +693,10 @@ class StudentLearningApiController extends Controller
      *     )
      * )
      */
-    function quizResult(string $id, string $resultId)
+    function quizResult(Request $request, string $id, string $resultId)
     {
         try {
-            $attempt = QuizResult::where('user_id', userAuth()->id)->where('quiz_id', $id)->count();
+            $attempt = QuizResult::where('user_id', $request->user()->id)->where('quiz_id', $id)->count();
             $quiz = Quiz::withCount('questions')->findOrFail($id);
             $quizResult = QuizResult::findOrFail($resultId);
 

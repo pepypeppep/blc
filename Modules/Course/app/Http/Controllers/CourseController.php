@@ -21,6 +21,7 @@ use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
 use Modules\Course\app\Http\Requests\CourseStoreRequest;
 use App\Events\UserBadgeUpdated;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -352,7 +353,7 @@ class CourseController extends Controller
         }
         $course->delete();
 
-        return response()->json(['status' => 'success', 'message' => __('Course deleted successfully')]);
+        return redirect()->back()->with(['alert-type' => 'success', 'messege' => __('Course deleted successfully')]);
     }
 
     function getStudents(Request $request)
@@ -364,5 +365,70 @@ class CourseController extends Controller
             })
             ->get();
         return response()->json($students);
+    }
+
+    function duplicate(string $id)
+    {
+        DB::BeginTransaction();
+
+        try {
+            $course = Course::with(['chapters.chapterItems.lesson', 'levels', 'languages', 'partnerInstructors'])->findOrFail($id);
+            $newCourse = $course->replicate();
+            $newCourse->title = $course->title . ' - Copy';
+            $newCourse->slug = generateUniqueSlug(Course::class, $course->title) . now()->timestamp;
+            $newCourse->save();
+
+            foreach ($course->chapters as $chapter) {
+                $newChapter = $chapter->replicate();
+                $newChapter->course_id = $newCourse->id;
+                $newChapter->save();
+
+                foreach ($chapter->chapterItems as $chapterItem) {
+                    $newChapterItem = $chapterItem->replicate();
+                    $newChapterItem->chapter_id = $newChapter->id;
+                    $newChapterItem->save();
+
+                    if ($chapterItem->quiz) {
+                        $newChapterItemQuiz = $chapterItem->quiz->replicate();
+                        $newChapterItemQuiz->chapter_item_id = $newChapterItem->id;
+                        $newChapterItemQuiz->chapter_id = $newChapter->id;
+                        $newChapterItemQuiz->course_id = $newCourse->id;
+                        $newChapterItemQuiz->save();
+                    }
+
+                    if ($chapterItem->lesson) {
+                        $newChapterItemLesson = $chapterItem->lesson->replicate();
+                        $newChapterItemLesson->chapter_item_id = $newChapterItem->id;
+                        $newChapterItemLesson->chapter_id = $newChapter->id;
+                        $newChapterItemLesson->course_id = $newCourse->id;
+                        $newChapterItemLesson->save();
+                    }
+                }
+            }
+
+            foreach ($course->levels as $level) {
+                $newCourseLevel = $level->replicate();
+                $newCourseLevel->course_id = $newCourse->id;
+                $newCourseLevel->save();
+            }
+
+            foreach ($course->languages as $language) {
+                $newCourseLanguage = $language->replicate();
+                $newCourseLanguage->course_id = $newCourse->id;
+                $newCourseLanguage->save();
+            }
+
+            foreach ($course->partnerInstructors as $partnerInstructor) {
+                $newCourse->partnerInstructors()->create([
+                    'instructor_id' => $partnerInstructor->instructor_id,
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->back()->with(['alert-type' => 'success', 'messege' => __('Course duplicated successfully')]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => $th->getMessage()]);
+        }
     }
 }

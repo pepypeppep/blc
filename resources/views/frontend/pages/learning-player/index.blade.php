@@ -59,15 +59,15 @@
                                 @foreach ($chapter->chapterItems as $chapterItem)
                                     @if ($chapterItem->type == 'lesson' || $chapterItem->type == 'live')
                                         <div
-                                            class="form-check {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}">
+                                            class="form-check cursor-pointer lesson-item {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}"
+                                                data-lesson-id="{{ $chapterItem->lesson->id }}"
+                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
+                                                data-type="{{ $chapterItem->type }}">
                                             <input @checked(in_array($chapterItem->lesson->id, $alreadyWatchedLectures))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->lesson->id }}" value="1"
                                                 data-type="lesson">
-                                            <label class="form-check-label lesson-item"
-                                                data-lesson-id="{{ $chapterItem->lesson->id }}"
-                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
-                                                data-type="{{ $chapterItem->type }}">
+                                            <label class="form-check-label">
                                                 {{ $chapterItem->lesson->title }}
                                                 <span>
                                                     @if ($chapterItem->type == 'live')
@@ -97,15 +97,15 @@
                                         </div>
                                     @elseif ($chapterItem->type == 'document')
                                         <div
-                                            class="form-check {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}">
+                                            class="form-check cursor-pointer lesson-item {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}"
+                                                data-lesson-id="{{ $chapterItem->lesson->id }}"
+                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
+                                                data-type="document">
                                             <input @checked(in_array($chapterItem->lesson->id, $alreadyWatchedLectures))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->lesson->id }}" value="1"
                                                 data-type="document">
-                                            <label class="form-check-label lesson-item"
-                                                data-lesson-id="{{ $chapterItem->lesson->id }}"
-                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
-                                                data-type="document">
+                                            <label class="form-check-label">
                                                 {{ $chapterItem->lesson->title }}
                                                 <span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -120,14 +120,14 @@
                                             </label>
                                         </div>
                                     @elseif ($chapterItem->type == 'quiz')
-                                        <div class="form-check">
+                                        <div class="form-check cursor-pointer lesson-item"
+                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
+                                                data-lesson-id="{{ $chapterItem->quiz->id }}" data-type="quiz">
                                             <input @checked(in_array($chapterItem->quiz->id, $alreadyCompletedQuiz))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->quiz->id }}" value="1"
                                                 data-type="quiz">
-                                            <label class="form-check-label lesson-item"
-                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
-                                                data-lesson-id="{{ $chapterItem->quiz->id }}" data-type="quiz">
+                                            <label class="form-check-label">
                                                 {{ $chapterItem->quiz->title }}
                                                 <span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -140,15 +140,15 @@
                                             </label>
                                         </div>
                                     @elseif ($chapterItem->type == 'rtl')
-                                        <div class="form-check">
+                                        <div class="form-check cursor-pointer lesson-item"
+                                                data-chapter-id="{{ $chapter->id }}"
+                                                data-course-id="{{ $course->id }}"
+                                                data-lesson-id="{{ $chapterItem->rtl->id }}" data-type="rtl">
                                             <input @checked(in_array($chapterItem->rtl->id, $alreadyCompletedRtl))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->rtl->id }}" value="1"
                                                 data-type="rtl">
-                                            <label class="form-check-label lesson-item"
-                                                data-chapter-id="{{ $chapter->id }}"
-                                                data-course-id="{{ $course->id }}"
-                                                data-lesson-id="{{ $chapterItem->rtl->id }}" data-type="rtl">
+                                            <label class="form-check-label">
                                                 {{ $chapterItem->rtl->title }}
                                                 <span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -240,6 +240,10 @@
             max-width: {{ $maxWidth }}px;
             opacity: {{ $opacity }} !important;
             {!! $positionCSS !!} {!! $display !!}
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
         }
     </style>
 @endpush

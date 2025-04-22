@@ -77,11 +77,22 @@ $(document).ready(function () {
     $(".lesson-item").on("click", function () {
         // hide sidebar
         hideSidebar();
+        let ids = $(".lesson-item").map(function () { return $(this).attr("data-lesson-id") }).get();
 
         var lessonId = $(this).attr("data-lesson-id");
         var chapterId = $(this).attr("data-chapter-id");
         var courseId = $(this).attr("data-course-id");
         var type = $(this).attr("data-type");
+
+        var index = ids.indexOf(lessonId);
+        if (index !== 0) {
+            var previousLessonId = ids[index - 1];
+            if (!$("input[data-lesson-id=" + previousLessonId + "]").prop("checked")) {
+                alert("You must complete the previous lesson first.");
+                $("div[data-lesson-id=" + previousLessonId + "]").click();
+                return false;
+            }
+        }
 
         $.ajax({
             method: "POST",

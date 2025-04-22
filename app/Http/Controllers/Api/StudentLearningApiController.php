@@ -24,7 +24,7 @@ class StudentLearningApiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/student-learning/{slug}",
+     *     path="/student-learning/{slug}",
      *     summary="Get course by slug",
      *     description="Get course by slug",
      *     tags={"Student Learning"},
@@ -158,7 +158,7 @@ class StudentLearningApiController extends Controller
      * Post progress lesson
      *
      * @OA\Post(
-     *     path="/api/student-learning/post-progresslesson",
+     *     path="/student-learning/post-progresslesson",
      *     summary="Post progress lesson",
      *     description="Post progress lesson",
      *     tags={"Student Learning"},
@@ -310,7 +310,7 @@ class StudentLearningApiController extends Controller
      * Make lesson complete
      *
      * @OA\Post(
-     *     path="/api/student-learning/make-lesson-complete",
+     *     path="/student-learning/make-lesson-complete",
      *     summary="Make lesson complete",
      *     description="Make lesson complete",
      *     tags={"Student Learning"},
@@ -408,7 +408,7 @@ class StudentLearningApiController extends Controller
      * Get quiz questions
      *
      * @OA\Post(
-     *     path="/api/student-learning/quiz/{id}",
+     *     path="/student-learning/quiz/{id}",
      *     summary="Get quiz questions",
      *     description="Get quiz questions",
      *     tags={"Student Learning"},
@@ -429,8 +429,23 @@ class StudentLearningApiController extends Controller
      *         description="Quiz questions retrieved successfully",
      *         @OA\JsonContent(
      *             type="array",
-     *             @OA\Items(ref="#/components/schemas/QuizQuestion"),
-     *         ),
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="quiz_id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="What is the capital of France?"),
+     *                 @OA\Property(
+     *                     property="answers",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="quiz_question_id", type="integer", example=1),
+     *                         @OA\Property(property="title", type="string", example="Paris")
+     *                     )
+     *                 )
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -462,6 +477,7 @@ class StudentLearningApiController extends Controller
      *     ),
      * )
      */
+
     public function quizIndex(Request $request, string $id) //method get
     {
 
@@ -527,35 +543,33 @@ class StudentLearningApiController extends Controller
     }
 
     /**
+     * Store quiz answers
+     * 
      * @OA\Post(
-     *     path="/api/student-learning/quizzes/{id}",
+     *     path="/student-learning/quizzes/{id}",
      *     summary="Store quiz answers",
      *     description="Store quiz answers",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}}, 
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
-     *         description="Quiz ID",
-     *         in="path",
      *         name="id",
+     *         in="path",
      *         required=true,
-     *         example="1",
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
-     *         )
+     *         description="Quiz ID",
+     *         example=1
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         description="Quiz answers",
+     *         description="Quiz answers submitted by the user",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
      *                 property="question",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="integer",
-     *                     example=1
-     *                 )
+     *                 type="object",
+     *                 additionalProperties={
+     *                     @OA\Property(type="integer", example=5)
+     *                 },
+     *                 example={"1": 5, "2": 8}
      *             )
      *         )
      *     ),
@@ -566,46 +580,70 @@ class StudentLearningApiController extends Controller
      *             type="object",
      *             @OA\Property(
      *                 property="data",
-     *                 ref="#/components/schemas/QuizResult"
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="user_id", type="integer", example=12),
+     *                 @OA\Property(property="quiz_id", type="integer", example=3),
+     *                 @OA\Property(
+     *                     property="result",
+     *                     type="object",
+     *                     additionalProperties={
+     *                         @OA\Property(property="answer", type="integer", example=5),
+     *                         @OA\Property(property="correct", type="boolean", example=true)
+     *                     }
+     *                 ),
+     *                 @OA\Property(property="user_grade", type="integer", example=85),
+     *                 @OA\Property(property="status", type="string", example="pass"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-22T10:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-22T10:00:00Z")
      *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Quiz submitted successfully"
-     *             )
+     *             @OA\Property(property="message", type="string", example="Quiz submitted successfully")
      *         )
      *     ),
      *     @OA\Response(
      *         response=400,
-     *         description="Bad request"
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Bad request")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=401,
-     *         description="Unauthorized"
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=403,
-     *         description="Forbidden"
+     *         description="Forbidden",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="You are not enrolled in this course")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Not found"
+     *         description="Not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Quiz not found")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal server error"
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="An unexpected error occurred")
+     *         )
      *     )
      * )
      */
-    function quizStore(Request $request, string $id)
+    public function quizStore(Request $request, string $id)
     {
-
         $grad = 0;
         $result = [];
         $quiz = Quiz::findOrFail($id);
 
         try {
-
             $course = Course::findOrFail($quiz->course_id);
             if (!$request->user()->isEnrolledInCourse($course)) {
                 return $this->errorResponse('You are not enrolled in this course', [], 403);
@@ -638,61 +676,94 @@ class StudentLearningApiController extends Controller
         }
     }
 
-    /** 
-     *  @OA\Get(
-     *     path="/api/student-learning/quiz/{id}/result/{resultId}",
+    /**
+     * Get quiz result
+     * 
+     * @OA\Get(
+     *     path="/student-learning/quiz/{id}/result/{resultId}",
      *     summary="Get quiz result",
-     *     description="Get quiz result",
+     *     description="Retrieve detailed result of a quiz attempt by a student",
      *     tags={"Student Learning"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
-     *         description="Quiz ID",
-     *         in="path",
      *         name="id",
+     *         in="path",
      *         required=true,
-     *         example="1",
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
-     *         )
+     *         description="Quiz ID",
+     *         example=1,
+     *         @OA\Schema(type="integer", format="int64")
      *     ),
      *     @OA\Parameter(
-     *         description="Result ID",
-     *         in="path",
      *         name="resultId",
+     *         in="path",
      *         required=true,
-     *         example="1",
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
-     *         )
+     *         description="Result ID",
+     *         example=10,
+     *         @OA\Schema(type="integer", format="int64")
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Data retrieved successfully",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="quiz", type="object", ref="#/components/schemas/Quiz"),
-     *             @OA\Property(property="attempt", type="integer"),
-     *             @OA\Property(property="quizResult", type="object", ref="#/components/schemas/QuizResult"),
-     *         ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="quiz",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="course_id", type="integer", example=3),
+     *                     @OA\Property(property="title", type="string", example="Basic Math Quiz"),
+     *                     @OA\Property(property="description", type="string", example="Test your basic math skills"),
+     *                     @OA\Property(property="pass_mark", type="integer", example=70),
+     *                     @OA\Property(property="questions_count", type="integer", example=10),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-20T08:00:00Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-21T10:00:00Z")
+     *                 ),
+     *                 @OA\Property(property="attempt", type="integer", example=2),
+     *                 @OA\Property(
+     *                     property="quizResult",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=10),
+     *                     @OA\Property(property="user_id", type="integer", example=5),
+     *                     @OA\Property(property="quiz_id", type="integer", example=1),
+     *                     @OA\Property(
+     *                         property="result",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="question_id", type="integer", example=1),
+     *                             @OA\Property(property="answer", type="integer", example=7),
+     *                             @OA\Property(property="correct", type="boolean", example=true)
+     *                         )
+     *                     ),
+     *                     @OA\Property(property="user_grade", type="integer", example=80),
+     *                     @OA\Property(property="status", type="string", example="pass"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-22T09:00:00Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-22T09:00:00Z")
+     *                 )
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Data retrieved successfully")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="Quiz not found",
+     *         description="Quiz or result not found",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Quiz not found"),
-     *         ),
+     *             @OA\Property(property="message", type="string", example="Quiz not found")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
      *         description="Internal server error",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Internal server error"),
-     *         ),
+     *             @OA\Property(property="message", type="string", example="An unexpected error occurred")
+     *         )
      *     )
      * )
      */
+
     function quizResult(Request $request, string $id, string $resultId)
     {
         try {
@@ -712,8 +783,8 @@ class StudentLearningApiController extends Controller
     }
 
     /**
-     *  @OA\Get(
-     *     path="/api/student-learning/rtl/{id}",
+     * @OA\Get(
+     *     path="/student-learning/rtl/{id}",
      *     summary="Get RTL item",
      *     description="Get RTL item",
      *     tags={"Student Learning"},
@@ -724,43 +795,61 @@ class StudentLearningApiController extends Controller
      *         name="id",
      *         required=true,
      *         example="1",
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
-     *         )
+     *         @OA\Schema(type="integer", format="int64")
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Data retrieved successfully",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="item", type="object", ref="#/components/schemas/FollowUpAction"),
-     *             @OA\Property(property="response", type="object", ref="#/components/schemas/FollowUpActionResponse"),
-     *         ),
+     *             @OA\Property(
+     *                 property="item",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="Tugas Mandiri Modul 1"),
+     *                 @OA\Property(property="description", type="string", example="Kerjakan soal terkait pembelajaran mandiri"),
+     *                 @OA\Property(property="start_date", type="string", format="date-time", example="2025-04-21T08:00:00Z"),
+     *                 @OA\Property(property="due_date", type="string", format="date-time", example="2025-04-25T23:59:59Z")
+     *             ),
+     *             @OA\Property(
+     *                 property="response",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=12),
+     *                 @OA\Property(property="participant_response", type="string", example="Saya telah menyelesaikan tugas dengan baik."),
+     *                 @OA\Property(property="participant_file", type="string", format="uri", example="https://storage.example.com/uploads/file.pdf"),
+     *                 @OA\Property(property="instructor_response", type="string", example="Sudah bagus, lanjutkan."),
+     *                 @OA\Property(property="score", type="number", format="float", example=85.5),
+     *                 @OA\Property(property="follow_up_action_id", type="integer", example=1),
+     *                 @OA\Property(property="participant_id", type="integer", example=5),
+     *                 @OA\Property(property="instructor_id", type="integer", example=2)
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Data retrieved successfully")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=403,
      *         description="Forbidden",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Forbidden"),
-     *         ),
+     *             @OA\Property(property="message", type="string", example="Forbidden")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
      *         description="Not found",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Not found"),
-     *         ),
+     *             @OA\Property(property="message", type="string", example="Not found")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
      *         description="Internal server error",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Internal server error"),
-     *         ),
+     *             @OA\Property(property="message", type="string", example="Internal server error")
+     *         )
      *     )
      * )
      */
+
     public function rtlIndex(Request $request, string $id)
     {
         try {
@@ -801,7 +890,7 @@ class StudentLearningApiController extends Controller
 
     /**
      *  @OA\Post(
-     *     path="/api/student-learning/rtl/{id}",
+     *     path="/student-learning/rtl/{id}",
      *     summary="Save RTL item response",
      *     description="Save RTL item response",
      *     tags={"Student Learning"},

@@ -263,7 +263,39 @@ $(document).ready(function () {
 
                 // Initializing the player
                 if (document.getElementById("vid1")) {
-                    videojs("vid1").ready(function () {
+                    // videojs("vid1").ready(function () {
+                    //     this.play();
+                    // });
+                    var player = videojs("vid1");
+
+                    // Inside your player.ready function where you handle the timeupdate event:
+                    player.ready(function() {
+                        // Add a flag to track if we've already marked this lesson as complete
+                        let lessonCompleted = false;
+
+                        player.one('loadedmetadata', function() {
+                            var duration = player.duration();
+
+                            if (duration && !isNaN(duration)) {
+                                player.on('timeupdate', function() {
+                                    var currentTime = player.currentTime();
+
+                                    // Check if we're 1 second before the end and haven't completed yet
+                                    if (currentTime >= duration - 1 && !lessonCompleted) {
+                                        let itemId = lessonId;
+                                        let elements = document.querySelectorAll(`input[data-lesson-id="${itemId}"]`);
+
+                                        if (elements.length && !elements[0].checked) {
+                                            elements[0].click();
+                                            lessonCompleted = true; // Mark as completed
+                                        }
+
+                                        // Keep the listener active but skip future checks
+                                    }
+                                });
+                            }
+                        });
+
                         this.play();
                     });
                 }

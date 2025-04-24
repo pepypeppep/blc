@@ -66,7 +66,7 @@
                                             <input @checked(in_array($chapterItem->lesson->id, $alreadyWatchedLectures))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->lesson->id }}" value="1"
-                                                data-type="lesson">
+                                                data-type="lesson" onclick="return false;">
                                             <label class="form-check-label">
                                                 {{ $chapterItem->lesson->title }}
                                                 <span>
@@ -206,7 +206,39 @@
                 $('.lesson-item:first').trigger('click');
             }
 
-        })
+        });
+
+        function completeLesson(lessonId){
+            // let lessonId = $(this).attr("data-lesson-id");
+
+            let input = $(`input[data-lesson-id="${lessonId}"]`);
+            let type = input.attr("data-type");
+            input.prop("checked", true);
+            let checked = input.is(":checked") ? 1 : 0;
+            $.ajax({
+                method: "POST",
+                url: base_url + "/student/learning/make-lesson-complete",
+                data: {
+                    _token: csrf_token,
+                    lessonId: lessonId,
+                    status: checked,
+                    type: type,
+                },
+                success: function (data) {
+                    if (data.status == "success") {
+                        toastr.success(data.message);
+                    } else if (data.status == "error") {
+                        toastr.error(data.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    let errors = xhr.responseJSON.errors;
+                    $.each(errors, function (key, value) {
+                        toastr.error(value);
+                    });
+                },
+            });
+        }
     </script>
     <script src="{{ asset('frontend/js/custom-tinymce.js') }}"></script>
 @endpush

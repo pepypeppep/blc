@@ -297,7 +297,8 @@ $(document).ready(function () {
                                         let elements = document.querySelectorAll(`input[data-lesson-id="${itemId}"]`);
 
                                         if (elements.length && !elements[0].checked) {
-                                            elements[0].click();
+                                            // elements[0].click();
+                                            completeLesson(lessonId)
                                             lessonCompleted = true; // Mark as completed
                                         }
 
@@ -321,34 +322,68 @@ $(document).ready(function () {
         });
     });
 
-    $(".lesson-completed-checkbox").on("click", function () {
-        let lessonId = $(this).attr("data-lesson-id");
-        let type = $(this).attr("data-type");
-        let checked = $(this).is(":checked") ? 1 : 0;
-        $.ajax({
-            method: "POST",
-            url: base_url + "/student/learning/make-lesson-complete",
-            data: {
-                _token: csrf_token,
-                lessonId: lessonId,
-                status: checked,
-                type: type,
-            },
-            success: function (data) {
-                if (data.status == "success") {
-                    toastr.success(data.message);
-                } else if (data.status == "error") {
-                    toastr.error(data.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                let errors = xhr.responseJSON.errors;
-                $.each(errors, function (key, value) {
-                    toastr.error(value);
-                });
-            },
-        });
-    });
+    // $(".lesson-completed-checkbox").on("click", function () {
+    //     let lessonId = $(this).attr("data-lesson-id");
+    //     let type = $(this).attr("data-type");
+    //     let checked = $(this).is(":checked") ? 1 : 0;
+    //     $.ajax({
+    //         method: "POST",
+    //         url: base_url + "/student/learning/make-lesson-complete",
+    //         data: {
+    //             _token: csrf_token,
+    //             lessonId: lessonId,
+    //             status: checked,
+    //             type: type,
+    //         },
+    //         success: function (data) {
+    //             if (data.status == "success") {
+    //                 toastr.success(data.message);
+    //             } else if (data.status == "error") {
+    //                 toastr.error(data.message);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             let errors = xhr.responseJSON.errors;
+    //             $.each(errors, function (key, value) {
+    //                 toastr.error(value);
+    //             });
+    //         },
+    //     });
+    // });
+
+    // function completeLesson(lessonId){
+    //     // let lessonId = $(this).attr("data-lesson-id");
+
+    //     let input = $(`input[data-lesson-id="${lessonId}"]`);
+    //     console.log("input[0]",input[0]);
+
+    //     let type = input.attr("data-type");
+    //     input.prop("checked", true);
+    //     let checked = input.is(":checked") ? 1 : 0;
+    //     $.ajax({
+    //         method: "POST",
+    //         url: base_url + "/student/learning/make-lesson-complete",
+    //         data: {
+    //             _token: csrf_token,
+    //             lessonId: lessonId,
+    //             status: checked,
+    //             type: type,
+    //         },
+    //         success: function (data) {
+    //             if (data.status == "success") {
+    //                 toastr.success(data.message);
+    //             } else if (data.status == "error") {
+    //                 toastr.error(data.message);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             let errors = xhr.responseJSON.errors;
+    //             $.each(errors, function (key, value) {
+    //                 toastr.error(value);
+    //             });
+    //         },
+    //     });
+    // }
 
     // Course video button for small devices
     $(".wsus__course_header_btn").on("click", function () {

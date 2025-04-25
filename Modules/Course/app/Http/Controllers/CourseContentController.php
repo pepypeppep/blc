@@ -24,21 +24,28 @@ class CourseContentController extends Controller
     {
         $request->validate([
             'title' => ['required', 'max:255'],
-            'jp' => ['required', 'min:1']
+            'jp' => ['required', 'min:1'],
+            'instructor' => ['nullable', 'exists:users,id'],
         ], [
             'title.required' => __('Title is required'),
             'title.max' => __('Title is too long'),
             'jp.required' => __('JP is required'),
+            'jp.min' => __('JP is too short'),
+            'instructor.exists' => __('Instructor is invalid'),
         ]);
 
         $chapter = new CourseChapter();
         $chapter->title = $request->title;
         $chapter->course_id = $courseId;
-        $chapter->instructor_id = Course::find($courseId)->instructor_id;
+        $chapter->instructor_id = $request->instructor;
         $chapter->status = 'active';
         $chapter->order = CourseChapter::where('course_id', $courseId)->max('order') + 1;
         $chapter->jp = $request->jp;
         $chapter->save();
+
+        $course = Course::find($courseId);
+        $course->jp = $course->chapters->sum('jp');
+        $course->save();
 
         return redirect()->back()->with(['messege' => __('Chapter created successfully'), 'alert-type' => 'success']);
     }

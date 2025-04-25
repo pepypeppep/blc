@@ -30,8 +30,7 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <div class="d-flex justify-content-between">
-                                                    <label for="">{{ __('Select course participant') }}
-                                                        <code>*</code></label>
+                                                    <label for="">{{ __('Select course participant') }}</label>
                                                     <span>{{ __('Number of Participants') }} : <span class="text-danger"
                                                             id="participant_count">{{ count($course->enrollments) }}</span></span>
                                                 </div>

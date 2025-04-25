@@ -62,7 +62,7 @@
                                                                     <span class="icon-container"><i
                                                                             class="far fa-folder"></i></span>
                                                                     <p class="mb-0 ms-2 bold-text">{{ $chapter->title }}
-                                                                        ({{ $chapter->jp }} {{ __('hours') }})
+                                                                        <strong>({{ $chapter->jp }} {{ __('JPL') }})</strong> - {{ $chapter->instructor?->name }}
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -90,6 +90,7 @@
                                                                             data-chapterid="{{ $chapter->id }}"
                                                                             href="javascript:;">{{ __('Add Quiz') }}</a>
                                                                     </li>
+                                                                    @if (count($course->allInstructors) > 0)
                                                                     <li><a class="dropdown-item add-lesson-btn"
                                                                             data-type="rtl"
                                                                             data-chapterid="{{ $chapter->id }}"
@@ -97,6 +98,7 @@
                                                                             Tindak
                                                                             Lanjut</a>
                                                                     </li>
+                                                                    @endif
                                                                 </ul>
                                                             </div>
                                                             <a href="javascript:;"
@@ -378,15 +380,15 @@
                             <label for="answer-${randomId}">{{ __('Answer Title') }} <code>*</code></label>
                             <button class="remove-answer" type="button"><i class="fas fa-trash-alt"></i></button>
                         </div>
-                        <textarea id="answer_summernote-${randomSummernoteId}" 
-                                  name="answers[${randomId}]" 
+                        <textarea id="answer_summernote-${randomSummernoteId}"
+                                  name="answers[${randomId}]"
                                   class="answer form-control"></textarea>
                     </div>
                     <div class="switcher row mt-2">
                         <div class="col-md-5 d-flex align-items-center">
                             <p class="mr-3">{{ __('Correct Answer') }}</p>
                             <label for="toggle-${randomId}" class="ms-2">
-                                <input type="checkbox" class="correct" id="toggle-${randomId}" 
+                                <input type="checkbox" class="correct" id="toggle-${randomId}"
                                        value="1" name="correct[${randomId}]" />
                                 <span><small></small></span>
                             </label>

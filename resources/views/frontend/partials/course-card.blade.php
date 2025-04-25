@@ -21,10 +21,15 @@
                 </ul>
                 <h5 class="title"><a
                         href="{{ route('course.show', $course->slug) }}">{{ truncate($course->title, 50) }}</a></h5>
-                <p class="author">{{ __('By') }} <a
-                        href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                <p class="author">{{ __('By') }}
+                    @if ($course->instructor)
+                    <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                    @else
+                    Tim Diklat
+                    @endif
                 </p>
                 <div class="courses__item-bottom">
+                    <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
                     <div class="button">
                         <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
                             data-id="">

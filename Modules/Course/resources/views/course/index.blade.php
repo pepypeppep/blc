@@ -135,7 +135,8 @@
                                                 <th>{{ __('SN') }}</th>
                                                 <th class="course-table-title">{{ __('Title') }}</th>
                                                 <th>{{ __('Instructor') }}</th>
-                                                <th>{{ __('Lesson Hours') }}</th>
+                                                <th>{{ __('Access') }}</th>
+                                                <th>{{ __('JPL') }}</th>
                                                 <th>{{ __('Enrolled Students') }}</th>
                                                 <th>{{ __('Join Request') }}</th>
                                                 <th>{{ __('Status') }}</th>
@@ -152,7 +153,14 @@
                                                         <br>
                                                         <small>{{ $course->category->translation->name ?? '' }}</small>
                                                     </td>
-                                                    <td>{{ $course->instructor->name ?? '' }}</td>
+                                                    <td>{{ $course->instructor->name ?? '-' }}</td>
+                                                    <td class="text-center">
+                                                        @if ($course->access == 'private')
+                                                            <span class="badge badge-warning">{{ __('Private') }}</span>
+                                                        @else
+                                                            <span class="badge badge-info">{{ __('Public') }}</span>
+                                                        @endif
+                                                    </td>
                                                     <td class="text-center">{{ $course->jp }}</td>
                                                     <td class="text-center">{{ $course->enrollments_count }}</td>
                                                     <td class="text-center">{{ $course->enrollments_pending_count }}

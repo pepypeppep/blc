@@ -50,11 +50,17 @@
                         <div class="courses__details-meta">
                             <ul class="list-wrap">
                                 <li class="author-two">
-                                    <img src="{{ asset($course->instructor->image) }}" alt="img"
-                                        class="instructor-avatar">
+                                    @if ($course->instructor)
+                                    <img src="{{ asset($course->instructor->image) }}" alt="img" class="instructor-avatar">
+                                    @else
+                                    <img src="{{ asset('frontend/img/others/h5_about_shape02.png') }}" alt="img" class="instructor-avatar">
+                                    @endif
                                     {{ __('By') }}
-                                    <a
-                                        href="{{ route('instructor-details', $course->instructor->id) }}">{{ $course->instructor->name }}</a>
+                                    @if ($course->instructor)
+                                    <a href="{{ route('instructor-details', $course->instructor->id) }}">{{ $course->instructor->name }}</a>
+                                    @else
+                                        Tim Diklat
+                                    @endif
                                 </li>
                                 <li class="date"><i
                                         class="flaticon-calendar"></i>{{ formatDate($course->created_at, 'd/M/Y') }}</li>
@@ -74,12 +80,14 @@
                                     aria-controls="curriculum-tab-pane"
                                     aria-selected="false">{{ __('Curriculum') }}</button>
                             </li>
+                            @if ($course->instructor)
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="instructors-tab" data-bs-toggle="tab"
                                     data-bs-target="#instructors-tab-pane" type="button" role="tab"
                                     aria-controls="instructors-tab-pane"
                                     aria-selected="false">{{ __('Instructors') }}</button>
                             </li>
+                            @endif
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="reviews-tab" data-bs-toggle="tab"
                                     data-bs-target="#reviews-tab-pane" type="button" role="tab"
@@ -242,13 +250,13 @@
                                     </div>
                                 </div>
                             </div>
+                            @if ($course->instructor)
                             <div class="tab-pane fade" id="instructors-tab-pane" role="tabpanel"
                                 aria-labelledby="instructors-tab" tabindex="0">
 
                                 <div class="courses__instructors-wrap">
                                     <div class="courses__instructors-thumb">
-                                        <img src="{{ asset($course->instructor->image) }}" alt="img"
-                                            class="instructor-thumb">
+                                        <img src="{{ asset($course->instructor->image) }}" alt="img" class="instructor-thumb">
                                     </div>
                                     <div class="courses__instructors-content">
                                         <h2 class="title">{{ $course->instructor->name }}</h2>
@@ -335,6 +343,7 @@
                                     @endforeach
                                 @endif
                             </div>
+                            @endif
                             <div class="tab-pane fade" id="reviews-tab-pane" role="tabpanel"
                                 aria-labelledby="reviews-tab" tabindex="0">
                                 <div class="courses__rating-wrap">
@@ -529,8 +538,8 @@
                                 <li>
                                     <img src="{{ asset('frontend/img/icons/course_icon02.svg') }}" alt="img"
                                         class="injectable">
-                                    {{ __('Duration') }}
-                                    <span>{{ minutesToHours($course->duration) }}</span>
+                                    {{ __('JPL') }}
+                                    <span>{{ $course->jp }}</span>
                                 </li>
                                 <li>
                                     <img src="{{ asset('frontend/img/icons/course_icon03.svg') }}" alt="img"
@@ -669,7 +678,7 @@
                     'courses': {
                         'name': '{{ $course?->title }}',
                         'price': '{{ currency($course->price) }}',
-                        'instructor': '{{ $course->instructor->name }}',
+                        'instructor': '{{ $course->instructor?->name }}',
                         'category': '{{ $course->category->translation->name }}',
                         'lessons': '{{ $courseLessonCount }}',
                         'duration': '{{ minutesToHours($course->duration) }}',

@@ -5,6 +5,9 @@
 <!-- end meta -->
 
 @section('contents')
+@env('local')
+    {{ dump(session('access_token')) }}
+@endenv
     <!-- breadcrumb-area -->
     <x-frontend.breadcrumb :title="__('')" :links="[]" />
     <!-- breadcrumb-area-end -->
@@ -68,28 +71,28 @@
 @push('styles')
     <style>
         .content-badges {
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            padding: 0 10px; 
-            background-color:rgb(63, 42, 63); 
-            border-radius: 15px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 10px;
+            background-color:rgb(63, 42, 63);
+            border-radius: 15px;
             overflow: hidden;
         }
 
         .badge-list {
-            display: flex; 
-            list-style: none; 
-            margin: 0; 
-            padding: 0; 
-            justify-content: center; 
-            gap: 10px; 
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            gap: 10px;
             align-items: center;
         }
 
         .badge-img{
-            max-width: 70px; 
-            height: auto; 
+            max-width: 70px;
+            height: auto;
             border-radius: 5px;
         }
 

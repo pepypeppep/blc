@@ -14,17 +14,19 @@ use App\Models\JitsiSetting;
 use App\Models\QuizQuestion;
 use Illuminate\Http\Request;
 use App\Models\CourseProgress;
+use App\Models\FollowUpAction;
 use App\Rules\CustomRecaptcha;
 use App\Models\CourseChapterItem;
 use App\Models\CourseChapterLesson;
 use App\Http\Controllers\Controller;
-use App\Models\FollowUpAction;
-use App\Models\FollowUpActionResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use App\Models\FollowUpActionResponse;
 use App\Traits\GenerateSecureLinkTrait;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
+use Modules\Course\app\Models\CourseTos;
+use Modules\Order\app\Models\Enrollment;
 
 class LearningController extends Controller
 {
@@ -80,22 +82,25 @@ class LearningController extends Controller
             ->where('course_id', $course->id)->where('watched', 1)->count();
         $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
 
-        if (!$currentProgress) {
-            $lessonId = @$course->chapters?->first()?->chapterItems()?->first()?->lesson->id;
-            if ($lessonId) {
-                $currentProgress = CourseProgress::create([
-                    'user_id'    => userAuth()->id,
-                    'course_id'  => $course->id,
-                    'chapter_id' => $course->chapters->first()->id,
-                    'lesson_id'  => $lessonId,
-                    'current'    => 1,
-                ]);
-            }
-        }
+        // if (!$currentProgress) {
+        //     $lessonId = @$course->chapters?->first()?->chapterItems()?->first()?->lesson->id;
+        //     if ($lessonId) {
+        //         $currentProgress = CourseProgress::create([
+        //             'user_id'    => userAuth()->id,
+        //             'course_id'  => $course->id,
+        //             'chapter_id' => $course->chapters->first()->id,
+        //             'lesson_id'  => $lessonId,
+        //             'current'    => 1,
+        //         ]);
+        //     }
+        // }
 
         $userHasReviewed = CourseReview::where('course_id', $course->id)
             ->where('user_id', userAuth()->id)
             ->exists();
+
+        $enrollment = Enrollment::where('course_id', $course->id)->where('user_id', userAuth()->id)->where('has_access', 1)->first();
+        $courseTos = CourseTos::first();
 
         return view('frontend.pages.learning-player.index', compact(
             'course',
@@ -107,7 +112,9 @@ class LearningController extends Controller
             'alreadyWatchedLectures',
             'alreadyCompletedQuiz',
             'userHasReviewed',
-            'alreadyCompletedRtl'
+            'alreadyCompletedRtl',
+            'enrollment',
+            'courseTos'
         ));
     }
 
@@ -647,5 +654,34 @@ class LearningController extends Controller
             ->where('id', '!=', userAuth()->id)
             ->get();
         return response()->json($students);
+    }
+
+    public function acceptTos($slug)
+    {
+        $course = Course::where('slug', $slug)->first();
+        $enrollment = Enrollment::where('course_id', $course->id)->where('user_id', userAuth()->id)->first();
+        if ($enrollment && $enrollment->tos_status != 'accepted') {
+            $enrollment->update(['tos_status' => 'accepted']);
+
+            $currentProgress = CourseProgress::where('user_id', userAuth()->id)
+                ->where('course_id', $course->id)
+                ->where('current', 1)
+                ->orderBy('id', 'desc')
+                ->first();
+
+            if (!$currentProgress) {
+                $lessonId = @$course->chapters?->first()?->chapterItems()?->first()?->lesson->id;
+                if ($lessonId) {
+                    $currentProgress = CourseProgress::create([
+                        'user_id'    => userAuth()->id,
+                        'course_id'  => $course->id,
+                        'chapter_id' => $course->chapters->first()->id,
+                        'lesson_id'  => $lessonId,
+                        'current'    => 1,
+                    ]);
+                }
+            }
+            return redirect()->back()->with(['alert-type' => 'success', 'message' => 'Berhasil menerima syarat dan ketentuan']);
+        }
     }
 }

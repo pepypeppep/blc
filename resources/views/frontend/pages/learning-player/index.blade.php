@@ -41,13 +41,27 @@
                 <i class="fas fa-times"></i>
             </div>
             <h2 class="video_heading">{{ __('Course Content') }}</h2>
+            <div class="accordion-item">
+                <div id="collapse-x"
+                    class="accordion-collapse collapse show"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body course-content pt-2 bg-white">
+                        <div class="form-check" data-bs-toggle="modal" data-bs-target="#termOfServiceModal">
+                            <input @checked($enrollment->tos_status == 'accepted') class="form-check-input lesson-completed-checkbox" type="checkbox">
+                            <label class="form-check-label lesson-item">
+                                {{ __("Term of Service") }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="accordion" id="accordionExample">
                 @foreach ($course->chapters as $chapter)
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapse-{{ $chapter->id }}" aria-expanded="false"
-                                aria-controls="collapse-{{ $chapter->id }}">
+                                aria-controls="collapse-{{ $chapter->id }}" {{ $enrollment->tos_status != 'accepted' || $enrollment->tos_status == null ? 'disabled' : '' }}>
                                 <b>{{ $chapter->title }}</b>
                                 <span></span>
                             </button>
@@ -172,6 +186,32 @@
             </div>
         </div>
     </section>
+    <div class="modal fade" id="termOfServiceModal" tabindex="-1" aria-labelledby="termOfServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="term-of-service-content p-4 text-dark" style="max-height: 70vh; overflow-y: auto;">
+                        <div style="background: #f7f7f7;" class="p-3">
+                            {!! clean(@$courseTos->description) !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between px-4 pb-4 pt-3" style="border-top: 1px solid #dee2e6;">
+                    @if ($enrollment->tos_status != 'accepted')
+                    <a href="{{ route('student.enrolled-courses') }}" class="btn text-white" style="background: #dc3545;">{{ __('Tolak') }}</a>
+                    <form action="{{ route('student.learning.accept-tos', $course->slug) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-primary" id="acceptTermsBtn" data-bs-dismiss="modal" title="Baca hingga akhir agar tombol persetujuan aktif" disabled>{{ __('Setuju') }}</button>
+                    </form>
+                    @else
+                    <span></span>
+                    <h3 style="color: #5751e1;">Anda telah menyetujui syarat dan ketentuan</h3>
+                    <span></span>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('scripts')
     <script>
@@ -206,7 +246,38 @@
                 $('.lesson-item:first').trigger('click');
             }
 
-        })
+            // term of service
+            $('#termOfServiceModal').on('shown.bs.modal', function() {
+                const $content = $('.term-of-service-content');
+                const $acceptBtn = $('#acceptTermsBtn');
+
+                // Smooth scroll to top when modal is shown
+                $content.stop().animate({ scrollTop: 0 }, 400);
+
+                // Reset accept button state when modal is shown
+                $acceptBtn.prop('disabled', true);
+
+                $content.on('scroll', function() {
+                    // Check if user has scrolled to the bottom
+                    const isBottom = $(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10;
+
+                    if (isBottom) {
+                        $acceptBtn.prop('disabled', false);
+                    }
+                });
+            });
+
+            // Also check on initial load in case content is shorter than container
+            $('#termOfServiceModal').on('scroll', '.term-of-service-content', function() {
+                const $content = $(this);
+                const $acceptBtn = $('#acceptTermsBtn');
+                const isBottom = $content.scrollTop() + $content.innerHeight() >= $content[0].scrollHeight - 10;
+
+                if (isBottom) {
+                    $acceptBtn.prop('disabled', false);
+                }
+            });
+        });
     </script>
     <script src="{{ asset('frontend/js/custom-tinymce.js') }}"></script>
 @endpush
@@ -240,6 +311,14 @@
             max-width: {{ $maxWidth }}px;
             opacity: {{ $opacity }} !important;
             {!! $positionCSS !!} {!! $display !!}
+        }
+        .btn .btn-outline-danger {
+            color: #dc3545; border-color: #dc3545;
+        }
+        .btn .btn-outline-danger:hover {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
         }
     </style>
 @endpush

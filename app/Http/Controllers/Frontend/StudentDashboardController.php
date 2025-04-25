@@ -56,7 +56,7 @@ class StudentDashboardController extends Controller
     {
         $enrolls = Enrollment::with(['course' => function ($q) {
             $q->withTrashed();
-        }])->where('user_id', userAuth()->id)->orderByDesc('id')->paginate(10);
+        }])->where('user_id', userAuth()->id)->where('has_access', 1)->orderByDesc('id')->paginate(10);
         return view('frontend.student-dashboard.enrolled-courses.index', compact('enrolls'));
     }
 
@@ -112,14 +112,14 @@ class StudentDashboardController extends Controller
 
     /**
      * Download Signed Certificate
-     * @param string $id 
-     * @return Response 
-     * @throws ModelNotFoundException 
-     * @throws InvalidFormatException 
-     * @throws BindingResolutionException 
-     * @throws Exception 
-     * @throws DOMException 
-     * @throws GlobalException 
+     * @param string $id
+     * @return Response
+     * @throws ModelNotFoundException
+     * @throws InvalidFormatException
+     * @throws BindingResolutionException
+     * @throws Exception
+     * @throws DOMException
+     * @throws GlobalException
      */
     function downloadCertificate(Enrollment $enrollment)
     {
@@ -146,15 +146,15 @@ class StudentDashboardController extends Controller
     /**
      * requestSignCertificate
      * Generate certificate pdf file and send to Bantara API endpoint
-     * 
-     * @param string $id 
-     * @return Response 
-     * @throws ModelNotFoundException 
-     * @throws InvalidFormatException 
-     * @throws BindingResolutionException 
-     * @throws Exception 
-     * @throws DOMException 
-     * @throws GlobalException 
+     *
+     * @param string $id
+     * @return Response
+     * @throws ModelNotFoundException
+     * @throws InvalidFormatException
+     * @throws BindingResolutionException
+     * @throws Exception
+     * @throws DOMException
+     * @throws GlobalException
      */
     function requestSignCertificate(Enrollment $enrollment)
     {

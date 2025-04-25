@@ -81,7 +81,7 @@ Route::name('api.')->group(function () {
     //student learning
     Route::prefix('student-learning')
         ->name('student-learning.')
-        ->middleware('auth:sso-api')
+        // ->middleware('auth:sso-api')
         ->group(function () {
             // GET: /api/student-learning/{slug}
             Route::get('/{slug}', [StudentLearningApiController::class, 'index'])->name('index');
@@ -89,8 +89,8 @@ Route::name('api.')->group(function () {
             Route::post('/post-progresslesson', [StudentLearningApiController::class, 'postProgresslesson'])->name('post-progresslesson');
             // POST: /api/student-learning/make-lesson-complete
             Route::post('/make-lesson-complete', [StudentLearningApiController::class, 'makeLessonComplete'])->name('make-lesson-complete');
-            // GET: /api/student-learning/quiz/{id}
-            Route::get('/quiz/{id}', [StudentLearningApiController::class, 'quizIndex'])->name('quiz.index');
+            // GET: /api/student-learning/course/{courseId}/quiz/{quizId
+            Route::get('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizIndex'])->name('quiz.index');
             // POST: /api/student-learning/quizzes/{id}
             Route::post('/quizzes/{id}', [StudentLearningApiController::class, 'quizStore'])->name('quiz.store');
             // GET: /api/student-learning/quiz/{id}/result/{resultId}

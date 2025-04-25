@@ -10,6 +10,7 @@ use App\Models\FollowUpAction;
 use App\Models\FollowUpActionResponse;
 use App\Models\Quiz;
 use App\Traits\ApiResponse;
+use App\Traits\HandlesCourseAccess;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -17,10 +18,11 @@ use Illuminate\Support\Str;
 use App\Models\QuizResult;
 use Illuminate\Support\Facades\Cache;
 use App\Models\QuizQuestion;
+use Illuminate\Http\JsonResponse;
 
 class StudentLearningApiController extends Controller
 {
-    use ApiResponse;
+    use ApiResponse, HandlesCourseAccess;
 
     /**
      * @OA\Get(
@@ -28,7 +30,7 @@ class StudentLearningApiController extends Controller
      *     summary="Get course by slug",
      *     description="Get course by slug",
      *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         description="Course slug",
      *         in="path",
@@ -124,18 +126,17 @@ class StudentLearningApiController extends Controller
      */
     public function index(Request $request, string $slug)
     {
+
         try {
 
-            // Ambil course berdasarkan slug
-            $course = Course::where('slug', $slug)->first();
-            if (!$course) {
-                return $this->errorResponse('Course not found', [], 404);
-            }
+            $user = $this->getAuthenticatedUser($request);
+            if ($user instanceof JsonResponse) return $user;
 
-            if (!$request->user()->isEnrolledInCourse($course)) {
-                return $this->errorResponse('You are not enrolled in this course', [], 403);
-            }
+            $course = $this->getCourseBySlug($slug);
+            if ($course instanceof JsonResponse) return $course;
 
+            $enrolled = $this->checkEnrollment($user, $course);
+            if ($enrolled instanceof JsonResponse) return $enrolled;
             // Kalau sudah lolos, baru ambil data lengkap course
             $course = Course::active()->with([
                 'chapters',
@@ -162,7 +163,7 @@ class StudentLearningApiController extends Controller
      *     summary="Post progress lesson",
      *     description="Post progress lesson",
      *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
+     *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         description="Lesson and type",
@@ -201,24 +202,53 @@ class StudentLearningApiController extends Controller
 
         try {
 
-            $course = Course::where('id', $request->courseId)->first();
+            $user = $this->getAuthenticatedUser($request);
+            if ($user instanceof JsonResponse) return $user;
 
-            if (!$course) {
-                return $this->errorResponse('Course not found', [], 404);
+            $course = $this->getCourseById($request->courseId);
+            if ($course instanceof JsonResponse) return $course;
+
+            $enrolled = $this->checkEnrollment($user, $course);
+            if ($enrolled instanceof JsonResponse) return $enrolled;
+
+            $progress = CourseProgress::where([
+                'lesson_id' => $request->lessonId,
+                'user_id' => $user->id,
+                'type' => $request->type
+            ])->first();
+
+            if ($progress) {
+                // Cek apakah lesson sebelumnya sudah selesai jika ini adalah lesson
+                // if ($request->type == 'lesson') {
+                // Cari lesson sebelumnya yang lebih kecil dari lesson_id saat ini
+                $previousLesson = CourseProgress::where([
+                    'user_id' => $user->id,
+                    'course_id' => $progress->course_id,
+                    'type' => $request->type,
+                ])
+                    ->where('lesson_id', '<', $request->lessonId) // lesson_id lebih kecil
+                    ->orderBy('lesson_id', 'desc') // Urutkan berdasarkan lesson_id terbesar
+                    ->first(); // Ambil yang paling besar yang lebih kecil dari lesson_id
+
+                // Jika ada lesson sebelumnya dan status watched-nya masih 0
+                if ($previousLesson && $previousLesson->watched == 0) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => __('Please finish the previous lesson first.')
+                    ]);
+                }
+
+                // Update status watched berdasarkan request status
+                if ($progress->watched  == 1) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => __('You already watched this lesson')
+                    ]);
+                }
             }
-
-            if (!$request->user()->isEnrolledInCourse($course)) {
-                return $this->errorResponse('You are not enrolled in this course', [], 403);
-            }
-
-            // Reset all progress for the course
-            CourseProgress::where('course_id', $request->courseId)->update(['current' => 0]);
-
-            // Set current progress
             CourseProgress::updateOrCreate(
                 [
-                    'user_id'    => $request->user()->id,
-                    // 'user_id'    => 2,
+                    'user_id'    => $user->id,
                     'course_id'  => $request->courseId,
                     'chapter_id' => $request->chapterId,
                     'lesson_id'  => $request->lessonId,
@@ -226,6 +256,7 @@ class StudentLearningApiController extends Controller
                 ],
                 ['current' => 1]
             );
+
 
             $lesson = [];
 
@@ -300,9 +331,9 @@ class StudentLearningApiController extends Controller
                     break;
             }
 
-            return $this->successResponse(['file_info' => $lesson], 'File info retrieved successfully.');
+            return $this->successResponse(['course_item' => $lesson], 'File info retrieved successfully.');
         } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), [], 500);
+            return $this->errorResponse($e, [], 500);
         }
     }
 
@@ -314,7 +345,7 @@ class StudentLearningApiController extends Controller
      *     summary="Make lesson complete",
      *     description="Make lesson complete",
      *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
+     *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         description="Lesson and type",
@@ -340,89 +371,89 @@ class StudentLearningApiController extends Controller
      *     ),
      * )
      */
-    public function makeLessonComplete(Request $request) // [method post]
+    public function makeLessonComplete(Request $request)
     {
         $request->validate([
             'lesson_id' => ['required'],
+            'courseId' => ['required', 'exists:courses,id'],
             'type' => ['required'],
         ]);
 
         try {
 
-            $course = Course::where('id', $request->courseId)->first();
+            $user = $this->getAuthenticatedUser($request);
+            if ($user instanceof JsonResponse) return $user;
 
-            if (!$course) {
-                return $this->errorResponse('Course not found', [], 404);
-            }
+            $course = $this->getCourseById($request->courseId);
+            if ($course instanceof JsonResponse) return $course;
 
-            if (!$request->user()->isEnrolledInCourse($course)) {
-                return $this->errorResponse('You are not enrolled in this course', [], 403);
-            }
+            $enrolled = $this->checkEnrollment($user, $course);
+            if ($enrolled instanceof JsonResponse) return $enrolled;
 
             // Cari progress untuk lesson yang dimaksud
             $progress = CourseProgress::where([
-                'lesson_id' => $request->lessonId,
-                'user_id' => $request->user()->id,
-                // 'user_id' => 2,
+                'lesson_id' => $request->lesson_id,
+                'user_id' => $user->id,
+                'course_id' => $course->id,
                 'type' => $request->type
             ])->first();
 
             if ($progress) {
-
+                // Cek apakah lesson sebelumnya sudah selesai
                 $previousLesson = CourseProgress::where([
-                    'user_id' => $request->user()->id,
-                    'course_id' => $progress->course_id,
+                    'user_id' => $user->id,
+                    'course_id' => $course->id,
                     'type' => $request->type,
                 ])
-                    ->where('lesson_id', '<', $request->lessonId) // lesson_id lebih kecil
-                    ->orderBy('lesson_id', 'desc') // Urutkan berdasarkan lesson_id terbesar
-                    ->first(); // Ambil yang paling besar yang lebih kecil dari lesson_id
+                    ->where('lesson_id', '<', $request->lesson_id)
+                    ->orderBy('lesson_id', 'desc')
+                    ->first();
 
-                // Jika ada lesson sebelumnya dan status watched-nya masih 0
                 if ($previousLesson && $previousLesson->watched == 0) {
-                    return $this->errorResponse(__('Please finish the previous lesson first.'), [], 500);
+                    return $this->errorResponse(__('Please finish the previous lesson first.'), [], 400);
                 }
 
-                // Update status watched berdasarkan request status
-                if ($progress->watched  == 1) {
-                    return $this->errorResponse(__('You already watched this lesson'), [], 500);
+                if ($progress->watched == 1) {
+                    return $this->errorResponse(__('You already watched this lesson'), [], 400);
                 }
 
-                $progress->watched = $request->status;
+                $progress->watched = 1;
                 $progress->save();
+
                 return $this->successResponse([], 'Progress updated successfully', 200);
             } else {
-                // Jika tidak ada progress yang ditemukan dan status = 1
-                if ($request->status == 0) {
-                    return;
-                }
-
-                return $this->errorResponse("Progress not found", [], 500);
+                return $this->errorResponse('Progress not found', [], 404);
             }
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);
         }
     }
 
+
     /**
      * Get quiz questions
      *
-     * @OA\Post(
-     *     path="/student-learning/quiz/{id}",
+     * @OA\Get(
+     *     path="/student-learning/course/{courseId}/quiz/{quizId}",
      *     summary="Get quiz questions",
      *     description="Get quiz questions",
      *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
-     *         description="Quiz ID",
+     *         name="courseId",
      *         in="path",
-     *         name="id",
      *         required=true,
-     *         example="1",
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
-     *         )
+     *         description="Course ID",
+     *         @OA\Schema(type="integer"),
+     *         example=10
+     *     ),
+     *     @OA\Parameter(
+     *         name="quizId",
+     *         in="path",
+     *         required=true,
+     *         description="Quiz ID",
+     *         @OA\Schema(type="integer"),
+     *         example=1
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -478,24 +509,27 @@ class StudentLearningApiController extends Controller
      * )
      */
 
-    public function quizIndex(Request $request, string $id) //method get
+    public function quizIndex(Request $request, string $courseId, string $quizId) //method get
     {
 
         try {
+
+            $user = $this->getAuthenticatedUser($request);
+            if ($user instanceof JsonResponse) return $user;
+
+            $course = $this->getCourseById($courseId);
+            if ($course instanceof JsonResponse) return $course;
+
+            $enrolled = $this->checkEnrollment($user, $course);
+            if ($enrolled instanceof JsonResponse) return $enrolled;
+
             // Hitung jumlah attempt user
-            $attempt = QuizResult::where('user_id', $request->user()->id)
-                ->where('quiz_id', $id)
+            $attempt = QuizResult::where('user_id', $user->id)
+                ->where('quiz_id', $quizId)
                 ->count();
 
             // Ambil quiz dengan jumlah pertanyaan
-            $quiz = Quiz::withCount('questions')->findOrFail($id);
-
-            //ambil course
-            $course = Course::findOrFail($quiz->course_id);
-
-            if (!$request->user()->isEnrolledInCourse($course)) {
-                return $this->errorResponse('You are not enrolled in this course', [], 403);
-            }
+            $quiz = Quiz::withCount('questions')->findOrFail($quizId);
 
             // Cek limit attempt
             if (!is_null($quiz->attempt) && $attempt >= $quiz->attempt) {
@@ -511,7 +545,7 @@ class StudentLearningApiController extends Controller
             }
 
             // Key cache: unik per user per quiz
-            $cacheKey = "quiz_{$id}_user_{$request->user()->id}_questions";
+            $cacheKey = "quiz_{$quizId}_user_{$user->id}_questions";
 
             if (Cache::has($cacheKey)) {
                 $questions = Cache::get($cacheKey);
@@ -527,6 +561,16 @@ class StudentLearningApiController extends Controller
                 // Simpan cache sesuai due_date
                 Cache::put($cacheKey, $questions, Carbon::parse($quiz->due_date));
             }
+
+            // Menyembunyikan jawaban benar (correct) agar tidak bisa diakses dari frontend dan disalahgunakan
+            $questions->transform(function ($question) {
+                $question->answers = collect($question->answers)->map(function ($answer) {
+                    unset($answer['correct']);
+                    return $answer;
+                });
+
+                return $question;
+            });
 
             $quiz->setRelation('questions', $questions);
 
@@ -544,18 +588,27 @@ class StudentLearningApiController extends Controller
 
     /**
      * Store quiz answers
-     *
+     * 
      * @OA\Post(
-     *     path="/student-learning/quizzes/{id}",
+     *     path="/student-learning/{courseId}/quiz/{quizId}",
      *     summary="Store quiz answers",
      *     description="Store quiz answers",
      *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
-     *         name="id",
+     *         name="courseId",
+     *         in="path",
+     *         required=true,
+     *         description="Course ID",
+     *         @OA\Schema(type="integer"),
+     *         example=10
+     *     ),
+     *     @OA\Parameter(
+     *         name="quizId",
      *         in="path",
      *         required=true,
      *         description="Quiz ID",
+     *         @OA\Schema(type="integer"),
      *         example=1
      *     ),
      *     @OA\RequestBody(
@@ -637,16 +690,35 @@ class StudentLearningApiController extends Controller
      *     )
      * )
      */
-    public function quizStore(Request $request, string $id)
+    public function quizStore(Request $request, string $quizId)
     {
         $grad = 0;
         $result = [];
-        $quiz = Quiz::findOrFail($id);
 
         try {
-            $course = Course::findOrFail($quiz->course_id);
-            if (!$request->user()->isEnrolledInCourse($course)) {
-                return $this->errorResponse('You are not enrolled in this course', [], 403);
+            $quiz = Quiz::find($quizId);
+
+            if (!$quiz) {
+                return $this->errorResponse('Quiz not found', [], 404);
+            }
+
+            $user = $this->getAuthenticatedUser($request);
+            if ($user instanceof JsonResponse) return $user;
+
+
+            $course = $this->getCourseById($quiz->course_id);
+            if ($course instanceof JsonResponse) return $course;
+
+            $enrolled = $this->checkEnrollment($user, $course);
+            if ($enrolled instanceof JsonResponse) return $enrolled;
+
+            $attempt = QuizResult::where('user_id', $user->id)
+                ->where('quiz_id', $quizId)
+                ->count();
+
+            if (!is_null($quiz->attempt) && $attempt >= $quiz->attempt) {
+
+                return $this->errorResponse(__('You reached maximum attempt'), [], 400);
             }
 
             foreach ($request->question ?? [] as $key => $questionAns) {
@@ -662,13 +734,18 @@ class StudentLearningApiController extends Controller
                 ];
             }
 
-            $quizResult = QuizResult::create([
-                'user_id' => $request->user()->id,
-                'quiz_id' => $id,
-                'result' => json_encode($result),
+            QuizResult::create([
+                'user_id' => $user->id,
+                'quiz_id' => $quizId,
+                'result' => $result,
                 'user_grade' => $grad,
                 'status' => $grad >= $quiz->pass_mark ? 'pass' : 'failed',
             ]);
+
+            $quizResult = QuizResult::where('user_id', $user->id)
+                ->where('quiz_id', $quizId)
+                ->latest()
+                ->first();
 
             return $this->successResponse($quizResult, 'Quiz submitted successfully', 200);
         } catch (\Exception $e) {
@@ -678,27 +755,27 @@ class StudentLearningApiController extends Controller
 
     /**
      * Get quiz result
-     *
+     * 
      * @OA\Get(
-     *     path="/student-learning/quiz/{id}/result/{resultId}",
+     *     path="/student-learning/{courseId}/quiz/{quizId}/result",
      *     summary="Get quiz result",
      *     description="Retrieve detailed result of a quiz attempt by a student",
      *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
-     *         name="id",
+     *         name="courseId",
      *         in="path",
      *         required=true,
-     *         description="Quiz ID",
+     *         description="course ID",
      *         example=1,
      *         @OA\Schema(type="integer", format="int64")
      *     ),
      *     @OA\Parameter(
-     *         name="resultId",
+     *         name="quizId",
      *         in="path",
      *         required=true,
-     *         description="Result ID",
-     *         example=10,
+     *         description="Quiz ID",
+     *         example=1,
      *         @OA\Schema(type="integer", format="int64")
      *     ),
      *     @OA\Response(
@@ -764,13 +841,27 @@ class StudentLearningApiController extends Controller
      * )
      */
 
-    function quizResult(Request $request, string $id, string $resultId)
+    function quizResult(Request $request, string $courseId, string $quizId)
     {
         try {
-            $attempt = QuizResult::where('user_id', $request->user()->id)->where('quiz_id', $id)->count();
-            $quiz = Quiz::withCount('questions')->findOrFail($id);
-            $quizResult = QuizResult::findOrFail($resultId);
 
+            $user = $this->getAuthenticatedUser($request);
+            if ($user instanceof JsonResponse) return $user;
+
+            $course = $this->getCourseById($courseId);
+            if ($course instanceof JsonResponse) return $course;
+
+            $enrolled = $this->checkEnrollment($user, $course);
+            if ($enrolled instanceof JsonResponse) return $enrolled;
+
+            $attempt = QuizResult::where('user_id', $user->id)->where('quiz_id', $quizId)->count();
+
+            $quiz = Quiz::withCount('questions')->findOrFail($quizId);
+
+            $quizResult = QuizResult::where('user_id', $user->id)
+                ->where('quiz_id', $quizId)
+                ->latest()
+                ->first();
             $data = [
                 'quiz' => $quiz,
                 'attempt' => $attempt,
@@ -784,15 +875,23 @@ class StudentLearningApiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/student-learning/rtl/{id}",
+     *     path="/student-learning/{courseId}/rtl/{rtlId}",
      *     summary="Get RTL item",
      *     description="Get RTL item",
      *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         description="Course ID",
+     *         in="path",
+     *         name="courseId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(type="integer", format="int64")
+     *     ),
      *     @OA\Parameter(
      *         description="RTL ID",
      *         in="path",
-     *         name="id",
+     *         name="rtlId",
      *         required=true,
      *         example="1",
      *         @OA\Schema(type="integer", format="int64")
@@ -850,19 +949,26 @@ class StudentLearningApiController extends Controller
      * )
      */
 
-    public function rtlIndex(Request $request, string $id)
+    public function rtlIndex(Request $request, string $courseId, string $rtlId)
     {
         try {
-            $item = FollowUpAction::findOrFail($id);
 
-            $course = Course::findOrFail($item->course_id);
+            $user = $this->getAuthenticatedUser($request);
+            if ($user instanceof JsonResponse) return $user;
 
-            if (!$request->user()->isEnrolledInCourse($course)) {
-                return $this->errorResponse('You are not enrolled in this course', [], 403);
+            $course = $this->getCourseById($courseId);
+            if ($course instanceof JsonResponse) return $course;
+
+            $enrolled = $this->checkEnrollment($user, $course);
+            if ($enrolled instanceof JsonResponse) return $enrolled;
+
+            $item = FollowUpAction::find($rtlId);
+            if (!$item) {
+                return $this->errorResponse('Data Not found', [], 404);
             }
 
-            $response = FollowUpActionResponse::where('follow_up_action_id', $id)
-                ->where('participant_id', $request->user()->id)
+            $response = FollowUpActionResponse::where('follow_up_action_id', $item->id)
+                ->where('participant_id', $user->id)
                 ->first();
 
             // Belum dimulai
@@ -880,8 +986,8 @@ class StudentLearningApiController extends Controller
             }
 
             return $this->successResponse([
-                'item' => $item,
-                'response' => $response,
+                'rtl' => $item,
+                'response_rtl' => $response,
             ], 'Data retrieved successfully', 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);
@@ -890,15 +996,26 @@ class StudentLearningApiController extends Controller
 
     /**
      *  @OA\Post(
-     *     path="/student-learning/rtl/{id}",
+     *     path="/student-learning/{courseId}/rtl/{rtlId}",
      *     summary="Save RTL item response",
      *     description="Save RTL item response",
      *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
+     *         description="Course ID",
+     *         in="path",
+     *         name="courseId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *    @OA\Parameter(
      *         description="RTL ID",
      *         in="path",
-     *         name="id",
+     *         name="rtlId",
      *         required=true,
      *         example="1",
      *         @OA\Schema(
@@ -945,19 +1062,26 @@ class StudentLearningApiController extends Controller
      *     )
      * )
      */
-    public function rtlStore(Request $request, string $id)
+    public function rtlStore(Request $request, string $courseId, string $rtlId)
     {
-        $user = $request->user();
+        $user = $this->getAuthenticatedUser($request);
+        if ($user instanceof JsonResponse) return $user;
+
+        $course = $this->getCourseById($courseId);
+        if ($course instanceof JsonResponse) return $course;
+
+        $enrolled = $this->checkEnrollment($user, $course);
+        if ($enrolled instanceof JsonResponse) return $enrolled;
 
         // Cek apakah sudah ada response sebelumnya
-        $response = FollowUpActionResponse::where('follow_up_action_id', $id)
+        $response = FollowUpActionResponse::where('follow_up_action_id', $rtlId)
             ->where('participant_id', $user->id)
             ->first();
 
         // Kalau belum ada, buat baru
         if (!$response) {
             $response = new FollowUpActionResponse;
-            $response->follow_up_action_id = $id;
+            $response->follow_up_action_id = $rtlId;
             $response->participant_id = $user->id;
         }
 

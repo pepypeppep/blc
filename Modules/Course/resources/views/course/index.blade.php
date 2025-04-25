@@ -195,8 +195,7 @@
                                                                 <div class="dropdown-menu"
                                                                     aria-labelledby="dropdownMenu2">
                                                                     <a href="{{ route('admin.courses.duplicate', $course->id) }}"
-                                                                        class="dropdown-item"
-                                                                        target="_blank">{{ __('Duplicate') }}</a>
+                                                                        class="dropdown-item">{{ __('Duplicate') }}</a>
                                                                     <a href="{{ route('admin.courses.edit-view', $course->id) }}"
                                                                         class="dropdown-item"
                                                                         target="_blank">{{ __('Edit') }}</a>

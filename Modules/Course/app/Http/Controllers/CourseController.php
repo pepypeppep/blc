@@ -376,6 +376,8 @@ class CourseController extends Controller
             $newCourse = $course->replicate();
             $newCourse->title = $course->title . ' - Copy';
             $newCourse->slug = generateUniqueSlug(Course::class, $course->title) . now()->timestamp;
+            $newCourse->status = Course::STATUS_IS_DRAFT;
+            $newCourse->is_approved = Course::ISAPPROVED_PENDING;
             $newCourse->save();
 
             foreach ($course->chapters as $chapter) {

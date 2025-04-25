@@ -28,6 +28,14 @@ class Course extends Model
      */
     protected $appends = ['thumbnail_url'];
 
+    public const STATUS_IS_DRAFT = 'is_draft';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+
+    public const ISAPPROVED_APPROVED = 'approved';
+    public const ISAPPROVED_PENDING = 'pending';
+    public const ISAPPROVED_REJECTED = 'rejected';
+
     function scopeActive()
     {
         return $this->where(['is_approved' => 'approved', 'status' => 'active']);

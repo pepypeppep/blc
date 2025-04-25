@@ -835,7 +835,7 @@
     "Drafted": "Disusun",
     "Created Date": "Tanggal Dibuat",
     "Update Date": "Tanggal Pembaruan",
-    "Approve": "Menyetujui",
+    "Approve": "Setujui",
     "draft": "draf",
     "Edit": "Sunting",
     "Couse Filter": "Filter Penyebab",
@@ -2061,5 +2061,6 @@
     "Views": "Dilihat",
     "Visibility": "Visibilitas",
     "Published Date": "Tanggal Publish",
-    "Related Course": "Pelatihan Terkait"
+    "Related Course": "Pelatihan Terkait",
+    "Verify Again": "Verifikasi Ulang"
 }

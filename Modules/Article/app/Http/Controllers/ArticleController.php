@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Modules\Article\app\Models\Article;
 use Modules\Article\app\Models\ArticleReview;
 
@@ -26,7 +27,14 @@ class ArticleController extends Controller
             ->orderByDesc('id')
             ->paginate(10);
 
-        return view('article::index', compact('articles'));
+        $statusCounts = Article::select('status', DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->get()
+            ->pluck('total', 'status');
+            
+        $totalArticles = Article::where('status', '!=', 'draft')->count();
+
+        return view('article::index', compact('articles', 'statusCounts', 'totalArticles'));
     }
 
     /**

@@ -33,6 +33,14 @@ class Course extends Model
     public const CLASS_KLASIKAL_LURING = 'klasikal_luring';
     public const CLASS_NON_KLASIKAL = 'non_klasikal';
 
+    public const STATUS_IS_DRAFT = 'is_draft';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+
+    public const ISAPPROVED_APPROVED = 'approved';
+    public const ISAPPROVED_PENDING = 'pending';
+    public const ISAPPROVED_REJECTED = 'rejected';
+
     function scopeActive()
     {
         return $this->where(['is_approved' => 'approved', 'status' => 'active']);

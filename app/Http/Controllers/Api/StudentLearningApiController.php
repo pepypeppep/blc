@@ -28,7 +28,7 @@ class StudentLearningApiController extends Controller
      *     summary="Get course by slug",
      *     description="Get course by slug",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         description="Course slug",
      *         in="path",
@@ -162,7 +162,7 @@ class StudentLearningApiController extends Controller
      *     summary="Post progress lesson",
      *     description="Post progress lesson",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         description="Lesson and type",
@@ -314,7 +314,7 @@ class StudentLearningApiController extends Controller
      *     summary="Make lesson complete",
      *     description="Make lesson complete",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         description="Lesson and type",
@@ -412,7 +412,7 @@ class StudentLearningApiController extends Controller
      *     summary="Get quiz questions",
      *     description="Get quiz questions",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         description="Quiz ID",
      *         in="path",
@@ -490,7 +490,7 @@ class StudentLearningApiController extends Controller
             // Ambil quiz dengan jumlah pertanyaan
             $quiz = Quiz::withCount('questions')->findOrFail($id);
 
-            //ambil course 
+            //ambil course
             $course = Course::findOrFail($quiz->course_id);
 
             if (!$request->user()->isEnrolledInCourse($course)) {
@@ -544,13 +544,13 @@ class StudentLearningApiController extends Controller
 
     /**
      * Store quiz answers
-     * 
+     *
      * @OA\Post(
      *     path="/student-learning/quizzes/{id}",
      *     summary="Store quiz answers",
      *     description="Store quiz answers",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -678,13 +678,13 @@ class StudentLearningApiController extends Controller
 
     /**
      * Get quiz result
-     * 
+     *
      * @OA\Get(
      *     path="/student-learning/quiz/{id}/result/{resultId}",
      *     summary="Get quiz result",
      *     description="Retrieve detailed result of a quiz attempt by a student",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -788,7 +788,7 @@ class StudentLearningApiController extends Controller
      *     summary="Get RTL item",
      *     description="Get RTL item",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         description="RTL ID",
      *         in="path",
@@ -894,7 +894,7 @@ class StudentLearningApiController extends Controller
      *     summary="Save RTL item response",
      *     description="Save RTL item response",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         description="RTL ID",
      *         in="path",

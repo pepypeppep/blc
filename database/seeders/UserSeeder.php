@@ -138,6 +138,16 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
+        User::create([
+            'id' => 9,
+            'name' => 'Instruktur BKPSDM',
+            'username' => 'instruktur_bkpsdm',
+            'email' => 'instruktur_bkpsdm@gmail.com',
+            'password' => bcrypt('1234'),
+            'role' => 'instructor',
+            'email_verified_at' => now(),
+        ]);
+
         foreach (User::where('role', 'instructor')->get() as $key => $instructor) {
             InstructorRequest::updateOrCreate([
                 'user_id' => $instructor->id

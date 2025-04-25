@@ -442,6 +442,7 @@ class CourseSeeder extends Seeder
             $course->message_for_reviewer = NULL;
             $course->status = "active";
             $course->is_approved = "approved";
+            $course->access = rand(0, 1) ? "public" : "private";
             $course->save();
             // create course level
             CourseSelectedLevel::create([

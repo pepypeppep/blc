@@ -26,7 +26,12 @@ class Course extends Model
      *
      * @var array
      */
-    protected $appends = ['thumbnail_url'];
+    protected $appends = ['thumbnail_url', 'all_instructors'];
+
+
+    public const CLASS_KLASIKAL_DARING = 'klasikal_daring';
+    public const CLASS_KLASIKAL_LURING = 'klasikal_luring';
+    public const CLASS_NON_KLASIKAL = 'non_klasikal';
 
     function scopeActive()
     {
@@ -73,7 +78,7 @@ class Course extends Model
 
     function instructor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'instructor_id', 'id')->withDefault();
+        return $this->belongsTo(User::class, 'instructor_id', 'id');
     }
 
     function chapters(): HasMany
@@ -107,6 +112,24 @@ class Course extends Model
         $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
 
         return $courseCompletedPercent == 100;
+    }
+
+    // public function getAllInstructorsAttribute()
+    // {
+    //     $primary = $this->instructor;
+    //     $partners = $this->partnerInstructors->pluck('user');
+
+    //     return collect([$primary])->merge($partners)->filter();
+    // }
+
+    protected function allInstructors(): Attribute
+    {
+        $primary = $this->instructor;
+        $partners = $this->partnerInstructors->pluck('user');
+
+        return Attribute::make(
+            get: fn() => collect([$primary])->merge($partners)->filter()
+        );
     }
 
     protected function thumbnailUrl(): Attribute

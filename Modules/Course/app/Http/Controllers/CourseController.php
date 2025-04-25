@@ -102,7 +102,8 @@ class CourseController extends Controller
         $course->seo_description = $request->title;
         $course->demo_video_storage = 'upload';
         $course->demo_video_source = $request->demo_video_storage == 'upload' ? $request->upload_path : $request->external_path;
-        $course->jp = $request->jp;
+        $course->jp = 0;
+        // $course->jp = $request->jp;
         $course->discount = $request->discount_price;
         $course->description = $request->description;
         $course->background = $request->background;
@@ -154,8 +155,9 @@ class CourseController extends Controller
                 ));
                 break;
             case '3':
+                $course = Course::with('instructor', 'partnerInstructors')->findOrFail($request->id);
                 $chapters = CourseChapter::with(['chapterItems'])->where(['course_id' => $request->id, 'status' => 'active'])->orderBy('order')->get();
-                return view('course::course.course-content', compact('chapters'));
+                return view('course::course.course-content', compact('chapters', 'course'));
                 break;
             case '4':
                 $courseId = request('id');
@@ -222,11 +224,11 @@ class CourseController extends Controller
                 $request->validate([
                     'status' => ['required'],
                     'message_for_reviewer' => ['nullable', 'max:1000'],
-                    'participants' => ['required', 'array'],
+                    'participants' => ['nullable', 'array'],
                 ], [
                     'status.required' => __('Status is required'),
                     'message_for_reviewer.max' => __('Message for reviewer must not exceed 1000 characters'),
-                    'participants.required' => __('Participants is required'),
+                    // 'participants.required' => __('Participants is required'),
                 ]);
                 $this->storeFinish($request);
                 return response()->json([
@@ -293,7 +295,7 @@ class CourseController extends Controller
 
     function storeFinish(Request $request)
     {
-        // dd($request->participants); 
+        // dd($request->participants);
         checkAdminHasPermissionAndThrowException('course.management');
         $course = Course::findOrFail($request->course_id);
         $course->message_for_reviewer = $request->message_for_reviewer;

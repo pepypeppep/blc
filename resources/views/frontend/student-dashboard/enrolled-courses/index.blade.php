@@ -39,10 +39,12 @@
                                                         </h5>
                                                         <div class="courses__item-content-bottom">
                                                             <div class="author-two">
-                                                                <a href="javascript:;"><img
-                                                                        {{-- src="{{ asset($enroll->course->instructor->image) }}" --}}
+                                                                <a href="javascript:;">
+                                                                    @if ($enroll->course->instructor)
+                                                                    <img
                                                                         src="{{ asset('uploads/website-images/frontend-avatar.png') }}"
                                                                         alt="img">{{ $enroll->course->instructor->name }}</a>
+                                                                    @endif
                                                             </div>
                                                             <div class="avg-rating">
                                                                 <i class="fas fa-star"></i>

@@ -101,7 +101,6 @@
                 let elements = document.querySelectorAll(`input[data-lesson-id="${itemId}"]`);
                 if (elements.length && !elements[0].hasAttribute('checked')) {
                     // elements[0].click();
-                    alert(1)
                     completeLesson(itemId)
                 }
             }

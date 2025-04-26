@@ -32,11 +32,11 @@
 
                         @if($article->status === 'rejected')
                         <div class="alert alert-danger d-flex align-items-center m-4" style="background-color: rgba(220, 53, 69, 0.9);" role="alert">
-                            <i class="fas fa-circle-exclamation fa-lg me-2"></i>
                             <div class="text-white">
                                 <strong>Alasan Penolakan:</strong> 
                                 <p>{{ $article->note }}</p>
                             </div>
+                            <i class="fa fa-exclamation-circle fa-3x me-2"></i>
                         </div>
                         @endif
 
@@ -75,24 +75,44 @@
                         </div>
                     @endif
 
-                    <!-- Verification -->
-                    @if($article->status === 'verification')
+                    <!-- Action -->
+                    @php
+                        $actions = [
+                            'verification' => [
+                                ['status' => 'published'],
+                                ['status' => 'rejected']
+                            ],
+                            'published' => [
+                                ['status' => 'rejected']
+                            ],
+                            'rejected' => [
+                                ['status' => 'published']
+                            ],
+                        ];
+                    @endphp
+
+                    @if(isset($actions[$article->status]))
                     <div class="card">
                         <div class="card-header">
-                            <h4>{{ __('Verification') }}</h4>
+                            <h4>{{ $article->status === 'verification' ? __('Verification') : __('Verify Again') }}</h4>
                         </div>
                         <div class="card-body d-flex justify-content-between">
-                            <form id="verify-form" action="{{ route('admin.knowledge.update-status', $article->id) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="status" value="published">
-                                <button type="button" class="btn btn-success" onclick="confirmVerification()">
-                                    <i class="fa fa-check mr-1"></i> {{ __('Verification') }}
-                                </button>
-                            </form>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">
-                                <i class="fa fa-times mr-1"></i> {{ __('Reject') }}
-                            </button>
+                            @foreach($actions[$article->status] as $action)
+                                @if($action['status'] === 'published')
+                                    <form id="verify-form" action="{{ route('admin.knowledge.update-status', $article->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="status" value="published">
+                                        <button type="button" class="btn btn-success" onclick="confirmVerification()">
+                                            <i class="fa fa-check mr-1"></i> {{ __('Approve') }}
+                                        </button>
+                                    </form>
+                                @else
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">
+                                        <i class="fa fa-times mr-1"></i> {{ __('Reject') }}
+                                    </button>
+                                @endif
+                            @endforeach
                         </div>
                     </div>
                     @endif
@@ -291,12 +311,12 @@
         function confirmVerification() {
             Swal.fire({
                 title: 'Verifikasi Pengetahuan',
-                text: "Apakah Anda yakin ingin memverifikasi pengetahuan ini?",
+                text: "Apakah Anda yakin ingin menyetujui pengetahuan ini?",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#28a745',
                 cancelButtonColor: '#ced4da',
-                confirmButtonText: 'Ya, Verifikasi',
+                confirmButtonText: 'Ya, Setujui',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {

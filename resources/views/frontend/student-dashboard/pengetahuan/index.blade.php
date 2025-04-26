@@ -80,8 +80,8 @@
                                                                 <div class="courses__item-bottom">
                                                                     <div class="button">
                                                                         <a href="{{ route('student.pengetahuan.edit', $pengetahuan->slug) }}"
-                                                                            class="already-enrolled-btn" data-id="">
-                                                                            <i class="fa fa-pencil-alt"></i>
+                                                                            class="already-enrolled-btn bg-primary" data-id="">
+                                                                            <i class="fa fa-pencil-alt text-white"></i>
                                                                         </a>
                                                                     </div>
                                                                 </div>

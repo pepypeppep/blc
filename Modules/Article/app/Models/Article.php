@@ -121,18 +121,30 @@ class Article extends Model
         return Attribute::make(
             get: function () {
                 $link = $this->link;
+                $videoId = null;
 
-                if (strpos($link, 'youtube.com/watch') !== false) {
-                    parse_str(parse_url($link, PHP_URL_QUERY), $query);
-                    $videoId = $query['v'] ?? null;
-                } elseif (strpos($link, 'youtu.be/') !== false) {
-                    $path = parse_url($link, PHP_URL_PATH);
-                    $videoId = trim($path, '/');
-                } else {
-                    $videoId = null;
+                switch (true) {
+                    // Link YouTube
+                    case strpos($link, 'youtube.com/watch') !== false:
+                        parse_str(parse_url($link, PHP_URL_QUERY), $query);
+                        $videoId = $query['v'] ?? null;
+                        return $videoId ? "https://www.youtube.com/embed/{$videoId}" : $link;
+
+                    // Short link YouTube
+                    case strpos($link, 'youtu.be/') !== false:
+                        $path = parse_url($link, PHP_URL_PATH);
+                        $videoId = trim($path, '/');
+                        return !empty($videoId) ? "https://www.youtube.com/embed/{$videoId}" : $link;
+
+                    // Link Google Drive
+                    case strpos($link, 'drive.google.com') !== false && strpos($link, '/file/d/') !== false:
+                        preg_match('#/file/d/([^/]+)#', $link, $matches);
+                        $fileId = $matches[1] ?? null;
+                        return $fileId ? "https://drive.google.com/file/d/{$fileId}/preview" : $link;
+
+                    default:
+                        return $link;
                 }
-
-                return $videoId ? "https://www.youtube.com/embed/{$videoId}" : $link;
             }
         );
     }

@@ -31,8 +31,7 @@
                     <div class="blog__details-wrapper">
                         <div class="blog__details-thumb">
                             @if ($article->category == 'video')
-                                <iframe class="w-100" style="height: 70vh" src="https://www.youtube.com/embed/0ewXRjPa5Tk"
-                                    allowfullscreen></iframe>
+                                <iframe class="w-100" style="height: 70vh" src="{{ $article->embed_link }}" allowfullscreen></iframe>
                             @elseif ($article->category == 'document')
                                 <object data="{{ $article->document_url }}" type="application/pdf" width="100%"
                                     height="600">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Modules\Article\app\Models\Article;
 use Modules\Article\app\Models\ArticleReview;
 
@@ -16,17 +17,26 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $status = $request->query('status');
-        
+        $status = $request->query('status', 'verification');
+        $status = $status === 'all' ? null : $status;
+
         $articles = Article::when($status, function ($query, $status) {
                 return $query->where('status', $status);
             }, function ($query) {
                 return $query->where('status', '!=', 'draft');
             })
-            ->orderByDesc('id')
-            ->paginate(10);
+            ->orderByDesc('updated_at')
+            ->paginate(10)
+            ->appends(['status' => $request->query('status', 'verification')]);
 
-        return view('article::index', compact('articles'));
+        $statusCounts = Article::select('status', DB::raw('count(*) as total'))
+            ->groupBy('status')
+            ->get()
+            ->pluck('total', 'status');
+            
+        $totalArticles = Article::where('status', '!=', 'draft')->count();
+
+        return view('article::index', compact('articles', 'statusCounts', 'totalArticles', 'status'));
     }
 
     /**
@@ -63,7 +73,7 @@ class ArticleController extends Controller
 
         $article->save();
 
-        return redirect()->back()->with('success', 'Status pengetahuan berhasil diperbarui.');
+        return redirect()->route('admin.knowledge.index')->with('success', 'Status pengetahuan berhasil diperbarui.');
     }
 
     /**

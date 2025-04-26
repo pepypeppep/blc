@@ -20,27 +20,39 @@
                             <div class="dashboard__nav-wrap">
                                 <ul class="nav nav-tabs" id="statusTab" role="tablist">
                                     <li class="nav-item" role="presentation">
-                                        <a class="nav-link navigation-btn {{ request('status') == null ? 'active' : '' }}"
-                                        href="{{ route('admin.knowledge.index') }}">
-                                            {{ __('All') }}
+                                        <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == null ? 'active' : '' }}"
+                                        href="{{ route('admin.knowledge.index', ['status' => 'all']) }}">
+                                            {{ __('All') }} &nbsp;
+                                            <span class="badge {{ $status == null ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                                {{ $totalArticles ?? 0 }}
+                                            </span>
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <a class="nav-link navigation-btn {{ request('status') == 'verification' ? 'active' : '' }}"
+                                        <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'verification' ? 'active' : '' }}"
                                         href="{{ route('admin.knowledge.index', ['status' => 'verification']) }}">
-                                            {{ __('Verification') }}
+                                            {{ __('Verification') }} &nbsp;
+                                            <span class="badge {{ $status == 'verification' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                                {{ $statusCounts['verification'] ?? 0 }}
+                                            </span>
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <a class="nav-link navigation-btn {{ request('status') == 'rejected' ? 'active' : '' }}"
+                                        <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'rejected' ? 'active' : '' }}"
                                         href="{{ route('admin.knowledge.index', ['status' => 'rejected']) }}">
-                                            {{ __('Rejected') }}
+                                            {{ __('Rejected') }} &nbsp;
+                                            <span class="badge {{ $status == 'rejected' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                                {{ $statusCounts['rejected'] ?? 0 }}
+                                            </span>
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <a class="nav-link navigation-btn {{ request('status') == 'published' ? 'active' : '' }}"
+                                        <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'published' ? 'active' : '' }}"
                                         href="{{ route('admin.knowledge.index', ['status' => 'published']) }}">
-                                            {{ __('Published') }}
+                                            {{ __('Published') }} &nbsp;
+                                            <span class="badge {{ $status == 'published' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                                {{ $statusCounts['published'] ?? 0 }}
+                                            </span>
                                         </a>
                                     </li>
                                 </ul>

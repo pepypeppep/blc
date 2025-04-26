@@ -200,6 +200,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         // Route::get('follow-up-action/create', [StudentFollowUpActionController::class, 'create'])->name('follow-up-action.create');
 
         /** learning routes */
+        Route::post('accept-tos/{slug}', [LearningController::class, 'acceptTos'])->name('learning.accept-tos');
         Route::get('learning/{slug}', [LearningController::class, 'index'])->name('learning.index');
         Route::post('learning/get-file-info', [LearningController::class, 'getFileInfo'])->name('get-file-info');
         Route::get('learning/get-file-direct/{id}', [LearningController::class, 'getDirectFile'])->name('get-file-direct');

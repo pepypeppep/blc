@@ -13,201 +13,176 @@
 
         <div class="py-8">
             <div class="container">
-                <!-- Title -->
-                <div class="d-flex justify-content-between align-items-center py-3">
-                    <h2 class="h5 mb-0">
-                        <a href="#" class="text-muted"></a> Tindak Lanjut RTL
-                    </h2>
-                </div>
-
                 <!-- Main content -->
                 <div class="row">
                     <div class="col-lg-8">
                         <!-- Details -->
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                @php
-                                    use Carbon\Carbon;
-                                    $startDate = Carbon::parse($item->start_date);
-                                    $endDate = Carbon::parse($item->due_date);
-                                    $now = Carbon::now();
-                                    // $response = $item->followUpActionResponse;
-                                @endphp
+                        <div class="mb-4">
+                            @php
+                                use Carbon\Carbon;
+                                $startDate = Carbon::parse($item->start_date);
+                                $endDate = Carbon::parse($item->due_date);
+                                $now = Carbon::now();
+                                // $response = $item->followUpActionResponse;
+                            @endphp
 
-                                @if ($response)
-                                    <h5>Ringkasan Rencana Tindak Lanjut</h5>
-                                    <div class="my-3">{!! $response->participant_response !!}</div>
-                                    <div class="card shadow-sm border-0 mt-4">
-
-                                        <div class="card-header bg-primary text-white">
-                                            <h5 class="mb-0 text-white">
-                                                <i class="fa fa-file"></i> File Rencana Tindak Lanjut
-                                            </h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <iframe
-                                                src="{{ route('student.follow-up-action.files', $response->participant_file) }}"
-                                                class="w-100 border" style="height: 600px;"></iframe>
-                                        </div>
+                            @if ($response)
+                                <h5>Ringkasan Rencana Tindak Lanjut</h5>
+                                <div class="my-3">{!! $response->participant_response !!}</div>
+                                <div class="card shadow-sm border-0 mt-4">
+                                    <div class="card-body">
+                                        <iframe
+                                            src="{{ route('student.follow-up-action.files', $response->participant_file) }}"
+                                            class="w-100 border" style="height: 600px;"></iframe>
                                     </div>
-                                @endif
-                                @if ($now->lt($startDate))
-                                    <div class="alert alert-warning mt-4">
-                                        <strong>Perhatian:</strong> Belum periode pengisian data untuk Rencana Tindak
-                                        Lanjut. Mulai pada
-                                        <strong>{{ $startDate->translatedFormat('d F Y') }}</strong>.
-                                    </div>
-                                @elseif ($now->gt($endDate) && !$response)
-                                    <div class="alert alert-danger mt-4">
-                                        <strong>Perhatian:</strong> Periode pengisian Rencana Tindak Lanjut akan berakhir
-                                        pada
-                                        <strong>{{ $endDate->translatedFormat('d F Y') }}</strong>.
-                                    </div>
-                                @elseif (!$response)
-                                    <div class="card shadow-sm border-0 mt-4">
-                                        <div class="card-header bg-primary text-white">
-                                            <h5 class="mb-0 text-white">
-                                                <i class="fa-solid fa-square-plus"></i> Masukan Data Rencana Tindak Lanjut
-                                            </h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <form id="contentForm" enctype="multipart/form-data"
-                                                action="{{ route('student.rtl.store', $item->id) }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="follow_up_action_id"
-                                                    value="{{ $item->id }}">
+                                </div>
+                            @endif
+                            @if ($now->lt($startDate))
+                                <div class="alert alert-warning mt-4">
+                                    <strong>Perhatian:</strong> Belum periode pengisian data untuk Rencana Tindak
+                                    Lanjut. Mulai pada
+                                    <strong>{{ $startDate->translatedFormat('d F Y') }}</strong>.
+                                </div>
+                            @elseif ($now->gt($endDate) && !$response)
+                                <div class="alert alert-danger mt-4">
+                                    <strong>Perhatian:</strong> Periode pengisian Rencana Tindak Lanjut akan berakhir
+                                    pada
+                                    <strong>{{ $endDate->translatedFormat('d F Y') }}</strong>.
+                                </div>
+                            @elseif (!$response)
+                            <div class="card card-body">
+                                <form id="contentForm" enctype="multipart/form-data"
+                                    action="{{ route('student.rtl.store', $item->id) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="follow_up_action_id"
+                                        value="{{ $item->id }}">
 
-                                                <div class="form-group">
-                                                    <div class="mt-2">
-                                                        <label for="fileSurat" class="form-label">Unggah File Rencana Tindak
-                                                            Lanjut</label>
-                                                        <div class="upload-card">
-                                                            <i class="fas fa-cloud-upload-alt"></i>
-                                                            <h5 class="mb-3">Pilih berkas atau drag & drop di sini</h5>
-                                                            <p class="text-muted">Hanya format PDF, maksimal 30MB</p>
-                                                            <input name="file_path" type="file" id="fileInput"
-                                                                accept=".pdf">
-                                                            <label for="fileInput">Telusuri Berkas</label>
-                                                        </div>
+                                    <div class="form-group">
+                                        <div class="mt-2">
+                                            <label for="fileSurat" class="form-label">Unggah File Rencana Tindak
+                                                Lanjut</label>
+                                            <div class="upload-card">
+                                                <i class="fas fa-cloud-upload-alt"></i>
+                                                <h5 class="mb-3">Pilih berkas atau drag & drop di sini</h5>
+                                                <p class="text-muted">Hanya format PDF, maksimal 30MB</p>
+                                                <input name="file_path" type="file" id="fileInput"
+                                                    accept=".pdf">
+                                                <label for="fileInput">Telusuri Berkas</label>
+                                            </div>
 
-                                                        <div id="fileInfo" style="display: none;">
-                                                            <div class="file-info">
-                                                                <div class="d-flex align-items-center">
-                                                                    <i class="fas fa-file-pdf fa-lg"></i>
-                                                                    <span id="fileName" class="fw-bold"></span>
-                                                                </div>
-                                                                <div class="file-actions">
-                                                                    <button type="button" id="previewBtn"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#previewModal"
-                                                                        title="Preview">Pratinjau</button>
-                                                                    <button type="button" class="text-danger"
-                                                                        id="deleteBtn" title="Hapus">Hapus</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                            <div id="fileInfo" style="display: none;">
+                                                <div class="file-info">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-file-pdf fa-lg"></i>
+                                                        <span id="fileName" class="fw-bold"></span>
                                                     </div>
-                                                    @error('file_path')
-                                                        <small class="text-danger d-block">{{ $message }}</small>
-                                                    @enderror
-                                                </div>
-
-                                                <div class="form-group mt-3">
-                                                    <label for="catatan">Resume Rencana Tindak Lanjut</label>
-                                                    <input type="hidden" name="summary" id="summary">
-                                                    <div id="editor"></div>
-                                                    <br>
-                                                    @error('summary')
-                                                        <small class="text-danger d-block">{{ $message }}</small>
-                                                    @enderror
-                                                </div>
-
-                                                <button type="submit" class="bg-primary text-white">Simpan</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                @endif
-
-
-
-                                @if ($response && $response->score === null && $now->between($startDate, $endDate))
-                                    <div class="card shadow-sm border-0 mt-4">
-                                        <div class="card-header bg-primary text-white">
-                                            <h5 class="mb-0 text-white">
-                                                <i class="fa fa-edit"></i> Ubah Data Rencana Tindak Lanjut
-                                            </h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <form id="contentForm" enctype="multipart/form-data"
-                                                action="{{ route('student.rtl.store', $item->id) }}" method="POST">
-                                                @csrf
-
-                                                <input type="hidden" name="follow_up_action_id"
-                                                    value="{{ $item->id }}">
-
-                                                <div class="form-group">
-                                                    <div class="mt-2">
-                                                        <label for="fileSurat" class="form-label">Unggah File Rencana Tindak
-                                                            Lanjut</label>
-                                                        <div class="upload-card">
-                                                            <i class="fas fa-cloud-upload-alt"></i>
-                                                            <h5 class="mb-3">Pilih berkas atau drag & drop di sini</h5>
-                                                            <p class="text-muted">Hanya format PDF, maksimal 30MB</p>
-                                                            <input name="file_path" type="file" id="fileInput"
-                                                                accept=".pdf">
-                                                            <label for="fileInput">Telusuri Berkas</label>
-                                                        </div>
-
-                                                        <div id="fileInfo" style="display: none;">
-                                                            <div class="file-info">
-                                                                <div class="d-flex align-items-center">
-                                                                    <i class="fas fa-file-pdf fa-lg"></i>
-                                                                    <span id="fileName" class="fw-bold"></span>
-                                                                </div>
-                                                                <div class="file-actions">
-                                                                    <button type="button" id="previewBtn"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#previewModal"
-                                                                        title="Preview">Pratinjau</button>
-                                                                    <button type="button" class="text-danger"
-                                                                        id="deleteBtn" title="Hapus">Hapus</button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                                    <div class="file-actions">
+                                                        <button type="button" id="previewBtn"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#previewModal"
+                                                            title="Preview">Pratinjau</button>
+                                                        <button type="button" class="text-danger"
+                                                            id="deleteBtn" title="Hapus">Hapus</button>
                                                     </div>
-                                                    @error('file_path')
-                                                        <small class="text-danger d-block">{{ $message }}</small>
-                                                    @enderror
                                                 </div>
-
-                                                <div class="form-group mt-3">
-                                                    <label for="catatan">Resume Rencana Tindak Lanjut</label>
-                                                    <input type="hidden" name="summary" id="summary">
-                                                    <div id="editor"></div>
-                                                    <br>
-                                                    @error('summary')
-                                                        <small class="text-danger d-block">{{ $message }}</small>
-                                                    @enderror
-                                                </div>
-
-                                                <button type="submit" class="bg-primary text-white">Simpan</button>
-                                            </form>
+                                            </div>
                                         </div>
+                                        @error('file_path')
+                                            <small class="text-danger d-block">{{ $message }}</small>
+                                        @enderror
                                     </div>
-                                @endif
 
-
+                                    <div class="form-group mt-3">
+                                        <label for="catatan">Resume Rencana Tindak Lanjut</label>
+                                        <input type="hidden" name="summary" id="summary">
+                                        <div id="editor"></div>
+                                        <br>
+                                        @error('summary')
+                                            <small class="text-danger d-block">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <button type="submit" class="btn text-white">Ajukan</button>
+                                    </div>
+                                </form>
                             </div>
+                            @endif
+
+                            @if ($response && $response->score === null && $now->between($startDate, $endDate))
+                                <div class="card shadow-sm border-0 mt-4">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0 text-white">
+                                            <i class="fa fa-edit"></i> Ubah Data Rencana Tindak Lanjut
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="contentForm" enctype="multipart/form-data"
+                                            action="{{ route('student.rtl.store', $item->id) }}" method="POST">
+                                            @csrf
+
+                                            <input type="hidden" name="follow_up_action_id"
+                                                value="{{ $item->id }}">
+
+                                            <div class="form-group">
+                                                <div class="mt-2">
+                                                    <label for="fileSurat" class="form-label">Unggah File Rencana Tindak
+                                                        Lanjut</label>
+                                                    <div class="upload-card">
+                                                        <i class="fas fa-cloud-upload-alt"></i>
+                                                        <h5 class="mb-3">Pilih berkas atau drag & drop di sini</h5>
+                                                        <p class="text-muted">Hanya format PDF, maksimal 30MB</p>
+                                                        <input name="file_path" type="file" id="fileInput"
+                                                            accept=".pdf">
+                                                        <label for="fileInput">Telusuri Berkas</label>
+                                                    </div>
+
+                                                    <div id="fileInfo" style="display: none;">
+                                                        <div class="file-info">
+                                                            <div class="d-flex align-items-center">
+                                                                <i class="fas fa-file-pdf fa-lg"></i>
+                                                                <span id="fileName" class="fw-bold"></span>
+                                                            </div>
+                                                            <div class="file-actions">
+                                                                <button type="button" id="previewBtn"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#previewModal"
+                                                                    title="Preview">Pratinjau</button>
+                                                                <button type="button" class="text-danger"
+                                                                    id="deleteBtn" title="Hapus">Hapus</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @error('file_path')
+                                                    <small class="text-danger d-block">{{ $message }}</small>
+                                                @enderror
+                                            </div>
+
+                                            <div class="form-group mt-3">
+                                                <label for="catatan">Resume Rencana Tindak Lanjut</label>
+                                                <input type="hidden" name="summary" id="summary">
+                                                <div id="editor"></div>
+                                                <br>
+                                                @error('summary')
+                                                    <small class="text-danger d-block">{{ $message }}</small>
+                                                @enderror
+                                            </div>
+
+                                            <div class="d-flex justify-content-center">
+                                                <button type="submit" class="btn text-white">Ajukan</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
-
-
                     </div>
 
                     <div class="col-lg-4">
                         <!-- Customer Notes -->
                         <div class="card mb-4">
                             <div class="card-body">
-                                <h3 class="h6">{{ __('Judul RTL') }}:<br /><span
+                                <h3 class="h6">{{ __('Rencana Tindak Lanjut') }}<br /><span
                                         class="text-muted">{{ ucwords($item->title) }}</span></h3>
                                 <p>{{ __('Deskripsi') }}:<br> {{ $item->description }}</p>
                             </div>

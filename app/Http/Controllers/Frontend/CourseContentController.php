@@ -280,8 +280,6 @@ class CourseContentController extends Controller
 
     function lessonUpdate(ChapterLessonRequest $request)
     {
-        dd($request->all());
-
         $chapterItem = CourseChapterItem::findOrFail($request->chapter_item_id);
         abort_if($chapterItem->instructor_id != auth('web')->user()->id, 403, __('unauthorized access'));
         $chapterItem->update([

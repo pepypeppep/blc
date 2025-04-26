@@ -21,6 +21,7 @@ use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
 use Modules\Course\app\Http\Requests\CourseStoreRequest;
 use App\Events\UserBadgeUpdated;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -102,7 +103,8 @@ class CourseController extends Controller
         $course->seo_description = $request->title;
         $course->demo_video_storage = 'upload';
         $course->demo_video_source = $request->demo_video_storage == 'upload' ? $request->upload_path : $request->external_path;
-        $course->jp = $request->jp;
+        $course->jp = 0;
+        // $course->jp = $request->jp;
         $course->discount = $request->discount_price;
         $course->description = $request->description;
         $course->background = $request->background;
@@ -154,8 +156,9 @@ class CourseController extends Controller
                 ));
                 break;
             case '3':
+                $course = Course::with('instructor', 'partnerInstructors')->findOrFail($request->id);
                 $chapters = CourseChapter::with(['chapterItems'])->where(['course_id' => $request->id, 'status' => 'active'])->orderBy('order')->get();
-                return view('course::course.course-content', compact('chapters'));
+                return view('course::course.course-content', compact('chapters', 'course'));
                 break;
             case '4':
                 $courseId = request('id');
@@ -222,11 +225,11 @@ class CourseController extends Controller
                 $request->validate([
                     'status' => ['required'],
                     'message_for_reviewer' => ['nullable', 'max:1000'],
-                    'participants' => ['required', 'array'],
+                    'participants' => ['nullable', 'array'],
                 ], [
                     'status.required' => __('Status is required'),
                     'message_for_reviewer.max' => __('Message for reviewer must not exceed 1000 characters'),
-                    'participants.required' => __('Participants is required'),
+                    // 'participants.required' => __('Participants is required'),
                 ]);
                 $this->storeFinish($request);
                 return response()->json([
@@ -293,7 +296,7 @@ class CourseController extends Controller
 
     function storeFinish(Request $request)
     {
-        // dd($request->participants); 
+        // dd($request->participants);
         checkAdminHasPermissionAndThrowException('course.management');
         $course = Course::findOrFail($request->course_id);
         $course->message_for_reviewer = $request->message_for_reviewer;
@@ -352,7 +355,7 @@ class CourseController extends Controller
         }
         $course->delete();
 
-        return response()->json(['status' => 'success', 'message' => __('Course deleted successfully')]);
+        return redirect()->back()->with(['alert-type' => 'success', 'messege' => __('Course deleted successfully')]);
     }
 
     function getStudents(Request $request)
@@ -364,5 +367,72 @@ class CourseController extends Controller
             })
             ->get();
         return response()->json($students);
+    }
+
+    function duplicate(string $id)
+    {
+        DB::BeginTransaction();
+
+        try {
+            $course = Course::with(['chapters.chapterItems.lesson', 'levels', 'languages', 'partnerInstructors'])->findOrFail($id);
+            $newCourse = $course->replicate();
+            $newCourse->title = $course->title . ' - Copy';
+            $newCourse->slug = generateUniqueSlug(Course::class, $course->title) . now()->timestamp;
+            $newCourse->status = Course::STATUS_IS_DRAFT;
+            $newCourse->is_approved = Course::ISAPPROVED_PENDING;
+            $newCourse->save();
+
+            foreach ($course->chapters as $chapter) {
+                $newChapter = $chapter->replicate();
+                $newChapter->course_id = $newCourse->id;
+                $newChapter->save();
+
+                foreach ($chapter->chapterItems as $chapterItem) {
+                    $newChapterItem = $chapterItem->replicate();
+                    $newChapterItem->chapter_id = $newChapter->id;
+                    $newChapterItem->save();
+
+                    if ($chapterItem->quiz) {
+                        $newChapterItemQuiz = $chapterItem->quiz->replicate();
+                        $newChapterItemQuiz->chapter_item_id = $newChapterItem->id;
+                        $newChapterItemQuiz->chapter_id = $newChapter->id;
+                        $newChapterItemQuiz->course_id = $newCourse->id;
+                        $newChapterItemQuiz->save();
+                    }
+
+                    if ($chapterItem->lesson) {
+                        $newChapterItemLesson = $chapterItem->lesson->replicate();
+                        $newChapterItemLesson->chapter_item_id = $newChapterItem->id;
+                        $newChapterItemLesson->chapter_id = $newChapter->id;
+                        $newChapterItemLesson->course_id = $newCourse->id;
+                        $newChapterItemLesson->save();
+                    }
+                }
+            }
+
+            foreach ($course->levels as $level) {
+                $newCourseLevel = $level->replicate();
+                $newCourseLevel->course_id = $newCourse->id;
+                $newCourseLevel->save();
+            }
+
+            foreach ($course->languages as $language) {
+                $newCourseLanguage = $language->replicate();
+                $newCourseLanguage->course_id = $newCourse->id;
+                $newCourseLanguage->save();
+            }
+
+            foreach ($course->partnerInstructors as $partnerInstructor) {
+                $newCourse->partnerInstructors()->create([
+                    'instructor_id' => $partnerInstructor->instructor_id,
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->back()->with(['alert-type' => 'success', 'messege' => __('Course duplicated successfully')]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => $th->getMessage()]);
+        }
     }
 }

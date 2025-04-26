@@ -244,7 +244,7 @@
                                                         <h4>{{ truncate($course->title, 50) }}</h4>
                                                     </div>
                                                     <div class="ticket-info">
-                                                        <div>{{ $course->instructor->name }}</div>
+                                                        <div>{{ $course->instructor?->name }}</div>
                                                         <div class="bullet"></div>
                                                         <div>{{ $course->is_approved }}</div>
                                                         <div class="bullet"></div>

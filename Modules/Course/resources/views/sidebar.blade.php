@@ -47,13 +47,21 @@
                 </a>
             </li>
 
-            @if (getAdminAuthRole() != 'Admin OPD')
+            @if (getAdminAuthRole() == 'Super Admin')
+                <li class="{{ isRoute('admin.course-tos.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.course-tos.create') }}">
+                        {{ __('Term of Service') }}
+                    </a>
+                </li>
+            @endif
+
+            {{-- @if (getAdminAuthRole() != 'Admin OPD')
                 <li class="{{ isRoute('admin.course-delete-request.*', 'active') }}">
                     <a class="nav-link" href="{{ route('admin.course-delete-request.index') }}">
                         {{ __('Course Delete Requests') }}
                     </a>
                 </li>
-            @endif
+            @endif --}}
         </ul>
     </li>
 @endif

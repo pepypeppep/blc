@@ -135,7 +135,8 @@
                                                 <th>{{ __('SN') }}</th>
                                                 <th class="course-table-title">{{ __('Title') }}</th>
                                                 <th>{{ __('Instructor') }}</th>
-                                                <th>{{ __('Lesson Hours') }}</th>
+                                                <th>{{ __('Access') }}</th>
+                                                <th>{{ __('JPL') }}</th>
                                                 <th>{{ __('Enrolled Students') }}</th>
                                                 <th>{{ __('Join Request') }}</th>
                                                 <th>{{ __('Status') }}</th>
@@ -152,12 +153,20 @@
                                                         <br>
                                                         <small>{{ $course->category->translation->name ?? '' }}</small>
                                                     </td>
-                                                    <td>{{ $course->instructor->name ?? '' }}</td>
+                                                    <td>{{ $course->instructor->name ?? '-' }}</td>
+                                                    <td class="text-center">
+                                                        @if ($course->access == 'private')
+                                                            <span class="badge badge-warning">{{ __('Private') }}</span>
+                                                        @else
+                                                            <span class="badge badge-info">{{ __('Public') }}</span>
+                                                        @endif
+                                                    </td>
                                                     <td class="text-center">{{ $course->jp }}</td>
                                                     <td class="text-center">{{ $course->enrollments_count }}</td>
                                                     <td class="text-center">{{ $course->enrollments_pending_count }}
                                                         @if ($course->enrollments_pending_count > 0)
-                                                            <a href="{{ route('admin.course-verification.index', $course->id) }}" class="btn btn-sm btn-primary">Verifikasi</a>
+                                                            <a href="{{ route('admin.course-verification.index', $course->id) }}"
+                                                                class="btn btn-sm btn-primary">Verifikasi</a>
                                                         @endif
                                                     </td>
                                                     <td>
@@ -193,12 +202,13 @@
                                                                 </button>
                                                                 <div class="dropdown-menu"
                                                                     aria-labelledby="dropdownMenu2">
+                                                                    <a href="{{ route('admin.courses.duplicate', $course->id) }}"
+                                                                        class="dropdown-item">{{ __('Duplicate') }}</a>
                                                                     <a href="{{ route('admin.courses.edit-view', $course->id) }}"
                                                                         class="dropdown-item"
                                                                         target="_blank">{{ __('Edit') }}</a>
-
-                                                                    <a href="{{ route('admin.courses.destroy', $course->id) }}"
-                                                                        class="dropdown-item text-danger delete-item">{{ __('Delete') }}</a>
+                                                                    <a onclick="deleteCourse(event, {{ $course->id }})"
+                                                                        class="dropdown-item text-danger">{{ __('Delete') }}</a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -215,6 +225,10 @@
                                     {{ $courses->links() }}
                                 </div>
                             </div>
+                            <form id="delete-form" action="#" method="POST">
+                                @csrf
+                                @method('DELETE')
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -227,4 +241,27 @@
     <script src="{{ asset('global/js/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('backend/js/default/courses.js') }}"></script>
     <script src="{{ asset('backend/js/sweetalert.js') }}"></script>
+@endpush
+
+@push('js')
+    <script>
+        function deleteCourse(event, id) {
+            swal.fire({
+                title: "Apakah kamu yakin ingin menghapus pelatihan ini?",
+                text: "Anda tidak dapat mengembalikan pelatihan ini!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "##5751e1",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, Hapus!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form').action =
+                        "{{ route('admin.courses.destroy', ':id') }}".replace(':id', id);
+                    document.getElementById('delete-form').submit();
+                }
+            })
+        }
+    </script>
 @endpush

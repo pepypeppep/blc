@@ -41,13 +41,27 @@
                 <i class="fas fa-times"></i>
             </div>
             <h2 class="video_heading">{{ __('Course Content') }}</h2>
+            <div class="accordion-item">
+                <div id="collapse-x"
+                    class="accordion-collapse collapse show"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body course-content pt-2 bg-white">
+                        <div id="tosSectionTrigger" class="form-check" data-bs-toggle="modal" data-bs-target="#termOfServiceModal">
+                            <input @checked($enrollment->tos_status == 'accepted') class="form-check-input lesson-completed-checkbox" type="checkbox">
+                            <label class="form-check-label">
+                                {{ __("Term of Service") }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="accordion" id="accordionExample">
                 @foreach ($course->chapters as $chapter)
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapse-{{ $chapter->id }}" aria-expanded="false"
-                                aria-controls="collapse-{{ $chapter->id }}">
+                                aria-controls="collapse-{{ $chapter->id }}" {{ $enrollment->tos_status != 'accepted' || $enrollment->tos_status == null ? 'disabled' : '' }}>
                                 <b>{{ $chapter->title }}</b>
                                 <span></span>
                             </button>
@@ -59,15 +73,15 @@
                                 @foreach ($chapter->chapterItems as $chapterItem)
                                     @if ($chapterItem->type == 'lesson' || $chapterItem->type == 'live')
                                         <div
-                                            class="form-check {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}">
-                                            <input @checked(in_array($chapterItem->lesson->id, $alreadyWatchedLectures))
-                                                class="form-check-input lesson-completed-checkbox" type="checkbox"
-                                                data-lesson-id="{{ $chapterItem->lesson->id }}" value="1"
-                                                data-type="lesson">
-                                            <label class="form-check-label lesson-item"
+                                            class="form-check cursor-pointer lesson-item {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}"
                                                 data-lesson-id="{{ $chapterItem->lesson->id }}"
                                                 data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
                                                 data-type="{{ $chapterItem->type }}">
+                                            <input @checked(in_array($chapterItem->lesson->id, $alreadyWatchedLectures))
+                                                class="form-check-input lesson-completed-checkbox" type="checkbox"
+                                                data-lesson-id="{{ $chapterItem->lesson->id }}" value="1"
+                                                data-type="lesson" onclick="return false;">
+                                            <label class="form-check-label">
                                                 {{ $chapterItem->lesson->title }}
                                                 <span>
                                                     @if ($chapterItem->type == 'live')
@@ -97,15 +111,15 @@
                                         </div>
                                     @elseif ($chapterItem->type == 'document')
                                         <div
-                                            class="form-check {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}">
+                                            class="form-check cursor-pointer lesson-item {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}"
+                                                data-lesson-id="{{ $chapterItem->lesson->id }}"
+                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
+                                                data-type="document">
                                             <input @checked(in_array($chapterItem->lesson->id, $alreadyWatchedLectures))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->lesson->id }}" value="1"
                                                 data-type="document">
-                                            <label class="form-check-label lesson-item"
-                                                data-lesson-id="{{ $chapterItem->lesson->id }}"
-                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
-                                                data-type="document">
+                                            <label class="form-check-label">
                                                 {{ $chapterItem->lesson->title }}
                                                 <span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -120,14 +134,14 @@
                                             </label>
                                         </div>
                                     @elseif ($chapterItem->type == 'quiz')
-                                        <div class="form-check">
+                                        <div class="form-check cursor-pointer lesson-item"
+                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
+                                                data-lesson-id="{{ $chapterItem->quiz->id }}" data-type="quiz">
                                             <input @checked(in_array($chapterItem->quiz->id, $alreadyCompletedQuiz))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->quiz->id }}" value="1"
                                                 data-type="quiz">
-                                            <label class="form-check-label lesson-item"
-                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
-                                                data-lesson-id="{{ $chapterItem->quiz->id }}" data-type="quiz">
+                                            <label class="form-check-label">
                                                 {{ $chapterItem->quiz->title }}
                                                 <span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -140,15 +154,15 @@
                                             </label>
                                         </div>
                                     @elseif ($chapterItem->type == 'rtl')
-                                        <div class="form-check">
+                                        <div class="form-check cursor-pointer lesson-item"
+                                                data-chapter-id="{{ $chapter->id }}"
+                                                data-course-id="{{ $course->id }}"
+                                                data-lesson-id="{{ $chapterItem->rtl->id }}" data-type="rtl">
                                             <input @checked(in_array($chapterItem->rtl->id, $alreadyCompletedRtl))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->rtl->id }}" value="1"
                                                 data-type="rtl">
-                                            <label class="form-check-label lesson-item"
-                                                data-chapter-id="{{ $chapter->id }}"
-                                                data-course-id="{{ $course->id }}"
-                                                data-lesson-id="{{ $chapterItem->rtl->id }}" data-type="rtl">
+                                            <label class="form-check-label">
                                                 {{ $chapterItem->rtl->title }}
                                                 <span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -172,6 +186,32 @@
             </div>
         </div>
     </section>
+    <div class="modal fade" id="termOfServiceModal" tabindex="-1" aria-labelledby="termOfServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <div class="term-of-service-content p-4 text-dark" style="max-height: 70vh; overflow-y: auto;">
+                        <div style="background: #f7f7f7;" class="p-3">
+                            {!! clean(@$courseTos->description) !!}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-between px-4 pb-4 pt-3" style="border-top: 1px solid #dee2e6;">
+                    @if ($enrollment->tos_status != 'accepted')
+                    <a href="{{ route('student.enrolled-courses') }}" class="btn text-white" style="background: #dc3545;">{{ __('Tolak') }}</a>
+                    <form action="{{ route('student.learning.accept-tos', $course->slug) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-primary" id="acceptTermsBtn" data-bs-dismiss="modal" title="Baca hingga akhir agar tombol persetujuan aktif" disabled>{{ __('Setuju') }}</button>
+                    </form>
+                    @else
+                    <span></span>
+                    <h3 style="color: #5751e1;">Anda telah menyetujui syarat dan ketentuan</h3>
+                    <span></span>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('scripts')
     <script>
@@ -190,23 +230,90 @@
         $(document).ready(function() {
             // reset quiz timer
             resetCountdown();
-            // auto click on current lesson
-            var lessonId = "{{ request('lesson') }}";
-            var type = "{{ request('type') }}";
-            var currentLessonSelector = $(
-                '.lesson-item[data-lesson-id="{{ $currentProgress?->lesson_id }}"][data-type="{{ $currentProgress?->type }}"]'
-            );
-            var targetLessonSelector = $(`.lesson-item[data-lesson-id="${lessonId}"][data-type="${type}"]`);
+            if ("{{ $enrollment->tos_status }}" == 'accepted') {
+                // auto click on current lesson
+                var lessonId = "{{ request('lesson') }}";
+                var type = "{{ request('type') }}";
+                var currentLessonSelector = $(
+                    '.lesson-item[data-lesson-id="{{ $currentProgress?->lesson_id }}"][data-type="{{ $currentProgress?->type }}"]'
+                );
+                var targetLessonSelector = $(`.lesson-item[data-lesson-id="${lessonId}"][data-type="${type}"]`);
 
-            if (targetLessonSelector.length) {
-                targetLessonSelector.trigger('click');
-            } else if (currentLessonSelector.length) {
-                currentLessonSelector.trigger('click');
+                if (targetLessonSelector.length) {
+                    targetLessonSelector.trigger('click');
+                } else if (currentLessonSelector.length) {
+                    currentLessonSelector.trigger('click');
+                } else {
+                    $('.lesson-item:first').trigger('click');
+                }
             } else {
-                $('.lesson-item:first').trigger('click');
+                $('#tosSectionTrigger').trigger('click');
             }
 
-        })
+            // term of service
+            $('#termOfServiceModal').on('shown.bs.modal', function() {
+                const $content = $('.term-of-service-content');
+                const $acceptBtn = $('#acceptTermsBtn');
+
+                // Smooth scroll to top when modal is shown
+                $content.stop().animate({ scrollTop: 0 }, 400);
+
+                // Reset accept button state when modal is shown
+                $acceptBtn.prop('disabled', true);
+
+                $content.on('scroll', function() {
+                    // Check if user has scrolled to the bottom
+                    const isBottom = $(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10;
+
+                    if (isBottom) {
+                        $acceptBtn.prop('disabled', false);
+                    }
+                });
+            });
+
+            // Also check on initial load in case content is shorter than container
+            $('#termOfServiceModal').on('scroll', '.term-of-service-content', function() {
+                const $content = $(this);
+                const $acceptBtn = $('#acceptTermsBtn');
+                const isBottom = $content.scrollTop() + $content.innerHeight() >= $content[0].scrollHeight - 10;
+
+                if (isBottom) {
+                    $acceptBtn.prop('disabled', false);
+                }
+            });
+        });
+
+        function completeLesson(lessonId){
+            // let lessonId = $(this).attr("data-lesson-id");
+
+            let input = $(`input[data-lesson-id="${lessonId}"]`);
+            let type = input.attr("data-type");
+            input.prop("checked", true);
+            let checked = input.is(":checked") ? 1 : 0;
+            $.ajax({
+                method: "POST",
+                url: base_url + "/student/learning/make-lesson-complete",
+                data: {
+                    _token: csrf_token,
+                    lessonId: lessonId,
+                    status: checked,
+                    type: type,
+                },
+                success: function (data) {
+                    if (data.status == "success") {
+                        toastr.success(data.message);
+                    } else if (data.status == "error") {
+                        toastr.error(data.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    let errors = xhr.responseJSON.errors;
+                    $.each(errors, function (key, value) {
+                        toastr.error(value);
+                    });
+                },
+            });
+        }
     </script>
     <script src="{{ asset('frontend/js/custom-tinymce.js') }}"></script>
 @endpush
@@ -240,6 +347,10 @@
             max-width: {{ $maxWidth }}px;
             opacity: {{ $opacity }} !important;
             {!! $positionCSS !!} {!! $display !!}
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
         }
     </style>
 @endpush

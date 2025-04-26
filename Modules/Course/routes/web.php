@@ -11,6 +11,7 @@ use Modules\Course\app\Http\Controllers\CourseLanguageController;
 use Modules\Course\app\Http\Controllers\CourseLevelController;
 use Modules\Course\app\Http\Controllers\CourseReviewController;
 use Modules\Course\app\Http\Controllers\CourseSubCategoryController;
+use Modules\Course\app\Http\Controllers\CourseTosController;
 use Modules\Course\app\Http\Controllers\CourseVerificationController;
 use Modules\Course\app\Http\Controllers\ReviewController;
 
@@ -45,6 +46,9 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         Route::get('/course-verification/{id}', [CourseVerificationController::class, 'index'])->name('course-verification.index');
         Route::post('/course/update-enrollment-status', [CourseVerificationController::class, 'updateEnrollmentStatus'])->name('course.updateEnrollmentStatus');
         Route::get('/course-verification/{id}/rejected', [CourseVerificationController::class, 'rejectedList'])->name('course-verification.rejectedList');
+
+        Route::get('/course-tos', [CourseTosController::class, 'create'])->name('course-tos.create');
+        Route::post('/course-tos', [CourseTosController::class, 'store'])->name('course-tos.store');
     });
 
 
@@ -71,6 +75,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
 
     Route::post('courses/create', [CourseController::class, 'store'])->name('courses.store');
     Route::post('courses/update', [CourseController::class, 'update'])->name('courses.update');
+    Route::get('courses/duplicate/{id}', [CourseController::class, 'duplicate'])->name('courses.duplicate');
     Route::delete('courses/delete/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
     Route::post('courses/status-update/{id}', [CourseController::class, 'statusUpdate'])->name('courses.status-update');
 

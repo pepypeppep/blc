@@ -33,8 +33,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label for="instructor">{{ __('Instructor') }}
-                                                            <code>*</code></label>
+                                                        <label for="instructor">{{ __('Instructor') }}</label>
                                                         <select name="instructor" id=""
                                                             class="form-control select2">
                                                             <option value="">{{ __('Select') }}</option>
@@ -47,7 +46,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="instansi">instansi
                                                             <code>*</code></label>
@@ -55,18 +54,11 @@
                                                             <option value="">{{ __('Select') }}</option>
                                                             @foreach ($instansis as $instansi)
                                                                 <option value="{{ $instansi->id }}"
-                                                                    @selected($instansi->id == @$course?->instansi_id)>{{ $instansi->name }}
+                                                                    @selected($instansi->id == (@$course?->instansi_id ?? (auth()->user()->instansi_id ?? null)))>{{ $instansi->name }}
                                                                     ({{ $instansi->name }})
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="title">{{ __('Title') }} <code>*</code></label>
-                                                        <input id="title" name="title" type="text"
-                                                            class="form-control" value="{{ @$course?->title }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -92,14 +84,21 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="title">{{ __('Title') }} <code>*</code></label>
+                                                        <input id="title" name="title" type="text"
+                                                            class="form-control" value="{{ @$course?->title }}">
+                                                    </div>
+                                                </div>
 
-                                                <div class="col-md-6">
+                                                {{-- <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="jp">Jam Pelajaran (JP)
                                                             <code>*</code></label>
                                                         <input id="jp" name="jp" type="text" class="form-control" value="{{ @$course?->jp }}" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label for="description">{{ __('Course Purpose') }}

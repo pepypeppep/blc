@@ -12,7 +12,7 @@
                         <tr>
                             <td width="100%">{{ $attachment->vacancyattachment->name }}</td>
                             <td class="d-flex align-items-center justify-content-between gap-2">
-                                @if ($vacancy->status === VacancyUser::STATUS_REJECTED)
+                                @if ($vacancyUser->status === VacancyUser::STATUS_REJECTED)
                                     <form id="{{ $attachment->vacancyattachment->id }}_form_action"
                                         action="{{ route('student.continuing-education.attachment', $attachment->vacancyattachment->id) }}"
                                         method="POST" enctype="multipart/form-data">
@@ -44,31 +44,31 @@
         </table>
 
         <div class="pt-4">
-            @if ($vacancy->status === VacancyUser::STATUS_REGISTER)
+            @if ($vacancyUser->status === VacancyUser::STATUS_REGISTER)
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-warning alert-has-icon">
                         <div class="alert-icon"><i class="bi bi-hourglass-split"></i> Menunggu Pengajuan Berkas Lengkap
                         </div>
                     </div>
                 </div>
-            @elseif($vacancy->status === VacancyUser::STATUS_VERIFICATION)
+            @elseif($vacancyUser->status === VacancyUser::STATUS_VERIFICATION)
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-info alert-has-icon">
                         <div class="alert-icon"><i class="bi bi-hourglass-split"></i> Menunggu Verifikasi Berkas</div>
                     </div>
                 </div>
-            @elseif($vacancy->status === VacancyUser::STATUS_ASSESSMENT)
+            @elseif($vacancyUser->status === VacancyUser::STATUS_ASSESSMENT)
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-primary alert-has-icon">
                         <div class="alert-icon"><i class="bi bi-hourglass-split"></i> Berkas telah diverifikasi</div>
                     </div>
                 </div>
             @elseif(
-                $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
-                    $vacancy->status === VacancyUser::STATUS_DONE ||
-                    $vacancy->status === VacancyUser::STATUS_REPORT ||
-                    $vacancy->status === VacancyUser::STATUS_ACTIVATION ||
-                    $vacancy->status === VacancyUser::STATUS_EXTEND)
+                $vacancyUser->status === VacancyUser::STATUS_ELIGIBLE ||
+                    $vacancyUser->status === VacancyUser::STATUS_DONE ||
+                    $vacancyUser->status === VacancyUser::STATUS_REPORT ||
+                    $vacancyUser->status === VacancyUser::STATUS_ACTIVATION ||
+                    $vacancyUser->status === VacancyUser::STATUS_EXTEND)
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-success alert-has-icon">
                         <div class="alert-icon"><i class="far fa-check-circle"></i> Berkas disetujui</div>
@@ -84,7 +84,7 @@
                         </div>
                     @endif
                 </div>
-            @elseif($vacancy->status === VacancyUser::STATUS_REJECTED)
+            @elseif($vacancyUser->status === VacancyUser::STATUS_REJECTED)
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-danger alert-has-icon">
                         <div class="alert-icon"><i class="bi bi-x-circle"></i> Berkas dikembalikan</div>
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                     <div>
-                        <form action="{{ route('student.continuing-education.ajukanKembali', $vacancy->id) }}" method="POST"
+                        <form action="{{ route('student.continuing-education.ajukanKembali', $vacancyUser->id) }}" method="POST"
                             class="d-inline">
                             @csrf
                             @method('PUT')
@@ -112,7 +112,7 @@
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-danger alert-has-icon">
                         <div class="alert-icon"><i class="bi bi-question-circle"></i> Status Berkas
-                            {{ $vacancy->status }}
+                            {{ $vacancyUser->status }}
                         </div>
                     </div>
                     <div class="alert alert-danger">
@@ -136,11 +136,11 @@
                             <h5 class="tag-title">Status Assesment :</h5>
                             <ul class="list-wrap p-0 mb-0">
                                 @if (
-                                    $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
-                                        $vacancy->status === VacancyUser::STATUS_DONE ||
-                                        $vacancy->status === VacancyUser::STATUS_REPORT ||
-                                        $vacancy->status === VacancyUser::STATUS_ACTIVATION ||
-                                        $vacancy->status === VacancyUser::STATUS_EXTEND)
+                                    $vacancyUser->status === VacancyUser::STATUS_ELIGIBLE ||
+                                        $vacancyUser->status === VacancyUser::STATUS_DONE ||
+                                        $vacancyUser->status === VacancyUser::STATUS_REPORT ||
+                                        $vacancyUser->status === VacancyUser::STATUS_ACTIVATION ||
+                                        $vacancyUser->status === VacancyUser::STATUS_EXTEND)
                                     <li><a class="bg-success text-white " href="javascript:;">
                                             <strong>Sudah Assesmen</strong> </a></li>
                                     @if ($logs->whereIn('status', ['eligible', 'done'])->last())

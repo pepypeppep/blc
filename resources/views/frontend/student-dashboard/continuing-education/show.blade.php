@@ -31,18 +31,8 @@
                                     @endphp
                                     {{ $educationLevel ? $educationLevel : '-' }}
                                 </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>{{ __('Syarat Pangkat/Golongan') }}</td>
-                                <td>
-                                    @php
-                                        $minimumRank = $vacancy->employment_grade;
-                                    @endphp
-                                    {{ $minimumRank ? $minimumRank : '-' }}
-                                </td>
                                 <td class="text-center">
-                                    @if ($passEmployeeGrade)
+                                    @if ($passJenjangPendidikanTerakhir)
                                         <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
                                     @else
                                         <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
@@ -51,7 +41,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>{{ __('Batas Usia') }}</td>
+                                <td>{{ __('Batas Usia Pensiun') }}</td>
                                 <td>
                                     @php
                                         $retirementAge = $vacancy->age_limit;
@@ -137,7 +127,7 @@
             <div class="col-12 mt-4">
                 <div class="p-3">
                     @if (!$isExist)
-                        @if ($passAgeLimit && $passEmployeeGrade)
+                        @if ($passAgeLimit && $passJenjangPendidikanTerakhir)
                             <div style="background: #d3ffde;"
                                 class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4 border border-success">
                                 {{-- @if ($vacancy->status) --}}
@@ -145,7 +135,7 @@
                                     Anda memenuhi semua syarat Pendidikan Lanjutan
                                 </p>
                             </div>
-                        @elseif (!$passAgeLimit || !$passEmployeeGrade)
+                        @elseif (!$passAgeLimit || !$passJenjangPendidikanTerakhir)
                             <div style="background: #ffd3d3;"
                                 class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4 border border-danger">
                                 <p class="mb-0 fs-5 text-dark fw-bold text-center">
@@ -165,7 +155,7 @@
             </div>
         </div>
 
-        @if ($passAgeLimit && $passEmployeeGrade)
+        @if ($passAgeLimit && $passJenjangPendidikanTerakhir)
             <div class="row" id="attachment_container">
                 <h5 class="heading-title mt-5">{{ __('Lampiran yang Diperlukan') }}</h5>
                 <div class="col-12">
@@ -262,7 +252,7 @@
 
         <div class="row">
             <div class="col-12 text-end">
-                @if (!$isExist && $meetCondition && $passAgeLimit && $passEmployeeGrade)
+                @if (!$isExist && $meetCondition && $passAgeLimit && $passJenjangPendidikanTerakhir)
                     <form action="{{ route('student.continuing-education.register', $vacancy->id) }}" method="POST"
                         class="d-inline">
                         @csrf

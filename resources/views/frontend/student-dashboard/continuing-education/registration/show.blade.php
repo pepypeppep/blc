@@ -7,7 +7,7 @@
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title">
             <h4 class="title">{{ __('Detail Pendaftaran Tugas Belajar') }}</h4>
-            @if ($vacancy->status === VacancyUser::STATUS_DONE)
+            @if ($vacancyUser->status === VacancyUser::STATUS_DONE)
                 <div class="col-md-12 mb-2">
                     <div class="alert alert-success">
                         <div class="alert-body">
@@ -37,11 +37,11 @@
                                             tabindex="-1">Dokumen</button>
                                     </li>
                                     @if (
-                                        $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
-                                            $vacancy->status === VacancyUser::STATUS_DONE ||
-                                            $vacancy->status === VacancyUser::STATUS_REPORT ||
-                                            $vacancy->status === VacancyUser::STATUS_ACTIVATION ||
-                                            $vacancy->status === VacancyUser::STATUS_EXTEND)
+                                        $vacancyUser->status === VacancyUser::STATUS_ELIGIBLE ||
+                                            $vacancyUser->status === VacancyUser::STATUS_DONE ||
+                                            $vacancyUser->status === VacancyUser::STATUS_REPORT ||
+                                            $vacancyUser->status === VacancyUser::STATUS_ACTIVATION ||
+                                            $vacancyUser->status === VacancyUser::STATUS_EXTEND)
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link" id="itemSix-tab" data-bs-toggle="tab"
                                                 data-bs-target="#itemSix-tab-pane" type="button" role="tab"
@@ -55,7 +55,7 @@
                                                 tabindex="-1">Laporan</button>
                                         </li>
                                     @endif
-                                    @if ($vacancy->status === VacancyUser::STATUS_DONE || $vacancy->status === VacancyUser::STATUS_ACTIVATION)
+                                    @if ($vacancyUser->status === VacancyUser::STATUS_DONE || $vacancyUser->status === VacancyUser::STATUS_ACTIVATION)
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link" id="pengaktifan-tab" data-bs-toggle="tab"
                                                 data-bs-target="#pengaktifan-tab-pane" type="button" role="tab"
@@ -69,15 +69,15 @@
                                 @include('frontend.student-dashboard.continuing-education.registration.partials.data-peserta')
                                 @include('frontend.student-dashboard.continuing-education.registration.partials.dokumen')
                                 @if (
-                                    $vacancy->status === VacancyUser::STATUS_ELIGIBLE ||
-                                        $vacancy->status === VacancyUser::STATUS_DONE ||
-                                        $vacancy->status === VacancyUser::STATUS_REPORT ||
-                                        $vacancy->status === VacancyUser::STATUS_ACTIVATION ||
-                                        $vacancy->status === VacancyUser::STATUS_EXTEND)
+                                    $vacancyUser->status === VacancyUser::STATUS_ELIGIBLE ||
+                                        $vacancyUser->status === VacancyUser::STATUS_DONE ||
+                                        $vacancyUser->status === VacancyUser::STATUS_REPORT ||
+                                        $vacancyUser->status === VacancyUser::STATUS_ACTIVATION ||
+                                        $vacancyUser->status === VacancyUser::STATUS_EXTEND)
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.lampiran')
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.laporan')
                                 @endif
-                                @if ($vacancy->status === VacancyUser::STATUS_DONE || $vacancy->status === VacancyUser::STATUS_ACTIVATION)
+                                @if ($vacancyUser->status === VacancyUser::STATUS_DONE || $vacancyUser->status === VacancyUser::STATUS_ACTIVATION)
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.pengaktifan')
                                 @endif
                             </div>
@@ -202,7 +202,7 @@
 
     <script>
         $(document).ready(function() {
-            if (@js($vacancy->status) === @js(VacancyUser::STATUS_DONE)) {
+            if (@js($vacancyUser->status) === @js(VacancyUser::STATUS_DONE)) {
                 swal.fire({
                     title: 'Pencantuman Gelar',
                     text: 'Pencantuman Gelar dapat dilakukan melalui laman SIASN BKN',

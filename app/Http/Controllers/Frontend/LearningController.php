@@ -413,6 +413,17 @@ class LearningController extends Controller
             'user_grade' => $grad,
             'status' => $grad >= $quiz->pass_mark ? 'pass' : 'failed',
         ]);
+
+        if ($quizResult->status == 'pass') {
+            CourseProgress::where('user_id', userAuth()->id)
+                ->where('course_id', $quiz->course_id)
+                ->where('chapter_id', $quiz->chapter_id)
+                ->where('lesson_id', $quiz->id)
+                ->update([
+                    'watched' => 1
+                ]);
+        }
+
         return redirect()->route('student.quiz.result', ['id' => $id, 'result_id' => $quizResult->id]);
     }
 
@@ -427,7 +438,6 @@ class LearningController extends Controller
 
     function rtlIndex(string $id)
     {
-
         $item = FollowUpAction::findOrFail($id);
 
         $response = FollowUpActionResponse::where('follow_up_action_id', $id)->where('participant_id', userAuth()->id)->first();
@@ -498,7 +508,16 @@ class LearningController extends Controller
 
         // Save the response
         if ($response->save()) {
-            return redirect()->back()->with('success', 'Rencana tindak lanjut berhasil disimpan.');
+            CourseProgress::where('user_id', userAuth()->id)
+                ->where('course_id', $response->follow_up_action->course_id)
+                ->where('chapter_id', $response->follow_up_action->chapter_id)
+                ->where('lesson_id', $response->id)
+                ->update([
+                    'watched' => 1
+                ]);
+            $course = Course::find($response->follow_up_action->course_id);
+
+            return redirect()->route('student.learning.index', $course->slug)->with(['alert-type' => 'success', 'message' => __('Rencana tindak lanjut berhasil dibuat')]);
         }
 
         return redirect()->back()->withInput()->withErrors('Rencana tindak lanjut gagal disimpan.');

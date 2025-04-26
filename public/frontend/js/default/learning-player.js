@@ -77,11 +77,22 @@ $(document).ready(function () {
     $(".lesson-item").on("click", function () {
         // hide sidebar
         hideSidebar();
+        let ids = $(".lesson-item").map(function () { return $(this).attr("data-lesson-id") }).get();
 
         var lessonId = $(this).attr("data-lesson-id");
         var chapterId = $(this).attr("data-chapter-id");
         var courseId = $(this).attr("data-course-id");
         var type = $(this).attr("data-type");
+
+        var index = ids.indexOf(lessonId);
+        if (index !== 0) {
+            var previousLessonId = ids[index - 1];
+            if (!$("input[data-lesson-id=" + previousLessonId + "]").prop("checked")) {
+                alert("You must complete the previous lesson first.");
+                $("div[data-lesson-id=" + previousLessonId + "]").click();
+                return false;
+            }
+        }
 
         $.ajax({
             method: "POST",
@@ -263,7 +274,40 @@ $(document).ready(function () {
 
                 // Initializing the player
                 if (document.getElementById("vid1")) {
-                    videojs("vid1").ready(function () {
+                    // videojs("vid1").ready(function () {
+                    //     this.play();
+                    // });
+                    var player = videojs("vid1");
+
+                    // Inside your player.ready function where you handle the timeupdate event:
+                    player.ready(function() {
+                        // Add a flag to track if we've already marked this lesson as complete
+                        let lessonCompleted = false;
+
+                        player.one('loadedmetadata', function() {
+                            var duration = player.duration();
+
+                            if (duration && !isNaN(duration)) {
+                                player.on('timeupdate', function() {
+                                    var currentTime = player.currentTime();
+
+                                    // Check if we're 1 second before the end and haven't completed yet
+                                    if (currentTime >= duration - 1 && !lessonCompleted) {
+                                        let itemId = lessonId;
+                                        let elements = document.querySelectorAll(`input[data-lesson-id="${itemId}"]`);
+
+                                        if (elements.length && !elements[0].checked) {
+                                            // elements[0].click();
+                                            completeLesson(lessonId)
+                                            lessonCompleted = true; // Mark as completed
+                                        }
+
+                                        // Keep the listener active but skip future checks
+                                    }
+                                });
+                            }
+                        });
+
                         this.play();
                     });
                 }
@@ -278,34 +322,68 @@ $(document).ready(function () {
         });
     });
 
-    $(".lesson-completed-checkbox").on("click", function () {
-        let lessonId = $(this).attr("data-lesson-id");
-        let type = $(this).attr("data-type");
-        let checked = $(this).is(":checked") ? 1 : 0;
-        $.ajax({
-            method: "POST",
-            url: base_url + "/student/learning/make-lesson-complete",
-            data: {
-                _token: csrf_token,
-                lessonId: lessonId,
-                status: checked,
-                type: type,
-            },
-            success: function (data) {
-                if (data.status == "success") {
-                    toastr.success(data.message);
-                } else if (data.status == "error") {
-                    toastr.error(data.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                let errors = xhr.responseJSON.errors;
-                $.each(errors, function (key, value) {
-                    toastr.error(value);
-                });
-            },
-        });
-    });
+    // $(".lesson-completed-checkbox").on("click", function () {
+    //     let lessonId = $(this).attr("data-lesson-id");
+    //     let type = $(this).attr("data-type");
+    //     let checked = $(this).is(":checked") ? 1 : 0;
+    //     $.ajax({
+    //         method: "POST",
+    //         url: base_url + "/student/learning/make-lesson-complete",
+    //         data: {
+    //             _token: csrf_token,
+    //             lessonId: lessonId,
+    //             status: checked,
+    //             type: type,
+    //         },
+    //         success: function (data) {
+    //             if (data.status == "success") {
+    //                 toastr.success(data.message);
+    //             } else if (data.status == "error") {
+    //                 toastr.error(data.message);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             let errors = xhr.responseJSON.errors;
+    //             $.each(errors, function (key, value) {
+    //                 toastr.error(value);
+    //             });
+    //         },
+    //     });
+    // });
+
+    // function completeLesson(lessonId){
+    //     // let lessonId = $(this).attr("data-lesson-id");
+
+    //     let input = $(`input[data-lesson-id="${lessonId}"]`);
+    //     console.log("input[0]",input[0]);
+
+    //     let type = input.attr("data-type");
+    //     input.prop("checked", true);
+    //     let checked = input.is(":checked") ? 1 : 0;
+    //     $.ajax({
+    //         method: "POST",
+    //         url: base_url + "/student/learning/make-lesson-complete",
+    //         data: {
+    //             _token: csrf_token,
+    //             lessonId: lessonId,
+    //             status: checked,
+    //             type: type,
+    //         },
+    //         success: function (data) {
+    //             if (data.status == "success") {
+    //                 toastr.success(data.message);
+    //             } else if (data.status == "error") {
+    //                 toastr.error(data.message);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             let errors = xhr.responseJSON.errors;
+    //             $.each(errors, function (key, value) {
+    //                 toastr.error(value);
+    //             });
+    //         },
+    //     });
+    // }
 
     // Course video button for small devices
     $(".wsus__course_header_btn").on("click", function () {

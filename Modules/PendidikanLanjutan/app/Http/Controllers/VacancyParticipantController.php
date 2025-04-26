@@ -181,36 +181,36 @@ class VacancyParticipantController extends Controller
                 ->where('category', $vacancyAttachment->category)
                 ->first();
 
-            if ($check) {
-                if ($check->status == 'assign') {
-                    $assignFile = str_replace(["draft_", "final_"], "assign_", $check->file);
-                    if (Storage::disk('private')->exists($assignFile)) {
-                        Storage::disk('private')->delete($assignFile);
-                    }
-                    $fileName = "pendidikan_lanjutan/" . now()->year . "/lampiran/" . $vacancy->id . "/" . $type . "/" . now()->month . "_final_" . $type . "_" . $vacancyUser->user->name . ".pdf";
-                    $check->update([
-                        'file' => $fileName,
-                        'status' => 'final'
-                    ]);
-                }
-            } else {
-                $fileName = "pendidikan_lanjutan/" . now()->year . "/lampiran/" . $vacancy->id . "/" . $type . "/" . now()->month . "_draft_" . $type . "_" . $vacancyUser->user->name . ".pdf";
+            // if ($check) {
+            //     if ($check->status == 'assign') {
+            //         $assignFile = str_replace(["draft_", "final_"], "assign_", $check->file);
+            //         if (Storage::disk('private')->exists($assignFile)) {
+            //             Storage::disk('private')->delete($assignFile);
+            //         }
+            //         $fileName = "pendidikan_lanjutan/" . now()->year . "/lampiran/" . $vacancy->id . "/" . $type . "/" . now()->month . "_final_" . $type . "_" . $vacancyUser->user->name . ".pdf";
+            //         $check->update([
+            //             'file' => $fileName,
+            //             'status' => 'final'
+            //         ]);
+            //     }
+            // } else {
+            $fileName = "pendidikan_lanjutan/" . now()->year . "/lampiran/" . $vacancy->id . "/" . $type . "/" . now()->month . "_draft_" . $type . "_" . $vacancyUser->user->name . ".pdf";
 
-                if ($title == "Perjanjian Kinerja") {
-                    $status = 'final';
-                } else {
-                    $status = 'draft';
-                }
+            // if ($title == "Perjanjian Kinerja") {
+            //     $status = 'final';
+            // } else {
+            $status = 'draft';
+            // }
 
-                // Create Vacancy User Attachment
-                $vacancyUserAttachment = VacancyUserAttachment::create([
-                    'vacancy_user_id' => $vacancyUser->id,
-                    'vacancy_attachment_id' => $vacancyAttachment->id,
-                    'file' => $fileName,
-                    'category' => $vacancyAttachment->category,
-                    'status' => $status
-                ]);
-            }
+            // Create Vacancy User Attachment
+            $vacancyUserAttachment = VacancyUserAttachment::create([
+                'vacancy_user_id' => $vacancyUser->id,
+                'vacancy_attachment_id' => $vacancyAttachment->id,
+                'file' => $fileName,
+                'category' => $vacancyAttachment->category,
+                'status' => $status
+            ]);
+            // }
 
             Storage::disk('private')->put($fileName, file_get_contents($file));
 

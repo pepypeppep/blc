@@ -192,7 +192,7 @@ class LearningController extends Controller
             $fileInfo = array_merge(CourseChapterLesson::select(['id', 'file_path', 'storage', 'file_type', 'downloadable', 'description'])->findOrFail($request->lessonId)->toArray(), ['type' => 'document']);
             if ('pdf' == $fileInfo['file_type']) {
                 return response()->json([
-                    'view'      => view('frontend.pages.learning-player.partials.pdf-viewer', ['file_path' => $fileInfo['id']])->render(),
+                    'view'      => view('frontend.pages.learning-player.partials.pdf-viewer', ['file_path' => $fileInfo['id'], 'file_info' => $fileInfo])->render(),
                     'file_info' => $fileInfo,
                 ]);
             } elseif ('docx' == $fileInfo['file_type']) {

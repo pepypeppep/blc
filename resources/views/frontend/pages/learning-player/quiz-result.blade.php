@@ -78,7 +78,7 @@
                             </div>
                             <div class="card-body">
                                 <h6 class="card-title count">{{ $quizResult->user_grade }}</h6>
-                                <p class="card-text">{{ __('Your Marks') }}</p>
+                                <p class="card-text">{{ __('Your Score') }}</p>
                             </div>
                         </div>
                     </div>
@@ -98,7 +98,8 @@
                 </div>
             </div>
 
-            <div class="card mt-3">
+            @env('APP_ENV', 'local')
+                {{-- <div class="card mt-3">
                 <form action="{{ route('student.quiz.store', request('id')) }}" method="POST">
                     @csrf
                     <div class="card-body">
@@ -107,7 +108,10 @@
                         @endphp
                         @foreach ($quiz->questions as $question)
                             <div class="question-box mt-4">
-                                <h6>{{ $loop->iteration }}. {!! $question->title !!}</h6>
+                                <div class="d-flex align-items-baseline">
+                                    <h6 class="me-2">{{ $loop->iteration }}.</h6>
+                                    <div class="question-title">{!! $question->title !!}</div>
+                                </div>
                                 <div class="row">
                                     @foreach ($question->answers as $answer)
                                         <div class="col-md-6">
@@ -126,14 +130,14 @@
                                             </div>
                                         </div>
                                     @endforeach
-
                                 </div>
                             </div>
                         @endforeach
 
                     </div>
                 </form>
-            </div>
+            </div> --}}
+            @endenv
         </div>
 
     </section>
@@ -147,4 +151,15 @@
             resetCountdown();
         })
     </script>
+@endpush
+
+@push('styles')
+    <style>
+        .question-title p {
+            display: inline;
+            margin: 0;
+            padding: 0;
+            color: #000;
+        }
+    </style>
 @endpush

@@ -36,7 +36,7 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1"><i class="fas fa-link"></i></span>
                         <input type="text" class="form-control" id="input_link" name="link_path"
-                            placeholder="{{ __('Youtube source url') }}" value="">
+                            placeholder="{{ __('Youtube & Google Drive url') }}" value="">
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div class="row is_free_wrapper">
+        {{-- <div class="row is_free_wrapper">
             <div class="col-md-6 mt-2">
                 <span>{{ __('Preview') }}</span>
                 <div class="switcher ms-3">
@@ -68,7 +68,7 @@
                     </label>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="modal-footer">
             <button type="submit" class="btn btn-primary submit-btn">{{ __('Create') }}</button>

@@ -31,6 +31,7 @@ class Enrollment extends Model
         'user_id' => 'user_id',
         'course_id' => 'course_id',
         'has_access' => 'has_access',
+        'tos_status' => 'tos_status',
     ];
 
     function course(): BelongsTo

@@ -83,24 +83,26 @@
             </div>
 
             <div class="card mt-3">
-                ini time {{ $quiz->time }}
                 <form action="{{ route('student.quiz.store', request('id')) }}" method="POST" class="question-form">
                     @csrf
                     <div class="card-body">
                         @foreach ($quiz->questions as $question)
                             <div class="question-box mt-4">
-                                <h6>{{ $loop->iteration }}. {!! $question->title !!}</h6>
+                                <div class="d-flex align-items-baseline">
+                                    <h6 class="me-2">{{ $loop->iteration }}.</h6>
+                                    <div class="question-title">{!! $question->title !!}</div>
+                                </div>
                                 <div class="row">
                                     @foreach ($question->answers as $answer)
                                         <div class="col-md-6">
                                             <div class="card ans-body m-2">
                                                 <label for="ans-{{ $answer->id }}" class="box first">
-                                                    <div class="course">
-                                                        <span class="circle">
+                                                    <div class="course d-flex align-items-baseline">
+                                                        <span class="circle me-2">
                                                             <input type="radio" name="question[{{ $question->id }}]"
                                                                 id="ans-{{ $answer->id }}" value="{{ $answer->id }}">
                                                         </span>
-                                                        <span class="subject">{!! $answer->title !!}</span>
+                                                        <span class="subject question-title">{!! $answer->title !!}</span>
                                                     </div>
                                                 </label>
                                             </div>
@@ -128,4 +130,15 @@
             countdown({{ $quiz->time }});
         })
     </script>
+@endpush
+
+@push('styles')
+    <style>
+        .question-title p {
+            display: inline;
+            margin: 0;
+            padding: 0;
+            color: #000;
+        }
+    </style>
 @endpush

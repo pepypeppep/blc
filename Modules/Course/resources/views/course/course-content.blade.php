@@ -281,7 +281,7 @@
                                                                                                         class="far fa-question-circle"></i></span>
                                                                                                 <p
                                                                                                     class="mb-0 ms-2 bold-text">
-                                                                                                    {!! $question->title !!}
+                                                                                                    {!! clean(@$question->title) !!}
                                                                                                 </p>
                                                                                             </div>
                                                                                             <div class="item-action">

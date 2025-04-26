@@ -77,11 +77,22 @@ $(document).ready(function () {
     $(".lesson-item").on("click", function () {
         // hide sidebar
         hideSidebar();
+        let ids = $(".lesson-item").map(function () { return $(this).attr("data-lesson-id") }).get();
 
         var lessonId = $(this).attr("data-lesson-id");
         var chapterId = $(this).attr("data-chapter-id");
         var courseId = $(this).attr("data-course-id");
         var type = $(this).attr("data-type");
+
+        var index = ids.indexOf(lessonId);
+        if (index !== 0) {
+            var previousLessonId = ids[index - 1];
+            if (!$("input[data-lesson-id=" + previousLessonId + "]").prop("checked")) {
+                alert("You must complete the previous lesson first.");
+                $("div[data-lesson-id=" + previousLessonId + "]").click();
+                return false;
+            }
+        }
 
         $.ajax({
             method: "POST",
@@ -212,10 +223,29 @@ $(document).ready(function () {
                     file_info.storage == "google_drive" &&
                     file_info.type == "lesson"
                 ) {
-                    playerHtml = `<iframe class="iframe-video" src="https://drive.google.com/file/d/${extractGoogleDriveVideoId(
-                        file_info.file_path
-                    )}/preview" width="640" height="680" allow="autoplay; encrypted-media" frameborder="0" autoplay allowfullscreen>
-                    </iframe><div class="vjs-watermark"><img src="${watermark}"></div><div class="vjs-poster custom-poster"></div>`;
+                    playerHtml = `<iframe id="google-drive-player" class="iframe-video"
+                                src="https://drive.google.com/file/d/${extractGoogleDriveVideoId(file_info.file_path)}/preview" width="640" height="680" allow="autoplay; encrypted-media" frameborder="0" allowfullscreen data-lesson-id="${lessonId}"></iframe>
+        <div class="completion-overlay" style="
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
+    ">
+        <button
+            id="mark-complete-btn"
+            class="btn btn-primary"
+            style="
+                display: none;
+                margin: 0 auto;
+                padding: 8px 20px;
+            ">
+            Klik untuk menyelesaikan materi
+        </button>
+    </div>
+                    <div class="vjs-watermark"><img src="${watermark}"></div><div class="vjs-poster custom-poster"></div>`;
                 } else if (
                     file_info.type == "document" &&
                     file_info.file_type != "txt"
@@ -241,7 +271,6 @@ $(document).ready(function () {
                     </div>
                 </div>`;
                 } else {
-
                     playerHtml = `<div class="resource-file">
                         <div class="file-info">
                             <div class="text-center">
@@ -261,11 +290,90 @@ $(document).ready(function () {
 
                 $(".video-payer").html(playerHtml);
 
-                // Initializing the player
+                // Initializing the player For Youtube Video
                 if (document.getElementById("vid1")) {
-                    videojs("vid1").ready(function () {
+                    // videojs("vid1").ready(function () {
+                    //     this.play();
+                    // });
+                    var player = videojs("vid1");
+
+                    // Inside your player.ready function where you handle the timeupdate event:
+                    player.ready(function() {
+                        // Add a flag to track if we've already marked this lesson as complete
+                        let lessonCompleted = false;
+
+                        player.one('loadedmetadata', function() {
+                            var duration = player.duration();
+
+                            if (duration && !isNaN(duration)) {
+                                player.on('timeupdate', function() {
+                                    var currentTime = player.currentTime();
+
+                                    // Check if we're 1 second before the end and haven't completed yet
+                                    if (currentTime >= duration - 1 && !lessonCompleted) {
+                                        let itemId = lessonId;
+                                        let elements = document.querySelectorAll(`input[data-lesson-id="${itemId}"]`);
+
+                                        if (elements.length && !elements[0].checked) {
+                                            // elements[0].click();
+                                            completeLesson(lessonId)
+                                            lessonCompleted = true; // Mark as completed
+                                        }
+
+                                        // Keep the listener active but skip future checks
+                                    }
+                                });
+                            }
+                        });
+
                         this.play();
                     });
+                }
+
+                // Handle Google Drive video completion
+                if (document.getElementById("google-drive-player")) {
+                    const markCompleteBtn = document.getElementById("mark-complete-btn");
+                    let lessonCompleted = false;
+
+                    // Show completion button after 5 seconds
+                    setTimeout(() => {
+                        if (markCompleteBtn) markCompleteBtn.style.display = "block";
+                    }, 5000);
+
+                    // If we know video duration, auto-complete after that time + buffer
+                    if (file_info.duration) {
+                        setTimeout(() => {
+                            if (!lessonCompleted) {
+                                completeLesson(lessonId);
+                                lessonCompleted = true;
+                                if (markCompleteBtn) markCompleteBtn.style.display = "none";
+                            }
+                        }, (file_info.duration + 10) * 1000); // 10 second buffer
+                    }
+
+                    // Manual completion handler
+                    if (markCompleteBtn) {
+                        markCompleteBtn.addEventListener("click", () => {
+                            completeLesson(lessonId);
+                            lessonCompleted = true;
+                            markCompleteBtn.style.display = "none";
+                        });
+                    }
+
+                    // Track user activity as secondary indicator
+                    let activityTimer;
+                    const resetActivityTimer = () => {
+                        clearTimeout(activityTimer);
+                        activityTimer = setTimeout(() => {
+                            if (!lessonCompleted && file_info.duration) {
+                                completeLesson(lessonId);
+                                lessonCompleted = true;
+                            }
+                        }, (file_info.duration || 300) * 1000); // Use duration or 5 min fallback
+                    };
+
+                    window.addEventListener("mousemove", resetActivityTimer);
+                    window.addEventListener("keydown", resetActivityTimer);
                 }
 
                 // set lecture description
@@ -278,34 +386,68 @@ $(document).ready(function () {
         });
     });
 
-    $(".lesson-completed-checkbox").on("click", function () {
-        let lessonId = $(this).attr("data-lesson-id");
-        let type = $(this).attr("data-type");
-        let checked = $(this).is(":checked") ? 1 : 0;
-        $.ajax({
-            method: "POST",
-            url: base_url + "/student/learning/make-lesson-complete",
-            data: {
-                _token: csrf_token,
-                lessonId: lessonId,
-                status: checked,
-                type: type,
-            },
-            success: function (data) {
-                if (data.status == "success") {
-                    toastr.success(data.message);
-                } else if (data.status == "error") {
-                    toastr.error(data.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                let errors = xhr.responseJSON.errors;
-                $.each(errors, function (key, value) {
-                    toastr.error(value);
-                });
-            },
-        });
-    });
+    // $(".lesson-completed-checkbox").on("click", function () {
+    //     let lessonId = $(this).attr("data-lesson-id");
+    //     let type = $(this).attr("data-type");
+    //     let checked = $(this).is(":checked") ? 1 : 0;
+    //     $.ajax({
+    //         method: "POST",
+    //         url: base_url + "/student/learning/make-lesson-complete",
+    //         data: {
+    //             _token: csrf_token,
+    //             lessonId: lessonId,
+    //             status: checked,
+    //             type: type,
+    //         },
+    //         success: function (data) {
+    //             if (data.status == "success") {
+    //                 toastr.success(data.message);
+    //             } else if (data.status == "error") {
+    //                 toastr.error(data.message);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             let errors = xhr.responseJSON.errors;
+    //             $.each(errors, function (key, value) {
+    //                 toastr.error(value);
+    //             });
+    //         },
+    //     });
+    // });
+
+    // function completeLesson(lessonId){
+    //     // let lessonId = $(this).attr("data-lesson-id");
+
+    //     let input = $(`input[data-lesson-id="${lessonId}"]`);
+    //     console.log("input[0]",input[0]);
+
+    //     let type = input.attr("data-type");
+    //     input.prop("checked", true);
+    //     let checked = input.is(":checked") ? 1 : 0;
+    //     $.ajax({
+    //         method: "POST",
+    //         url: base_url + "/student/learning/make-lesson-complete",
+    //         data: {
+    //             _token: csrf_token,
+    //             lessonId: lessonId,
+    //             status: checked,
+    //             type: type,
+    //         },
+    //         success: function (data) {
+    //             if (data.status == "success") {
+    //                 toastr.success(data.message);
+    //             } else if (data.status == "error") {
+    //                 toastr.error(data.message);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             let errors = xhr.responseJSON.errors;
+    //             $.each(errors, function (key, value) {
+    //                 toastr.error(value);
+    //             });
+    //         },
+    //     });
+    // }
 
     // Course video button for small devices
     $(".wsus__course_header_btn").on("click", function () {

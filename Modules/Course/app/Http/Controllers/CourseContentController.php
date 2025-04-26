@@ -175,7 +175,7 @@ class CourseContentController extends Controller
                 'chapter_id' => $request->chapter_id,
                 'chapter_item_id' => $chapterItem->id,
                 'file_path' => $request->link_path,
-                'storage' => "youtube",
+                'storage' => detectStorageType($request->link_path),
                 'file_type' => "video",
                 'volume' => $request->volume,
                 'duration' => $request->duration,

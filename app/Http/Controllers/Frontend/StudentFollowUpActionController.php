@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
+use App\Models\Course;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Models\CourseProgress;
 use App\Models\FollowUpAction;
-use App\Models\FollowUpActionResponse;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\FollowUpActionResponse;
 use Modules\Order\app\Models\Enrollment;
-use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 class StudentFollowUpActionController extends Controller
@@ -110,7 +111,16 @@ class StudentFollowUpActionController extends Controller
         }
 
         if ($response->save()) {
-            return redirect()->route('student.follow-up-action.show', $request->follow_up_action_id)->with('success', 'Rencana tindak lanjut berhasil dibuat.');
+            CourseProgress::where('user_id', userAuth()->id)
+                ->where('course_id', $response->course_id)
+                ->where('chapter_id', $response->chapter_id)
+                ->where('lesson_id', $response->id)
+                ->update([
+                    'watched' => 1
+                ]);
+            $course = Course::find($response->course_id);
+
+            return redirect()->route('student.learning.index', $course->slug)->with(['alert-type' => 'success', 'message' => __('Rencana tindak lanjut berhasil dibuat')]);
         }
 
         return redirect()->route('student.follow-up-action.show', $request->follow_up_action_id)->withInput()->withErrors('Gagal membuat rencana tindak lanjut.');
@@ -163,7 +173,16 @@ class StudentFollowUpActionController extends Controller
 
 
         if ($response->save()) {
-            return redirect()->route('student.follow-up-action.show', $response->follow_up_action_id)->with('success', 'Rencana tindak lanjut berhasil diperbarui.');
+            CourseProgress::where('user_id', userAuth()->id)
+                ->where('course_id', $response->course_id)
+                ->where('chapter_id', $response->chapter_id)
+                ->where('lesson_id', $response->id)
+                ->update([
+                    'watched' => 1
+                ]);
+            $course = Course::find($response->course_id);
+
+            return redirect()->route('student.learning.index', $course->slug)->with(['alert-type' => 'success', 'message' => __('Rencana tindak lanjut berhasil diperbarui.')]);
         }
 
         return redirect()->route('student.follow-up-action.show', $response->follow_up_action_id)->withInput()->withErrors('Rencana tindak lanjut gagal diperbarui.');

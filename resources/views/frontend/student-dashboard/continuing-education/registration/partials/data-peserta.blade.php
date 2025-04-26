@@ -5,20 +5,25 @@
                 <tr>
                     <td>{{ __('NIP') }}</td>
                     <td>
-                        {{ $vacancy->user->nip }}
+                        {{ $vacancyUser->user->nip }}
                     </td>
                 </tr>
                 <tr>
                     <td>{{ __('Nama Pegawai') }}</td>
                     <td>
-                        {{ $vacancy->user->name }}
+                        {{ $vacancyUser->user->name }}
                     </td>
-
                 </tr>
                 <tr>
                     <td>{{ __('Jabatan / Pangkat') }}</td>
                     <td>
                         {{ userAuth()->jabatan }} / {{ userAuth()->pangkat }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{ __('Batas Usia Pensiun') }}</td>
+                    <td>
+                        {{ userAuth()->bup }} Tahun
                     </td>
                 </tr>
                 <tr>
@@ -30,25 +35,25 @@
                 <tr>
                     <td>{{ __('Unit Kerja') }}</td>
                     <td>
-                        {{ $vacancy->user->instansi->name }}
+                        {{ $vacancyUser->user->instansi->name }}
                     </td>
                 </tr>
                 <tr>
                     <td>{{ __('Jenjang/Program Studi') }}</td>
                     <td>
-                        {{ $vacancy->vacancy->education_level }} / {{ $vacancy->vacancy->study->name }}
+                        {{ $vacancyUser->vacancy->education_level }} / {{ $vacancyUser->vacancy->study->name }}
                     </td>
                 </tr>
                 <tr>
                     <td>{{ __('Tahun Tubel') }}</td>
                     <td>
-                        {{ $vacancy->vacancy->year }}
+                        {{ $vacancyUser->vacancy->year }}
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
-    @if ($vacancy->status == 'register')
+    @if ($vacancyUser->status == 'register')
     <div class="row">
         <div class="col-12 mt-4">
             <div class="p-3">
@@ -63,7 +68,7 @@
     </div>
     <div class="row">
         <div class="col-12 text-end">
-            <a href="{{ route('student.continuing-education.show', $vacancy->id) }}" class="btn mt-4 mb-3">
+            <a href="{{ route('student.continuing-education.show', $vacancyUser->id) }}" class="btn mt-4 mb-3">
                 {{ __('Ajukan Pendaftaran') }} <i class="fa fa-arrow-right"></i>
             </a>
         </div>

@@ -57,4 +57,21 @@ class Vacancy extends Model
     {
         return $this->employment_status == 'tidak_diberhentikan_dari_jabatan' ? 'tidak diberhentikan dari jabatan' : 'diberhentikan dari jabatan';
     }
+
+    public function isEligible(User $user): ?string
+    {
+        if ($this->instansi_id && $this->instansi_id !== $user->instansi_id) {
+            return 'Anda tidak memiliki akses ke lowongan ini';
+        }
+
+        if ($this->open_at > now()) {
+            return 'Lowongan belum dibuka';
+        }
+
+        if ($this->close_at < now()) {
+            return 'Lowongan sudah ditutup';
+        }
+
+        return null;
+    }
 }

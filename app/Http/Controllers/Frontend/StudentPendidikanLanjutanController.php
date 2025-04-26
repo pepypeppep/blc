@@ -51,17 +51,25 @@ class StudentPendidikanLanjutanController extends Controller
 
     function registeredDetail($id)
     {
-        $vacancy = VacancyUser::with(['vacancy.study', 'user.unor', 'user.instansi'])->findOrFail($id);
-        $logs = VacancyLogs::where('vacancy_user_id', $vacancy->id)->orderBy('created_at', 'desc')->get();
-        $attachments = VacancyUserAttachment::whereHas('vacancyattachment', function ($query) use ($vacancy) {
-            $query->where('vacancy_id', $vacancy->vacancy_id);
-        })->where('vacancy_user_id', $vacancy->id)->get();
-        $lampirans = VacancyAttachment::lampiran()->where('vacancy_id', $vacancy->vacancy_id)->get();
-        $reports = VacancyReport::where('vacancy_user_id', $vacancy->id)->orderBy('name')->get();
+        $vacancyUser = VacancyUser::with(['vacancy.study', 'user.unor', 'user.instansi'])->findOrFail($id);
+
+        if ($vacancyUser->vacancy->isEligible(userAuth())) {
+            $vacancyUser->update([
+                'status' => VacancyUser::STATUS_REGISTER,
+            ]);
+            return redirect()->back()->with(['messege' => $vacancyUser->vacancy->isEligible(userAuth()), 'alert-type' => 'error']);
+        }
+
+        $logs = VacancyLogs::where('vacancy_user_id', $vacancyUser->id)->orderBy('created_at', 'desc')->get();
+        $attachments = VacancyUserAttachment::whereHas('vacancyattachment', function ($query) use ($vacancyUser) {
+            $query->where('vacancy_id', $vacancyUser->vacancy_id);
+        })->where('vacancy_user_id', $vacancyUser->id)->get();
+        $lampirans = VacancyAttachment::lampiran()->where('vacancy_id', $vacancyUser->vacancy_id)->get();
+        $reports = VacancyReport::where('vacancy_user_id', $vacancyUser->id)->orderBy('name')->get();
         $reportsFiles = VacancyMasterReportFiles::where('is_active', 1)->get();
-        $activations = VacancyAttachment::aktivasi()->where('vacancy_id', $vacancy->vacancy_id)->get();
-        $userActivation = VacancyActivation::where('vacancy_user_id', $vacancy->id)->get();
-        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancy', 'logs', 'attachments', 'lampirans', 'reports', 'reportsFiles', 'activations', 'userActivation'));
+        $activations = VacancyAttachment::aktivasi()->where('vacancy_id', $vacancyUser->vacancy_id)->get();
+        $userActivation = VacancyActivation::where('vacancy_user_id', $vacancyUser->id)->get();
+        return view('frontend.student-dashboard.continuing-education.registration.show', compact('vacancyUser', 'logs', 'attachments', 'lampirans', 'reports', 'reportsFiles', 'activations', 'userActivation'));
     }
 
     // detail pendidikan
@@ -76,22 +84,17 @@ class StudentPendidikanLanjutanController extends Controller
             $query->where('user_id', $user->id)->whereNotIn('status', [VacancyUser::STATUS_REGISTER]); // next update with value_type, unor, dll
         }])->where('year', $schedule->year ?? -1)->findOrFail($id);
 
-        if ($vacancy->instansi_id != $user->instansi_id) {
-            return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
-        }
-
-        if ($vacancy->close_at < now()) {
-            return redirect()->back()->with(['messege' => 'Pendaftaran sudah ditutup', 'alert-type' => 'error']);
-        }
-
-        if ($vacancy->open_at > now()) {
-            return redirect()->back()->with(['messege' => 'Pendaftaran belum dibuka', 'alert-type' => 'error']);
+        $isEligible = $vacancy->isEligible(userAuth());
+        if ($isEligible) {
+            return redirect()->back()->with(['messege' => $isEligible, 'alert-type' => 'error']);
         }
 
         $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $id)->first();
 
-        $passAgeLimit = $vacancy->age_limit >=  (Carbon::parse($user->date_of_birth)->diffInYears(Carbon::now()));
-        $passEmployeeGrade = strtolower($vacancy->employment_grade) === strtolower($user->golongan);
+        $passAgeLimit = $vacancy->age_limit <= $user->bup;
+        $educationLevels = explode('/', $user->tingkat_pendidikan);
+        $passJenjangPendidikanTerakhir = in_array($vacancy->education_level, array_filter($educationLevels));
+        
         $base = VacancyAttachment::syarat()->where('vacancy_id', $id)->where('is_active', 1);
         $vacancyConditions = $base->with('attachment')->get();
         $vacancyTakeConditions = $base->whereHas('attachment', function ($query) use ($vacancy) {
@@ -103,7 +106,7 @@ class StudentPendidikanLanjutanController extends Controller
         $meetCondition = (count($vacancyTakeConditions) == count($vacancyConditions));
 
 
-        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy', 'vacancyUser', 'vacancyConditions', 'meetCondition', 'passAgeLimit', 'passEmployeeGrade'));
+        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy', 'vacancyUser', 'vacancyConditions', 'meetCondition', 'passAgeLimit','passJenjangPendidikanTerakhir'));
     }
 
 
@@ -116,6 +119,18 @@ class StudentPendidikanLanjutanController extends Controller
         if (!$attachment) {
             return redirect()->back()->withFragment('attachment_container')->with(['messege' => __('Attachment not found'), 'alert-type' => 'error']);
         }
+
+        $vacancy = Vacancy::findOrFail($attachment->vacancy_id);
+
+        if (!$vacancy) {
+            return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        $isEligible = $vacancy->isEligible(userAuth());
+        if ($isEligible) {
+            return redirect()->back()->with(['messege' => $isEligible, 'alert-type' => 'error']);
+        }
+
         DB::beginTransaction();
 
         VacancyUser::firstOrCreate([
@@ -193,6 +208,11 @@ class StudentPendidikanLanjutanController extends Controller
 
         if (!$vacancy) {
             return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        $isEligible = $vacancy->isEligible(userAuth());
+        if ($isEligible) {
+            return redirect()->back()->with(['messege' => $isEligible, 'alert-type' => 'error']);
         }
 
         $vacancyAttachments = VacancyAttachment::syarat()->where('vacancy_id', $vacancy->id)->where('is_active', 1)->get();

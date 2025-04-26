@@ -13,7 +13,7 @@
                             <tr>
                                 <th>{{ __('#') }}</th>
                                 <th width="30%">{{ __('Program Studi Pendidikan Lanjutan') }}</th>
-                                <th>{{ __('Syarat Pangkat/Golongan') }}</th>
+                                <th>{{ __('Batas Usia Pendaftaran') }}</th>
                                 <th width="20%">{{ __('Tanggal Mulai Pendaftaran') }}</th>
                                 <th width="20%">{{ __('Tanggal Penutupan Pendaftaran') }}</th>
                                 <th>{{ __('Action') }}</th>
@@ -24,7 +24,7 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $vacancy->study->name }}</td>
-                                    <td>{{ $vacancy->employment_grade }}
+                                    <td>{{ $vacancy->age_limit }}
                                         {{-- @if ($vacancy->details->isNotEmpty())
                                             {{ $vacancy->details->first()->value_type ?? '-' }}
                                         @else
@@ -44,7 +44,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">{{ __('No data found!') }}</td>
+                                    <td colspan="7" class="text-center">{{ __('Pendaftaran Program Pendidikan Lanjutan belum dibuka') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>

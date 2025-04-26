@@ -17,15 +17,17 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $status = $request->query('status');
-        
+        $status = $request->query('status', 'verification');
+        $status = $status === 'all' ? null : $status;
+
         $articles = Article::when($status, function ($query, $status) {
                 return $query->where('status', $status);
             }, function ($query) {
                 return $query->where('status', '!=', 'draft');
             })
-            ->orderByDesc('id')
-            ->paginate(10);
+            ->orderByDesc('updated_at')
+            ->paginate(10)
+            ->appends(['status' => $request->query('status', 'verification')]);
 
         $statusCounts = Article::select('status', DB::raw('count(*) as total'))
             ->groupBy('status')
@@ -34,7 +36,7 @@ class ArticleController extends Controller
             
         $totalArticles = Article::where('status', '!=', 'draft')->count();
 
-        return view('article::index', compact('articles', 'statusCounts', 'totalArticles'));
+        return view('article::index', compact('articles', 'statusCounts', 'totalArticles', 'status'));
     }
 
     /**
@@ -71,7 +73,7 @@ class ArticleController extends Controller
 
         $article->save();
 
-        return redirect()->back()->with('success', 'Status pengetahuan berhasil diperbarui.');
+        return redirect()->route('admin.knowledge.index')->with('success', 'Status pengetahuan berhasil diperbarui.');
     }
 
     /**

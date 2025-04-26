@@ -92,9 +92,10 @@ class StudentPendidikanLanjutanController extends Controller
         $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $id)->first();
 
         $passAgeLimit = $vacancy->age_limit <= $user->bup;
-        $educationLevels = explode('/', $user->tingkat_pendidikan);
-        $passJenjangPendidikanTerakhir = in_array($vacancy->education_level, array_filter($educationLevels));
-        
+        // $educationLevels = explode('/', $user->tingkat_pendidikan);
+        // $passJenjangPendidikanTerakhir = in_array($vacancy->education_level, array_filter($educationLevels));
+        $passJenjangPendidikanTerakhir = educationFilter($vacancy->education_level, $user->tingkat_pendidikan);
+
         $base = VacancyAttachment::syarat()->where('vacancy_id', $id)->where('is_active', 1);
         $vacancyConditions = $base->with('attachment')->get();
         $vacancyTakeConditions = $base->whereHas('attachment', function ($query) use ($vacancy) {
@@ -106,7 +107,7 @@ class StudentPendidikanLanjutanController extends Controller
         $meetCondition = (count($vacancyTakeConditions) == count($vacancyConditions));
 
 
-        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy', 'vacancyUser', 'vacancyConditions', 'meetCondition', 'passAgeLimit','passJenjangPendidikanTerakhir'));
+        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy', 'vacancyUser', 'vacancyConditions', 'meetCondition', 'passAgeLimit', 'passJenjangPendidikanTerakhir'));
     }
 
 

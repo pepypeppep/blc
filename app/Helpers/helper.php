@@ -1012,6 +1012,34 @@ if (!function_exists('appConfig')) {
     }
 }
 
+
+if (!function_exists('educationFilter')) {
+    function educationFilter($vacEdu, $userEdu)
+    {
+        $edu = [
+            'SD' => 1,
+            'SMP' => 2,
+            'SMA' => 3,
+            'D-1' => 4,
+            'D-2' => 5,
+            'D-3' => 6,
+            'D-4' => 7,
+            'S-1' => 7,
+            'S-2' => 8,
+            'S-3' => 9,
+        ];
+
+        $vacancyEdu = $edu[$vacEdu];
+        $userEdu = $edu[$userEdu];
+
+        if ($userEdu == $vacancyEdu - 1) {
+            return true;
+        }
+
+        return false;
+    }
+}
+
 if (!function_exists('detectStorageType')) {
     function detectStorageType(string $url): string
     {

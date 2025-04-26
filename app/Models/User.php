@@ -192,13 +192,14 @@ class User extends Authenticatable
     }
 
 
-    public function isEnrolledInCourse(Course $course): bool
+    public function isEnrolledInCourse(Course $course)
     {
-        
-        return Enrollment::query()
+
+        $result =  Enrollment::query()
             ->where('user_id', $this->id)
             ->where('course_id', $course->id)
             ->where('has_access', true)
-            ->exists();
+            ->first();
+        return $result ? true : false;
     }
 }

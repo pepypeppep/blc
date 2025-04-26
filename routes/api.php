@@ -91,14 +91,14 @@ Route::name('api.')->group(function () {
             Route::post('/make-lesson-complete', [StudentLearningApiController::class, 'makeLessonComplete'])->name('make-lesson-complete');
             // GET: /api/student-learning/course/{courseId}/quiz/{quizId
             Route::get('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizIndex'])->name('quiz.index');
-            // POST: /api/student-learning/quizzes/{id}
-            Route::post('/quizzes/{id}', [StudentLearningApiController::class, 'quizStore'])->name('quiz.store');
-            // GET: /api/student-learning/quiz/{id}/result/{resultId}
-            Route::get('/quiz/{id}/result/{resultId}', [StudentLearningApiController::class, 'quizResult'])->name('quiz.result');
+            // POST: /api/student-learning/{courseId}/quiz/{quizId}
+            Route::post('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizStore'])->name('quiz.store');
+            // GET: /api/student-learning/quiz/{id}/result
+            Route::get('/{courseId}/quiz/{quizId}/result', [StudentLearningApiController::class, 'quizResult'])->name('quiz.result');
             // GET: /api/student-learning/rtl/{id}
-            Route::get('/rtl/{id}', [StudentLearningApiController::class, 'rtlIndex'])->name('rtl.index');
+            Route::get('/{courseId}/rtl/{rtlId}', [StudentLearningApiController::class, 'rtlIndex'])->name('rtl.index');
             // POST: /api/student-learning/rtl/{id}
-            Route::post('/rtl/{id}', [StudentLearningApiController::class, 'rtlStore'])->name('rtl.store');
+            Route::post('/{courseId}/rtl/{rtlId}', [StudentLearningApiController::class, 'rtlStore'])->name('rtl.store');
         });
 
     // Bantara Callback

@@ -18,7 +18,11 @@ class QuizResult extends Model
         'status'
     ];
 
-    function quiz() : BelongsTo
+    protected $casts = [
+        'result' => 'array',
+    ];
+
+    function quiz(): BelongsTo
     {
         return $this->belongsTo(Quiz::class, 'quiz_id', 'id');
     }

@@ -43,5 +43,6 @@ trait HandlesCourseAccess
         if (!$user->isEnrolledInCourse($course)) {
             return $this->errorResponse('You are not enrolled in this course', [], 403);
         }
+        return true;
     }
 }

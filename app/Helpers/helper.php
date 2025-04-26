@@ -1011,3 +1011,18 @@ if (!function_exists('appConfig')) {
         return $configs[$key] ?? $default;
     }
 }
+
+if (!function_exists('detectStorageType')) {
+    function detectStorageType(string $url): string
+    {
+        if (preg_match('/(youtube\.com|youtu\.be|youtube-nocookie\.com)/i', $url)) {
+            return 'youtube';
+        }
+
+        if (preg_match('/(drive|docs|sheets|slides)\.google\.com/i', $url)) {
+            return 'google_drive';
+        }
+
+        return 'youtube';
+    }
+}

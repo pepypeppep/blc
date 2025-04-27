@@ -42,17 +42,12 @@ class StudentDashboardController extends Controller
         $totalEnrolledCourses = Enrollment::where('user_id', userAuth()->id)->count();
         $totalQuizAttempts = QuizResult::where('user_id', userAuth()->id)->count();
         $totalReviews = CourseReview::where('user_id', userAuth()->id)->count();
-        $schedule = VacancySchedule::where('year', now()->year)
-            ->where('start_at', '<=', now())
-            ->first();
-        $totalPendidikanLanjutan = Vacancy::where('year', $schedule->year ?? -1)->count();
         $orders = Order::where('buyer_id', userAuth()->id)->orderBy('id', 'desc')->take(10)->get();
 
         return view('frontend.student-dashboard.index', compact(
             'totalEnrolledCourses',
             'totalQuizAttempts',
             'totalReviews',
-            'totalPendidikanLanjutan',
             'orders'
         ));
     }

@@ -32,6 +32,8 @@ use Modules\Location\app\Models\City;
 use Modules\Location\app\Models\Country;
 use Modules\Location\app\Models\State;
 use Modules\PageBuilder\app\Models\CustomPage;
+use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use Modules\PendidikanLanjutan\app\Models\VacancySchedule;
 use Modules\SiteAppearance\app\Models\SectionSetting;
 use Modules\Testimonial\app\Models\Testimonial;
 
@@ -95,6 +97,13 @@ class HomePageController extends Controller
             ->where(['show_homepage' => 1, 'status' => 1])->orderBy('created_at', 'desc')->limit(4)->get();
         $sectionSetting = SectionSetting::first();
 
+        $schedule = VacancySchedule::where('year', now()->year)
+            ->where('start_at', '<=', now())
+            ->first();
+        $totalPendidikanLanjutan = Vacancy::where('year', $schedule->year ?? -1)->count();
+        $totalFormasiPendidikanLanjutan = Vacancy::where('year', $schedule->year ?? -1)->sum('formation');
+        $totalInstansiPendidikanLanjutan = Vacancy::where('year', $schedule->year ?? -1)->distinct('instansi_id')->count('instansi_id');
+
         return view('frontend.home.' . $theme_name . '.index', compact(
             'hero',
             'slider',
@@ -112,7 +121,10 @@ class HomePageController extends Controller
             'ourFeatures',
             'bannerSection',
             'featuredBlogs',
-            'sectionSetting'
+            'sectionSetting',
+            'totalPendidikanLanjutan',
+            'totalFormasiPendidikanLanjutan',
+            'totalInstansiPendidikanLanjutan'
         ));
     }
 

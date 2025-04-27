@@ -2441,7 +2441,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "example": "laravel-8-course"
+                        "example": "full-stack-web-development-with-react"
                     }
                 ],
                 "responses": {
@@ -2623,24 +2623,32 @@
                     "Student Learning"
                 ],
                 "summary": "Make lesson complete",
-                "description": "Make lesson complete",
+                "description": "Mark a lesson as completed by the student.",
                 "operationId": "ca10262285fb0366b83d416336f52a7c",
                 "requestBody": {
-                    "description": "Lesson and type",
+                    "description": "Lesson completion payload",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
                                     "lesson_id",
+                                    "course_id",
                                     "type"
                                 ],
                                 "properties": {
                                     "lesson_id": {
+                                        "description": "ID of the lesson",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "course_id": {
+                                        "description": "ID of the course",
                                         "type": "integer",
                                         "example": 1
                                     },
                                     "type": {
+                                        "description": "Type of progress",
                                         "type": "string",
                                         "example": "lesson"
                                     }
@@ -2667,15 +2675,89 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Error",
+                    "400": {
+                        "description": "Business logic error",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Error"
+                                            "example": "Please finish the previous lesson first."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "lesson_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The lesson_id field is required."
+                                                    }
+                                                },
+                                                "course_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The course_id field is required."
+                                                    }
+                                                },
+                                                "type": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The type field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Progress not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Progress not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred"
                                         }
                                     },
                                     "type": "object"
@@ -2691,25 +2773,34 @@
                 ]
             }
         },
-        "/student-learning/quiz/{id}": {
-            "post": {
+        "/student-learning/{courseId}/quiz/{quizId}": {
+            "get": {
                 "tags": [
                     "Student Learning"
                 ],
                 "summary": "Get quiz questions",
                 "description": "Get quiz questions",
-                "operationId": "b2f1b407884a92cc617bf35f1a95dc9c",
+                "operationId": "c619ca220d1da4011f1ba08e75e0b4c4",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "Course ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "quizId",
                         "in": "path",
                         "description": "Quiz ID",
                         "required": true,
                         "schema": {
-                            "type": "integer",
-                            "format": "int64"
+                            "type": "integer"
                         },
-                        "example": "1"
+                        "example": 1
                     }
                 ],
                 "responses": {
@@ -2830,22 +2921,33 @@
                         "bearer": []
                     }
                 ]
-            }
-        },
-        "/student-learning/quizzes/{id}": {
+            },
             "post": {
                 "tags": [
                     "Student Learning"
                 ],
                 "summary": "Store quiz answers",
                 "description": "Store quiz answers",
-                "operationId": "e1ad5e5849b4c590b507795ea74c1791",
+                "operationId": "e229762ac424d9df9e9049f1ce836248",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "Course ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "quizId",
                         "in": "path",
                         "description": "Quiz ID",
                         "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
                         "example": 1
                     }
                 ],
@@ -3031,19 +3133,19 @@
                 ]
             }
         },
-        "/student-learning/quiz/{id}/result/{resultId}": {
+        "/student-learning/{courseId}/quiz/{quizId}/result": {
             "get": {
                 "tags": [
                     "Student Learning"
                 ],
                 "summary": "Get quiz result",
                 "description": "Retrieve detailed result of a quiz attempt by a student",
-                "operationId": "74508d7530c5cea00296c09ac479e142",
+                "operationId": "29ae34b2a5cc9a4238d19c94ff82dc6d",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "courseId",
                         "in": "path",
-                        "description": "Quiz ID",
+                        "description": "course ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -3052,15 +3154,15 @@
                         "example": 1
                     },
                     {
-                        "name": "resultId",
+                        "name": "quizId",
                         "in": "path",
-                        "description": "Result ID",
+                        "description": "Quiz ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
                             "format": "int64"
                         },
-                        "example": 10
+                        "example": 1
                     }
                 ],
                 "responses": {
@@ -3096,7 +3198,7 @@
                                                         },
                                                         "questions_count": {
                                                             "type": "integer",
-                                                            "example": 10
+                                                            "example": 3
                                                         },
                                                         "created_at": {
                                                             "type": "string",
@@ -3119,7 +3221,7 @@
                                                     "properties": {
                                                         "id": {
                                                             "type": "integer",
-                                                            "example": 10
+                                                            "example": 1
                                                         },
                                                         "user_id": {
                                                             "type": "integer",
@@ -3223,17 +3325,28 @@
                 ]
             }
         },
-        "/student-learning/rtl/{id}": {
+        "/student-learning/{courseId}/rtl/{rtlId}": {
             "get": {
                 "tags": [
                     "Student Learning"
                 ],
                 "summary": "Get RTL item",
                 "description": "Get RTL item",
-                "operationId": "fb2665b246634e4041e7263e297417bd",
+                "operationId": "94110e9c6dfaba51071d366bb9236642",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "Course ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "rtlId",
                         "in": "path",
                         "description": "RTL ID",
                         "required": true,
@@ -3388,10 +3501,21 @@
                 ],
                 "summary": "Save RTL item response",
                 "description": "Save RTL item response",
-                "operationId": "0942a6966cc2ee2be4590e4aaa3e649a",
+                "operationId": "5999fa8d1f1b0f16cda50469cf3ff9f2",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "Course ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "rtlId",
                         "in": "path",
                         "description": "RTL ID",
                         "required": true,
@@ -3405,16 +3529,21 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
+                                "required": [
+                                    "summary",
+                                    "file_path"
+                                ],
                                 "properties": {
                                     "summary": {
                                         "description": "Summary",
                                         "type": "string"
                                     },
                                     "file_path": {
-                                        "description": "File path",
-                                        "type": "file"
+                                        "description": "File to upload",
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"

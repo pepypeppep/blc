@@ -30,13 +30,13 @@ class StudentLearningApiController extends Controller
      *     summary="Get course by slug",
      *     description="Get course by slug",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         description="Course slug",
      *         in="path",
      *         name="slug",
      *         required=true,
-     *         example="laravel-8-course",
+     *         example="full-stack-web-development-with-react",
      *         @OA\Schema(
      *             type="string"
      *         )
@@ -163,7 +163,7 @@ class StudentLearningApiController extends Controller
      *     summary="Post progress lesson",
      *     description="Post progress lesson",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         description="Lesson and type",
@@ -343,39 +343,81 @@ class StudentLearningApiController extends Controller
      * @OA\Post(
      *     path="/student-learning/make-lesson-complete",
      *     summary="Make lesson complete",
-     *     description="Make lesson complete",
+     *     description="Mark a lesson as completed by the student.",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\RequestBody(
      *         required=true,
-     *         description="Lesson and type",
+     *         description="Lesson completion payload",
      *         @OA\JsonContent(
-     *             required={"lesson_id","type"},
-     *             @OA\Property(property="lesson_id", type="integer", example=1),
-     *             @OA\Property(property="type", type="string", example="lesson"),
+     *             required={"lesson_id", "course_id", "type"},
+     *             @OA\Property(property="lesson_id", type="integer", example=1, description="ID of the lesson"),
+     *             @OA\Property(property="course_id", type="integer", example=1, description="ID of the course"),
+     *             @OA\Property(property="type", type="string", example="lesson", description="Type of progress")
      *         ),
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Progress updated successfully",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Progress updated successfully"),
-     *         ),
+     *             @OA\Property(property="message", type="string", example="Progress updated successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Business logic error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Please finish the previous lesson first.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="lesson_id",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="The lesson_id field is required.")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="course_id",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="The course_id field is required.")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="type",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="The type field is required.")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Progress not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Progress not found")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Error",
+     *         description="Internal server error",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Error"),
-     *         ),
-     *     ),
+     *             @OA\Property(property="message", type="string", example="An unexpected error occurred")
+     *         )
+     *     )
      * )
      */
+
     public function makeLessonComplete(Request $request)
     {
         $request->validate([
             'lesson_id' => ['required'],
-            'courseId' => ['required', 'exists:courses,id'],
+            'course_id' => ['required', 'exists:courses,id'],
             'type' => ['required'],
         ]);
 
@@ -434,18 +476,18 @@ class StudentLearningApiController extends Controller
      * Get quiz questions
      *
      * @OA\Get(
-     *     path="/student-learning/course/{courseId}/quiz/{quizId}",
+     *     path="/student-learning/{courseId}/quiz/{quizId}",
      *     summary="Get quiz questions",
      *     description="Get quiz questions",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         name="courseId",
      *         in="path",
      *         required=true,
      *         description="Course ID",
      *         @OA\Schema(type="integer"),
-     *         example=10
+     *         example=1
      *     ),
      *     @OA\Parameter(
      *         name="quizId",
@@ -594,14 +636,14 @@ class StudentLearningApiController extends Controller
      *     summary="Store quiz answers",
      *     description="Store quiz answers",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         name="courseId",
      *         in="path",
      *         required=true,
      *         description="Course ID",
      *         @OA\Schema(type="integer"),
-     *         example=10
+     *         example=1
      *     ),
      *     @OA\Parameter(
      *         name="quizId",
@@ -761,7 +803,7 @@ class StudentLearningApiController extends Controller
      *     summary="Get quiz result",
      *     description="Retrieve detailed result of a quiz attempt by a student",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         name="courseId",
      *         in="path",
@@ -794,7 +836,7 @@ class StudentLearningApiController extends Controller
      *                     @OA\Property(property="title", type="string", example="Basic Math Quiz"),
      *                     @OA\Property(property="description", type="string", example="Test your basic math skills"),
      *                     @OA\Property(property="pass_mark", type="integer", example=70),
-     *                     @OA\Property(property="questions_count", type="integer", example=10),
+     *                     @OA\Property(property="questions_count", type="integer", example=3),
      *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-20T08:00:00Z"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-21T10:00:00Z")
      *                 ),
@@ -802,7 +844,7 @@ class StudentLearningApiController extends Controller
      *                 @OA\Property(
      *                     property="quizResult",
      *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=10),
+     *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="user_id", type="integer", example=5),
      *                     @OA\Property(property="quiz_id", type="integer", example=1),
      *                     @OA\Property(
@@ -879,7 +921,7 @@ class StudentLearningApiController extends Controller
      *     summary="Get RTL item",
      *     description="Get RTL item",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         description="Course ID",
      *         in="path",
@@ -1000,7 +1042,7 @@ class StudentLearningApiController extends Controller
      *     summary="Save RTL item response",
      *     description="Save RTL item response",
      *     tags={"Student Learning"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\Parameter(
      *         description="Course ID",
      *         in="path",
@@ -1012,7 +1054,7 @@ class StudentLearningApiController extends Controller
      *             format="int64"
      *         )
      *     ),
-     *    @OA\Parameter(
+     *     @OA\Parameter(
      *         description="RTL ID",
      *         in="path",
      *         name="rtlId",
@@ -1025,11 +1067,24 @@ class StudentLearningApiController extends Controller
      *     ),
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="summary", type="string", description="Summary"),
-     *             @OA\Property(property="file_path", type="file", description="File path"),
-     *         ),
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"summary","file_path"},
+     *                 @OA\Property(
+     *                     property="summary",
+     *                     type="string",
+     *                     description="Summary"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="file_path",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="File to upload"
+     *                 ),
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -1062,6 +1117,7 @@ class StudentLearningApiController extends Controller
      *     )
      * )
      */
+
     public function rtlStore(Request $request, string $courseId, string $rtlId)
     {
         $user = $this->getAuthenticatedUser($request);

@@ -97,9 +97,7 @@ class HomePageController extends Controller
             ->where(['show_homepage' => 1, 'status' => 1])->orderBy('created_at', 'desc')->limit(4)->get();
         $sectionSetting = SectionSetting::first();
 
-        $schedule = VacancySchedule::where('year', now()->year)
-            ->where('start_at', '<=', now())
-            ->first();
+        $schedule = VacancySchedule::where('year', now()->year)->first();
         $totalPendidikanLanjutan = Vacancy::where('year', $schedule->year ?? -1)->count();
         $totalFormasiPendidikanLanjutan = Vacancy::where('year', $schedule->year ?? -1)->sum('formation');
         $totalInstansiPendidikanLanjutan = Vacancy::where('year', $schedule->year ?? -1)->distinct('instansi_id')->count('instansi_id');
@@ -124,7 +122,8 @@ class HomePageController extends Controller
             'sectionSetting',
             'totalPendidikanLanjutan',
             'totalFormasiPendidikanLanjutan',
-            'totalInstansiPendidikanLanjutan'
+            'totalInstansiPendidikanLanjutan',
+            'schedule'
         ));
     }
 

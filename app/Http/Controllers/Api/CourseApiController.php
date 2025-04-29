@@ -98,6 +98,15 @@ class CourseApiController extends Controller
      *             type="integer"
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         description="User ID",
+     *         in="query",
+     *         name="user_id",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="successful operation"
@@ -172,6 +181,7 @@ class CourseApiController extends Controller
                 $authorId = $request->user_id;
                 $query->whereHas('enrollments', function ($q) use ($authorId) {
                     $q->where('user_id', $authorId);
+                    $q->where('has_access', 1);
                 });
             }
 
@@ -204,6 +214,15 @@ class CourseApiController extends Controller
      *         description="Course slug",
      *         required=true,
      *         example="laravel-fundamentals"
+     *     ),
+     *     @OA\Parameter(
+     *         description="User ID",
+     *         in="query",
+     *         name="user_id",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -477,6 +496,7 @@ class CourseApiController extends Controller
                 $authorId = $request->user_id;
                 $query->whereHas('enrollments', function ($q) use ($authorId) {
                     $q->where('user_id', $authorId);
+                    $q->where('has_access', 1);
                 });
             }
 
@@ -546,6 +566,7 @@ class CourseApiController extends Controller
             $authorId = $request->user_id;
             $query->whereHas('enrollments', function ($q) use ($authorId) {
                 $q->where('user_id', $authorId);
+                $q->where('has_access', 1);
             });
 
             $course = $query->firstOrFail();
@@ -781,7 +802,7 @@ class CourseApiController extends Controller
                 [
                     'course_id' => $course->id,
                     'user_id' => $request->user_id,
-                    'has_access' => 0,
+                    'has_access' => null,
                 ]
             );
 

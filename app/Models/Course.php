@@ -26,7 +26,7 @@ class Course extends Model
      *
      * @var array
      */
-    protected $appends = ['thumbnail_url', 'all_instructors'];
+    protected $appends = ['thumbnail_url', 'all_instructors', 'course_user_progress'];
 
 
     public const CLASS_KLASIKAL_DARING = 'klasikal_daring';
@@ -108,6 +108,11 @@ class Course extends Model
         return $this->hasMany(Enrollment::class, 'course_id', 'id');
     }
 
+    public function progress()
+    {
+        return $this->hasMany(CourseProgress::class);
+    }
+
     function iscompleted(): bool
     {
         $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) {
@@ -145,6 +150,79 @@ class Course extends Model
         return Attribute::make(
             get: fn() => $this->attributes['thumbnail'] ? route('api.courses.get-thumbnail', ['courseId' => $this->attributes['id']]) : null
         );
+    }
+
+    /**
+     * Get the course progress percentage for the authenticated user.
+     */
+    protected function courseUserProgress(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                // Return null if no user is authenticated
+                if (!auth()->check()) {
+                    return null;
+                }
+
+                $userId = auth()->user()->id;
+
+                // Count total lectures in the course
+                $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) {
+                    $q->where('course_id', $this->id);
+                })->count();
+
+                // Count completed lectures by user
+                $courseLectureCompletedByUser = CourseProgress::where('user_id', $userId)
+                    ->where('course_id', $this->id)
+                    ->where('watched', 1)
+                    ->count();
+
+                // Calculate percentage
+                $courseCompletedPercent = $courseLectureCount > 0
+                    ? ($courseLectureCompletedByUser / $courseLectureCount) * 100
+                    : 0;
+
+                return [
+                    'total_lectures' => $courseLectureCount,
+                    'completed_lectures' => $courseLectureCompletedByUser,
+                    'percentage' => number_format($courseCompletedPercent, 1),
+                    'is_completed' => $courseCompletedPercent == 100,
+                ];
+            }
+        );
+    }
+
+    public function getCourseUserProgressApi($userId = null)
+    {
+        // If no userId provided and no authenticated user, return null
+        if (!$userId) {
+            return null;
+        }
+
+        $userId = $userId ?? auth()->id();
+
+        // Count total lectures in the course
+        $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) {
+            $q->where('course_id', $this->id);
+        })->count();
+
+        // Count completed lectures by user
+        $courseLectureCompletedByUser = CourseProgress::where('user_id', $userId)
+            ->where('course_id', $this->id)
+            ->where('watched', 1)
+            ->count();
+
+        // Calculate percentage
+        $courseCompletedPercent = $courseLectureCount > 0
+            ? ($courseLectureCompletedByUser / $courseLectureCount) * 100
+            : 0;
+
+        return [
+            'total_lectures' => $courseLectureCount,
+            'completed_lectures' => $courseLectureCompletedByUser,
+            'percentage' => number_format($courseCompletedPercent, 1),
+            'is_completed' => $courseCompletedPercent == 100,
+        ];
     }
 
     /**

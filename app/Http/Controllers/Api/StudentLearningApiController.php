@@ -2,24 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
-use Carbon\Carbon;
-use App\Models\Quiz;
-use App\Models\User;
+use App\Http\Controllers\Controller;
 use App\Models\Course;
-use App\Models\QuizResult;
-use App\Traits\ApiResponse;
-use Illuminate\Support\Str;
-use App\Models\QuizQuestion;
-use Illuminate\Http\Request;
+use App\Models\CourseChapterLesson;
 use App\Models\CourseProgress;
 use App\Models\FollowUpAction;
-use Illuminate\Http\JsonResponse;
-use App\Models\CourseChapterLesson;
-use App\Traits\HandlesCourseAccess;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Cache;
 use App\Models\FollowUpActionResponse;
+use App\Models\Quiz;
+use App\Traits\ApiResponse;
+use App\Traits\HandlesCourseAccess;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use App\Models\QuizResult;
+use Illuminate\Support\Facades\Cache;
+use App\Models\QuizQuestion;
+use Illuminate\Http\JsonResponse;
 
 class StudentLearningApiController extends Controller
 {
@@ -129,7 +128,7 @@ class StudentLearningApiController extends Controller
     {
         try {
 
-            $user = User::with('instansi:id,name')->where('id', $request->user()->id)->first();
+            $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
 
             $course = $this->getCourseBySlug($slug);
@@ -202,7 +201,7 @@ class StudentLearningApiController extends Controller
 
         try {
 
-            $user = User::with('instansi:id,name')->where('id', $request->user()->id)->first();
+            $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
 
             $course = $this->getCourseById($request->courseId);
@@ -423,7 +422,7 @@ class StudentLearningApiController extends Controller
 
         try {
 
-            $user = User::with('instansi:id,name')->where('id', $request->user()->id)->first();
+            $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
 
             $course = $this->getCourseById($request->course_id);
@@ -556,7 +555,7 @@ class StudentLearningApiController extends Controller
 
         try {
 
-            $user = User::with('instansi:id,name')->where('id', $request->user()->id)->first();
+            $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
 
             $course = $this->getCourseById($courseId);
@@ -744,7 +743,7 @@ class StudentLearningApiController extends Controller
                 return $this->errorResponse('Quiz not found', [], 404);
             }
 
-            $user = User::with('instansi:id,name')->where('id', $request->user()->id)->first();
+            $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
 
 
@@ -887,7 +886,7 @@ class StudentLearningApiController extends Controller
     {
         try {
 
-            $user = User::with('instansi:id,name')->where('id', $request->user()->id)->first();
+            $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
 
             $course = $this->getCourseById($courseId);
@@ -995,7 +994,7 @@ class StudentLearningApiController extends Controller
     {
         try {
 
-            $user = User::with('instansi:id,name')->where('id', $request->user()->id)->first();
+            $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
 
             $course = $this->getCourseById($courseId);
@@ -1120,7 +1119,7 @@ class StudentLearningApiController extends Controller
 
     public function rtlStore(Request $request, string $courseId, string $rtlId)
     {
-        $user = User::with('instansi:id,name')->where('id', $request->user()->id)->first();
+        $user = $request->user();
         if ($user instanceof JsonResponse) return $user;
 
         $course = $this->getCourseById($courseId);

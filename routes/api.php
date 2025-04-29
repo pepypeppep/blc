@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ReviewApiController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\CertificateApiController;
 use App\Http\Controllers\Api\PendidikanLanjutanController;
+use App\Http\Controllers\Api\StudentLearningApiController;
 use App\Http\Controllers\Auth\SSOController;
 
 Route::middleware('auth:sso-api')->get('/hello', function (Request $request) {
@@ -76,6 +77,33 @@ Route::name('api.')->group(function () {
             Route::post('/articles-reviews/{id}', [ArticleController::class, 'storeReviews'])->name('reviews.store');
         });
     });
+
+    //student learning
+    Route::prefix('student-learning')
+        ->name('student-learning.')
+        ->middleware('auth:sso-api')
+        ->group(function () {
+            // GET: /api/student-learning/{courseId}/quiz/{quizId}/result
+            Route::get('/{courseId}/quiz/{quizId}/result', [StudentLearningApiController::class, 'quizResult'])->name('quiz.result');
+            // GET: /api/student-learning/{courseId}/quiz/{quizId}
+            Route::get('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizIndex'])->name('quiz.index');
+            // POST: /api/student-learning/{courseId}/quiz/{quizId}
+            Route::post('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizStore'])->name('quiz.store');
+
+            // GET: /api/student-learning/{courseId}/rtl/{rtlId}
+            Route::get('/{courseId}/rtl/{rtlId}', [StudentLearningApiController::class, 'rtlIndex'])->name('rtl.index');
+            // POST: /api/student-learning/{courseId}/rtl/{rtlId}
+            Route::post('/{courseId}/rtl/{rtlId}', [StudentLearningApiController::class, 'rtlStore'])->name('rtl.store');
+
+            // POST: /api/student-learning/post-progresslesson
+            Route::post('/post-progresslesson', [StudentLearningApiController::class, 'postProgresslesson'])->name('post-progresslesson');
+            // POST: /api/student-learning/make-lesson-complete
+            Route::post('/make-lesson-complete', [StudentLearningApiController::class, 'makeLessonComplete'])->name('make-lesson-complete');
+
+            // GET: /api/student-learning/{slug}
+            Route::get('/{slug}', [StudentLearningApiController::class, 'index'])->name('index');
+        });
+
 
     // Bantara Callback
     Route::post('/bantara-callback/{enrollment}', [CertificateApiController::class, 'bantaraCallback'])->name('bantara-callback');

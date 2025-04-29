@@ -190,4 +190,16 @@ class User extends Authenticatable
             $user->instructorInfo()->delete();
         });
     }
+
+
+    public function isEnrolledInCourse(Course $course)
+    {
+
+        $result =  Enrollment::query()
+            ->where('user_id', $this->id)
+            ->where('course_id', $course->id)
+            ->where('has_access', true)
+            ->first();
+        return $result ? true : false;
+    }
 }

@@ -189,6 +189,13 @@ class CourseApiController extends Controller
 
             $courses = $query->paginate($request->per_page ?? 10);
 
+            if ($request->has('user_id')) {
+                $userId = $request->user_id;
+                $courses->each(function ($course) use ($userId) {
+                    $course->setAttribute('course_user_progress_api', $course->getCourseUserProgressApi($userId));
+                });
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Courses retrieved successfully',
@@ -501,6 +508,11 @@ class CourseApiController extends Controller
             }
 
             $course = $query->firstOrFail();
+
+            if ($request->has('user_id')) {
+                $userId = $request->user_id;
+                $course->course_user_progress_api = $course->getCourseUserProgressApi($userId);
+            }
 
             return response()->json([
                 'success' => true,

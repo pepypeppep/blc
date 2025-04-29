@@ -81,7 +81,7 @@ Route::name('api.')->group(function () {
     //student learning
     Route::prefix('student-learning')
         ->name('student-learning.')
-        // ->middleware('auth:sso-api')
+        ->middleware('auth:sso-api')
         ->group(function () {
             // GET: /api/student-learning/{courseId}/quiz/{quizId}/result
             Route::get('/{courseId}/quiz/{quizId}/result', [StudentLearningApiController::class, 'quizResult'])->name('quiz.result');

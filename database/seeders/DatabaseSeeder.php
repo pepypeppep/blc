@@ -20,6 +20,7 @@ use Modules\Frontend\database\seeders\FeaturedInstructorSectionSeeder;
 use Modules\InstructorRequest\database\seeders\InstructorRequestSeeder;
 use Modules\CertificateBuilder\database\seeders\CertificateBuilderSeeder;
 use Modules\CertificateBuilder\database\seeders\CertificateBuilderItemSeeder;
+use Modules\InstructorEvaluation\database\seeders\InstructorEvaluationDatabaseSeeder;
 use Modules\Order\database\seeders\EnrollmentSeeder;
 use Modules\PendidikanLanjutan\database\seeders\PendidikanLanjutanDatabaseSeeder;
 
@@ -65,7 +66,11 @@ class DatabaseSeeder extends Seeder
             PendidikanLanjutanDatabaseSeeder::class,
             TagSeeder::class,
             EnrollmentSeeder::class,
-            ArticleDatabaseSeeder::class
+            ArticleDatabaseSeeder::class,
+
+            InstructorEvaluationDatabaseSeeder::class
+
+
         ]);
     }
 }

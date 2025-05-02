@@ -1,0 +1,11 @@
+{
+    "name": "InstructorEvaluation",
+    "alias": "instructorevaluation",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\InstructorEvaluation\\app\\Providers\\InstructorEvaluationServiceProvider"
+    ],
+    "files": []
+}

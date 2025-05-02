@@ -72,6 +72,8 @@
                                                                             $courseLectureCount) *
                                                                         100
                                                                     : 0;
+
+                                                                    $courseCompletedPercent=100;
                                                         @endphp
                                                         <div class="progress-item progress-item-two">
                                                             <h6 class="title">
@@ -98,11 +100,13 @@
                                                                     class="flaticon-mortarboard"></i>{{ $enroll->course->enrollments()->count() }}
                                                             </li>
                                                             @if ($courseCompletedPercent == 100)
+                                                                {{-- Pending to get signed --}}
                                                                 @if ($enroll->certificate_status == 'requested')
                                                                     <li class="ms-auto">
                                                                         {{-- certificate already requested --}}
                                                                         <div>{{ __('Certificate Requested') }}</div>
                                                                     </li>
+                                                                {{-- Signed certificate --}}
                                                                 @elseif ($enroll->certificate_status == 'signed')
                                                                     <li class="ms-auto">
                                                                         <a class="success-button" target="_blank"
@@ -112,6 +116,9 @@
                                                                             {{ __('Download Certificate') }}</a>
                                                                     </li>
                                                                 @else
+
+                                                                @if (isAllInstructorEvaluated($enroll->course, userAuth()))
+                                                                    {{-- Show certificate request button --}}
                                                                     <li class="ms-auto">
                                                                         <a class="basic-button"
                                                                             href="{{ route('student.request-sign-certificate', $enroll->id) }}"><i
@@ -119,7 +126,21 @@
                                                                                 style="color: #fafdff;"></i>
                                                                             {{ __('Certificate Request') }}</a>
                                                                     </li>
+                                                                @else
+                                                                    {{-- Show instructor evaluation button --}}
+                                                                    <li class="ms-auto">
+                                                                        <a class="basic-button"
+                                                                            href="{{ route('student.instructorevaluation.create', ['course' => $enroll->course->id]) }}"><i
+                                                                                class="certificate fas fa-signature"
+                                                                                style="color: #fafdff;"></i>
+                                                                            {{ __('Instructor Evaluation') }}</a>
+                                                                    </li>   
+
                                                                 @endif
+                                                                
+                                                                @endif
+
+
                                                             @endif
                                                         </ul>
                                                     </div>

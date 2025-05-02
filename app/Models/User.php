@@ -202,4 +202,9 @@ class User extends Authenticatable
             ->first();
         return $result ? true : false;
     }
+
+    public function isInstructor()
+    {
+        return $this->role === 'instructor';
+    }
 }

@@ -31,5 +31,6 @@
     "Menubuilder": true,
     "Installer": true,
     "PendidikanLanjutan": true,
-    "Article": true
+    "Article": true,
+    "InstructorEvaluation": true
 }

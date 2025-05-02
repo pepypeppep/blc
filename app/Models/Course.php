@@ -127,22 +127,21 @@ class Course extends Model
         return $courseCompletedPercent == 100;
     }
 
-    // public function getAllInstructorsAttribute()
-    // {
-    //     $primary = $this->instructor;
-    //     $partners = $this->partnerInstructors->pluck('user');
-
-    //     return collect([$primary])->merge($partners)->filter();
-    // }
-
     protected function allInstructors(): Attribute
     {
         $primary = $this->instructor;
-        $partners = $this->partnerInstructors->pluck('user');
-
+        $partners = $this->partnerInstructors->pluck('instructor');
         return Attribute::make(
             get: fn() => collect([$primary])->merge($partners)->filter()
         );
+    }
+
+    public function getAllInstructors()
+    {
+        $primary = $this->instructor;
+        $partners = $this->partnerInstructors->pluck('instructor');
+
+        return collect([$primary])->merge($partners);
     }
 
     protected function thumbnailUrl(): Attribute

@@ -19,13 +19,13 @@
                 </li>
             @endadminCan
 
-            @if (checkAdminHasPermission('course.management') ||
+            @if (checkAdminHasPermission('course.view') ||
                     checkAdminHasPermission('course.certificate.management') ||
                     checkAdminHasPermission('badge.management') ||
                     checkAdminHasPermission('pendidikanlanjutan.view'))
                 <li class="menu-header">{{ __('Manage Courses') }}</li>
 
-                @if (Module::isEnabled('Course') && checkAdminHasPermission('course.management'))
+                @if (Module::isEnabled('Course') && checkAdminHasPermission('course.view'))
                     @include('course::sidebar')
                 @endif
 
@@ -42,7 +42,7 @@
                 @endif --}}
             @endif
 
-            @if (checkAdminHasPermission('course.management'))
+            @if (checkAdminHasPermission('pendidikanlanjutan.view'))
                 <li class="menu-header">{{ __('Manage ContinuingEducation') }}</li>
                 @if (Module::isEnabled('PendidikanLanjutan') && checkAdminHasPermission('pendidikanlanjutan.view'))
                     @include('pendidikanlanjutan::sidebar')

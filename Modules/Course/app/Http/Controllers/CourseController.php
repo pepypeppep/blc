@@ -49,6 +49,12 @@ class CourseController extends Controller
                     ->orWhere('has_access', '');
             }
         ]);
+
+        $currentUserInstansi = adminAuth()->instansi_id;
+        if ($currentUserInstansi) {
+            $query->where('instansi_id', $currentUserInstansi);
+        }
+
         $orderBy = $request->order_by == 1 ? 'asc' : 'desc';
         $courses = $request->par_page == 'all' ?
             $query->orderBy('id', $orderBy)->get() :
@@ -246,7 +252,7 @@ class CourseController extends Controller
 
     function storeMoreInfo(Request $request)
     {
-        checkAdminHasPermissionAndThrowException('course.management');
+        checkAdminHasPermissionAndThrowException('course.store');
         $course = Course::findOrFail($request->course_id);
         $course->capacity = $request->capacity;
         $course->duration = $request->course_duration;
@@ -297,7 +303,7 @@ class CourseController extends Controller
     function storeFinish(Request $request)
     {
         // dd($request->participants);
-        checkAdminHasPermissionAndThrowException('course.management');
+        checkAdminHasPermissionAndThrowException('course.store');
         $course = Course::findOrFail($request->course_id);
         $course->message_for_reviewer = $request->message_for_reviewer;
         $course->status = $request->status;
@@ -340,6 +346,7 @@ class CourseController extends Controller
 
     function statusUpdate(Request $request, string $id)
     {
+        checkAdminHasPermissionAndThrowException('course.status.update');
         $course = Course::findOrFail($id);
         $course->is_approved = $request->status;
         $course->save();
@@ -348,7 +355,7 @@ class CourseController extends Controller
 
     function destroy(string $id)
     {
-        checkAdminHasPermissionAndThrowException('course.management');
+        checkAdminHasPermissionAndThrowException('course.delete');
         $course = Course::findOrFail($id);
         if ($course->enrollments()->count() > 0) {
             return redirect()->back()->with(['alert-type' => 'error', 'messege' => __('The course cannot be deleted because it has enrollments.')]);

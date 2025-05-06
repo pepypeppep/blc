@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="section-body">
-                    @if (checkAdminHasPermission('course.management'))
+                    @if (checkAdminHasPermission('course.view'))
                         <div class="row">
                             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                                 <div class="card card-statistic-1">
@@ -224,7 +224,7 @@
                         </div>
                     @endif
                     <div class="row mt-2">
-                        @if (checkAdminHasPermission('course.management'))
+                        @if (checkAdminHasPermission('course.view'))
                             <div class="col-md-6 col-lg-4">
                                 <div class="card card-hero">
                                     <div class="card-header">

@@ -667,4 +667,29 @@ $(document).ready(function () {
             },
         });
     });
+
+    $(".course-change-publish-status").on("change", function (e) {
+        e.preventDefault();
+        let id = $(this).data("id");
+        let status = $(this).val();
+        $.ajax({
+            method: "post",
+            url: base_url + "/admin/courses/publish-status-update/" + id,
+            data: {
+                _token: csrf_token,
+                status: status,
+            },
+            success: function (data) {
+                if (data.status == "success") {
+                    toastr.success(data.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                let errors = xhr.responseJSON.errors;
+                $.each(errors, function (key, value) {
+                    toastr.error(value);
+                });
+            },
+        });
+    });
 });

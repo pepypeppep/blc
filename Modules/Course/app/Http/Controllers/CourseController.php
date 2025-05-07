@@ -353,6 +353,15 @@ class CourseController extends Controller
         return response(['status' => 'success', 'message' => __('Updated successfully')]);
     }
 
+    function publishStatusUpdate(Request $request, string $id)
+    {
+        checkAdminHasPermissionAndThrowException('course.update');
+        $course = Course::findOrFail($id);
+        $course->status = $request->status;
+        $course->save();
+        return response(['status' => 'success', 'message' => __('Updated successfully')]);
+    }
+
     function destroy(string $id)
     {
         checkAdminHasPermissionAndThrowException('course.delete');

@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::get('courses/duplicate/{id}', [CourseController::class, 'duplicate'])->name('courses.duplicate');
     Route::delete('courses/delete/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
     Route::post('courses/status-update/{id}', [CourseController::class, 'statusUpdate'])->name('courses.status-update');
+    Route::post('courses/publish-status-update/{id}', [CourseController::class, 'publishStatusUpdate'])->name('courses.publish-status-update');
 
     /** Students */
     Route::get('courses/get-students', [CourseController::class, 'getStudents'])->name('courses.get-students');

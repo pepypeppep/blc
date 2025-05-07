@@ -213,10 +213,15 @@ class VacancyController extends Controller
 
     public function import(Request $request)
     {
-        Excel::import(new VacanciesImport, $request->file('vacancies'));
-
-        return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy imported successfully.');
-    }
+        try {
+            $import = new VacanciesImport();
+            Excel::import($import, $request->file('vacancies'));
+    
+            return redirect()->route('admin.vacancies.index')->with('success', "Vacancy imported successfully. Successfully imported {$import->imported} data. Duplicates skipped: {$import->skipped}.");
+        } catch (\Throwable $e) {
+            return redirect()->route('admin.vacancies.index')->with('error', $e->getMessage());
+        }
+    }    
 
     public function updatePublicationStatus($id)
     {

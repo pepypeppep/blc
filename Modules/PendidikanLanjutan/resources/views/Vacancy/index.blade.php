@@ -134,9 +134,9 @@
                                                     <td>{{ $vacancy->instansi->name ?? '-' }}</td>
                                                     <td>{{ $vacancy->educationLevel() }}</td>
                                                     <td>{{ $vacancy->study->name }}</td>
-                                                    <td class="text-center">{{ $vacancy->employment_grade }}</td>
+                                                    <td class="text-center">{{ \App\Enums\EmploymentGrade::from($vacancy->employment_grade)->label() }}</td>
                                                     <td>{{ $vacancy->employmentStatus() }}</td>
-                                                    <td>{{ $vacancy->cost_type }}</td>
+                                                    <td>{{ $vacancy->costType() }}</td>
                                                     <td class="text-center">{{ $vacancy->age_limit }}</td>
                                                     <td>{{ $vacancy->year }}</td>
                                                     <td>{!! $vacancy->description !!}</td>

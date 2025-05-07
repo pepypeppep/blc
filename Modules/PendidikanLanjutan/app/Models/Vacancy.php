@@ -58,6 +58,12 @@ class Vacancy extends Model
         return $this->employment_status == 'tidak_diberhentikan_dari_jabatan' ? 'tidak diberhentikan dari jabatan' : 'diberhentikan dari jabatan';
     }
 
+    public function costType()
+    {
+        return $this->cost_type == 'apbd' ? 'APBD' :
+            ($this->cost_type == 'non_apbd' ? 'Non APBD' : 'Mandiri');
+    }
+
     public function isEligible(User $user): ?string
     {
         if ($this->instansi_id && $this->instansi_id !== $user->instansi_id) {

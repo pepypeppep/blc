@@ -550,6 +550,65 @@ $(document).ready(function () {
         });
     });
 
+    $(".import-quiz-question-btn").on("click", function () {
+
+        $(".dynamic-modal").modal("show");
+        let quizId = $(this).data("quiz-id");
+        $.ajax({
+            method: "GET",
+            url:
+                base_url +
+                "/admin/course-chapter/quiz-question/import/" +
+                quizId,
+            data: {},
+            beforeSend: function () {
+                dynamicModalContent.html(loader);
+            },
+            success: function (data) {
+                dynamicModalContent.html(data);
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            },
+        });
+    });
+
+    $("body").on("submit", ".import_lesson_form", function (e) {
+
+        e.preventDefault();
+
+        const form = $(this)[0];
+        const formData = new FormData(form);
+
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: $(this).attr('method'),
+            data: formData,
+            contentType: false,
+            processData: false,
+
+            success: function (response) {
+                $('#import-alert')
+
+                form.reset();
+
+                toastr.success(response.message);
+                // Tutup modal setelah sukses
+                $(".dynamic-modal").modal("hide");
+                setTimeout(function () {
+                    window.location.reload();
+                }, 1500);
+            },
+            error: function (xhr) {
+                const message = xhr.responseJSON?.message || 'Terjadi kesalahan saat import.';
+                toastr.error(message);
+
+            }
+        });
+    });
+
+
     // load edit question model
     $(".edit-question-btn").on("click", function () {
         $(".dynamic-modal").modal("show");

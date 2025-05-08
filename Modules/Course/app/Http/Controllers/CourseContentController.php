@@ -15,7 +15,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Session\Session;
 use App\Http\Requests\Frontend\QuizLessonCreateRequest;
+use App\Imports\QuizQuestionImport;
 use App\Models\FollowUpAction;
+use Maatwebsite\Excel\Facades\Excel;
 use Modules\Course\app\Http\Requests\ChapterLessonRequest;
 
 class CourseContentController extends Controller
@@ -501,5 +503,35 @@ class CourseContentController extends Controller
 
 
         return response()->json(['status' => 'success', 'message' => __('Question updated successfully')]);
+    }
+
+    public function importFileQuestion(Request $request, string $quizId)
+    {
+        try {
+            $request->validate([
+                'excel_file' => 'required|file|mimes:csv,xlsx,xls',
+            ], [
+                'excel_file.required' => 'File excel wajib diisi.',
+                'excel_file.file' => 'File excel harus berupa file.',
+                'excel_file.mimes' => 'File excel harus berekstensi .csv, .xlsx, atau .xls.',
+            ]);
+
+            Excel::import(new QuizQuestionImport($quizId), $request->file('excel_file'));
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Import berhasil!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public  function importQuizQuestion(string $quizId)
+    {
+        return view('course::course.partials.quiz-question-import-modal', ['quizId' => $quizId])->render();
     }
 }

@@ -201,23 +201,34 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title ml-4" id="exampleModalCenterTitle">Impor Lowongan</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: gray;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="d-flex justify-content-center align-items:center p-3">
-                        <form action="{{ route('admin.vacancies.import') }}" method="POST"
-                            enctype="multipart/form-data">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <form action="{{ route('admin.vacancies.import') }}" method="POST" enctype="multipart/form-data" class="w-100">
                             @csrf
                             <div class="form-group">
-                                <label for="vacancies" class="text-danger">({{ __('only .xlsx') }})</label>
-                                <input type="file" name="vacancies" class="form-control" id="vacancies"
-                                    accept=".xlsx" onchange="event.target.form.submit()">
-                                <a href="{{ asset('template/Template Import Lowongan Pendidikan Lanjutan.xlsx') }}">Unduh
-                                    Template</a>
+                                <label for="vacancies">
+                                    <strong>Catatan:</strong> Hanya menerima file <span class="text-danger font-weight-bold">.xlsx</span>
+                                </label>
+                                <div class="custom-file">
+                                    <input type="file" name="vacancies" class="custom-file-input" id="vacancies" 
+                                        accept=".xlsx" onchange="event.target.form.submit()">
+                                    <label class="custom-file-label" for="vacancies">Pilih file...</label>
+                                </div>
+                                <div class="alert alert-warning py-2 px-3 mt-2" role="alert">
+                                    Pastikan file sesuai dengan format template yang telah disediakan.
+                                </div>
+                                <div class="text-center mt-2">
+                                    <a href="{{ asset('template/Template Import Lowongan Pendidikan Lanjutan.xlsx') }}" 
+                                    class="btn btn-outline-primary btn-sm">
+                                    <i class="fa fa-download"></i> Unduh Template
+                                    </a>
+                                </div>
                                 @error('vacancies')
-                                    <span class="text-danger">{{ $message }}</span>
+                                    <div class="mt-2 text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                         </form>

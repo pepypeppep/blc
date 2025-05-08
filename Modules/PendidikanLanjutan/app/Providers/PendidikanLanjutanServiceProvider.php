@@ -22,6 +22,7 @@ class PendidikanLanjutanServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
+        $this->loadTranslationsFrom(module_path('PendidikanLanjutan', 'resources/lang'), 'PendidikanLanjutan');
     }
 
     /**

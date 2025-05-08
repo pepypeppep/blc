@@ -24,7 +24,7 @@ enum EmploymentGrade: string
 
     public function label(): string
     {
-        return __('employment_grade.' . $this->value);
+        return __('PendidikanLanjutan::employment_grade.' . $this->value);
     }
 
     public static function options(): array

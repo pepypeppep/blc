@@ -91,33 +91,13 @@
                                         <div class="form-group col-md-8 offset-md-2">
                                             <label for="employment_grade">{{ __('Employment Grade') }} <span
                                                     class="text-danger">*</span></label>
-                                            <select name="employment_grade" class="form-control select2"
-                                                id="employment_grade">
-                                                <option value="juru_ia">{{ __('Juru (Ia)') }}</option>
-                                                <option value="juru_muda_tingkat_i_ib">{{ __('Juru Muda Tingkat I (Ib)') }}
-                                                </option>
-                                                <option value="juru_ic">{{ __('Juru (Ic)') }}</option>
-                                                <option value="juru_tingkat_i_id">{{ __('Juru Tingkat I (Id)') }}</option>
-                                                <option value="pengatur_iia">{{ __('Pengatur (IIa)') }}</option>
-                                                <option value="pengatur_muda_tingkat_i_iib">
-                                                    {{ __('Pengatur Muda Tingkat I (IIb)') }}</option>
-                                                <option value="pengatur_iic">{{ __('Pengatur (IIc)') }}</option>
-                                                <option value="pengatur_tingkat_i_iid">{{ __('Pengatur Tingkat I (IId)') }}
-                                                </option>
-                                                <option value="penata_iiia">{{ __('Penata (IIIa)') }}</option>
-                                                <option value="penata_muda_tingkat_i_iiib">
-                                                    {{ __('Penata Muda Tingkat I (IIIb)') }}</option>
-                                                <option value="penata_iiic">{{ __('Penata (IIIc)') }}</option>
-                                                <option value="penata_tingkat_i_iiid">{{ __('Penata Tingkat I (IIId)') }}
-                                                </option>
-                                                <option value="pembina_iva">{{ __('Pembina (IVa)') }}</option>
-                                                <option value="pembina_tingkat_i_ivb">{{ __('Pembina Tingkat I (IVb)') }}
-                                                </option>
-                                                <option value="pembina_utama_muda_ivc">{{ __('Pembina Utama Muda (IVc)') }}
-                                                </option>
-                                                <option value="pembina_utama_madya_ivd">
-                                                    {{ __('Pembina Utama Madya (IVd)') }}</option>
-                                                <option value="pembina_utama_ive">{{ __('Pembina Utama (IVe)') }}</option>
+                                            <select name="employment_grade" class="form-control select2" id="employment_grade">
+                                                @foreach(\App\Enums\EmploymentGrade::cases() as $grade)
+                                                    <option value="{{ $grade->value }}"
+                                                        {{ old('employment_grade', $selected ?? '') === $grade->value ? 'selected' : '' }}>
+                                                        {{ $grade->label() }}
+                                                    </option>
+                                                @endforeach
                                             </select>
                                             @error('employment_grade')
                                                 <span class="text-danger">{{ $message }}</span>

@@ -6,6 +6,9 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Modules\PendidikanLanjutan\app\Models\Study;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
+use App\Enums\EmploymentGrade;
 
 class VacanciesImport implements ToModel, WithHeadingRow
 {
@@ -14,6 +17,10 @@ class VacanciesImport implements ToModel, WithHeadingRow
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
+
+    public int $imported = 0;
+    public int $skipped = 0;
+
     public function model(array $row)
     {
         // Check if the row is empty
@@ -26,11 +33,36 @@ class VacanciesImport implements ToModel, WithHeadingRow
             return null;
         }
 
-        // Dump the row for debugging purposes
-        dump($row);
+        if (!in_array($row['pangkatgolongan'], EmploymentGrade::values())) {
+            throw new \Exception("Invalid pangkat/golongan: {$row['pangkatgolongan']}");
+        }
 
-        return new Vacancy([
-            'study_id' => Study::firstOrCreate(['name' => $row['program_studi']])->id ?? 1,
+        // Dump the row for debugging purposes
+        // dump($row);
+
+        $study = Study::firstOrCreate(['name' => $row['program_studi']]);
+        $studyId = $study->id ?? 1;
+
+        $existing = Vacancy::where('study_id', $studyId)
+            ->where('instansi_id', $row['instansi'])
+            ->where('education_level', $row['jenjang'])
+            ->where('employment_grade', $row['pangkatgolongan'])
+            ->where('employment_status', $row['status_kepegawaian'])
+            ->where('cost_type', $row['jenis_biaya'])
+            ->where('year', $row['tahun'])
+            ->first();
+
+        if ($existing) {
+            // data duplikat
+            $this->skipped++;
+            return null;
+        }
+
+        $this->imported++;
+
+        $vacancy = new Vacancy([
+            'study_id' => $studyId,
+            'instansi_id' => $row['instansi'],
             'education_level' => $row['jenjang'],
             'employment_grade' => $row['pangkatgolongan'],
             'employment_status' => $row['status_kepegawaian'],
@@ -40,5 +72,21 @@ class VacanciesImport implements ToModel, WithHeadingRow
             'year' => $row['tahun'],
             'description' => $row['catatan'] ?? null, // Assuming 'catatan' is optional
         ]);
+
+        $vacancy->save();
+  
+        $masterAttachments = VacancyMasterAttachment::get();
+        foreach ($masterAttachments as $attachment) {
+            VacancyAttachment::create([
+                'vacancy_id' => $vacancy->id,
+                'name' => $attachment->name,
+                'type' => 'pdf',
+                'max_size' => 10000,
+                'category' => 'syarat',
+                'is_required' => 1
+            ]);
+        }
+    
+        return $vacancy;
     }
 }

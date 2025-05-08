@@ -214,7 +214,7 @@
                                     <strong>Catatan:</strong> Hanya menerima file <span class="text-danger font-weight-bold">.xlsx</span>
                                 </label>
                                 <div class="custom-file">
-                                    <input type="file" name="vacancies" class="custom-file-input" id="vacancies" 
+                                    <input type="file" name="vacancies" class="custom-file-input" id="vacancies"
                                         accept=".xlsx" onchange="event.target.form.submit()">
                                     <label class="custom-file-label" for="vacancies">Pilih file...</label>
                                 </div>
@@ -222,7 +222,7 @@
                                     Pastikan file sesuai dengan format template yang telah disediakan.
                                 </div>
                                 <div class="text-center mt-2">
-                                    <a href="{{ asset('template/Template Import Lowongan Pendidikan Lanjutan.xlsx') }}" 
+                                    <a href="{{ asset('template/Template Import Lowongan Pendidikan Lanjutan.xlsx') }}"
                                     class="btn btn-outline-primary btn-sm">
                                     <i class="fa fa-download"></i> Unduh Template
                                     </a>

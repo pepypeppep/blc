@@ -9,6 +9,7 @@ use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use App\Enums\EmploymentGrade;
+use App\Models\Instansi;
 
 class VacanciesImport implements ToModel, WithHeadingRow
 {
@@ -42,9 +43,10 @@ class VacanciesImport implements ToModel, WithHeadingRow
 
         $study = Study::firstOrCreate(['name' => $row['program_studi']]);
         $studyId = $study->id ?? 1;
+        $instansi = Instansi::where('name', $row['instansi'])->first();
 
         $existing = Vacancy::where('study_id', $studyId)
-            ->where('instansi_id', $row['instansi'])
+            ->where('instansi_id', $instansi->id)
             ->where('education_level', $row['jenjang'])
             ->where('employment_grade', $row['pangkatgolongan'])
             ->where('employment_status', $row['status_kepegawaian'])
@@ -62,7 +64,7 @@ class VacanciesImport implements ToModel, WithHeadingRow
 
         $vacancy = new Vacancy([
             'study_id' => $studyId,
-            'instansi_id' => $row['instansi'],
+            'instansi_id' => $instansi->id,
             'education_level' => $row['jenjang'],
             'employment_grade' => $row['pangkatgolongan'],
             'employment_status' => $row['status_kepegawaian'],
@@ -74,7 +76,7 @@ class VacanciesImport implements ToModel, WithHeadingRow
         ]);
 
         $vacancy->save();
-  
+
         $masterAttachments = VacancyMasterAttachment::get();
         foreach ($masterAttachments as $attachment) {
             VacancyAttachment::create([
@@ -86,7 +88,7 @@ class VacanciesImport implements ToModel, WithHeadingRow
                 'is_required' => 1
             ]);
         }
-    
+
         return $vacancy;
     }
 }

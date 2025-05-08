@@ -27,6 +27,7 @@ class InstructorEvaluationController extends Controller
     public function create(Course $course, ?User $instructor = null)
     {
         $instructors = $course->getAllInstructors();
+
         $instructorEvaluations = InstructorEvaluation::where('course_id', $course->id)->get();
 
 
@@ -45,6 +46,8 @@ class InstructorEvaluationController extends Controller
                 ->where('course_id', $course->id)
                 ->first();
         }
+
+
 
         return view('instructorevaluation::create', [
             'instructors' => $instructors,

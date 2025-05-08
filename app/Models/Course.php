@@ -139,6 +139,10 @@ class Course extends Model
     public function getAllInstructors()
     {
         $primary = $this->instructor;
+        if ($primary == null) {
+            return collect();
+        }
+
         $partners = $this->partnerInstructors->pluck('instructor');
 
         return collect([$primary])->merge($partners);

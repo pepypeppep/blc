@@ -19,8 +19,7 @@
 
                      
                 @foreach ($instructors as $instructor)
-                
-                <!-- Instructor 2 - Already Reviewed -->
+            
                 <a href="{{ route('student.instructorevaluation.create', ['course' => $course->id, 'instructor' => $instructor->id]) }}" for="instructor2" class="instructor-option @if($instructorEvaluations->pluck('instructor_id')->contains($instructor->id)) reviewed @endif 
                     @if (optional($selectedInstructor)->id == $instructor->id) instructor-radio-selected @endif">
                     @if($instructorEvaluations->pluck('instructor_id')->contains($instructor->id)) 
@@ -31,7 +30,8 @@
                     <div class="instructor-name">{{ $instructor->name }}</div>
                     {{-- <div class="instructor-role">Backend Developer</div> --}}
                     {{-- <div class="already-reviewed-text">Already Reviewed</div> --}}
-                </a>
+                </a> 
+                
                 @endforeach
             
                

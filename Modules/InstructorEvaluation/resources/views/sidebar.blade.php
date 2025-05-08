@@ -11,17 +11,7 @@
         <li class="{{ isRoute('admin.instructor-request.*', 'active') }}">
             <a class="nav-link" href="{{ route('admin.instructorevaluation.index') }}">
                 {{ __('Instructor Evaluation List') }}
-                @if ($pendingRequestCount > 0)
-                    <small class="badge badge-danger ml-2">{{ $pendingRequestCount }}</small>
-                @endif
             </a>
         </li>
-
-        {{-- <li class="{{ isRoute('admin.instructor-request-setting.*', 'active') }}">
-            <a class="nav-link" href="{{ route('admin.instructor-request-setting.index', ['code' => 'id']) }}">
-                {{ __('Request Settings') }}
-            </a>
-        </li> --}}
-
     </ul>
 </li>

@@ -7,7 +7,9 @@ use App\Models\Course;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Modules\Article\app\Models\Article;
 use Modules\Order\Database\factories\EnrollmentFactory;
 
 class Enrollment extends Model
@@ -34,6 +36,10 @@ class Enrollment extends Model
         'tos_status' => 'tos_status',
     ];
 
+    function article(): HasMany
+    {
+        return $this->hasMany(Article::class);
+    }
 
     function course(): BelongsTo
     {

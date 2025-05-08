@@ -56,7 +56,14 @@ class StudentDashboardController extends Controller
     {
         $enrolls = Enrollment::with(['course' => function ($q) {
             $q->withTrashed();
-        }])->where('user_id', userAuth()->id)->where('has_access', 1)->orderByDesc('id')->paginate(10);
+        }])
+            ->with('article')
+            ->where('user_id', userAuth()->id)
+            ->where('has_access', 1)
+            ->orderByDesc('id')
+            ->paginate(10);
+
+
         return view('frontend.student-dashboard.enrolled-courses.index', compact('enrolls'));
     }
 

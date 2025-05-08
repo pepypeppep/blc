@@ -9,9 +9,14 @@ php artisan instansi:sync
 php artisan user:sync {instansi_id}
 ```
 
-## Environment variables
+## Fill Following Data on Config Table
 
-BANTARA_SIGNER_NIK=123456 # NIK untuk signer, isi dengan nik kepala BKPSDM
+| Key | Value |
+| --- | --- |
+| bantara_url | https://bantara.inidev.my.id |
+| bantara_key | {bantara_api_key} |
+| bantara_callback_key | {bantara_callback_key} |
+| bantara_nik | {bantara_nik} |
 
 # Data User
 

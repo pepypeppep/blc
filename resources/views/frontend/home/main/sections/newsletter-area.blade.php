@@ -15,48 +15,15 @@
                     <h2 class="title">
                         <b>{{ __('Ambil kesempatan untuk melanjutkan pendidikan') }}!</b>
                     </h2>
-                    <div class="row">
-                        @if (now() > $schedule->start_at)
-                        <div class="col-lg-4 col-sm-6">
-                            <div class="fact__item">
-                                <h2 class="count"><span class="odometer" data-count="{{ $totalPendidikanLanjutan }}">
-                                </h2>
-                                <p>{{ __('Lowongan') }}</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-sm-6">
-                            <div class="fact__item">
-                                <h2 class="count"><span class="odometer"
-                                        data-count="{{ $totalFormasiPendidikanLanjutan }}"></h2>
-                                <p>{{ __('Formasi') }}</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-sm-6">
-                            <div class="fact__item">
-                                <h2 class="count"><span class="odometer"
-                                        data-count="{{ $totalInstansiPendidikanLanjutan }}"></h2>
-                                <p>{{ __('Instansi') }}</p>
-                            </div>
-                        </div>
-                        @else
-                        <div class="col-lg-12 col-sm-12">
-                            <div class="fact__item" style="text-align: left;">
-                                <p style="width: fit-content; animation: moveLeftRight 1s infinite alternate cubic-bezier(.5, 0, .5, 1);"
-                                    class="font-weight-bold"><i class="fas fa-arrow-alt-circle-right"></i> <span style="text-decoration: underline;">Lowongan Pendidikan Lanjutan akan segera dibuka.</span></p>
-                                    <style>
-                                        @keyframes moveLeftRight {
-                                            0% {
-                                                transform: translateX(0);
-                                            }
-                                            100% {
-                                                transform: translateX(10px);
-                                            }
-                                        }
-                                    </style>
-                            </div>
-                        </div>
-                        @endif
+                    <div class="courses__item-bottom">
+                    <div class="button">
+                        <a href="{{ route('student.continuing-education') }}" class="already-enrolled-btn"
+                            data-id="">
+                            <span class="text">Lihat Pendidikan Lanjutan</span>
+                            <i class="flaticon-arrow-right"></i>
+                        </a>
                     </div>
+</div>
                 </div>
             </div>
         </div>

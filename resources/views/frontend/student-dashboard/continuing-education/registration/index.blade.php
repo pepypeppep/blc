@@ -5,6 +5,7 @@
         <div class="dashboard__content-title">
             <h4 class="title">{{ __('Daftar Program Pendidikan Lanjutan') }}</h4>
         </div>
+        @if (userAuth()->canAccessContinuingEducation())
         <div class="row">
             <div class="col-12">
                 <div class="dashboard__review-table table-responsive">
@@ -21,7 +22,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($vacancies as $vacancy)
+                            @forelse ($vacancies as $vacancy)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $vacancy->education_level }}/{{ $vacancy->study->name }}</td>
@@ -41,7 +42,11 @@
                                         </a>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center">{{ __('Tidak ada riwayat pendaftaran program pendidikan lanjutan') }}</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
 
@@ -49,6 +54,13 @@
                 {{-- {{ $vacancies->links() }} --}}
             </div>
         </div>
+        @else
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning">{{ __('Saat ini, Pendaftaran Program Pendidikan Lanjutan hanya tersedia untuk PNS') }}</div>
+            </div>
+        </div>
+        @endif
     </div>
 @endsection
 

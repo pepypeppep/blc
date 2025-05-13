@@ -65,7 +65,8 @@ class DatabaseSeeder extends Seeder
             PendidikanLanjutanDatabaseSeeder::class,
             TagSeeder::class,
             EnrollmentSeeder::class,
-            ArticleDatabaseSeeder::class
+            ArticleDatabaseSeeder::class,
+            TosSeeder::class
         ]);
     }
 }

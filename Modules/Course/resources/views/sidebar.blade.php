@@ -16,7 +16,7 @@
                     @endif
                 </a>
             </li>
-            @if (getAdminAuthRole() != 'Admin OPD')
+            @if (checkAdminHasPermission('course.category.management'))
                 <li
                     class="{{ isRoute('admin.course-category.*', 'active') }} {{ isRoute('admin.course-sub-category.*', 'active') }}">
                     <a class="nav-link" href="{{ route('admin.course-category.index') }}">
@@ -25,7 +25,7 @@
                 </li>
             @endif
 
-            @if (getAdminAuthRole() == 'Super Admin')
+            @if (checkAdminHasPermission('course.language.management'))
                 <li class="{{ isRoute('admin.course-language.*', 'active') }}">
                     <a class="nav-link" href="{{ route('admin.course-language.index') }}">
                         {{ __('languages') }}
@@ -33,7 +33,7 @@
                 </li>
             @endif
 
-            @if (getAdminAuthRole() != 'Admin OPD')
+            @if (checkAdminHasPermission('course.level.management'))
                 <li class="{{ isRoute('admin.course-level.*', 'active') }}">
                     <a class="nav-link" href="{{ route('admin.course-level.index') }}">
                         {{ __('levels') }}
@@ -41,11 +41,13 @@
                 </li>
             @endif
 
-            <li class="{{ isRoute('admin.course-review.*', 'active') }}">
-                <a class="nav-link" href="{{ route('admin.course-review.index') }}">
-                    {{ __('Course Reviews') }}
-                </a>
-            </li>
+            @if (checkAdminHasPermission('course.review.management'))
+                <li class="{{ isRoute('admin.course-review.*', 'active') }}">
+                    <a class="nav-link" href="{{ route('admin.course-review.index') }}">
+                        {{ __('Course Reviews') }}
+                    </a>
+                </li>
+            @endif
 
             @if (getAdminAuthRole() == 'Super Admin')
                 <li class="{{ isRoute('admin.course-tos.*', 'active') }}">

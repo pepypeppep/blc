@@ -68,7 +68,7 @@ class CourseContentController extends Controller
             'jp.min' => __('JP is too short'),
         ]);
 
-        checkAdminHasPermissionAndThrowException('course.management');
+        checkAdminHasPermissionAndThrowException('course.update');
         $chapter = CourseChapter::findOrFail($chapterId);
         $chapter->title = $request->title;
         $chapter->jp = $request->jp;
@@ -78,7 +78,7 @@ class CourseContentController extends Controller
 
     function chapterDestroy(string $chapterId)
     {
-        checkAdminHasPermissionAndThrowException('course.management');
+        checkAdminHasPermissionAndThrowException('course.delete');
         $chapter = CourseChapter::findOrFail($chapterId);
         $chapterItems = CourseChapterItem::where('chapter_id', $chapterId)->get();
         $lessonFiles = CourseChapterLesson::whereIn('chapter_item_id', $chapterItems->pluck('id'))->get();
@@ -265,7 +265,7 @@ class CourseContentController extends Controller
     function lessonUpdate(ChapterLessonRequest $request)
     {
 
-        checkAdminHasPermissionAndThrowException('course.management');
+        checkAdminHasPermissionAndThrowException('course.update');
 
         $chapterItem = CourseChapterItem::findOrFail($request->chapter_item_id);
 
@@ -347,7 +347,7 @@ class CourseContentController extends Controller
 
     function chapterLessonDestroy(string $chapterItemId)
     {
-        checkAdminHasPermissionAndThrowException('course.management');
+        checkAdminHasPermissionAndThrowException('course.delete');
         $chapterItem = CourseChapterItem::findOrFail($chapterItemId);
 
         if ($chapterItem->type == 'quiz') {

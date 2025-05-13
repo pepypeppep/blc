@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/certificaterecognition",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\CertificateRecognition\\": "",
+            "Modules\\CertificateRecognition\\App\\": "app/",
+            "Modules\\CertificateRecognition\\Database\\Factories\\": "database/factories/",
+            "Modules\\CertificateRecognition\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\CertificateRecognition\\Tests\\": "tests/"
+        }
+    }
+}

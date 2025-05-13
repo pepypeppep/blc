@@ -5,6 +5,7 @@
         <div class="dashboard__content-title">
             <h4 class="title">{{ __('Daftar Program Pendidikan Lanjutan') }}</h4>
         </div>
+        @if (userAuth()->canAccessContinuingEducation())
         <div class="row">
             <div class="col-12">
                 <div class="dashboard__review-table table-responsive">
@@ -53,6 +54,13 @@
                 {{ $vacancies->links() }}
             </div>
         </div>
+        @else
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning">{{ __('Saat ini, Pendaftaran Program Pendidikan Lanjutan hanya tersedia untuk PNS') }}</div>
+            </div>
+        </div>
+        @endif
     </div>
 @endsection
 

@@ -84,6 +84,10 @@ class User extends Authenticatable
         'password'          => 'hashed',
     ];
 
+    public const ASN_STATUS_PNS = 'PNS';
+    public const ASN_STATUS_PPPK = 'PPPK';
+    public const ASN_STATUS_LAINNYA = 'Lainnya';
+
     public function badges()
     {
         return $this->belongsToMany(Badge::class, 'user_badge')
@@ -201,5 +205,10 @@ class User extends Authenticatable
             ->where('has_access', true)
             ->first();
         return $result ? true : false;
+    }
+
+    public function canAccessContinuingEducation()
+    {
+        return $this->asn_status == User::ASN_STATUS_PNS;
     }
 }

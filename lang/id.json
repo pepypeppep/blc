@@ -2066,5 +2066,14 @@
     "Access": "Akses",
     "Class": "Kelas",
     "Term of Service": "Syarat dan Ketentuan",
-    "Your Score": "Nilai Anda"
+    "Your Score": "Nilai Anda",
+    "Certificate Recognition List": "Daftar Sertifikasi Pengakuan",
+    "Certificate Recognition": "Sertifikasi Pengakuan",
+    "Select Status Approval": "Pilih Status Persetujuan",
+    "Select Certificate Status": "Pilih Status Sertifikat",
+    "Goal": "Tujuan",
+    "Do you want to approve this certificate?": "Apakah Anda yakin ingin menyetujui sertifikat ini?",
+    "Yes, approve it!": "Ya, setujui!",
+    "Do you want to reject this certificate?": "Apakah Anda yakin ingin menolak sertifikat ini?",
+    "Yes, reject it!": "Ya, tolak!"
 }

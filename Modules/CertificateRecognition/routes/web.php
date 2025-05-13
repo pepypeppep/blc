@@ -14,6 +14,10 @@ use Modules\CertificateRecognition\app\Http\Controllers\CertificateRecognitionCo
 |
 */
 
-Route::group([], function () {
-    Route::resource('certificaterecognition', CertificateRecognitionController::class)->names('certificaterecognition');
+Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
+    Route::get('certificate-recognition', [CertificateRecognitionController::class, 'index'])->name('certificate-recognition.index');
+    Route::get('certificate-recognition/{id}/verify', [CertificateRecognitionController::class, 'verify'])->name('certificate-recognition.verify');
+    Route::put('certificate-recognition/{id}/verify', [CertificateRecognitionController::class, 'verifyUpdate'])->name('certificate-recognition.verify.store');
+    Route::get('certificate-recognition/{id}/edit', [CertificateRecognitionController::class, 'edit'])->name('certificate-recognition.edit');
+    Route::delete('certificate-recognition/{id}', [CertificateRecognitionController::class, 'destroy'])->name('certificate-recognition.destroy');
 });

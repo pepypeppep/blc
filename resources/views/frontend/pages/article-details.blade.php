@@ -105,35 +105,6 @@
                         </div>
                     </div>
                     <div class="blog-post-comment">
-                        <div class="comment-wrap">
-                            @if (count($comments) > 0)
-                                <div class="comment-wrap-title">
-                                    <h4 class="title">{{ count($comments) }} {{ __('Comments') }}</h4>
-                                </div>
-                            @endif
-                            <div class="latest-comments">
-                                @foreach ($comments as $comment)
-                                    <ul class="list-wrap">
-                                        <li>
-                                            <div class="comments-box">
-                                                <div class="comments-avatar">
-                                                    <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $comment->user->nip }}.jpg"
-                                                        alt="img">
-                                                </div>
-                                                <div class="comments-text">
-                                                    <div class="avatar-name">
-                                                        <h6 class="name">{{ $comment->user->name }}</h6>
-                                                        <span class="date">{{ formatDate($comment->created_at) }}</span>
-                                                    </div>
-                                                    <p>{{ $comment->description }}</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <hr class="col-12 border">
-                                @endforeach
-                            </div>
-                        </div>
                         @if ($article->allow_comments == 1)
                             @auth
                                 <div class="comment-respond">
@@ -190,6 +161,36 @@
                                 </div>
                             @endauth
                         @endif
+                        <div class="comment-wrap mt-5">
+                            @if (count($comments) > 0)
+                                <div class="comment-wrap-title">
+                                    <h4 class="title">{{ count($comments) }} {{ __('Comments') }}</h4>
+                                </div>
+                            @endif
+                            <div class="latest-comments">
+                                @foreach ($comments as $comment)
+                                    <ul class="list-wrap">
+                                        <li>
+                                            <div class="comments-box">
+                                                <div class="comments-avatar">
+                                                    <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $comment->user->nip }}.jpg"
+                                                        alt="img">
+                                                </div>
+                                                <div class="comments-text">
+                                                    <div class="avatar-name">
+                                                        <h6 class="name">{{ $comment->user->name }}</h6>
+                                                        <span class="date">{{ formatDate($comment->created_at) }}</span>
+                                                    </div>
+                                                    <p>{{ $comment->description }}</p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <hr class="col-12 border">
+                                @endforeach
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>

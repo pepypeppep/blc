@@ -1953,5 +1953,12 @@
     "Do you want to approve this certificate?": "Do you want to approve this certificate?",
     "Yes, approve it!": "Yes, approve it!",
     "Do you want to reject this certificate?": "Do you want to reject this certificate?",
-    "Yes, reject it!": "Yes, reject it!"
+    "Yes, reject it!": "Yes, reject it!",
+    "Competency": "Competency",
+    "Indicator of Success": "Indicator of Success",
+    "Activity Plan": "Activity Plan",
+    "Instansi": "Instansi",
+    "Course not found": "Course not found",
+    "Start At": "Start At",
+    "End At": "End At"
 }

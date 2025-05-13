@@ -18,55 +18,64 @@
                     <div class="col-lg-8">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Certificate Details') }}</h4>
+                                <h4>{{ __('Rincian Diklat') }}</h4>
                             </div>
                             <div class="card-body">
-                                <div class="form-group">
-                                    <label for="">{{ __('Instansi') }}</label>
-                                    <input type="text" class="form-control" name="title"
-                                        value="{{ $certificate->instansi->name }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">{{ __('Certificate') }}</label>
-                                    <input type="text" class="form-control" name="title"
-                                        value="{{ $certificate->name }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">{{ __('Goal') }}</label>
-                                    <input type="text" class="form-control" name="title"
-                                        value="{{ $certificate->goal }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">{{ __('Competency') }}</label>
-                                    <input type="text" class="form-control" name="title"
-                                        value="{{ $certificate->competency }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">{{ __('Indicator of Success') }}</label>
-                                    <input type="text" class="form-control" name="title"
-                                        value="{{ $certificate->indicator_of_success }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">{{ __('Activity Plan') }}</label>
-                                    <input type="text" class="form-control" name="title"
-                                        value="{{ $certificate->activity_plan }}" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">{{ __('Start At') }}</label>
-                                    <input type="text" class="form-control" name="title"
-                                        value="{{ \Carbon\Carbon::parse($certificate->start_at)->format('d M Y, H:i:s') }}"
-                                        disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">{{ __('End At') }}</label>
-                                    <input type="text" class="form-control" name="title"
-                                        value="{{ \Carbon\Carbon::parse($certificate->end_at)->format('d M Y, H:i:s') }}"
-                                        disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="">{{ __('JP') }}</label>
-                                    <input type="text" class="form-control" name="title"
-                                        value="{{ $certificate->jp }}" disabled>
+                                <div class="row">
+                                    <div class="col-lg-12 mb-4">
+                                        <div>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Instansi') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->instansi->name }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-4">
+                                        <div>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Certificate') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->name }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-4">
+                                        <div>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Goal') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->goal }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-4">
+                                        <div>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Competency') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->competency }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-4">
+                                        <div>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Indicator of Success') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->indicator_of_success }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-4">
+                                        <div>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Activity Plan') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->activity_plan }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-4">
+                                        <div>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Start At') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ \Carbon\Carbon::parse($certificate->start_at)->format('d M Y, H:i:s') }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-4">
+                                        <div>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('End At') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ \Carbon\Carbon::parse($certificate->end_at)->format('d M Y, H:i:s') }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 mb-4">
+                                        <div>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('JP') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->jp }}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -125,6 +134,44 @@
                                         </button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <h4>{{ __('Daftar Peserta') }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class=" max-h-400">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:1%">No</th>
+                                                <th style="width:35%">{{ __('Name') }}</th>
+                                                <th style="width:35%">{{ __('Jabatan') }}</th>
+                                                <th style="width:15%">{{ __('Status (ASN/Non/Lainnya)') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($users as $user)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $user->name }}</td>
+                                                    <td>{{ $user->jabatan }}</td>
+                                                    <td>{{ $user->asn_status }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4" class="text-center">{{ __('No data found') }}</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    {{ $users->links() }}
+                                </div>
                             </div>
                         </div>
                     </div>

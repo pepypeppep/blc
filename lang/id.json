@@ -2075,5 +2075,11 @@
     "Do you want to approve this certificate?": "Apakah Anda yakin ingin menyetujui sertifikat ini?",
     "Yes, approve it!": "Ya, setujui!",
     "Do you want to reject this certificate?": "Apakah Anda yakin ingin menolak sertifikat ini?",
-    "Yes, reject it!": "Ya, tolak!"
+    "Yes, reject it!": "Ya, tolak!",
+    "Competency": "Kompetensi",
+    "Indicator of Success": "Indikator Kesuksesan",
+    "Activity Plan": "Rencana Kegiatan",
+    "Instansi": "Instansi",
+    "Start At": "Tanggal Mulai",
+    "End At": "Tanggal Selesai"
 }

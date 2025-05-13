@@ -82,14 +82,18 @@ class CertificateRecognitionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        checkAdminHasPermissionAndThrowException('certificate.recognition.destroy');
+        $certificate = CertificateRecognition::find($id);
+        $certificate->delete();
+        return redirect()->route('admin.certificate-recognition.index')->with('success', 'Successfully deleted certificate recognition');
     }
 
     public function verify($id)
     {
         checkAdminHasPermissionAndThrowException('certificate.recognition.verify');
-        $certificate = CertificateRecognition::with('instansi', 'certificate')->find($id);
-        return view('certificaterecognition::verify', compact('certificate'));
+        $certificate = CertificateRecognition::with('instansi', 'certificate','users')->find($id);
+        $users = $certificate->users()->paginate(10);
+        return view('certificaterecognition::verify', compact('certificate', 'users'));
     }
 
     public function verifyUpdate(Request $request, $id)

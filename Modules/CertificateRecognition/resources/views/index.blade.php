@@ -115,17 +115,18 @@
                                                                 </a>
                                                             @endadminCan
                                                         @endif
-                                                        @adminCan('certificate.recognition.edit')
-                                                            @if ($certificate->status != CertificateRecognition::STATUS_PUBLISHED)
-                                                                <a href="{{ route('admin.certificate-recognition.edit', $certificate->id) }}"
-                                                                    class="btn btn-warning btn-sm"><i class="fa fa-pen"></i>
-                                                                </a>
-                                                            @endif
-                                                        @endadminCan
                                                         @adminCan('certificate.recognition.destroy')
-                                                            <a href="{{ route('admin.certificate-recognition.destroy', $certificate->id) }}"
-                                                                class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>
-                                                            </a>
+                                                            <form
+                                                                action="{{ route('admin.certificate-recognition.destroy', $certificate->id) }}"
+                                                                method="POST" id="delete-form-{{ $certificate->id }}"
+                                                                style="display: inline-block;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <a href="javascript:void(0)"
+                                                                    onclick="handleDelete(event, 'delete-form-{{ $certificate->id }}')"
+                                                                    class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>
+                                                                </a>
+                                                            </form>
                                                         @endadminCan
                                                     </td>
                                                 </tr>
@@ -168,6 +169,24 @@
             });
         </script>
     @endif
+
+    <script>
+        function handleDelete(event, formId) {
+            event.preventDefault();
+            Swal.fire({
+                title: '{{ __('Are you sure?') }}',
+                text: '{{ __('Do you want to delete this certificate recognition?') }}',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '{{ __('Yes') }}',
+                cancelButtonText: '{{ __('No') }}',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
+    </script>
 @endpush
 
 @push('css')

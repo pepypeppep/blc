@@ -161,7 +161,7 @@
                                 </div>
                             @endauth
                         @endif
-                        <div class="comment-wrap">
+                        <div class="comment-wrap mt-5">
                             @if (count($comments) > 0)
                                 <div class="comment-wrap-title">
                                     <h4 class="title">{{ count($comments) }} {{ __('Comments') }}</h4>

@@ -51,7 +51,8 @@ class CourseController extends Controller
         ]);
 
         $currentUserInstansi = adminAuth()->instansi_id;
-        if ($currentUserInstansi) {
+        $role = getAdminAuthRole();
+        if ($currentUserInstansi && $role !== 'Super Admin') {
             $query->where('instansi_id', $currentUserInstansi);
         }
 
@@ -365,7 +366,12 @@ class CourseController extends Controller
     function destroy(string $id)
     {
         checkAdminHasPermissionAndThrowException('course.delete');
+        $role = getAdminAuthRole();
+
         $course = Course::findOrFail($id);
+        if ($course->is_approved == Course::ISAPPROVED_APPROVED && $role !== 'Super Admin') {
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => __('The course cannot be deleted because it has been approved.')]);
+        }
         if ($course->enrollments()->count() > 0) {
             return redirect()->back()->with(['alert-type' => 'error', 'messege' => __('The course cannot be deleted because it has enrollments.')]);
         }

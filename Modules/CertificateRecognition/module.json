@@ -1,0 +1,11 @@
+{
+    "name": "CertificateRecognition",
+    "alias": "certificaterecognition",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CertificateRecognition\\app\\Providers\\CertificateRecognitionServiceProvider"
+    ],
+    "files": []
+}

@@ -62,7 +62,9 @@
                                                                     <span class="icon-container"><i
                                                                             class="far fa-folder"></i></span>
                                                                     <p class="mb-0 ms-2 bold-text">{{ $chapter->title }}
-                                                                        <strong>({{ $chapter->jp }} {{ __('JPL') }})</strong> - {{ $chapter->instructor?->name }}
+                                                                        <strong>({{ $chapter->jp }}
+                                                                            {{ __('JPL') }})</strong> -
+                                                                        {{ $chapter->instructor?->name }}
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -91,13 +93,13 @@
                                                                             href="javascript:;">{{ __('Add Quiz') }}</a>
                                                                     </li>
                                                                     @if (count($course->allInstructors) > 0)
-                                                                    <li><a class="dropdown-item add-lesson-btn"
-                                                                            data-type="rtl"
-                                                                            data-chapterid="{{ $chapter->id }}"
-                                                                            href="javascript:;">Tambahkan <br />Rencana
-                                                                            Tindak
-                                                                            Lanjut</a>
-                                                                    </li>
+                                                                        <li><a class="dropdown-item add-lesson-btn"
+                                                                                data-type="rtl"
+                                                                                data-chapterid="{{ $chapter->id }}"
+                                                                                href="javascript:;">Tambahkan <br />Rencana
+                                                                                Tindak
+                                                                                Lanjut</a>
+                                                                        </li>
                                                                     @endif
                                                                 </ul>
                                                             </div>
@@ -240,13 +242,30 @@
                                                                                 </button>
                                                                                 <div
                                                                                     class="item-action course_quiz_item_action d-flex">
-                                                                                    <div class=" action-item">
+
+                                                                                    <div class="dropdown action-item">
                                                                                         <span
-                                                                                            data-quiz-id="{{ $chapterItem->quiz->id }}"
-                                                                                            class="btn btn-small small-more-btn add-quiz-question-btn">
+                                                                                            class="dropdown-toggle btn btn-small small-more-btn"
+                                                                                            data-toggle="dropdown"
+                                                                                            aria-expanded="false">
                                                                                             Tambah Soal
                                                                                         </span>
+                                                                                        <ul
+                                                                                            class="dropdown-menu dropdown-menu-end">
+                                                                                            <li>
+                                                                                                <a class="dropdown-item add-quiz-question-btn"
+                                                                                                    href="javascript:;"
+                                                                                                    data-quiz-id="{{ $chapterItem->quiz->id }}">Entri
+                                                                                                    Soal</a>
+                                                                                            </li>
 
+                                                                                            <li><a class="dropdown-item import-quiz-question-btn"
+                                                                                                    data-quiz-id="{{ $chapterItem->quiz->id }}"
+                                                                                                    href="javascript:;">Import
+                                                                                                    Soal</a>
+                                                                                            </li>
+
+                                                                                        </ul>
                                                                                     </div>
                                                                                     <a href="javascript:;"
                                                                                         data-type="{{ $chapterItem->type }}"

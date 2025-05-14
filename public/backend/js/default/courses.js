@@ -744,10 +744,9 @@ $(document).ready(function () {
                 }
             },
             error: function (xhr, status, error) {
-                let errors = xhr.responseJSON.errors;
-                $.each(errors, function (key, value) {
-                    toastr.error(value);
-                });
+                if (xhr.status != 200) {
+                    toastr.error(xhr.responseJSON.message);
+                }
             },
         });
     });

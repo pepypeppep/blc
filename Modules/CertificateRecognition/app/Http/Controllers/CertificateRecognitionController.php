@@ -58,7 +58,10 @@ class CertificateRecognitionController extends Controller
      */
     public function show($id)
     {
-        return view('certificaterecognition::show');
+        checkAdminHasPermissionAndThrowException('certificate.recognition.view');
+        $certificate = CertificateRecognition::with('instansi', 'certificate','users')->find($id);
+        $users = $certificate->users()->paginate(10);
+        return view('certificaterecognition::verify', compact('certificate', 'users'));
     }
 
     /**

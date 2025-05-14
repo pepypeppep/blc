@@ -1,4 +1,7 @@
 @extends('admin.master_layout')
+@php
+    use Modules\CertificateRecognition\app\Models\CertificateRecognition;
+@endphp
 @section('title')
     <title>{{ __('Certificate Recognition') }}</title>
 @endsection
@@ -24,55 +27,71 @@
                                 <div class="row">
                                     <div class="col-lg-12 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Instansi') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->instansi->name }}</p>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
+                                                {{ __('Instansi') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->instansi->name }}
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Certificate') }}</p>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
+                                                {{ __('Certificate') }}</p>
                                             <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->name }}</p>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Goal') }}</p>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
+                                                {{ __('Goal') }}</p>
                                             <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->goal }}</p>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Competency') }}</p>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
+                                                {{ __('Competency') }}</p>
                                             <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->competency }}</p>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Indicator of Success') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->indicator_of_success }}</p>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
+                                                {{ __('Indicator of Success') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">
+                                                {{ $certificate->indicator_of_success }}</p>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Activity Plan') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->activity_plan }}</p>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
+                                                {{ __('Activity Plan') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->activity_plan }}
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('Start At') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ \Carbon\Carbon::parse($certificate->start_at)->format('d M Y, H:i:s') }}</p>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
+                                                {{ __('Start At') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">
+                                                {{ \Carbon\Carbon::parse($certificate->start_at)->format('d M Y, H:i:s') }}
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('End At') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ \Carbon\Carbon::parse($certificate->end_at)->format('d M Y, H:i:s') }}</p>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
+                                                {{ __('End At') }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">
+                                                {{ \Carbon\Carbon::parse($certificate->end_at)->format('d M Y, H:i:s') }}
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">{{ __('JP') }}</p>
+                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
+                                                {{ __('JP') }}</p>
                                             <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->jp }}</p>
                                         </div>
                                     </div>
@@ -108,34 +127,36 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Certificate Verification') }}</h4>
+                        @if ($certificate->status != CertificateRecognition::STATUS_PUBLISHED)
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h4>{{ __('Certificate Verification') }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form id="verification-form" method="POST"
+                                        action="{{ route('admin.certificate-recognition.verify', $certificate->id) }}">
+                                        @method('PUT')
+                                        @csrf
+                                        <input type="hidden" name="status" id="verification-status">
+                                        <input type="hidden" name="reason" id="verification-reason">
+                                        <div class="d-flex justify-content-between">
+                                            <button type="button" class="btn btn-outline-primary hover-bg-primary"
+                                                style="width: 48%; border: 2px solid #6777ef;"
+                                                onclick="handleApprove(event, 'verification-form')">
+                                                <i class="fa fa-check"></i>
+                                                {{ __('Approved') }}
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger hover-bg-danger"
+                                                style="width: 48%; border: 2px solid #fc544b;"
+                                                onclick="handleReject(event, 'verification-form')">
+                                                <i class="fa fa-times"></i>
+                                                {{ __('Rejected') }}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <form id="verification-form" method="POST"
-                                    action="{{ route('admin.certificate-recognition.verify', $certificate->id) }}">
-                                    @method('PUT')
-                                    @csrf
-                                    <input type="hidden" name="status" id="verification-status">
-                                    <input type="hidden" name="reason" id="verification-reason">
-                                    <div class="d-flex justify-content-between">
-                                        <button type="button" class="btn btn-outline-primary hover-bg-primary"
-                                            style="width: 48%; border: 2px solid #6777ef;"
-                                            onclick="handleApprove(event, 'verification-form')">
-                                            <i class="fa fa-check"></i>
-                                            {{ __('Approved') }}
-                                        </button>
-                                        <button type="button" class="btn btn-outline-danger hover-bg-danger"
-                                            style="width: 48%; border: 2px solid #fc544b;"
-                                            onclick="handleReject(event, 'verification-form')">
-                                            <i class="fa fa-times"></i>
-                                            {{ __('Rejected') }}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                        @endif
                     </div>
                     <div class="col-lg-12">
                         <div class="card">

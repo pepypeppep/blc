@@ -89,7 +89,7 @@
                                                 <tr>
                                                     <td>{{ ++$index }}</td>
                                                     <td><a
-                                                            href="{{ route('admin.certificate-builder.edit', $certificate->id) }}">{{ $certificate->name }}</a>
+                                                            href="{{ route('admin.certificate-recognition.show', $certificate->id) }}">{{ $certificate->name }}</a>
                                                     </td>
                                                     <td>{{ $certificate->instansi->name }}</td>
                                                     <td>{{ $certificate->goal }}</td>
@@ -115,6 +115,11 @@
                                                                 </a>
                                                             @endadminCan
                                                         @endif
+                                                        @adminCan('certificate.recognition.view')
+                                                            <a href="{{ route('admin.certificate-recognition.show', $certificate->id) }}"
+                                                                class="btn btn-info btn-sm"><i class="fa fa-eye"></i>
+                                                            </a>
+                                                        @endadminCan
                                                         @adminCan('certificate.recognition.destroy')
                                                             <form
                                                                 action="{{ route('admin.certificate-recognition.destroy', $certificate->id) }}"

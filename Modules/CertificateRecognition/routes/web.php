@@ -20,4 +20,5 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::put('certificate-recognition/{id}/verify', [CertificateRecognitionController::class, 'verifyUpdate'])->name('certificate-recognition.verify.store');
     Route::get('certificate-recognition/{id}/edit', [CertificateRecognitionController::class, 'edit'])->name('certificate-recognition.edit');
     Route::delete('certificate-recognition/{id}', [CertificateRecognitionController::class, 'destroy'])->name('certificate-recognition.destroy');
+    Route::get('certificate-recognition/{id}', [CertificateRecognitionController::class, 'show'])->name('certificate-recognition.show');
 });

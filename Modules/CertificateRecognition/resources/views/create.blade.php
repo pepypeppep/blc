@@ -70,9 +70,9 @@
                                                 <div class="form-group">
                                                     <label for="from_date_start">Pelaksanaan Pembelajaran <code>*</code></label>
                                                     <div class="input-group input-daterange">
-                                                        <input type="text" name="start_date" class="form-control" value="{{ old('start_date') }}">
+                                                        <input type="text" name="start_at" class="form-control" value="{{ old('start_at') }}">
                                                         <span class="input-group-text mx-2">{{ __('Sampai') }}</span>
-                                                        <input type="text" name="end_date" class="form-control" value="{{ old('end_date') }}">
+                                                        <input type="text" name="end_at" class="form-control" value="{{ old('end_at') }}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -91,9 +91,15 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-md-6 mb-3">
-                                                <label>{{ __('Peserta (User IDs)') }}</label>
-                                                <input type="text" name="participants[]" class="form-control" placeholder="User ID">
+                                            <div class="col-md-12 mb-3">
+                                                <label>{{ __('Peserta (User IDs)') }} <code>*</code></label>
+                                                <select name="participants[]" class="form-control select2" multiple required>
+                                                    @foreach($users as $user)
+                                                        <option value="{{ $user->id }}" {{ collect(old('participants'))->contains($user->id) ? 'selected' : '' }}>
+                                                            {{ $user->name }} (ID: {{ $user->id }})
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
 
                                             <div class="col-md-12">

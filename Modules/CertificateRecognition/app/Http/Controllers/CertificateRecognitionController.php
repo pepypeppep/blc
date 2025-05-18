@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use App\Models\User;
 use App\Models\Instansi;
 use Modules\CertificateRecognition\app\Models\CertificateRecognition;
+use Modules\CertificateRecognition\app\Models\CertificateRecognitionEnrollment;
 
 class CertificateRecognitionController extends Controller
 {
@@ -70,10 +71,18 @@ class CertificateRecognitionController extends Controller
             'jp' => $request->jp ?? 0,
             'status' => $request->status,
             'is_approved' => 'pending',
+            'certificate_status' => 'pending',
         ]);
 
         if ($request->has('participants') && is_array($request->participants)) {
-            $certificate->participants()->sync($request->participants);
+            $uniqueUserIds = collect($request->participants)->unique();
+
+            foreach ($uniqueUserIds as $userId) {
+                CertificateRecognitionEnrollment::create([
+                    'certificate_recognition_id' => $certificate->id,
+                    'user_id' => $userId,
+                ]);
+            }
         }
 
         return redirect()->back()->with('success', 'Certificate of Recognition created successfully.');

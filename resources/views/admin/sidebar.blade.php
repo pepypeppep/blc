@@ -22,7 +22,8 @@
             @if (checkAdminHasPermission('course.view') ||
                     checkAdminHasPermission('course.certificate.management') ||
                     checkAdminHasPermission('badge.management') ||
-                    checkAdminHasPermission('pendidikanlanjutan.view'))
+                    checkAdminHasPermission('pendidikanlanjutan.view') ||
+                    checkAdminHasPermission('certificate.recognition.view'))
                 <li class="menu-header">{{ __('Manage Courses') }}</li>
 
                 @if (Module::isEnabled('Course') && checkAdminHasPermission('course.view'))
@@ -31,6 +32,10 @@
 
                 @if (Module::isEnabled('CertificateBuilder') && checkAdminHasPermission('course.certificate.management'))
                     @include('certificatebuilder::sidebar')
+                @endif
+
+                @if (Module::isEnabled('CertificateRecognition') && checkAdminHasPermission('certificate.recognition.view'))
+                    @include('certificaterecognition::sidebar')
                 @endif
 
                 @if (Module::isEnabled('Badges') && checkAdminHasPermission('badge.management'))

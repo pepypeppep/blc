@@ -2,6 +2,7 @@
 @section('title')
     <title>{{ __('Courses') }}</title>
 @endsection
+@use('App\Models\Course')
 @section('admin-content')
     <div class="main-content">
         <section class="section">
@@ -122,10 +123,12 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('Courses List') }}</h4>
-                                <div>
-                                    <a href="{{ route('admin.courses.create') }}" class="btn btn-primary"> <i
-                                            class="fa fa-plus"></i>{{ __('Add New') }}</a>
-                                </div>
+                                @if (checkAdminHasPermission('course.create') && checkAdminHasPermission('course.store'))
+                                    <div>
+                                        <a href="{{ route('admin.courses.create') }}" class="btn btn-primary"> <i
+                                                class="fa fa-plus"></i>{{ __('Add New') }}</a>
+                                    </div>
+                                @endif
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive max-h-400">
@@ -140,8 +143,14 @@
                                                 <th>{{ __('Enrolled Students') }}</th>
                                                 <th>{{ __('Join Request') }}</th>
                                                 <th>{{ __('Status') }}</th>
-                                                <th class="course-table-approve">{{ __('Approve') }}</th>
-                                                <th class="text-center">{{ __('Actions') }}</th>
+                                                @if (checkAdminHasPermission('course.verify'))
+                                                    <th class="course-table-approve">{{ __('Approve') }}</th>
+                                                @endif
+                                                @if (checkAdminHasPermission('course.edit') ||
+                                                        checkAdminHasPermission('course.delete') ||
+                                                        checkAdminHasPermission('course.create'))
+                                                    <th class="text-center">{{ __('Actions') }}</th>
+                                                @endif
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -169,50 +178,75 @@
                                                                 class="btn btn-sm btn-primary">Verifikasi</a>
                                                         @endif
                                                     </td>
-                                                    <td>
-                                                        @if ($course->status == 'active')
-                                                            <span class="badge badge-success">{{ __('Published') }}</span>
-                                                        @elseif ($course->status == 'inactive')
-                                                            <span class="badge badge-danger">{{ __('Unpublished') }}</span>
-                                                        @else
-                                                            <span class="badge badge-warning">{{ __('draft') }}</span>
-                                                        @endif
-                                                    </td>
 
                                                     <td class="course-table-approve">
-                                                        <select name="" class="form-control course-change-status"
+                                                        <select name=""
+                                                            class="form-control course-change-publish-status"
                                                             data-id="{{ $course->id }}">
-                                                            <option @selected($course->is_approved == 'pending') value="pending">
-                                                                {{ __('Pending') }}</option>
-                                                            <option @selected($course->is_approved == 'approved') value="approved">
-                                                                {{ __('Approved') }}</option>
-                                                            <option @selected($course->is_approved == 'rejected') value="rejected">
-                                                                {{ __('Rejected') }}</option>
+                                                            <option @selected($course->status == 'active') value="active">
+                                                                <span
+                                                                    class="badge badge-success">{{ __('Published') }}</span>
+                                                            </option>
+                                                            <option @selected($course->status == 'inactive') value="inactive">
+                                                                <span
+                                                                    class="badge badge-danger">{{ __('Unpublished') }}</span>
+                                                            </option>
+                                                            <option @selected($course->status == 'is_draft') value="is_draft">
+                                                                <span
+                                                                    class="badge badge-warning">{{ __('Draft') }}</span>
+                                                            </option>
                                                         </select>
                                                     </td>
 
-                                                    <td class="text-center">
-                                                        <div>
-                                                            <div class="dropdown">
-                                                                <button class="btn btn-primary dropdown-toggle"
-                                                                    type="button" id="dropdownMenu2"
-                                                                    data-toggle="dropdown" aria-haspopup="true"
-                                                                    aria-expanded="false">
-                                                                    <i class="fa fa-ellipsis-v"></i>
-                                                                </button>
-                                                                <div class="dropdown-menu"
-                                                                    aria-labelledby="dropdownMenu2">
-                                                                    <a href="{{ route('admin.courses.duplicate', $course->id) }}"
-                                                                        class="dropdown-item">{{ __('Duplicate') }}</a>
-                                                                    <a href="{{ route('admin.courses.edit-view', $course->id) }}"
-                                                                        class="dropdown-item"
-                                                                        target="_blank">{{ __('Edit') }}</a>
-                                                                    <a onclick="deleteCourse(event, {{ $course->id }})"
-                                                                        class="dropdown-item text-danger">{{ __('Delete') }}</a>
+                                                    @if (checkAdminHasPermission('course.verify'))
+                                                        <td class="course-table-approve">
+                                                            <select name=""
+                                                                class="form-control course-change-status"
+                                                                data-id="{{ $course->id }}">
+                                                                <option @selected($course->is_approved == 'pending') value="pending">
+                                                                    {{ __('Pending') }}</option>
+                                                                <option @selected($course->is_approved == 'approved') value="approved">
+                                                                    {{ __('Approved') }}</option>
+                                                                <option @selected($course->is_approved == 'rejected') value="rejected">
+                                                                    {{ __('Rejected') }}</option>
+                                                            </select>
+                                                        </td>
+                                                    @endif
+
+                                                    @if (checkAdminHasPermission('course.edit') ||
+                                                            checkAdminHasPermission('course.delete') ||
+                                                            checkAdminHasPermission('course.create'))
+                                                        <td class="text-center">
+                                                            <div>
+                                                                <div class="dropdown">
+                                                                    <button class="btn btn-primary dropdown-toggle"
+                                                                        type="button" id="dropdownMenu2"
+                                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                                        aria-expanded="false">
+                                                                        <i class="fa fa-ellipsis-v"></i>
+                                                                    </button>
+                                                                    <div class="dropdown-menu"
+                                                                        aria-labelledby="dropdownMenu2">
+                                                                        @if (checkAdminHasPermission('course.create') && checkAdminHasPermission('course.store'))
+                                                                            <a href="{{ route('admin.courses.duplicate', $course->id) }}"
+                                                                                class="dropdown-item">{{ __('Duplicate') }}</a>
+                                                                        @endif
+                                                                        @if (checkAdminHasPermission('course.edit') && checkAdminHasPermission('course.update'))
+                                                                            <a href="{{ route('admin.courses.edit-view', $course->id) }}"
+                                                                                class="dropdown-item"
+                                                                                target="_blank">{{ __('Edit') }}</a>
+                                                                        @endif
+                                                                        @if (checkAdminHasPermission('course.delete'))
+                                                                            @if ($course->is_approved != Course::ISAPPROVED_APPROVED || getAdminAuthRole() === 'Super Admin')
+                                                                                <a onclick="deleteCourse(event, {{ $course->id }})"
+                                                                                    class="dropdown-item text-danger">{{ __('Delete') }}</a>
+                                                                            @endif
+                                                                        @endif
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
+                                                        </td>
+                                                    @endif
                                                 </tr>
                                             @empty
                                                 <x-empty-table :name="__('Couse Filter')" route="admin.course-filter.create"

@@ -49,6 +49,13 @@ class CourseController extends Controller
                     ->orWhere('has_access', '');
             }
         ]);
+
+        $currentUserInstansi = adminAuth()->instansi_id;
+        $role = getAdminAuthRole();
+        if ($currentUserInstansi && $role !== 'Super Admin') {
+            $query->where('instansi_id', $currentUserInstansi);
+        }
+
         $orderBy = $request->order_by == 1 ? 'asc' : 'desc';
         $courses = $request->par_page == 'all' ?
             $query->orderBy('id', $orderBy)->get() :
@@ -68,8 +75,21 @@ class CourseController extends Controller
 
     function editView(string $id)
     {
+        $query = Course::query();
+
+        $currentUserInstansi = adminAuth()->instansi_id;
+        $role = getAdminAuthRole();
+        if ($currentUserInstansi && $role !== 'Super Admin') {
+            $query->where('instansi_id', $currentUserInstansi);
+        }
+
+        $course = $query->findOrFail($id);
+
+        if (!$course) {
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => __('Course not found')]);
+        }
+
         Session::put('course_create', $id);
-        $course = Course::findOrFail($id);
         $instructors = User::where('role', 'instructor')->get();
         $instansis = Instansi::get();
         $editMode = true;
@@ -172,6 +192,19 @@ class CourseController extends Controller
 
     function update(Request $request)
     {
+        $query = Course::query();
+        $currentUserInstansi = adminAuth()->instansi_id;
+        $role = getAdminAuthRole();
+        if ($currentUserInstansi && $role !== 'Super Admin') {
+            $query->where('instansi_id', $currentUserInstansi);
+        }
+
+        $course = $query->findOrFail(Session::get('course_create'));
+
+        if (!$course) {
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => __('Course not found')]);
+        }
+
         switch ($request->step) {
             case '2':
                 $request->validate([
@@ -246,7 +279,7 @@ class CourseController extends Controller
 
     function storeMoreInfo(Request $request)
     {
-        checkAdminHasPermissionAndThrowException('course.management');
+        checkAdminHasPermissionAndThrowException('course.store');
         $course = Course::findOrFail($request->course_id);
         $course->capacity = $request->capacity;
         $course->duration = $request->course_duration;
@@ -297,7 +330,7 @@ class CourseController extends Controller
     function storeFinish(Request $request)
     {
         // dd($request->participants);
-        checkAdminHasPermissionAndThrowException('course.management');
+        checkAdminHasPermissionAndThrowException('course.store');
         $course = Course::findOrFail($request->course_id);
         $course->message_for_reviewer = $request->message_for_reviewer;
         $course->status = $request->status;
@@ -340,16 +373,65 @@ class CourseController extends Controller
 
     function statusUpdate(Request $request, string $id)
     {
-        $course = Course::findOrFail($id);
-        $course->is_approved = $request->status;
-        $course->save();
-        return response(['status' => 'success', 'message' => __('Updated successfully')]);
+        checkAdminHasPermissionAndThrowException('course.status.update');
+        
+        $query = Course::query();
+        $currentUserInstansi = adminAuth()->instansi_id;
+        $role = getAdminAuthRole();
+        if ($currentUserInstansi && $role !== 'Super Admin') {
+            $query->where('instansi_id', $currentUserInstansi);
+        }
+
+        try {
+            $course = Course::findOrFail($id);
+            $course->is_approved = $request->status;
+            $course->save();
+            return response(['status' => 'success', 'message' => __('Updated successfully')]);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error','message' => __('Course not found')], 404);
+        }
+    }
+
+    function publishStatusUpdate(Request $request, string $id)
+    {
+        checkAdminHasPermissionAndThrowException('course.update');
+        $query = Course::query();
+        $currentUserInstansi = adminAuth()->instansi_id;
+        $role = getAdminAuthRole();
+        if ($currentUserInstansi && $role !== 'Super Admin') {
+            $query->where('instansi_id', $currentUserInstansi);
+        }
+
+        try {
+            $course = $query->findOrFail($id);
+            $course->status = $request->status;
+            $course->save();
+            return response(['status' => 'success', 'message' => __('Updated successfully')]);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error','message' => __('Course not found')], 404);
+        }
     }
 
     function destroy(string $id)
     {
-        checkAdminHasPermissionAndThrowException('course.management');
-        $course = Course::findOrFail($id);
+        checkAdminHasPermissionAndThrowException('course.delete');
+
+        $query = Course::query();
+        $currentUserInstansi = adminAuth()->instansi_id;
+        $role = getAdminAuthRole();
+        if ($currentUserInstansi && $role !== 'Super Admin') {
+            $query->where('instansi_id', $currentUserInstansi);
+        }
+
+        try {
+            $course = $query->findOrFail($id);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => __('Course not found')]);
+        }
+
+        if ($course->is_approved == Course::ISAPPROVED_APPROVED && $role !== 'Super Admin') {
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => __('The course cannot be deleted because it has been approved.')]);
+        }
         if ($course->enrollments()->count() > 0) {
             return redirect()->back()->with(['alert-type' => 'error', 'messege' => __('The course cannot be deleted because it has enrollments.')]);
         }

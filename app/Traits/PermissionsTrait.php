@@ -218,9 +218,44 @@ trait PermissionsTrait
     ];
 
     public static array $coursePermissions = [
-        'group_name' => 'courses',
+        'group_name' => 'courses management',
         'permissions' => [
-            'course.management',
+            'course.create',
+            'course.store',
+            'course.edit',
+            'course.update',
+            'course.delete',
+            'course.view',
+            'course.verify',
+            'course.status.update',
+        ],
+    ];
+
+    public static array $courseCategoryPermissions = [
+        'group_name' => 'course category management',
+        'permissions' => [
+            'course.category.management',
+        ],
+    ];
+
+    public static array $courseLanguagePermissions = [
+        'group_name' => 'course language management',
+        'permissions' => [
+            'course.language.management',
+        ],
+    ];
+
+    public static array $courseLevelPermissions = [
+        'group_name' => 'course level management',
+        'permissions' => [
+            'course.level.management',
+        ],
+    ];
+
+    public static array $courseReviewPermissions = [
+        'group_name' => 'course review management',
+        'permissions' => [
+            'course.review.management',
         ],
     ];
 
@@ -331,6 +366,19 @@ trait PermissionsTrait
         ],
     ];
 
+    public static array $certificateRecognitionPermissions = [
+        'group_name' => 'certificate recognition',
+        'permissions' => [
+            'certificate.recognition.view',
+            'certificate.recognition.store',
+            'certificate.recognition.create',
+            'certificate.recognition.edit',
+            'certificate.recognition.update',
+            'certificate.recognition.destroy',
+            'certificate.recognition.verify',
+        ],
+    ];
+
     private static function getSuperAdminPermissions(): array
     {
         $reflection = new ReflectionClass(__TRAIT__);
@@ -355,10 +403,15 @@ trait PermissionsTrait
         $properties = [
             self::$dashboardPermissions,
             self::$coursePermissions,
+            self::$courseCategoryPermissions,
+            self::$courseLanguagePermissions,
+            self::$courseLevelPermissions,
+            self::$courseReviewPermissions,
             self::$CertificatePermission,
             self::$badgePermission,
             self::$PendidikanLanjutanPermissions,
             self::$PendidikanLanjutanManagementPermissions,
+            self::$certificateRecognitionPermissions,
         ];
 
         $permissions = [];
@@ -378,7 +431,6 @@ trait PermissionsTrait
     {
         $properties = [
             self::$dashboardPermissions,
-            self::$coursePermissions,
             self::$customerPermissions,
             self::$PendidikanLanjutanPermissions,
             [
@@ -387,6 +439,17 @@ trait PermissionsTrait
                     'pendidikanlanjutan.pendaftar',
                 ],
             ],
+            [
+                'group_name' => 'courses management',
+                'permissions' => [
+                    'course.create',
+                    'course.store',
+                    'course.edit',
+                    'course.update',
+                    'course.delete',
+                    'course.view',
+                ],
+            ]
         ];
 
         $permissions = [];

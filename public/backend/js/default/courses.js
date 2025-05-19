@@ -753,19 +753,6 @@ $(document).ready(function () {
                     success: function (data) {
                         if (data.status == "success") {
                             toastr.success(data.message);
-
-                            const statusEl = $("#course-status-" + id);
-
-                            let newBadge = '';
-                            if (data.updated_status === 'active') {
-                                newBadge = `<span class="badge badge-success">Diterbitkan</span>`;
-                            } else if (data.updated_status === 'inactive') {
-                                newBadge = `<span class="badge badge-danger">Tidak Diterbitkan</span>`;
-                            } else {
-                                newBadge = `<span class="badge badge-warning">Draft</span>`;
-                            }
-
-                            statusEl.html(newBadge);
                         }
                     },
                     error: function (xhr, status, error) {

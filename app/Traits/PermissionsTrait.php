@@ -366,6 +366,19 @@ trait PermissionsTrait
         ],
     ];
 
+    public static array $certificateRecognitionPermissions = [
+        'group_name' => 'certificate recognition',
+        'permissions' => [
+            'certificate.recognition.view',
+            'certificate.recognition.store',
+            'certificate.recognition.create',
+            'certificate.recognition.edit',
+            'certificate.recognition.update',
+            'certificate.recognition.destroy',
+            'certificate.recognition.verify',
+        ],
+    ];
+
     private static function getSuperAdminPermissions(): array
     {
         $reflection = new ReflectionClass(__TRAIT__);
@@ -398,6 +411,7 @@ trait PermissionsTrait
             self::$badgePermission,
             self::$PendidikanLanjutanPermissions,
             self::$PendidikanLanjutanManagementPermissions,
+            self::$certificateRecognitionPermissions,
         ];
 
         $permissions = [];

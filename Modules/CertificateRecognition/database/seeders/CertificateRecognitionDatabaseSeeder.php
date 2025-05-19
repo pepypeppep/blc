@@ -11,6 +11,9 @@ class CertificateRecognitionDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        $this->call([
+            CertificateRecognitionSeeder::class,
+            CertificateRecognitionEnrollmentSeeder::class,
+        ]);
     }
 }

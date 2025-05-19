@@ -2113,6 +2113,108 @@
                 ]
             }
         },
+        "/courses/{slug}/tos": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get course TOS",
+                "description": "Get course TOS",
+                "operationId": "02683970a6e6242041b00ccdf183bce3",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug of course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "course-1"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/courses/{slug}/accept-tos": {
+            "post": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Accept course TOS",
+                "description": "Accept course TOS",
+                "operationId": "1cb91aeb5511066638db7e7baef3cd5e",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug of course",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "course-1"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/home": {
             "get": {
                 "tags": [

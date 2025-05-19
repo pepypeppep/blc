@@ -704,26 +704,80 @@ $(document).ready(function () {
 
     $(".course-change-status").on("change", function (e) {
         e.preventDefault();
-        let id = $(this).data("id");
-        let status = $(this).val();
-        $.ajax({
-            method: "post",
-            url: base_url + "/admin/courses/status-update/" + id,
-            data: {
-                _token: csrf_token,
-                status: status,
-            },
-            success: function (data) {
-                if (data.status == "success") {
-                    toastr.success(data.message);
+
+        let selectEl = $(this);
+        let id = selectEl.data("id");
+        let status = selectEl.val();
+        let statusText = "";
+
+        if (status === "approved") {
+            statusText = "menyetujui pelatihan ini?";
+        } else if (status === "rejected") {
+            statusText = "menolak pelatihan ini?";
+        } else if (status === "pending") {
+            statusText = "mengubah status pelatihan menjadi tertunda?";
+        }
+
+        let swalOptions = {
+            title: 'Perhatian',
+            text: "Apakah kamu yakin " + statusText,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya, lanjutkan!",
+            cancelButtonText: "Batal",
+        };
+
+        if (status === 'rejected') {
+            swalOptions.input = 'textarea';
+            swalOptions.inputPlaceholder = 'Tulis alasan penolakan';
+            swalOptions.inputValidator = (value) => {
+                if (!value || value.trim() === "") {
+                    return 'Alasan penolakan wajib diisi!';
                 }
-            },
-            error: function (xhr, status, error) {
-                let errors = xhr.responseJSON.errors;
-                $.each(errors, function (key, value) {
-                    toastr.error(value);
+            };
+        }
+
+        Swal.fire(swalOptions).then((result) => {
+            if (result.isConfirmed) {
+                const notes = result.value || '';
+                $.ajax({
+                    method: "post",
+                    url: base_url + "/admin/courses/status-update/" + id,
+                    data: {
+                        _token: csrf_token,
+                        status: status,
+                        notes: notes
+                    },
+                    success: function (data) {
+                        if (data.status == "success") {
+                            toastr.success(data.message);
+
+                            const statusEl = $("#course-status-" + id);
+
+                            let newBadge = '';
+                            if (data.updated_status === 'active') {
+                                newBadge = `<span class="badge badge-success">Diterbitkan</span>`;
+                            } else if (data.updated_status === 'inactive') {
+                                newBadge = `<span class="badge badge-danger">Tidak Diterbitkan</span>`;
+                            } else {
+                                newBadge = `<span class="badge badge-warning">Draft</span>`;
+                            }
+
+                            statusEl.html(newBadge);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        let errors = xhr.responseJSON.errors;
+                        $.each(errors, function (key, value) {
+                            toastr.error(value);
+                        });
+                    },
                 });
-            },
+            } else {
+                selectEl.val(selectEl.data("current"));
+            }
         });
     });
 

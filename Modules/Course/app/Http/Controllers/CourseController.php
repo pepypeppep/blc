@@ -411,14 +411,9 @@ class CourseController extends Controller
         }
 
         try {
-            $validated = $request->validate([
-                'status' => 'required|in:pending,approved,rejected',
-                'notes' => $request->status === 'rejected' ? 'required|string' : 'nullable|string',
-            ]);
 
             $course = $query->findOrFail($id);
             $course->status = $request->status;
-            $course->notes = $request->status === 'rejected' ? $validated['notes'] : null;
             $course->save();
             return response(['status' => 'success', 'message' => __('Updated successfully')]);
         } catch (\Throwable $th) {

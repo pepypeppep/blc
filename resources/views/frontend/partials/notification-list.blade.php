@@ -42,7 +42,7 @@
     @endforelse
     <li class="divider"></li>
     <li>
-        @if (userAuth()->role == 'instructor')
+        @if (auth()->check() && auth()->user()->role == 'instructor')
         <a href="{{ route('instructor.notifications') }}" class="text-center view-all-notifications">
         @else
         <a href="{{ route('student.notifications') }}" class="text-center view-all-notifications">

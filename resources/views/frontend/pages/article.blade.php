@@ -14,7 +14,7 @@
                     <div class="row gutter-20">
                         @forelse($articles as $article)
                             <div class="col-xl-4 col-md-6">
-                                <div class="blog__post-item shine__animate-item">
+                                <div class="blog__post-item shine__animate-item" style="min-height: 440px;">
                                     <div class="blog__post-thumb">
                                         <a href="{{ route('article.show', $article->slug) }}" class="shine__animate-link blog">
                                             <img src="{{ $article->thumbnail_url }}" alt="img">

@@ -164,7 +164,7 @@ class InstructorCourseController extends Controller
         switch ($request->step) {
             case '2':
                 $request->validate([
-                    'course_duration' => ['required', 'numeric', 'min:0'],
+                    // 'course_duration' => ['required', 'numeric', 'min:0'],
                     'category' => ['required']
                 ]);
                 $this->storeMoreInfo($request);

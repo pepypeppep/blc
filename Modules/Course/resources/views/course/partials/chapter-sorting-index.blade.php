@@ -12,7 +12,9 @@
                     <input type="hidden" name="chapter_ids[]" value="{{ $chapter->id }}">
                     <div class="course_shorting d-flex flex-wrap justify-content-between align-items-center">
                         <div class="d-flex flex-wrap align-items-center">
-                            <span class="icon-container"><i class="fas fa-play"></i></span>
+                            <span class="icon-container" style="background-color: blue !important">
+                                <i class="far fa-folder"></i>
+                            </span>
                             <p class="mb-0 ms-2 bold-text"> {{ truncate($chapter->title, 70) }}</p>
                         </div>
                         <div class="item-action">

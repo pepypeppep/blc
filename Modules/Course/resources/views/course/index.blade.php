@@ -158,7 +158,7 @@
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
                                                     <td class="course-table-title">
-                                                        <span>{{ truncate($course->title) }}</span>
+                                                        <a href="{{ route('course.show', $course->slug) }}"><span>{{ truncate($course->title) }}</span></a>
                                                         <br>
                                                         <small>{{ $course->category->translation->name ?? '' }}</small>
                                                     </td>
@@ -202,7 +202,7 @@
                                                         <td class="course-table-approve">
                                                             <select name=""
                                                                 class="form-control course-change-status"
-                                                                data-id="{{ $course->id }}">
+                                                                data-id="{{ $course->id }}" data-current="{{ $course->is_approved }}">
                                                                 <option @selected($course->is_approved == 'pending') value="pending">
                                                                     {{ __('Pending') }}</option>
                                                                 <option @selected($course->is_approved == 'approved') value="approved">

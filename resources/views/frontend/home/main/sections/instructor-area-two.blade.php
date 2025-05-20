@@ -18,11 +18,11 @@
                       <div class="instructor__content-two">
                           <h3 class="title"><a href="{{ route('register') }}">{{ __('Become a Instructor') }}</a></h3>
                           <p>{{ __('Join our team to inspire students, share your knowledge, and shape the future') }}.</p>
-                          <div class="tg-button-wrap">
+                          {{-- <div class="tg-button-wrap">
                               <a href="{{ route('register') }}" class="btn arrow-btn">{{ __('Join Now') }} <img
                                       src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
                                       class="injectable"></a>
-                          </div>
+                          </div> --}}
                       </div>
                   </div>
               </div>
@@ -43,11 +43,11 @@
                           <h3 class="title"><a href="{{ route('register') }}">{{ __('Become a Student') }}</a></h3>
                           <p>{{ __('Unlock your potential by joining our vibrant learning community') }}.</p>
                           </p>
-                          <div class="tg-button-wrap">
+                          {{-- <div class="tg-button-wrap">
                               <a href="{{ route('register') }}" class="btn arrow-btn">{{ __('Join Now') }} <img
                                       src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
                                       class="injectable"></a>
-                          </div>
+                          </div> --}}
                       </div>
                   </div>
               </div>

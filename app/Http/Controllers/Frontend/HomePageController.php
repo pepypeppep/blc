@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
+use Modules\Article\app\Models\Article;
 use Modules\Badges\app\Models\Badge;
 use Modules\Blog\app\Models\Blog;
 use Modules\Brand\app\Models\Brand;
@@ -90,11 +91,14 @@ class HomePageController extends Controller
 
         $testimonials = Testimonial::all();
 
-        $featuredBlogs = Blog::with(['translation', 'author'])
-            ->whereHas('category', function ($q) {
-                $q->where('status', 1);
-            })
-            ->where(['show_homepage' => 1, 'status' => 1])->orderBy('created_at', 'desc')->limit(4)->get();
+        // $featuredBlogs = Blog::with(['translation', 'author'])
+        //     ->whereHas('category', function ($q) {
+        //         $q->where('status', 1);
+        //     })
+        //     ->where(['show_homepage' => 1, 'status' => 1])->orderBy('created_at', 'desc')->limit(4)->get();
+
+        $featuredBlogs = Article::isPublished()->orderBy('created_at', 'desc')->limit(4)->get();
+
         $sectionSetting = SectionSetting::first();
 
         $schedule = VacancySchedule::where('year', now()->year)->first();

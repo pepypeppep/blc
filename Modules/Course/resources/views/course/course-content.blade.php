@@ -59,8 +59,9 @@
                                                             <div
                                                                 class="icon_area d-flex flex-wrap justify-content-between align-items-center w-100">
                                                                 <div class="d-flex flex-wrap  align-items-center">
-                                                                    <span class="icon-container"><i
-                                                                            class="far fa-folder"></i></span>
+                                                                    <span class="icon-container" style="background-color: blue !important">
+                                                                        <i class="far fa-folder"></i>
+                                                                    </span>
                                                                     <p class="mb-0 ms-2 bold-text">{{ $chapter->title }}
                                                                         <strong>({{ $chapter->jp }}
                                                                             {{ __('JPL') }})</strong> -
@@ -114,7 +115,7 @@
                                                     </div>
                                                 </h2>
                                                 <div id="panelsStayOpen-collapse{{ $chapter->id }}"
-                                                    class="accordion-collapse collapse {{ $loop->first ? 'show' : '' }}"
+                                                    class="accordion-collapse collapse {{ $loop->first ? 'show' : 'show' }}"
                                                     aria-labelledby="panelsStayOpen-heading{{ $chapter->id }}">
                                                     <div class="accordion-body">
                                                         @forelse ($chapter->chapterItems as $chapterItem)
@@ -126,8 +127,9 @@
                                                                         class="d-flex flex-wrap justify-content-between align-items-center">
                                                                         <div
                                                                             class="edit_course_icons d-flex flex-wrap align-items-center">
-                                                                            <span class="icon-container"><i
-                                                                                    class="fas fa-video"></i></span>
+                                                                            <span class="icon-container" style="background-color: red !important">
+                                                                                <i class="fas fa-video"></i>
+                                                                            </span>
                                                                             <p class="mb-0 ms-2 bold-text">
                                                                                 {{ truncate($chapterItem->lesson->title) }}
                                                                             </p>
@@ -186,7 +188,7 @@
                                                                         class="d-flex flex-wrap justify-content-between align-items-center">
                                                                         <div
                                                                             class="edit_course_icons d-flex flex-wrap align-items-center">
-                                                                            <span class="icon-container">
+                                                                            <span class="icon-container" style="background-color: #0dcaf0 !important">
                                                                                 <i class="fas fa-feather"></i>
                                                                             </span>
                                                                             <p class="mb-0 ms-2 bold-text">
@@ -232,8 +234,9 @@
                                                                                         class="d-flex flex-wrap justify-content-between align-items-center w-100">
                                                                                         <div
                                                                                             class="d-flex flex-wrap align-items-center">
-                                                                                            <span class="icon-container"><i
-                                                                                                    class="fas fa-question"></i></span>
+                                                                                            <span class="icon-container" style="background-color: orange !important">
+                                                                                                <i class="fas fa-question"></i>
+                                                                                            </span>
                                                                                             <p class="mb-0 ms-2 bold-text">
                                                                                                 {!! $chapterItem->quiz->title !!}
                                                                                             </p>
@@ -295,9 +298,9 @@
                                                                                             class="d-flex flex-wrap justify-content-between align-items-center">
                                                                                             <div
                                                                                                 class="edit_course_icons d-flex flex-wrap align-items-center">
-                                                                                                <span
-                                                                                                    class="icon-container"><i
-                                                                                                        class="far fa-question-circle"></i></span>
+                                                                                                <span class="icon-container" style="background-color: white !important;">
+                                                                                                    <i class="fas fa-question-circle text-warning" style="font-size: 30px;"></i>
+                                                                                                </span>
                                                                                                 <p
                                                                                                     class="mb-0 ms-2 bold-text">
                                                                                                     {!! clean(@$question->title) !!}

@@ -1,6 +1,6 @@
 <section class="instructor__area">
     <div class="container">
-        <div class="row align-items-center">
+        {{-- <div class="row align-items-center">
             <div class="col-xl-4">
                 <div class="instructor__content-wrap">
                     <div class="section__title mb-15">
@@ -60,6 +60,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </section>

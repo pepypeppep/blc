@@ -188,7 +188,7 @@
                                     <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
-                                            <img src="{{ asset($course->thumbnail) }}" alt="img">
+                                            <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
                                         <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
                                             data-slug="{{ $course?->slug }}">
@@ -208,43 +208,22 @@
                                         <h3 class="title"><a
                                                 href="{{ route('course.show', $course->slug) }}">{{ truncate($course->title, 50) }}</a>
                                         </h3>
-                                        <p class="author">{{ __('By') }} <a
-                                                href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                        <p class="author">{{ __('By') }}
+                                            @if ($course->instructor)
+                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                            @else
+                                            Tim Diklat
+                                            @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            @if (in_array($course->id, session('enrollments') ?? []))
-                                                <div class="button">
-                                                    <a href="{{ route('student.enrolled-courses') }}"
-                                                        class="already-enrolled-btn" data-id="">
-                                                        <span class="text">{{ __('Enrolled') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @elseif ($course->enrollments_count >= $course->capacity && $course->capacity != null)
-                                                <div class="button">
-                                                    <a href="javascript:;" class=""
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Booked') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @else
-                                                <div class="button">
-                                                    <a href="javascript:;" class="add-to-cart"
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Add To Cart') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @endif
-
-                                            @if ($course->price == 0)
-                                                <h4 class="price">{{ __('Free') }}</h4>
-                                            @elseif ($course->price > 0 && $course->discount > 0)
-                                                <h4 class="price">{{ currency($course->discount) }}</h4>
-                                            @else
-                                                <h4 class="price">{{ currency($course->price) }}</h4>
-                                            @endif
+                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <div class="button">
+                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
+                                                    data-id="">
+                                                    <span class="text">Lihat Detail</span>
+                                                    <i class="flaticon-arrow-right"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -269,7 +248,7 @@
                                     <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
-                                            <img src="{{ asset($course->thumbnail) }}" alt="img">
+                                            <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
                                         <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
                                             data-slug="{{ $course?->slug }}">
@@ -289,42 +268,22 @@
                                         <h3 class="title"><a
                                                 href="{{ route('course.show', $course->slug) }}">{{ truncate($course->title, 50) }}</a>
                                         </h3>
-                                        <p class="author">{{ __('By') }} <a
-                                                href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                        <p class="author">{{ __('By') }}
+                                            @if ($course->instructor)
+                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                            @else
+                                            Tim Diklat
+                                            @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            @if (in_array($course->id, session('enrollments') ?? []))
-                                                <div class="button">
-                                                    <a href="{{ route('student.enrolled-courses') }}"
-                                                        class="already-enrolled-btn" data-id="">
-                                                        <span class="text">{{ __('Enrolled') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @elseif ($course->enrollments_count >= $course->capacity && $course->capacity != null)
-                                                <div class="button">
-                                                    <a href="javascript:;" class=""
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Booked') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @else
-                                                <div class="button">
-                                                    <a href="javascript:;" class="add-to-cart"
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Add To Cart') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @endif
-                                            @if ($course->price == 0)
-                                                <h4 class="price">{{ __('Free') }}</h4>
-                                            @elseif ($course->price > 0 && $course->discount > 0)
-                                                <h4 class="price">{{ currency($course->discount) }}</h4>
-                                            @else
-                                                <h4 class="price">{{ currency($course->price) }}</h4>
-                                            @endif
+                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <div class="button">
+                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
+                                                    data-id="">
+                                                    <span class="text">Lihat Detail</span>
+                                                    <i class="flaticon-arrow-right"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -349,7 +308,7 @@
                                     <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
-                                            <img src="{{ asset($course->thumbnail) }}" alt="img">
+                                            <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
                                         <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
                                             data-slug="{{ $course?->slug }}">
@@ -369,42 +328,22 @@
                                         <h3 class="title"><a
                                                 href="{{ route('course.show', $course->slug) }}">{{ truncate($course->title, 50) }}</a>
                                         </h3>
-                                        <p class="author">{{ __('By') }} <a
-                                                href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                        <p class="author">{{ __('By') }}
+                                            @if ($course->instructor)
+                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                            @else
+                                            Tim Diklat
+                                            @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            @if (in_array($course->id, session('enrollments') ?? []))
-                                                <div class="button">
-                                                    <a href="{{ route('student.enrolled-courses') }}"
-                                                        class="already-enrolled-btn" data-id="">
-                                                        <span class="text">{{ __('Enrolled') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @elseif ($course->enrollments_count >= $course->capacity && $course->capacity != null)
-                                                <div class="button">
-                                                    <a href="javascript:;" class=""
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Booked') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @else
-                                                <div class="button">
-                                                    <a href="javascript:;" class="add-to-cart"
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Add To Cart') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @endif
-                                            @if ($course->price == 0)
-                                                <h4 class="price">{{ __('Free') }}</h4>
-                                            @elseif ($course->price > 0 && $course->discount > 0)
-                                                <h4 class="price">{{ currency($course->discount) }}</h4>
-                                            @else
-                                                <h4 class="price">{{ currency($course->price) }}</h4>
-                                            @endif
+                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <div class="button">
+                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
+                                                    data-id="">
+                                                    <span class="text">Lihat Detail</span>
+                                                    <i class="flaticon-arrow-right"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -429,7 +368,7 @@
                                     <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
-                                            <img src="{{ asset($course->thumbnail) }}" alt="img">
+                                            <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
                                         <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
                                             data-slug="{{ $course?->slug }}">
@@ -449,42 +388,22 @@
                                         <h3 class="title"><a
                                                 href="{{ route('course.show', $course->slug) }}">{{ truncate($course->title, 50) }}</a>
                                         </h3>
-                                        <p class="author">{{ __('By') }} <a
-                                                href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                        <p class="author">{{ __('By') }}
+                                            @if ($course->instructor)
+                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                            @else
+                                            Tim Diklat
+                                            @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            @if (in_array($course->id, session('enrollments') ?? []))
-                                                <div class="button">
-                                                    <a href="{{ route('student.enrolled-courses') }}"
-                                                        class="already-enrolled-btn" data-id="">
-                                                        <span class="text">{{ __('Enrolled') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @elseif ($course->enrollments_count >= $course->capacity && $course->capacity != null)
-                                                <div class="button">
-                                                    <a href="javascript:;" class=""
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Booked') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @else
-                                                <div class="button">
-                                                    <a href="javascript:;" class="add-to-cart"
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Add To Cart') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @endif
-                                            @if ($course->price == 0)
-                                                <h4 class="price">{{ __('Free') }}</h4>
-                                            @elseif ($course->price > 0 && $course->discount > 0)
-                                                <h4 class="price">{{ currency($course->discount) }}</h4>
-                                            @else
-                                                <h4 class="price">{{ currency($course->price) }}</h4>
-                                            @endif
+                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <div class="button">
+                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
+                                                    data-id="">
+                                                    <span class="text">Lihat Detail</span>
+                                                    <i class="flaticon-arrow-right"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -509,7 +428,7 @@
                                     <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
-                                            <img src="{{ asset($course->thumbnail) }}" alt="img">
+                                            <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
                                         <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
                                             data-slug="{{ $course?->slug }}">
@@ -529,42 +448,22 @@
                                         <h3 class="title"><a
                                                 href="{{ route('course.show', $course->slug) }}">{{ truncate($course->title, 50) }}</a>
                                         </h3>
-                                        <p class="author">{{ __('By') }} <a
-                                                href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                        <p class="author">{{ __('By') }}
+                                            @if ($course->instructor)
+                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                            @else
+                                            Tim Diklat
+                                            @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            @if (in_array($course->id, session('enrollments') ?? []))
-                                                <div class="button">
-                                                    <a href="{{ route('student.enrolled-courses') }}"
-                                                        class="already-enrolled-btn" data-id="">
-                                                        <span class="text">{{ __('Enrolled') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @elseif ($course->enrollments_count >= $course->capacity && $course->capacity != null)
-                                                <div class="button">
-                                                    <a href="javascript:;" class=""
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Booked') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @else
-                                                <div class="button">
-                                                    <a href="javascript:;" class="add-to-cart"
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Add To Cart') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @endif
-                                            @if ($course->price == 0)
-                                                <h4 class="price">{{ __('Free') }}</h4>
-                                            @elseif ($course->price > 0 && $course->discount > 0)
-                                                <h4 class="price">{{ currency($course->discount) }}</h4>
-                                            @else
-                                                <h4 class="price">{{ currency($course->price) }}</h4>
-                                            @endif
+                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <div class="button">
+                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
+                                                    data-id="">
+                                                    <span class="text">Lihat Detail</span>
+                                                    <i class="flaticon-arrow-right"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -589,7 +488,7 @@
                                     <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
-                                            <img src="{{ asset($course->thumbnail) }}" alt="img">
+                                            <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
                                         <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
                                             data-slug="{{ $course?->slug }}">
@@ -609,42 +508,22 @@
                                         <h3 class="title"><a
                                                 href="{{ route('course.show', $course->slug) }}">{{ truncate($course->title, 50) }}</a>
                                         </h3>
-                                        <p class="author">{{ __('By') }} <a
-                                                href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                        <p class="author">{{ __('By') }}
+                                            @if ($course->instructor)
+                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                            @else
+                                            Tim Diklat
+                                            @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            @if (in_array($course->id, session('enrollments') ?? []))
-                                                <div class="button">
-                                                    <a href="{{ route('student.enrolled-courses') }}"
-                                                        class="already-enrolled-btn" data-id="">
-                                                        <span class="text">{{ __('Enrolled') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @elseif ($course->enrollments_count >= $course->capacity && $course->capacity != null)
-                                                <div class="button">
-                                                    <a href="javascript:;" class=""
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Booked') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @else
-                                                <div class="button">
-                                                    <a href="javascript:;" class="add-to-cart"
-                                                        data-id="{{ $course->id }}">
-                                                        <span class="text">{{ __('Add To Cart') }}</span>
-                                                        <i class="flaticon-arrow-right"></i>
-                                                    </a>
-                                                </div>
-                                            @endif
-                                            @if ($course->price == 0)
-                                                <h4 class="price">{{ __('Free') }}</h4>
-                                            @elseif ($course->price > 0 && $course->discount > 0)
-                                                <h4 class="price">{{ currency($course->discount) }}</h4>
-                                            @else
-                                                <h4 class="price">{{ currency($course->price) }}</h4>
-                                            @endif
+                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <div class="button">
+                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
+                                                    data-id="">
+                                                    <span class="text">Lihat Detail</span>
+                                                    <i class="flaticon-arrow-right"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

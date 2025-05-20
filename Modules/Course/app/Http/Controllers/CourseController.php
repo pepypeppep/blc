@@ -128,6 +128,7 @@ class CourseController extends Controller
         $course->discount = $request->discount_price;
         $course->description = $request->description;
         $course->background = $request->background;
+        $course->dasar_hukum = $request->dasar_hukum;
         // $course->course_type = "pdf";
         $course->instansi_id = $request->instansi;
         $course->instructor_id = $request->instructor;
@@ -208,12 +209,12 @@ class CourseController extends Controller
         switch ($request->step) {
             case '2':
                 $request->validate([
-                    'course_duration' => ['required', 'numeric', 'min:0'],
+                    // 'course_duration' => ['required', 'numeric', 'min:0'],
+                    'course_access' => ['required'],
                     'category' => ['required'],
                     'start_date' => ['required', 'date', 'before:end_date'],
                     'end_date' => ['required', 'date', 'after:start_date'],
                     'output' => ['required'],
-                    'outcome' => ['required'],
                     'certificate' => ['required', 'exists:certificate_builders,id'],
                     'levels' => ['required', 'min:1', function ($attribute, $value, $fail) {
                         $ids = CourseLevel::pluck('id')->toArray();
@@ -224,9 +225,10 @@ class CourseController extends Controller
                         }
                     }],
                 ], [
-                    'course_duration.required' => __('Course duration is required'),
-                    'course_duration.numeric' => __('Course duration must be a number'),
-                    'course_duration.min' => __('Course duration must be greater than or equal to 0'),
+                    // 'course_duration.required' => __('Course duration is required'),
+                    // 'course_duration.numeric' => __('Course duration must be a number'),
+                    // 'course_duration.min' => __('Course duration must be greater than or equal to 0'),
+                    'course_access.required' => __('Course Access is required'),
                     'category.required' => __('Category is required'),
                     'start_date.required' => __('Start date is required'),
                     'start_date.date' => __('Start date must be a date'),
@@ -234,8 +236,7 @@ class CourseController extends Controller
                     'end_date.required' => __('End date is required'),
                     'end_date.date' => __('End date must be a date'),
                     'end_date.after' => __('End date must be after start date'),
-                    'output.required' => __('Output is required'),
-                    'outcome.required' => __('Outcome is required'),
+                    'output.required' => __('Output & Outcome is required'),
                     'certificate.required' => __('Certificate is required'),
                     'certificate.exists' => __('Certificate does not exist'),
                     'levels.required' => __('Levels is required'),
@@ -283,6 +284,7 @@ class CourseController extends Controller
         $course = Course::findOrFail($request->course_id);
         $course->capacity = $request->capacity;
         $course->duration = $request->course_duration;
+        $course->access = $request->course_access;
         $course->category_id = $request->category;
         $course->qna = 1;
         $course->downloadable = $request->downloadable;
@@ -292,7 +294,7 @@ class CourseController extends Controller
         $course->start_date = $request->start_date;
         $course->end_date = $request->end_date;
         $course->output = $request->output;
-        $course->outcome = $request->outcome;
+        $course->outcome = $request->output;
         $course->save();
 
         // delete unselected partner instructor
@@ -383,8 +385,14 @@ class CourseController extends Controller
         }
 
         try {
+            $validated = $request->validate([
+                'status' => 'required|in:pending,approved,rejected',
+                'notes' => $request->status === 'rejected' ? 'required|string' : 'nullable|string',
+            ]);
+
             $course = Course::findOrFail($id);
-            $course->is_approved = $request->status;
+            $course->is_approved = $validated['status'];
+            $course->notes = $validated['notes'] ?? null;
             $course->save();
             return response(['status' => 'success', 'message' => __('Updated successfully')]);
         } catch (\Throwable $th) {
@@ -403,6 +411,7 @@ class CourseController extends Controller
         }
 
         try {
+
             $course = $query->findOrFail($id);
             $course->status = $request->status;
             $course->save();

@@ -7,9 +7,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Response;
+use App\Models\User;
+use App\Models\Instansi;
+use Modules\CertificateRecognition\app\Models\CertificateRecognition;
+use Modules\CertificateRecognition\app\Models\CertificateRecognitionEnrollment;
 use Modules\Article\app\Models\Article;
 use Illuminate\Support\Facades\DB;
-use Modules\CertificateRecognition\app\Models\CertificateRecognition;
 
 class CertificateRecognitionController extends Controller
 {
@@ -21,7 +24,7 @@ class CertificateRecognitionController extends Controller
 
         $query = CertificateRecognition::query();
 
-        if($request->has('is_approved') && $request->query('is_approved') != ''){
+        if ($request->has('is_approved') && $request->query('is_approved') != '') {
             $is_approved = $request->query('is_approved', request('is_approved'));
             $query->where('is_approved', $is_approved);
         }
@@ -102,7 +105,7 @@ class CertificateRecognitionController extends Controller
         }
 
         return redirect()->route('certificaterecognition.create')
-        ->with('success', __('Certificate of Recognition created successfully.'));
+            ->with('success', __('Certificate of Recognition created successfully.'));
     }
 
     /**
@@ -111,7 +114,7 @@ class CertificateRecognitionController extends Controller
     public function show($id)
     {
         checkAdminHasPermissionAndThrowException('certificate.recognition.view');
-        $certificate = CertificateRecognition::with('instansi', 'certificate','users')->find($id);
+        $certificate = CertificateRecognition::with('instansi', 'certificate', 'users')->find($id);
         $users = $certificate->users()->paginate(10);
         return view('certificaterecognition::verify', compact('certificate', 'users'));
     }
@@ -146,7 +149,7 @@ class CertificateRecognitionController extends Controller
     public function verify($id)
     {
         checkAdminHasPermissionAndThrowException('certificate.recognition.verify');
-        $certificate = CertificateRecognition::with('instansi', 'certificate','users')->find($id);
+        $certificate = CertificateRecognition::with('instansi', 'certificate', 'users')->find($id);
         $users = $certificate->users()->paginate(10);
         return view('certificaterecognition::verify', compact('certificate', 'users'));
     }

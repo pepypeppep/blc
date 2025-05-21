@@ -37,6 +37,7 @@
                                     @csrf
                                     @method('PUT')
 
+                                    {{-- Page 1 --}}
                                     <div class="form-group">
                                         <label for="">{{ __('Front Image') }} <code>( 1123px * 794px )
                                                 *</code></label>
@@ -60,11 +61,22 @@
                                         <input type="text" class="form-control" name="sub_title"
                                             value="{{ $certificate->sub_title }}">
                                     </div>
+
+                                     {{-- penandatangan nik --}}
+                                     <div class="form-group">
+                                        <label for="">{{ __('Penandatangan NIK') }}</label>
+                                        <input type="number" class="form-control" name="signer_nik"
+                                            value="{{ $certificate->signer_nik }}">
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="">{{ __('Front Description') }}</label>
                                         <textarea id="" class="form-control hight-200" name="description">{!! clean($certificate->description) !!}</textarea>
                                     </div>
+                                   
 
+
+                                    {{-- Page 2 --}}
                                     @if ($certificate->background2)
                                         <div class="form-group">
                                             <label for="">{{ __('Back Image') }} <code>( 794px * 1123px )
@@ -89,6 +101,14 @@
                                             <input type="text" class="form-control" name="sub_title2"
                                                 value="{{ $certificate->sub_title2 }}">
                                         </div>
+
+                                        {{-- penandatangan nik 2 --}}
+                                        <div class="form-group">
+                                            <label for="">{{ __('Penandatangan NIK') }}</label>
+                                            <input type="number" class="form-control" name="signer2_nik"
+                                                value="{{ $certificate->signer2_nik }}">
+                                        </div>
+
                                         <div class="form-group">
                                             <label for="">{{ __('Back Description') }}</label>
                                             <textarea id="" class="form-control hight-200" name="description2">{!! clean($certificate->description2) !!}</textarea>

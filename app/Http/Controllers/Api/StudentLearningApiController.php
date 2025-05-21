@@ -148,6 +148,35 @@ class StudentLearningApiController extends Controller
                 ->select('courses.id', 'courses.title', 'courses.slug', 'courses.thumbnail')
                 ->first();
 
+            $userId = $user->id;
+
+            // ✅ Tambahkan is_complete ke setiap item
+            foreach ($course->chapters as $chapter) {
+                $chapter->chapter_items = $chapter->chapterItems->map(function ($item) use ($userId, $course) {
+                    $progressQuery = CourseProgress::where('user_id', $userId)
+                        ->where('course_id', $course->id)
+                        ->where('chapter_id', $item->chapter_id)
+                        ->where('type', $item->type);
+
+                    $contentId = null;
+                    if ($item->type === 'lesson' || $item->type === 'document') {
+                        $contentId = $item->lesson->id ?? null;
+                    } elseif ($item->type === 'quiz') {
+                        $contentId = $item->quiz->id ?? null;
+                    } elseif ($item->type === 'rtl') {
+                        $contentId = $item->rtl->id ?? null;
+                    }
+
+                    if ($contentId) {
+                        $progressQuery->where('lesson_id', $contentId);
+                    }
+
+                    $item->is_complete = $progressQuery->where('watched', 1)->exists();
+
+                    return $item;
+                });
+            }
+
             return $this->successResponse($course, 'Course fetched successfully');
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);

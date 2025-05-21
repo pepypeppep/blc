@@ -13,6 +13,7 @@ use App\Models\CourseChapterItem;
 use App\Models\CourseChapterLesson;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Modules\Course\app\Models\CourseTos;
 use Modules\Order\app\Models\Enrollment;
 use Modules\Course\app\Models\CourseLevel;
 use Modules\Course\app\Models\CourseCategory;
@@ -2056,6 +2057,139 @@ class CourseApiController extends Controller
                 'message' => 'Tanggapan berhasil ditambahkan.',
                 'data' => $answer,
             ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/courses/{slug}/tos",
+     *     summary="Get course TOS",
+     *     description="Get course TOS",
+     *     tags={"Courses"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         description="Slug of course",
+     *         in="path",
+     *         name="slug",
+     *         required=true,
+     *         example="course-1",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="user_id",
+     *                 type="integer",
+     *                 example=1
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function courseTos($slug, Request $request)
+    {
+        try {
+            $course = Course::where('slug', $slug)->firstOrFail();
+            $enrollment = Enrollment::where('course_id', $course->id)->where('user_id', $request->user_id)->firstOrFail();
+            $courseTos = CourseTos::first()->toArray();
+            $courseTos['tos_status'] = $enrollment->tos_status;
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil menampilkan syarat dan ketentuan',
+                'data' => $courseTos
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/courses/{slug}/accept-tos",
+     *     summary="Accept course TOS",
+     *     description="Accept course TOS",
+     *     tags={"Courses"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         description="Slug of course",
+     *         in="path",
+     *         name="slug",
+     *         required=true,
+     *         example="course-1",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="user_id",
+     *                 type="integer",
+     *                 example=1
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="internal server error"
+     *     )
+     * )
+     */
+    public function acceptTos($slug, Request $request)
+    {
+        try {
+            $course = Course::where('slug', $slug)->first();
+            $enrollment = Enrollment::where('course_id', $course->id)->where('user_id', $request->user_id)->first();
+            if ($enrollment && $enrollment->tos_status != 'accepted') {
+                $enrollment->update(['tos_status' => 'accepted']);
+
+                $currentProgress = CourseProgress::where('user_id', $request->user_id)
+                    ->where('course_id', $course->id)
+                    ->where('current', 1)
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if (!$currentProgress) {
+                    $lessonId = @$course->chapters?->first()?->chapterItems()?->first()?->lesson->id;
+                    if ($lessonId) {
+                        $currentProgress = CourseProgress::create([
+                            'user_id'    => $request->user_id,
+                            'course_id'  => $course->id,
+                            'chapter_id' => $course->chapters->first()->id,
+                            'lesson_id'  => $lessonId,
+                            'current'    => 1,
+                        ]);
+                    }
+                }
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Berhasil menerima syarat dan ketentuan',
+                ], 200);
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

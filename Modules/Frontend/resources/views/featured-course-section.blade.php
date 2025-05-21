@@ -27,7 +27,7 @@
                                     @csrf
                                     @method('PUT')
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        {{-- <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="name">{{ __('All Courses') }}<span
                                                         class="text-danger"></span></label>
@@ -60,9 +60,9 @@
                                         </div>
 
 
-                                        <hr class="col-md-12">
+                                        <hr class="col-md-12"> --}}
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-8">
                                             <div class="form-group">
                                                 <label for="">{{ __('Category one') }}<span
                                                         class="text-danger"></span></label>
@@ -81,7 +81,21 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="name">{{ __('Status') }}<span
+                                                        class="text-danger"></span></label>
+                                                <select name="category_one_status" class="form-control">
+                                                    <option @selected($featured?->category_one_status == 1) value="1">{{ __('Active') }}</option>
+                                                    <option @selected($featured?->category_one_status == 0) value="0">{{ __('Inactive') }}</option>
+                                                </select>
+                                                @error('name')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        {{-- <div class="col-md-12">
                                             <div class="form-group">
                                                 @php
                                                     $id = $featured?->category_one;
@@ -110,25 +124,11 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="name">{{ __('Status') }}<span
-                                                        class="text-danger"></span></label>
-                                                <select name="category_one_status" class="form-control">
-                                                    <option @selected($featured?->category_one_status == 1) value="1">{{ __('Active') }}</option>
-                                                    <option @selected($featured?->category_one_status == 0) value="0">{{ __('Inactive') }}</option>
-                                                </select>
-                                                @error('name')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        </div> --}}
 
                                         <hr class="col-md-12">
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-8">
                                             <div class="form-group">
                                                 <label for="">{{ __('Category Two') }}<span
                                                         class="text-danger"></span></label>
@@ -146,7 +146,21 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="name">{{ __('Status') }}<span
+                                                        class="text-danger"></span></label>
+                                                <select name="category_two_status" class="form-control">
+                                                    <option @selected($featured?->category_two_status == 1) value="1">{{ __('Active') }}</option>
+                                                    <option @selected($featured?->category_two_status == 0) value="0">{{ __('Inactive') }}</option>
+                                                </select>
+                                                @error('name')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        {{-- <div class="col-md-12">
                                             @php
                                                 $id = $featured?->category_two;
                                                 $courses = \App\Models\Course::select('id', 'title')
@@ -173,25 +187,11 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="name">{{ __('Status') }}<span
-                                                        class="text-danger"></span></label>
-                                                <select name="category_two_status" class="form-control">
-                                                    <option @selected($featured?->category_two_status == 1) value="1">{{ __('Active') }}</option>
-                                                    <option @selected($featured?->category_two_status == 0) value="0">{{ __('Inactive') }}</option>
-                                                </select>
-                                                @error('name')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        </div> --}}
 
                                         <hr class="col-md-12">
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-8">
                                             <div class="form-group">
                                                 <label for="">{{ __('Category Three') }}<span
                                                         class="text-danger"></span></label>
@@ -209,7 +209,21 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="name">{{ __('Status') }}<span
+                                                        class="text-danger"></span></label>
+                                                <select name="category_three_status" class="form-control">
+                                                    <option @selected($featured?->category_three_status == 1) value="1">{{ __('Active') }}</option>
+                                                    <option @selected($featured?->category_three_status == 0) value="0">{{ __('Inactive') }}</option>
+                                                </select>
+                                                @error('name')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        {{-- <div class="col-md-12">
                                             @php
                                                 $id = $featured?->category_three;
                                                 $courses = \App\Models\Course::select('id', 'title')
@@ -235,25 +249,11 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="name">{{ __('Status') }}<span
-                                                        class="text-danger"></span></label>
-                                                <select name="category_three_status" class="form-control">
-                                                    <option @selected($featured?->category_three_status == 1) value="1">{{ __('Active') }}</option>
-                                                    <option @selected($featured?->category_three_status == 0) value="0">{{ __('Inactive') }}</option>
-                                                </select>
-                                                @error('name')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        </div> --}}
 
                                         <hr class="col-md-12">
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-8">
                                             <div class="form-group">
                                                 <label for="">{{ __('Category Four') }}<span
                                                         class="text-danger"></span></label>
@@ -271,7 +271,21 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="name">{{ __('Status') }}<span
+                                                        class="text-danger"></span></label>
+                                                <select name="category_four_status" class="form-control">
+                                                    <option @selected($featured?->category_four_status == 1) value="1">{{ __('Active') }}</option>
+                                                    <option @selected($featured?->category_four_status == 0) value="0">{{ __('Inactive') }}</option>
+                                                </select>
+                                                @error('name')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        {{-- <div class="col-md-12">
                                             @php
                                                 $id = $featured?->category_four;
                                                 $courses = \App\Models\Course::select('id', 'title')
@@ -297,26 +311,11 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                        </div>
-
-
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="name">{{ __('Status') }}<span
-                                                        class="text-danger"></span></label>
-                                                <select name="category_four_status" class="form-control">
-                                                    <option @selected($featured?->category_four_status == 1) value="1">{{ __('Active') }}</option>
-                                                    <option @selected($featured?->category_four_status == 0) value="0">{{ __('Inactive') }}</option>
-                                                </select>
-                                                @error('name')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        </div> --}}
 
                                         <hr class="col-md-12">
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-8">
                                             <div class="form-group">
                                                 <label for="">{{ __('Category Five') }}<span
                                                         class="text-danger"></span></label>
@@ -334,7 +333,21 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="name">{{ __('Status') }}<span
+                                                        class="text-danger"></span></label>
+                                                <select name="category_five_status" class="form-control">
+                                                    <option @selected($featured?->category_five_status == 1) value="1">{{ __('Active') }}</option>
+                                                    <option @selected($featured?->category_five_status == 0) value="0">{{ __('Inactive') }}</option>
+                                                </select>
+                                                @error('name')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        {{-- <div class="col-md-12">
                                             @php
                                                 $id = $featured?->category_five;
                                                 $courses = \App\Models\Course::select('id', 'title')
@@ -360,21 +373,7 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                        </div>
-
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="name">{{ __('Status') }}<span
-                                                        class="text-danger"></span></label>
-                                                <select name="category_five_status" class="form-control">
-                                                    <option @selected($featured?->category_five_status == 1) value="1">{{ __('Active') }}</option>
-                                                    <option @selected($featured?->category_five_status == 0) value="0">{{ __('Inactive') }}</option>
-                                                </select>
-                                                @error('name')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        </div> --}}
 
                                         <hr class="col-md-12">
 

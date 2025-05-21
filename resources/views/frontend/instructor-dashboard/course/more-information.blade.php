@@ -17,14 +17,14 @@
                         <input type="hidden" name="next_step" value="3">
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-grp">
                                     <label for="capacity">{{ __('Capacity') }} <code></code></label>
                                     <input id="capacity" name="capacity" type="text" value="{{ $course?->capacity }}">
                                     <code>{{ __('leave blank for unlimited') }}</code>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <div class="form-grp">
                                     <label for="course_duration">{{ __('Course Duration (Minutes)') }}
                                         <code>*</code></label>
@@ -32,7 +32,7 @@
                                         oninput="this.value = Math.max(this.value, 1); this.value = (this.value < 1) ? 1 : this.value;"
                                         min="1" step="1" pattern="[0-9]*" value="{{ $course?->duration }}">
                                 </div>
-                            </div>
+                            </div>  --}}
 
                             <div class="row">
                                 <div class="col-md-6">

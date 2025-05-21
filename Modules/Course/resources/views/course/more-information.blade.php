@@ -37,7 +37,7 @@
                                                     <code>{{ __('leave blank for unlimited') }}</code>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            {{-- <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="course_duration">{{ __('Course Duration (Minutes)') }}
                                                         <code>*</code></label>
@@ -47,7 +47,7 @@
                                                         min="1" step="1" pattern="[0-9]*"
                                                         title="{{ __('Only allow numbers') }}" required>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="category">{{ __('Category') }}<span
@@ -70,6 +70,16 @@
                                                     @error('category')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="course_access">{{ __('Course Access') }}
+                                                        <code>*</code></label>
+                                                    <select class="select2 form-group" name="course_access">
+                                                        <option @selected($course?->access === 'private') value="private">{{ __('Private') }}</option>
+                                                        <option @selected($course?->access === 'public') value="public">{{ __('Public') }}</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col-md-6 my-4">
@@ -135,16 +145,9 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="output">{{ __('Course Output') }}
+                                                    <label for="output">{{ __('Course Output & Outcome') }}
                                                         <code>*</code></label>
                                                     <textarea name="output" class="text-editor form-control summernote">{!! clean(@$course?->output) !!}</textarea>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="outcome">{{ __('Course Outcome') }}
-                                                        <code>*</code></label>
-                                                    <textarea name="outcome" class="text-editor form-control summernote">{!! clean(@$course?->outcome) !!}</textarea>
                                                 </div>
                                             </div>
                                         </div>

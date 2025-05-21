@@ -101,16 +101,23 @@
                                                 </div> --}}
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label for="description">{{ __('Course Purpose') }}
+                                                        <label for="background">{{ __('Background') }}
                                                             <code>*</code></label>
-                                                        <textarea name="description" class="text-editor form-control summernote">{!! clean(@$course?->description) !!}</textarea>
+                                                        <textarea name="background" class="text-editor form-control summernote">{!! clean(@$course?->background) !!}</textarea>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label for="background">{{ __('Background') }}
+                                                        <label for="dasar_hukum">{{ __('Dasar Hukum') }}
                                                             <code>*</code></label>
-                                                        <textarea name="background" class="text-editor form-control summernote">{!! clean(@$course?->background) !!}</textarea>
+                                                        <textarea name="dasar_hukum" class="text-editor form-control summernote">{!! clean(@$course?->dasar_hukum) !!}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="description">{{ __('Course Purpose') }}
+                                                            <code>*</code></label>
+                                                        <textarea name="description" class="text-editor form-control summernote">{!! clean(@$course?->description) !!}</textarea>
                                                     </div>
                                                 </div>
                                             </div>

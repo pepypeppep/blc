@@ -14,15 +14,25 @@ class NotificationController extends Controller
     public function list(Request $request)
     {
         if ($request->ajax()) {
-            $user = userAuth();
-            $notifications = Notification::where('user_id', $user->id)->limit(5)->orderByDesc('id')->get();
-            $counter = Notification::where('user_id', $user->id)->where('is_read', 0)->count();
+            if (auth()->check()) {
+                $user = auth()->user();
+                $notifications = Notification::where('user_id', $user->id)->limit(5)->orderByDesc('id')->get();
+                $counter = Notification::where('user_id', $user->id)->where('is_read', 0)->count();
+            } else {
+                $notifications = [];
+                $counter = 0;
+            }
 
             return view('frontend.partials.notification-list', compact('notifications', 'counter'));
         } else {
-            $user = userAuth();
-            $notifications = Notification::where('user_id', $user->id)->orderByDesc('id')->paginate();
-            $counter = Notification::where('user_id', $user->id)->where('is_read', 0)->count();
+            if (auth()->check()) {
+                $user = auth()->user();
+                $notifications = Notification::where('user_id', $user->id)->limit(5)->orderByDesc('id')->get();
+                $counter = Notification::where('user_id', $user->id)->where('is_read', 0)->count();
+            } else {
+                $notifications = [];
+                $counter = 0;
+            }
 
             return view('frontend.pages.notification-show', compact('notifications', 'counter'));
         }

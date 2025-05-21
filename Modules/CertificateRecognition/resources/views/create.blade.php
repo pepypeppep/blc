@@ -25,7 +25,7 @@
 
                             <div class="card">
                                 <div class="card-body">
-                                    <form action="{{ route('certificaterecognition.store') }}" method="POST" enctype="multipart/form-data" class="course-form">
+                                    <form action="{{ route('admin.certificate-recognition.store') }}" method="POST" enctype="multipart/form-data" class="course-form">
                                         @csrf
 
                                         <div class="row">

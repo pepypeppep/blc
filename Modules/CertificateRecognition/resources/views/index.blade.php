@@ -66,7 +66,10 @@
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('Certificate Recognition List') }}</h4>
                                 <div>
-                                    <!-- <a href="" class="btn btn-primary"><i class="fa fa-plus"></i>{{ __('Add New') }}</a> -->
+                                    <div>
+                                        <a href="{{ route('admin.certificate-recognition.create') }}" class="btn btn-primary"> <i
+                                                class="fa fa-plus"></i>{{ __('Add New') }}</a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body">

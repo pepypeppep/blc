@@ -103,9 +103,7 @@ class CertificateRecognitionController extends Controller
                 ]);
             }
         }
-
-        return redirect()->route('certificaterecognition.create')
-            ->with('success', __('Certificate of Recognition created successfully.'));
+        return redirect()->route('admin.certificate-recognition.index')->with('success', 'Certificate of Recognition created successfully');
     }
 
     /**

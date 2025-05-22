@@ -46,8 +46,8 @@ class CertificateRecognitionController extends Controller
      */
     public function create()
     {
-        $instansis = Instansi::all();
-        $users = User::all();
+        $instansis  = Instansi::all();
+        $users      = User::all();
 
         $certificateRecognition = session('certificateRecognition', null);
 
@@ -60,18 +60,18 @@ class CertificateRecognitionController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'instansi_id' => 'required|exists:instansis,id',
-            'name' => 'required|string|max:255',
-            'goal' => 'nullable|string',
-            'competency' => 'nullable|string',
-            'indicator_of_success' => 'nullable|string',
-            'activity_plan' => 'nullable|string',
-            'start_at' => 'nullable|date',
-            'end_at' => 'nullable|date|after_or_equal:start_at',
-            'jp' => 'nullable|integer|min:0',
-            'status' => 'required|in:is_draft,active,inactive',
-            'participants' => 'nullable|array',
-            'participants.*' => 'nullable|integer|exists:users,id',
+            'instansi_id'           => 'required|exists:instansis,id',
+            'name'                  => 'required|string|max:255',
+            'goal'                  => 'nullable|string',
+            'competency'            => 'nullable|string',
+            'indicator_of_success'  => 'nullable|string',
+            'activity_plan'         => 'nullable|string',
+            'start_at'              => 'nullable|date',
+            'end_at'                => 'nullable|date|after_or_equal:start_at',
+            'jp'                    => 'nullable|integer|min:0',
+            'status'                => 'required|in:is_draft,published,verification,rejected',
+            'participants'          => 'nullable|array',
+            'participants.*'        => 'nullable|integer|exists:users,id',
         ]);
 
         if ($validator->fails()) {
@@ -79,18 +79,18 @@ class CertificateRecognitionController extends Controller
         }
 
         $certificate = CertificateRecognition::create([
-            'instansi_id' => $request->instansi_id,
-            'name' => $request->name,
-            'goal' => $request->goal,
-            'competency' => $request->competency,
-            'indicator_of_success' => $request->indicator_of_success,
-            'activity_plan' => $request->activity_plan,
-            'start_at' => $request->start_at,
-            'end_at' => $request->end_at,
-            'jp' => $request->jp ?? 0,
-            'status' => $request->status,
-            'is_approved' => 'pending',
-            'certificate_status' => 'pending',
+            'instansi_id'           => $request->instansi_id,
+            'name'                  => $request->name,
+            'goal'                  => $request->goal,
+            'competency'            => $request->competency,
+            'indicator_of_success'  => $request->indicator_of_success,
+            'activity_plan'         => $request->activity_plan,
+            'start_at'              => $request->start_at,
+            'end_at'                => $request->end_at,
+            'jp'                    => $request->jp ?? 0,
+            'status'                => $request->status,
+            'is_approved'           => 'pending',
+            'certificate_status'    => 'pending',
         ]);
 
         if ($request->has('participants') && is_array($request->participants)) {
@@ -103,7 +103,11 @@ class CertificateRecognitionController extends Controller
                 ]);
             }
         }
-        return redirect()->route('admin.certificate-recognition.index')->with('success', 'Certificate of Recognition created successfully');
+        return response()->json([
+            'status' => 'success',
+            'message' => __('Successfully created certificate recognition'),
+            'redirect' => route('admin.certificate-recognition.index')
+        ]);
     }
 
     /**

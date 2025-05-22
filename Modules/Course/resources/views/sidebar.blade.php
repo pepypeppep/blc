@@ -1,6 +1,12 @@
 @if (Module::isEnabled('Language') && Route::has('admin.course.index'))
     @php
         $pendingCourseCount = \App\Models\Course::where('is_approved', 'pending')->count();
+        if (auth()->user()->hasRole('Super Admin')) {
+            $courseIds = \App\Models\Course::where('status', 'active')->get()->pluck('id');
+        } else {
+            $courseIds = \App\Models\Course::where('instansi_id', auth()->user()->instansi_id)->where('status', 'active')->get()->pluck('id');
+        }
+            $pendingEnrolledCount = \Modules\Order\app\Models\Enrollment::whereIn('course_id', $courseIds)->whereNull('has_access')->count();
     @endphp
     <li
         class="nav-item dropdown {{ isRoute(['admin.courses.*', 'admin.course-category.*', 'admin.course-filter.*', 'admin.course-language.*', 'admin.course-level.*', 'admin.course-review.*', 'admin.course-delete-request.*', 'admin.course-sub-category.*'], 'active') }}">
@@ -13,6 +19,9 @@
                     {{ __('Courses') }}
                     @if ($pendingCourseCount > 0)
                         <small class="badge badge-danger ml-2">{{ $pendingCourseCount }}</small>
+                    @endif
+                    @if ($pendingEnrolledCount > 0)
+                        <small class="badge badge-info ml-2" title="{{ __('Pending Enrollments') }}">{{ $pendingEnrolledCount }}</small>
                     @endif
                 </a>
             </li>

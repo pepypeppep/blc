@@ -56,6 +56,10 @@ class CourseController extends Controller
             $query->where('instansi_id', $currentUserInstansi);
         }
 
+        if ($role === 'Super Admin') {
+            $query->where('status', Course::STATUS_ACTIVE);
+        }
+
         $orderBy = $request->order_by == 1 ? 'asc' : 'desc';
         $courses = $request->par_page == 'all' ?
             $query->orderBy('id', $orderBy)->get() :
@@ -376,7 +380,7 @@ class CourseController extends Controller
     function statusUpdate(Request $request, string $id)
     {
         checkAdminHasPermissionAndThrowException('course.status.update');
-        
+
         $query = Course::query();
         $currentUserInstansi = adminAuth()->instansi_id;
         $role = getAdminAuthRole();
@@ -396,7 +400,7 @@ class CourseController extends Controller
             $course->save();
             return response(['status' => 'success', 'message' => __('Updated successfully')]);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 'error','message' => __('Course not found')], 404);
+            return response()->json(['status' => 'error', 'message' => __('Course not found')], 404);
         }
     }
 
@@ -417,7 +421,7 @@ class CourseController extends Controller
             $course->save();
             return response(['status' => 'success', 'message' => __('Updated successfully')]);
         } catch (\Throwable $th) {
-            return response()->json(['status' => 'error','message' => __('Course not found')], 404);
+            return response()->json(['status' => 'error', 'message' => __('Course not found')], 404);
         }
     }
 

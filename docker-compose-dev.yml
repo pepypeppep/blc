@@ -9,6 +9,7 @@ services:
       - db
     volumes:
       - ./:/var/www/html
+      - ./docker/8.2/php.ini:/usr/local/etc/php/conf.d/php.ini
 
   webserver:
     image: nginx:1.27

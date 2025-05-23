@@ -116,7 +116,6 @@
                                                 <th width="15%">{{ __('Employment Unit') }}</th>
                                                 <th width="30%">{{ __('Education Level') }} / {{ __('Study') }}</th>
                                                 <th width="5%">{{ __('Year') }}</th>
-                                                <th width="5%">{{ __('Cost Type') }}</th>
                                                 <th width="5%">{{ __('Status') }}</th>
                                                 <th width="5%">{{ __('Action') }}</th>
                                             </tr>
@@ -134,7 +133,6 @@
                                                     <td>{{ optional($vacancyUser->vacancy)->education_level }} <br>
                                                         {{ optional(optional($vacancyUser->vacancy)->study)->name }}</td>
                                                     <td>{{ optional($vacancyUser->vacancy)->year }}</td>
-                                                    <td>{{ $vacancyUser->cost_type }}</td>
                                                     <td>
                                                         <span
                                                             class="badge badge-{{ $vacancyUser->stat['color'] }}">{{ $vacancyUser->stat['label'] }}</span>

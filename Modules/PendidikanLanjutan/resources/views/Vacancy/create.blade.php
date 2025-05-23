@@ -104,35 +104,6 @@
                                             @enderror
                                         </div>
 
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label for="employment_status">{{ __('Employment Status') }} <span
-                                                    class="text-danger">*</span></label>
-                                            <select name="employment_status" class="form-control select2"
-                                                id="employment_status">
-                                                <option value="diberhentikan_dari_jabatan">
-                                                    {{ __('Diberhentikan dari Jabatan') }}</option>
-                                                <option value="tidak_diberhentikan_dari_jabatan">
-                                                    {{ __('Tidak Diberhentikan dari Jabatan') }}</option>
-                                            </select>
-                                            @error('employment_status')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label for="cost_type">{{ __('Cost Type') }} <span
-                                                    class="text-danger">*</span></label>
-                                            <select name="cost_type" class="form-control select2" id="cost_type">
-                                                <option value="apbd">{{ __('APBD') }}</option>
-                                                <option value="non_apbd">{{ __('Non APBD') }}</option>
-                                                <option value="mandiri">{{ __('Mandiri') }}</option>
-                                            </select>
-                                            @error('cost_type')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-
                                         <div class="col-md-8 row px-0 offset-md-2">
                                             <div class="form-group col-md-6">
                                                 <label for="formation">{{ __('Formation') }} <span
@@ -140,15 +111,6 @@
                                                 <input type="text" id="formation" class="form-control" name="formation"
                                                     value="{{ old('formation') }}">
                                                 @error('formation')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <div class="form-group col-md-6">
-                                                <label>{{ __('Age Limit') }} <span class="text-danger">*</span></label>
-                                                <input type="text" id="age_limit" class="form-control"
-                                                    name="age_limit" value="{{ old('age_limit') }}">
-                                                @error('age_limit')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>

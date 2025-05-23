@@ -51,10 +51,7 @@ class VacancyController extends Controller
             'instansi_id' => 'required|integer|exists:instansis,id',
             'education_level' => 'required|string',
             'employment_grade' => 'required|string',
-            'employment_status' => 'required|string',
-            'cost_type' => 'required|string',
             'formation' => 'required|integer',
-            'age_limit' => 'required|integer',
             'description' => 'nullable|string',
             'year' => 'required|digits:4|integer|between:1900,' . date('Y'),
 
@@ -67,10 +64,7 @@ class VacancyController extends Controller
             'instansi_id.exists' => 'Instansi yang dipilih tidak valid.',
             'education_level.required' => 'Jenjang pendidikan wajib diisi.',
             'employment_grade.required' => 'Pangkat/Golongan pekerjaan wajib diisi.',
-            'employment_status.required' => 'Status pekerjaan wajib diisi.',
-            'cost_type.required' => 'Jenis biaya wajib diisi.',
             'formation.required' => 'Formasi wajib diisi.',
-            'age_limit.required' => 'Umur wajib diisi.',
             'year.required' => 'Tahun wajib diisi.',
             'year.digits' => 'Tahun harus terdiri dari 4 digit.',
             'year.between' => 'Tahun harus antara 2024 hingga ' . date('Y') . '.',
@@ -83,10 +77,7 @@ class VacancyController extends Controller
                 'instansi_id',
                 'education_level',
                 'employment_grade',
-                'employment_status',
-                'cost_type',
                 'formation',
-                'age_limit',
                 'description',
                 'year',
             ]));
@@ -96,7 +87,6 @@ class VacancyController extends Controller
             //     'education_level' => $validated['education_level'],
             //     'study_program' => $validated['study_program'],
             //     'minimum_rank' => $validated['minimum_rank'],
-            //     'employment_status' => $validated['employment_status'],
             //     'funding_source' => $validated['funding_source'],
             //     'formasi_count' => $validated['formasi_count'],
             //     'retirement_age' => $validated['retirement_age'],
@@ -152,10 +142,7 @@ class VacancyController extends Controller
             'instansi_id' => 'required|integer|exists:instansis,id',
             'education_level' => 'required|string',
             'employment_grade' => 'required|string',
-            'employment_status' => 'required|string',
-            'cost_type' => 'required|string',
             'formation' => 'required|integer',
-            'age_limit' => 'required|integer',
             'description' => 'nullable|string',
             'year' => 'required|digits:4|integer|between:1900,' . date('Y'),
 
@@ -168,10 +155,7 @@ class VacancyController extends Controller
             'instansi_id.exists' => 'Instansi yang dipilih tidak valid.',
             'education_level.required' => 'Jenjang pendidikan wajib diisi.',
             'employment_grade.required' => 'Pangkat/Golongan pekerjaan wajib diisi.',
-            'employment_status.required' => 'Status pekerjaan wajib diisi.',
-            'cost_type.required' => 'Jenis biaya wajib diisi.',
             'formation.required' => 'Formasi wajib diisi.',
-            'age_limit.required' => 'Umur wajib diisi.',
             'year.required' => 'Tahun wajib diisi.',
             'year.digits' => 'Tahun harus terdiri dari 4 digit.',
             'year.between' => 'Tahun harus antara 2024 hingga ' . date('Y') . '.',
@@ -184,10 +168,7 @@ class VacancyController extends Controller
                 'instansi_id',
                 'education_level',
                 'employment_grade',
-                'employment_status',
-                'cost_type',
                 'formation',
-                'age_limit',
                 'description',
                 'year',
             ]));
@@ -216,12 +197,12 @@ class VacancyController extends Controller
         try {
             $import = new VacanciesImport();
             Excel::import($import, $request->file('vacancies'));
-    
+
             return redirect()->route('admin.vacancies.index')->with('success', "Vacancy imported successfully. Successfully imported {$import->imported} data. Duplicates skipped: {$import->skipped}.");
         } catch (\Throwable $e) {
             return redirect()->route('admin.vacancies.index')->with('error', $e->getMessage());
         }
-    }    
+    }
 
     public function updatePublicationStatus($id)
     {

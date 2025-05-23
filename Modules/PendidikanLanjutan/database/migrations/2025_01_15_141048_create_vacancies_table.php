@@ -17,10 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('study_id');
             $table->string('education_level');
             $table->string('employment_grade');
-            $table->string('employment_status');
-            $table->string('cost_type');
             $table->integer('formation');
-            $table->integer('age_limit');
             $table->text('description')->nullable();
             $table->year('year');
             $table->timestamp('open_at')->nullable();

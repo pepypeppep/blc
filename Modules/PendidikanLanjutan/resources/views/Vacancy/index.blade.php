@@ -118,9 +118,6 @@
                                                 <th width="10%">{{ __('Level') }}</th>
                                                 <th width="20%" class="course-table-title">{{ __('Study') }}</th>
                                                 <th width="10%">{{ __('Employment Grade') }}</th>
-                                                <th width="10%">{{ __('Employment Status') }}</th>
-                                                <th width="10%">{{ __('Cost Type') }}</th>
-                                                <th width="10%">{{ __('Age Limit') }}</th>
                                                 <th width="10%">{{ __('Year') }}</th>
                                                 <th width="20%">{{ __('Notes') }}</th>
                                                 <th width="5%">{{ __('Number of Participants') }}</th>
@@ -135,9 +132,6 @@
                                                     <td>{{ $vacancy->educationLevel() }}</td>
                                                     <td>{{ $vacancy->study->name }}</td>
                                                     <td class="text-center">{{ \App\Enums\EmploymentGrade::from($vacancy->employment_grade)->label() }}</td>
-                                                    <td>{{ $vacancy->employmentStatus() }}</td>
-                                                    <td>{{ $vacancy->costType() }}</td>
-                                                    <td class="text-center">{{ $vacancy->age_limit }}</td>
                                                     <td>{{ $vacancy->year }}</td>
                                                     <td>{!! $vacancy->description !!}</td>
                                                     <td class="text-center">

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Instansi;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +18,16 @@ class Vacancy extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
+
+    /**
+     * Get the detail associated with the Vacancy
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function detail(): HasOne
+    {
+        return $this->hasOne(VacancyDetail::class);
+    }
 
     /**
      * Get the study that owns the Vacancy

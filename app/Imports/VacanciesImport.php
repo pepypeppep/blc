@@ -50,6 +50,11 @@ class VacanciesImport implements ToModel, WithHeadingRow
             ->where('education_level', $row['jenjang'])
             ->where('employment_grade', $row['pangkatgolongan'])
             ->where('year', $row['tahun'])
+            ->whereHas('detail', function ($query) use ($row) {
+                $query->where('employment_status', $row['status_kepegawaian'])
+                    ->where('cost_type', $row['jenis_biaya'])
+                    ->where('age_limit', $row['batas_usia']);
+            })
             ->first();
 
         if ($existing) {
@@ -71,6 +76,12 @@ class VacanciesImport implements ToModel, WithHeadingRow
         ]);
 
         $vacancy->save();
+
+        $vacancy->detail()->create([
+            'employment_status' => $row['status_kepegawaian'],
+            'cost_type' => $row['jenis_biaya'],
+            'age_limit' => $row['batas_usia'],
+        ]);
 
         $masterAttachments = VacancyMasterAttachment::get();
         foreach ($masterAttachments as $attachment) {

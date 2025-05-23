@@ -57,8 +57,47 @@ class VacancySeeder extends Seeder
             ]
         ];
 
+        $details = [
+            [
+                'employment_status' => 'tidak_diberhentikan_dari_jabatan',
+                'cost_type' => 'apbd',
+                'age_limit' => 50
+            ],
+            [
+                'employment_status' => 'diberhentikan_dari_jabatan',
+                'cost_type' => 'apbd',
+                'age_limit' => 40
+            ],
+            [
+                'employment_status' => 'tidak_diberhentikan_dari_jabatan',
+                'cost_type' => 'non_apbd',
+                'age_limit' => 30
+            ],
+            [
+                'employment_status' => 'diberhentikan_dari_jabatan',
+                'cost_type' => 'non_apbd',
+                'age_limit' => 40
+            ],
+            [
+                'employment_status' => 'tidak_diberhentikan_dari_jabatan',
+                'cost_type' => 'mandiri',
+                'age_limit' => 50
+            ],
+            [
+                'employment_status' => 'diberhentikan_dari_jabatan',
+                'cost_type' => 'mandiri',
+                'age_limit' => 50
+            ]
+        ];
+
         foreach ($data as $item) {
-            Vacancy::create($item);
+            $vacancy = Vacancy::create($item);
+
+            $randomIndex = rand(1, count($details));
+
+            for ($i = 1; $i <= $randomIndex; $i++) {
+                $vacancy->detail()->create($details[array_rand($details)]);
+            }
         }
 
         VacancySchedule::create([

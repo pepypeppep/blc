@@ -22,6 +22,11 @@ return new class extends Migration
             $table->year('year');
             $table->timestamp('open_at')->nullable();
             $table->timestamp('close_at')->nullable();
+            $table->integer('accepted')->default(0);
+            $table->boolean('is_full')->default(false);
+            $table->integer('transfered_from')->nullable();
+            $table->integer('transfered_to')->nullable();
+            $table->integer('amount_transferred')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

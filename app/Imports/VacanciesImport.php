@@ -77,7 +77,7 @@ class VacanciesImport implements ToModel, WithHeadingRow
 
         $vacancy->save();
 
-        $vacancy->detail()->create([
+        $vacancy->details()->create([
             'employment_status' => $row['status_kepegawaian'],
             'cost_type' => $row['jenis_biaya'],
             'age_limit' => $row['batas_usia'],

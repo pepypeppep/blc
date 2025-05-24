@@ -24,9 +24,9 @@ class Vacancy extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function detail(): HasOne
+    public function details(): HasMany
     {
-        return $this->hasOne(VacancyDetail::class);
+        return $this->hasMany(VacancyDetail::class);
     }
 
     /**

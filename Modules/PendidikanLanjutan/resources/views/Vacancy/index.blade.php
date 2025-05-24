@@ -115,11 +115,8 @@
                                             <tr>
                                                 <th width="5%">{{ __('#') }}</th>
                                                 <th width="20%">{{ __('Instansi') }}</th>
-                                                <th width="10%">{{ __('Level') }}</th>
-                                                <th width="20%" class="course-table-title">{{ __('Study') }}</th>
-                                                <th width="10%">{{ __('Employment Grade') }}</th>
-                                                <th width="10%">{{ __('Year') }}</th>
-                                                <th width="20%">{{ __('Notes') }}</th>
+                                                <th width="15%" class="course-table-title">{{ __('Study') }}</th>
+                                                <th width="30%">{{ __('Details') }}</th>
                                                 <th width="5%">{{ __('Number of Participants') }}</th>
                                                 <th width="5%">{{ __('Action') }}</th>
                                             </tr>
@@ -129,11 +126,23 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $vacancy->instansi->name ?? '-' }}</td>
-                                                    <td>{{ $vacancy->educationLevel() }}</td>
-                                                    <td>{{ $vacancy->study->name }}</td>
-                                                    <td class="text-center">{{ \App\Enums\EmploymentGrade::from($vacancy->employment_grade)->label() }}</td>
-                                                    <td>{{ $vacancy->year }}</td>
-                                                    <td>{!! $vacancy->description !!}</td>
+                                                    <td>
+                                                        {{ $vacancy->educationLevel() }} - {{ explode(' - ',$vacancy->study->name)[0] }}
+                                                        <br>
+                                                        {{ explode(' - ',$vacancy->study->name)[1] }} ({{ $vacancy->year }})
+                                                    </td>
+                                                    <td>
+                                                        <ul>
+                                                        @foreach ($vacancy->details as $key => $detail)
+                                                            <li>
+                                                                <strong>Kriteria {{ $key+1 }}</strong><br>
+                                                                <span>Status: {{ $detail->employment_status }}</span><br>
+                                                                <span>Biaya: {{ $detail->cost_type }}</span><br>
+                                                                <span>Umur: {{ $detail->age_limit }}</span>
+                                                            </li>
+                                                        @endforeach
+                                                        </ul>
+                                                    </td>
                                                     <td class="text-center">
                                                         <span
                                                             class="Jumlah Pendaftar">{{ $vacancy->users()->count() }}</span>/<span

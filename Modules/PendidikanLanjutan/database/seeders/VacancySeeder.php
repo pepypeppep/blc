@@ -59,33 +59,33 @@ class VacancySeeder extends Seeder
 
         $details = [
             [
-                'employment_status' => 'tidak_diberhentikan_dari_jabatan',
-                'cost_type' => 'apbd',
+                'employment_status' => 'Tidak diberhentikan dari Jabatan',
+                'cost_type' => 'APBD',
                 'age_limit' => 50
             ],
             [
-                'employment_status' => 'diberhentikan_dari_jabatan',
-                'cost_type' => 'apbd',
+                'employment_status' => 'Diberhentikan dari Jabatan',
+                'cost_type' => 'APBD',
                 'age_limit' => 40
             ],
             [
-                'employment_status' => 'tidak_diberhentikan_dari_jabatan',
-                'cost_type' => 'non_apbd',
+                'employment_status' => 'Tidak diberhentikan dari Jabatan',
+                'cost_type' => 'Non APBD',
                 'age_limit' => 30
             ],
             [
-                'employment_status' => 'diberhentikan_dari_jabatan',
-                'cost_type' => 'non_apbd',
+                'employment_status' => 'Diberhentikan dari Jabatan',
+                'cost_type' => 'Non APBD',
                 'age_limit' => 40
             ],
             [
-                'employment_status' => 'tidak_diberhentikan_dari_jabatan',
-                'cost_type' => 'mandiri',
+                'employment_status' => 'Tidak diberhentikan dari Jabatan',
+                'cost_type' => 'Mandiri',
                 'age_limit' => 50
             ],
             [
-                'employment_status' => 'diberhentikan_dari_jabatan',
-                'cost_type' => 'mandiri',
+                'employment_status' => 'Diberhentikan dari Jabatan',
+                'cost_type' => 'Mandiri',
                 'age_limit' => 50
             ]
         ];
@@ -96,7 +96,7 @@ class VacancySeeder extends Seeder
             $randomIndex = rand(1, count($details));
 
             for ($i = 1; $i <= $randomIndex; $i++) {
-                $vacancy->detail()->create($details[array_rand($details)]);
+                $vacancy->details()->create($details[array_rand($details)]);
             }
         }
 

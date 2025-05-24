@@ -13,6 +13,18 @@ class VacancyDetail extends Model
 
     protected $guarded = ['id'];
 
+
+    public const EMPLOYMENT_STATUS = [
+        'tidak' => 'Tidak diberhentikan dari Jabatan',
+        'diberhentikan' => 'Diberhentikan dari Jabatan',
+    ];
+
+    public const COST_TYPE = [
+        'apbd' => 'APBD',
+        'non_apbd' => 'Non APBD',
+        'mandiri' => 'Mandiri',
+    ];
+
     /**
      * Get the vacancy that owns the VacancyDetail
      *

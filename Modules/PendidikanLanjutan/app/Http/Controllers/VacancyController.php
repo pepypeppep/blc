@@ -14,6 +14,7 @@ use Modules\PendidikanLanjutan\app\Models\Unor;
 use Modules\PendidikanLanjutan\app\Models\Study;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyUser;
+use Modules\PendidikanLanjutan\app\Models\VacancyDetail;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
 
@@ -105,7 +106,7 @@ class VacancyController extends Controller
             // $vacancy->unors()->attach($request->unor_ids);
         });
 
-        return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy created successfully.');
+        return redirect()->route('admin.vacancies.edit', $vacancy->id)->with('success', 'Vacancy created successfully.');
     }
 
     /**
@@ -273,5 +274,61 @@ class VacancyController extends Controller
             'ext' => $ext,
             'act' => $act,
         ]);
+    }
+
+    public function updateVacancyDetail($id, Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
+            'employment_status' => 'required|array',
+            'employment_status.*' => 'in:Tidak diberhentikan dari Jabatan,Diberhentikan dari Jabatan',
+            'cost_type' => 'required|array',
+            'cost_type.*' => 'in:APBD,Non APBD,Mandiri',
+            'age_limit' => 'required|array',
+            'age_limit.*' => 'integer',
+        ], [
+            'employment_status.required' => 'Status pegawai wajib diisi.',
+            'employment_status.array' => 'Status pegawai harus berupa array.',
+            'employment_status.*.in' => 'Status pegawai tidak valid.',
+            'cost_type.required' => 'Tipe biaya wajib diisi.',
+            'cost_type.array' => 'Tipe biaya harus berupa array.',
+            'cost_type.*.in' => 'Tipe biaya tidak valid.',
+            'age_limit.required' => 'Batas usia wajib diisi.',
+            'age_limit.array' => 'Batas usia harus berupa array.',
+            'age_limit.*.integer' => 'Batas usia harus berupa angka.'
+        ]);
+
+        DB::transaction(function () use ($request, $id) {
+            $existingDetails = VacancyDetail::where('vacancy_id', $id)->get();
+            $inputCount = count($request->employment_status);
+
+            for ($i = 0; $i < $inputCount; $i++) {
+                if (isset($existingDetails[$i])) {
+                    // Update existing record
+                    $existingDetails[$i]->update([
+                        'employment_status' => $request->employment_status[$i],
+                        'cost_type' => $request->cost_type[$i],
+                        'age_limit' => $request->age_limit[$i],
+                    ]);
+                } else {
+                    // Create new record if it doesn't exist
+                    VacancyDetail::create([
+                        'vacancy_id' => $id,
+                        'employment_status' => $request->employment_status[$i],
+                        'cost_type' => $request->cost_type[$i],
+                        'age_limit' => $request->age_limit[$i],
+                    ]);
+                }
+            }
+
+            // Delete excess records (if input has fewer items than existing records)
+            if ($existingDetails->count() > $inputCount) {
+                VacancyDetail::where('vacancy_id', $id)
+                    ->whereNotIn('id', $existingDetails->take($inputCount)->pluck('id'))
+                    ->delete();
+            }
+        });
+
+        return redirect()->route('admin.vacancies.edit', $id)->with('success', 'Vacancy updated successfully.');
     }
 }

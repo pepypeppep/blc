@@ -23,7 +23,7 @@
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('Create Vacancy') }}</h4>
                                 <div>
-                                    <a href="{{ route('admin.pendidikanlanjutan.index') }}" class="btn btn-primary"><i
+                                    <a href="{{ route('admin.vacancies.index') }}" class="btn btn-primary"><i
                                             class="fa fa-arrow-left"></i>{{ __('Back') }}</a>
                                 </div>
                             </div>
@@ -32,29 +32,37 @@
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="row mb-3">
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label>{{ __('Instansi') }} <span class="text-danger">*</span></label>
-                                            <select name="instansi_id" class="form-control select2" id="instansi_id">
-                                                <option value="">Pilih Instansi</option>
-                                                @foreach ($instansi as $in)
-                                                    <option value="{{ $in->id }}"
-                                                        {{ $in->id == old('instansi_id') ? 'selected' : '' }}>
-                                                        {{ $in->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('instansi_id')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
+                                        <div class="col-md-8 row px-0 offset-md-2">
+                                            <div class="form-group col-md-8">
+                                                <label>{{ __('Instansi') }} <span class="text-danger">*</span></label>
+                                                <select name="instansi_id" class="form-control select2" id="instansi_id">
+                                                    <option value="">Pilih Instansi</option>
+                                                    @foreach ($instansi as $in)
+                                                        <option value="{{ $in->id }}"
+                                                            {{ $in->id == old('instansi_id') ? 'selected' : '' }}>
+                                                            {{ $in->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('instansi_id')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
 
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label for="year">{{ __('Tahun') }} <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="number" name="year" id="year" class="form-control"
-                                                value="{{ old('year', date('Y')) }}">
-                                            @error('year')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <div class="form-group col-md-4">
+                                                <label for="employment_grade">{{ __('Employment Grade') }} <span
+                                                        class="text-danger">*</span></label>
+                                                <select name="employment_grade" class="form-control select2" id="employment_grade">
+                                                    @foreach(\App\Enums\EmploymentGrade::cases() as $grade)
+                                                        <option value="{{ $grade->value }}"
+                                                            {{ old('employment_grade', $selected ?? '') === $grade->value ? 'selected' : '' }}>
+                                                            {{ $grade->label() }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @error('employment_grade')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </div>
 
                                         <div class="form-group col-md-8 offset-md-2">
@@ -70,42 +78,25 @@
                                             @enderror
                                         </div>
 
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label for="education_level">{{ __('Education Level') }} <span
-                                                    class="text-danger">*</span></label>
-                                            <select name="education_level" class="form-control select2"
-                                                id="education_level">
-                                                <option value="strata_1">{{ __('Strata I') }}</option>
-                                                <option value="strata_2">{{ __('Strata II') }}</option>
-                                                <option value="strata_3">{{ __('Strata III') }}</option>
-                                                <option value="profesi_ppds">{{ __('Profesi, PPDS (Dokter Spesialis)') }}
-                                                </option>
-                                                <option value="ppds_subspesialis">{{ __('PPDS (Dokter Subspesialis)') }}
-                                                </option>
-                                            </select>
-                                            @error('education_level')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group col-md-8 offset-md-2">
-                                            <label for="employment_grade">{{ __('Employment Grade') }} <span
-                                                    class="text-danger">*</span></label>
-                                            <select name="employment_grade" class="form-control select2" id="employment_grade">
-                                                @foreach(\App\Enums\EmploymentGrade::cases() as $grade)
-                                                    <option value="{{ $grade->value }}"
-                                                        {{ old('employment_grade', $selected ?? '') === $grade->value ? 'selected' : '' }}>
-                                                        {{ $grade->label() }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @error('employment_grade')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
                                         <div class="col-md-8 row px-0 offset-md-2">
-                                            <div class="form-group col-md-6">
+                                            <div class="form-group col-md-4">
+                                                <label for="education_level">{{ __('Education Level') }} <span
+                                                        class="text-danger">*</span></label>
+                                                <select name="education_level" class="form-control select2"
+                                                    id="education_level">
+                                                    <option value="strata_1">{{ __('Strata I') }}</option>
+                                                    <option value="strata_2">{{ __('Strata II') }}</option>
+                                                    <option value="strata_3">{{ __('Strata III') }}</option>
+                                                    <option value="profesi_ppds">{{ __('Profesi, PPDS (Dokter Spesialis)') }}
+                                                    </option>
+                                                    <option value="ppds_subspesialis">{{ __('PPDS (Dokter Subspesialis)') }}
+                                                    </option>
+                                                </select>
+                                                @error('education_level')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group col-md-4">
                                                 <label for="formation">{{ __('Formation') }} <span
                                                         class="text-danger">*</span></label>
                                                 <input type="text" id="formation" class="form-control" name="formation"
@@ -114,15 +105,24 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="year">{{ __('Tahun') }} <span
+                                                        class="text-danger">*</span></label>
+                                                <input type="number" name="year" id="year" class="form-control"
+                                                    value="{{ old('year', date('Y')) }}">
+                                                @error('year')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </div>
 
-                                        <div class="form-group col-md-8 offset-md-2">
+                                        {{-- <div class="form-group col-md-8 offset-md-2">
                                             <label>{{ __('Description') }} <span class="text-danger">*</span></label>
                                             <textarea name="description" id="" cols="30" rows="10" class="summernote">{{ old('description') }}</textarea>
                                             @error('description')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
-                                        </div>
+                                        </div> --}}
                                     </div>
 
                                     <div class="row">

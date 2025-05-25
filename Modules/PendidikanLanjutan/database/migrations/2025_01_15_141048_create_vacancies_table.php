@@ -24,9 +24,10 @@ return new class extends Migration
             $table->timestamp('close_at')->nullable();
             $table->integer('accepted')->default(0);
             $table->boolean('is_full')->default(false);
-            $table->integer('transfered_from')->nullable();
-            $table->integer('transfered_to')->nullable();
+            $table->unsignedBigInteger('transferred_from')->nullable();
+            $table->unsignedBigInteger('transferred_to')->nullable();
             $table->integer('amount_transferred')->default(0);
+            $table->timestamp('transferred_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

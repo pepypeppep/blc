@@ -99,7 +99,12 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Vacancy List') }} {{ now()->year }}</h4>
+                                <div>
+                                    <span class="mr-3 font-weight-bold" style="font-size: 1.2rem;color:#6777ef;">{{ __('Vacancy List') }} {{ now()->year }}</span>
+                                    @if ($prevVacancy > 0)
+                                        <button type="button" class="btn btn-warning" onclick="transferVacancy({{ now()->year }})">Transfer Sisa Formasi dari {{ now()->year - 1 }}</button>
+                                    @endif
+                                </div>
                                 <div>
                                     <button type="button" class="btn btn-info" data-toggle="modal"
                                         data-target="#exampleModalCenter"> <i class="fa fa-upload"></i> Impor Data
@@ -243,6 +248,7 @@
 @endsection
 
 @push('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @if (session('success'))
         <script>
             toastr.success("{{ session('success') }}", "Success", {
@@ -301,6 +307,22 @@
                     })
                 }
             });
+        }
+
+        function transferVacancy(year) {
+            Swal.fire({
+                title: 'Anda yakin?',
+                text: "Anda ingin mentransfer seluruh sisa formasi tahun " + year + " ke tahun saat ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya yakin!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/admin/vacancies/"+year+"/transfer";
+                }
+            })
         }
     </script>
 @endpush

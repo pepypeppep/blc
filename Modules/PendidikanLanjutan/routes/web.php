@@ -90,6 +90,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         Route::put('{id}/update-status', [VacancyController::class, 'updatePublicationStatus'])->name('vacancies.update-status');
         Route::post('{id}/update-attachment', [VacancyController::class, 'updateAttachments'])->name('vacancies.update-attachment');
         Route::put('{id}/update-details', [VacancyController::class, 'updateVacancyDetail'])->name('vacancies.details.update');
+        Route::get('{year}/transfer', [VacancyController::class, 'transferVacancy'])->name('vacancies.transfer');
     });
 
     Route::prefix('vacancies-participant')->group(function () {

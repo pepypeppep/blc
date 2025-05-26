@@ -5,10 +5,14 @@ namespace Modules\CertificateRecognition\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Response;
+use App\Models\User;
+use App\Models\Instansi;
+use Modules\CertificateRecognition\app\Models\CertificateRecognition;
+use Modules\CertificateRecognition\app\Models\CertificateRecognitionEnrollment;
 use Modules\Article\app\Models\Article;
 use Illuminate\Support\Facades\DB;
-use Modules\CertificateRecognition\app\Models\CertificateRecognition;
 
 class CertificateRecognitionController extends Controller
 {
@@ -17,10 +21,9 @@ class CertificateRecognitionController extends Controller
      */
     public function index(Request $request)
     {
-
         $query = CertificateRecognition::query();
 
-        if($request->has('is_approved') && $request->query('is_approved') != ''){
+        if ($request->has('is_approved') && $request->query('is_approved') != '') {
             $is_approved = $request->query('is_approved', request('is_approved'));
             $query->where('is_approved', $is_approved);
         }
@@ -28,6 +31,12 @@ class CertificateRecognitionController extends Controller
         if ($request->has('certificate_status') && $request->query('certificate_status') != '') {
             $certificate_status = $request->query('certificate_status', request('certificate_status'));
             $query->where('certificate_status', $certificate_status);
+        }
+
+        if (auth()->user()->hasRole('Super Admin')) {
+            $query->where('status', '!=', CertificateRecognition::STATUS_IS_DRAFT);
+        } elseif (auth()->user()->hasRole('Admin OPD')) {
+            $query->where('instansi_id', auth()->user()->instansi_id);
         }
 
         $certificateRecognitions = $query
@@ -42,15 +51,65 @@ class CertificateRecognitionController extends Controller
      */
     public function create()
     {
-        return view('certificaterecognition::create');
+        $instansis  = Instansi::all();
+        $users      = User::with('instansi')->where('role', 'student')->get();
+
+        $certificateRecognition = session('certificateRecognition', null);
+
+        return view('certificaterecognition::create', compact('instansis', 'users', 'certificateRecognition'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'instansi_id'           => 'required|exists:instansis,id',
+            'name'                  => 'required|string|max:255',
+            'goal'                  => 'nullable|string',
+            'competency'            => 'nullable|string',
+            'indicator_of_success'  => 'nullable|string',
+            'activity_plan'         => 'nullable|string',
+            'start_at'              => 'nullable|date',
+            'end_at'                => 'nullable|date|after_or_equal:start_at',
+            'jp'                    => 'nullable|integer|min:0',
+            'status'                => 'required|in:is_draft,verification',
+            'participants'          => 'nullable|array',
+            'participants.*'        => 'nullable|integer|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $certificate = CertificateRecognition::create([
+            'instansi_id'           => $request->instansi_id,
+            'name'                  => $request->name,
+            'goal'                  => $request->goal,
+            'competency'            => $request->competency,
+            'indicator_of_success'  => $request->indicator_of_success,
+            'activity_plan'         => $request->activity_plan,
+            'start_at'              => $request->start_at,
+            'end_at'                => $request->end_at,
+            'jp'                    => $request->jp ?? 0,
+            'status'                => $request->status,
+            'is_approved'           => 'pending',
+            'certificate_status'    => 'pending',
+        ]);
+
+        if ($request->has('participants') && is_array($request->participants)) {
+            $uniqueUserIds = collect($request->participants)->unique();
+
+            foreach ($uniqueUserIds as $userId) {
+                CertificateRecognitionEnrollment::create([
+                    'certificate_recognition_id' => $certificate->id,
+                    'user_id' => $userId,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.certificate-recognition.index')->with('success', 'Certificate Recognition created successfully.');
     }
 
     /**
@@ -59,7 +118,7 @@ class CertificateRecognitionController extends Controller
     public function show($id)
     {
         checkAdminHasPermissionAndThrowException('certificate.recognition.view');
-        $certificate = CertificateRecognition::with('instansi', 'certificate','users')->find($id);
+        $certificate = CertificateRecognition::with('instansi', 'certificate', 'users')->find($id);
         $users = $certificate->users()->paginate(10);
         return view('certificaterecognition::verify', compact('certificate', 'users'));
     }
@@ -94,7 +153,7 @@ class CertificateRecognitionController extends Controller
     public function verify($id)
     {
         checkAdminHasPermissionAndThrowException('certificate.recognition.verify');
-        $certificate = CertificateRecognition::with('instansi', 'certificate','users')->find($id);
+        $certificate = CertificateRecognition::with('instansi', 'certificate', 'users')->find($id);
         $users = $certificate->users()->paginate(10);
         return view('certificaterecognition::verify', compact('certificate', 'users'));
     }

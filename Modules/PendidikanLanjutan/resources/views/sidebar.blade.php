@@ -25,7 +25,7 @@
     @endadminCan
     <li class="{{ isRoute('admin.pendidikanlanjutan.*', 'active') }}">
         <a class="nav-link" href="{{ route('admin.vacancies.index') }}">
-            <i class="fas fa-book"></i><span>{{ __('Vacancy') }}</span>
+            <i class="fas fa-book"></i><span>Renbut</span>
         </a>
     </li>
     @adminCan('pendidikanlanjutan.verifikasi')

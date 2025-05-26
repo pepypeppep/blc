@@ -49,9 +49,12 @@ class VacanciesImport implements ToModel, WithHeadingRow
             ->where('instansi_id', $instansi->id)
             ->where('education_level', $row['jenjang'])
             ->where('employment_grade', $row['pangkatgolongan'])
-            ->where('employment_status', $row['status_kepegawaian'])
-            ->where('cost_type', $row['jenis_biaya'])
             ->where('year', $row['tahun'])
+            ->whereHas('detail', function ($query) use ($row) {
+                $query->where('employment_status', $row['status_kepegawaian'])
+                    ->where('cost_type', $row['jenis_biaya'])
+                    ->where('age_limit', $row['batas_usia']);
+            })
             ->first();
 
         if ($existing) {
@@ -67,15 +70,18 @@ class VacanciesImport implements ToModel, WithHeadingRow
             'instansi_id' => $instansi->id,
             'education_level' => $row['jenjang'],
             'employment_grade' => $row['pangkatgolongan'],
-            'employment_status' => $row['status_kepegawaian'],
-            'cost_type' => $row['jenis_biaya'],
             'formation' => $row['jumlah_formasi'],
-            'age_limit' => $row['batas_usia'],
             'year' => $row['tahun'],
             'description' => $row['catatan'] ?? null, // Assuming 'catatan' is optional
         ]);
 
         $vacancy->save();
+
+        $vacancy->details()->create([
+            'employment_status' => $row['status_kepegawaian'],
+            'cost_type' => $row['jenis_biaya'],
+            'age_limit' => $row['batas_usia'],
+        ]);
 
         $masterAttachments = VacancyMasterAttachment::get();
         foreach ($masterAttachments as $attachment) {

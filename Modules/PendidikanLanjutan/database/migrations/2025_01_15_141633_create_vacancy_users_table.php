@@ -20,10 +20,10 @@ return new class extends Migration
             $table->string('employment_grade')->nullable();
             $table->longText('last_position')->nullable();
             $table->longText('instansi')->nullable();
-            $table->string('cost_type')->nullable();
             $table->longText('education_level')->nullable();
             $table->longText('last_education')->nullable();
             $table->string('status')->default('verification');
+            $table->boolean('is_direct_invite')->default(false);
             $table->timestamps();
         });
     }

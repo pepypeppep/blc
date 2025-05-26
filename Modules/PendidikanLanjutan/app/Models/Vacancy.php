@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Instansi;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +18,16 @@ class Vacancy extends Model
     use HasFactory, SoftDeletes;
 
     protected $guarded = ['id'];
+
+    /**
+     * Get the detail associated with the Vacancy
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function details(): HasMany
+    {
+        return $this->hasMany(VacancyDetail::class);
+    }
 
     /**
      * Get the study that owns the Vacancy
@@ -51,17 +62,6 @@ class Vacancy extends Model
     public function educationLevel()
     {
         return ucwords(str_replace('_', ' ', $this->education_level));
-    }
-
-    public function employmentStatus()
-    {
-        return $this->employment_status == 'tidak_diberhentikan_dari_jabatan' ? 'tidak diberhentikan dari jabatan' : 'diberhentikan dari jabatan';
-    }
-
-    public function costType()
-    {
-        return $this->cost_type == 'apbd' ? 'APBD' :
-            ($this->cost_type == 'non_apbd' ? 'Non APBD' : 'Mandiri');
     }
 
     public function isEligible(User $user): ?string

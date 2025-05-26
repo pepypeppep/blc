@@ -4,9 +4,9 @@ namespace Modules\CertificateRecognition\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\CertificateRecognition\Database\factories\CertificateRecognitionEnrollmentFactory;
+use Modules\CertificateRecognition\Database\factories\CertificateRecognitionMaterialsFactory;
 
-class CertificateRecognitionEnrollment extends Model
+class CertificateRecognitionMaterials extends Model
 {
     use HasFactory;
 
@@ -16,8 +16,8 @@ class CertificateRecognitionEnrollment extends Model
     // protected $fillable = [];
     protected $guarded = ['id'];
 
-    // protected static function newFactory(): CertificateRecognitionFactory
+    // protected static function newFactory(): CertificateRecognitionMaterialsFactory
     // {
-    //     //return CertificateRecognitionFactory::new();
+    //     //return CertificateRecognitionMaterialsFactory::new();
     // }
 }

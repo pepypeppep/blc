@@ -60,13 +60,20 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6 mb-3">
+                                            <div class="col-md-3 mb-3">
                                                 <div class="form-group">
                                                     <label>{{ __('Status') }}</label>
                                                     <select name="status" class="form-control">
                                                         <option value="is_draft" {{ old('status') == 'is_draft' ? 'selected' : '' }}>Draft</option>
                                                         <option value="verification" {{ old('status') == 'verification' ? 'selected' : '' }}>Ajukan</option>
                                                     </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3 mb-3">
+                                                <div class="form-group">
+                                                    <label>{{ __('Documentation Link') }}</label>
+                                                    <input type="text" name="documentation_link" class="form-control" value="{{ old('documentation_link') }}" placeholder="https://drive.google.com/file/d/1qZzL3qHq4q4q4q4q4q4q4/view?usp=sharing">
                                                 </div>
                                             </div>
 
@@ -124,10 +131,10 @@
                                                 <tbody id="training-material">
                                                     <tr>
                                                         <td>
-                                                            <input type="text" name="materi[]" class="form-control" placeholder="Materi Pelatihan" value="{{ old('materi')}}">
+                                                            <input type="text" name="materi[]" class="form-control" placeholder="Materi Pelatihan">
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="jp[]" class="form-control" placeholder="0" value="{{ old('jp') }}">
+                                                            <input type="number" name="jp[]" class="form-control" placeholder="0">
                                                         </td>
                                                         <td></td>
                                                     </tr>
@@ -193,10 +200,10 @@
     function addTrainingMaterial() {
         const html = `<tr>
                         <td>
-                            <input type="text" name="materi[]" class="form-control" placeholder="Materi Pelatihan" value="{{ old('materi') }}">
+                            <input type="text" name="materi[]" class="form-control" placeholder="Materi Pelatihan" value="{{ old('materi[]') }}">
                         </td>
                         <td>
-                            <input type="number" name="jp[]" class="form-control" placeholder="0" value="{{ old('jp') }}">
+                            <input type="number" name="jp[]" class="form-control" placeholder="0" value="{{ old('jp[]') }}">
                         </td>
                         <td>
                             <button type="button" class="btn btn-danger" onclick="removeTrainingMaterial(this)">

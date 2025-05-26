@@ -13,6 +13,7 @@ use Modules\CertificateRecognition\app\Models\CertificateRecognition;
 use Modules\CertificateRecognition\app\Models\CertificateRecognitionEnrollment;
 use Modules\Article\app\Models\Article;
 use Illuminate\Support\Facades\DB;
+use Modules\CertificateRecognition\app\Models\CertificateRecognitionMaterials;
 
 class CertificateRecognitionController extends Controller
 {
@@ -67,16 +68,43 @@ class CertificateRecognitionController extends Controller
         $validator = Validator::make($request->all(), [
             'instansi_id'           => 'required|exists:instansis,id',
             'name'                  => 'required|string|max:255',
-            'goal'                  => 'nullable|string',
-            'competency'            => 'nullable|string',
-            'indicator_of_success'  => 'nullable|string',
-            'activity_plan'         => 'nullable|string',
-            'start_at'              => 'nullable|date',
-            'end_at'                => 'nullable|date|after_or_equal:start_at',
-            'jp'                    => 'nullable|integer|min:0',
+            'goal'                  => 'required|string',
+            'competency'            => 'required|string',
+            'indicator_of_success'  => 'required|string',
+            'activity_plan'         => 'required|string',
+            'start_at'              => 'required|date',
+            'end_at'                => 'required|date|after_or_equal:start_at',
             'status'                => 'required|in:is_draft,verification',
-            'participants'          => 'nullable|array',
-            'participants.*'        => 'nullable|integer|exists:users,id',
+            'participants'          => 'required|array',
+            'participants.*'        => 'required|exists:users,id',
+            'documentation_link'    => 'required|url',
+        ], [
+            'instansi_id.required'           => 'Instansi wajib diisi.',
+            'instansi_id.exists'             => 'Instansi tidak valid.',
+            'name.required'                  => 'Nama wajib diisi.',
+            'name.string'                    => 'Nama harus berupa string.',
+            'name.max'                       => 'Nama tidak boleh lebih dari 255 karakter.',
+            'goal.required'                  => 'Tujuan wajib diisi.',
+            'goal.string'                    => 'Tujuan harus berupa string.',
+            'competency.required'            => 'Kompetensi wajib diisi.',
+            'competency.string'              => 'Kompetensi harus berupa string.',
+            'indicator_of_success.required'  => 'Indikator keberhasilan wajib diisi.',
+            'indicator_of_success.string'    => 'Indikator keberhasilan harus berupa string.',
+            'activity_plan.required'         => 'Rencana kegiatan wajib diisi.',
+            'activity_plan.string'           => 'Rencana kegiatan harus berupa string.',
+            'start_at.required'              => 'Tanggal mulai wajib diisi.',
+            'start_at.date'                  => 'Tanggal mulai harus berupa tanggal yang valid.',
+            'end_at.required'                => 'Tanggal akhir wajib diisi.',
+            'end_at.date'                    => 'Tanggal akhir harus berupa tanggal yang valid.',
+            'end_at.after_or_equal'          => 'Tanggal akhir harus setelah atau sama dengan tanggal mulai.',
+            'status.required'                => 'Status wajib diisi.',
+            'status.in'                      => 'Status harus berupa is_draft atau verification.',
+            'participants.required'          => 'Peserta wajib diisi.',
+            'participants.array'             => 'Peserta harus berupa array.',
+            'participants.*.required'        => 'Peserta harus diisi.',
+            'participants.*.exists'          => 'Peserta tidak valid.',
+            'documentation_link.required'    => 'Link dokumentasi wajib diisi.',
+            'documentation_link.url'         => 'Link dokumentasi harus berupa URL yang valid.',
         ]);
 
         if ($validator->fails()) {
@@ -92,10 +120,10 @@ class CertificateRecognitionController extends Controller
             'activity_plan'         => $request->activity_plan,
             'start_at'              => $request->start_at,
             'end_at'                => $request->end_at,
-            'jp'                    => $request->jp ?? 0,
             'status'                => $request->status,
             'is_approved'           => 'pending',
             'certificate_status'    => 'pending',
+            'documentation_link'    => $request->documentation_link
         ]);
 
         if ($request->has('participants') && is_array($request->participants)) {
@@ -108,6 +136,37 @@ class CertificateRecognitionController extends Controller
                 ]);
             }
         }
+
+        $requestMaterialNames = array_unique($request->materi);
+        $dataToUpsert = [];
+        $jpTotal = 0;
+
+        foreach ($request->jp as $key => $jp) {
+            $dataToUpsert[] = [
+                'certificate_recognition_id' => $certificate->id,
+                'name' => $request->materi[$key],
+                'jp' => $jp
+            ];
+            $jpTotal += $jp;
+        }
+
+        // Bulk upsert operation
+        DB::transaction(function () use ($dataToUpsert, $certificate, $requestMaterialNames) {
+            CertificateRecognitionMaterials::upsert(
+                $dataToUpsert,
+                ['certificate_recognition_id', 'name'],
+                ['jp']
+            );
+
+            // Bulk delete obsolete records
+            CertificateRecognitionMaterials::where('certificate_recognition_id', $certificate->id)
+                ->whereNotIn('name', $requestMaterialNames)
+                ->delete();
+        });
+
+        $certificate->update([
+            'jp' => $jpTotal
+        ]);
 
         return redirect()->route('admin.certificate-recognition.index')->with('success', 'Certificate Recognition created successfully.');
     }

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->longText('education_level')->nullable();
             $table->longText('last_education')->nullable();
             $table->string('status')->default('verification');
+            $table->boolean('is_direct_invite')->default(false);
             $table->timestamps();
         });
     }

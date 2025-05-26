@@ -35,6 +35,16 @@
                                     type="button" role="tab" aria-controls="requirement"
                                     aria-selected="false">{{ __('Vacancy Attachment') }}</button>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="invite-tab" data-toggle="tab" data-target="#invite"
+                                    type="button" role="tab" aria-controls="invite"
+                                    aria-selected="false">{{ __('Direct Invite') }}</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="registrant-tab" data-toggle="tab" data-target="#registrant"
+                                    type="button" role="tab" aria-controls="registrant"
+                                    aria-selected="false">{{ __('Registrant') }}</button>
+                            </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active py-0" id="home" role="tabpanel"
@@ -325,14 +335,148 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="tab-pane fade py-0" id="invite" role="tabpanel"
+                                aria-labelledby="invite-tab">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between">
+                                        <h4>{{ __('Direct Invite') }}</h4>
+                                        <div>
+                                            <a href="{{ route('admin.vacancies.index') }}"
+                                                class="btn btn-primary"><i
+                                                    class="fa fa-arrow-left"></i>{{ __('Back') }}</a>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <form action="{{ route('admin.vacancies.update-attachment', $vacancy->id) }}"
+                                            method="POST">
+                                            @csrf
+                                            <div class="row mb-3">
+                                                <div class="col-md-12 table">
+                                                    <center>
+                                                        <table class="table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Nama</th>
+                                                                    <th>Instansi</th>
+                                                                    <th>Jabatan</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @forelse ($directMembers as $member)
+                                                                    <tr>
+                                                                        <td>{{ $member->user->name }}</td>
+                                                                        <td>{{ optional($member->user->instansi)->name ?? '-' }}</td>
+                                                                        <td>{{ $member->user->jabatan ?? '-' }}</td>
+                                                                    </tr>
+                                                                @empty
+                                                                    <tr class="text-center">
+                                                                        <td colspan="3">
+                                                                            {{ __('No Data') }}
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforelse
+                                                            </tbody>
+                                                        </table>
+                                                    </center>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="text-center col-md-8 offset-md-2">
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                        data-target="#addUserModal">{{ __('Add Member') }}</button>
+                                                    <x-admin.save-button :text="__('Save')"></x-admin.save-button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade py-0" id="registrant" role="tabpanel"
+                                aria-labelledby="invite-tab">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between">
+                                        <h4>{{ __('Registrant') }}</h4>
+                                        <div>
+                                            <a href="{{ route('admin.vacancies.index') }}"
+                                                class="btn btn-primary"><i
+                                                    class="fa fa-arrow-left"></i>{{ __('Back') }}</a>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-12 table">
+                                                <center>
+                                                    <table class="table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Nama</th>
+                                                                <th>Instansi</th>
+                                                                <th>Jabatan</th>
+                                                                <th>Status</th>
+                                                                <th>Jenis</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @forelse ($members as $member)
+                                                                <tr>
+                                                                    <td>{{ $member->user->name }}</td>
+                                                                    <td>{{ optional($member->user->instansi)->name ?? '-' }}</td>
+                                                                    <td>{{ $member->user->jabatan ?? '-' }}</td>
+                                                                    <td>{{ $member->status }}</td>
+                                                                    <td>{{ \Modules\PendidikanLanjutan\app\Models\VacancyUserDirect::where('vacancy_id', $vacancy->id)->where('user_id', $member->id)->first() ? 'Undangan' : 'Non-Undangan' }}</td>
+                                                                </tr>
+                                                            @empty
+                                                                <tr class="text-center">
+                                                                    <td colspan="5">
+                                                                        {{ __('No Data') }}
+                                                                    </td>
+                                                                </tr>
+                                                            @endforelse
+                                                        </tbody>
+                                                    </table>
+                                                </center>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-
-
                     </div>
                 </div>
             </div>
         </section>
+        <div class="modal fade" id="addUserModal" tabindex="-1"
+            aria-labelledby="addUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title pl-4" id="addUserModalLabel" style="color:#6777ef;">{{ __('Add Member') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('admin.vacancies.direct.invite', $vacancy->id) }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label for="selectUser">{{ __('Select Member') }}</label>
+                                <select name="users[]" id="selectUser" class="form-control select2"
+                                    multiple="multiple">
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group d-flex justify-content-center">
+                                <button type="submit" class="btn btn-primary">{{ __('Add') }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 

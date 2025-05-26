@@ -2,6 +2,7 @@
 
 namespace Modules\PendidikanLanjutan\app\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Instansi;
 use Illuminate\Http\Request;
 use App\Imports\VacanciesImport;
@@ -17,6 +18,7 @@ use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use Modules\PendidikanLanjutan\app\Models\VacancyDetail;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyUserDirect;
 
 class VacancyController extends Controller
 {
@@ -145,8 +147,11 @@ class VacancyController extends Controller
         $studies = Study::all();
         $attachments = VacancyMasterAttachment::get();
         $instansi = Instansi::get();
+        $directMembers = VacancyUserDirect::where('vacancy_id', $id)->get();
+        $users = User::whereNotIn('id', $directMembers->pluck('user_id'))->where('role', 'student')->get();
+        $members = VacancyUser::where('vacancy_id', $id)->get();
 
-        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy', 'instansi', 'studies', 'attachments'));
+        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy', 'instansi', 'studies', 'attachments', 'directMembers', 'users', 'members'));
     }
 
     /**
@@ -379,5 +384,23 @@ class VacancyController extends Controller
         }
 
         return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy transfered successfully.');
+    }
+
+    public function directInvite($id, Request $request)
+    {
+        $vacancy = Vacancy::find($id);
+
+        foreach ($request->users as $key => $user) {
+            VacancyUserDirect::updateOrCreate([
+                'vacancy_id' => $id,
+                'user_id' => $user
+            ], []);
+        }
+
+        $vacancy->update([
+            'is_direct_invited' => true
+        ]);
+
+        return redirect()->route('admin.vacancies.edit', $id)->with('success', 'Pengundangan berhasil dikirim.');
     }
 }

@@ -91,6 +91,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         Route::post('{id}/update-attachment', [VacancyController::class, 'updateAttachments'])->name('vacancies.update-attachment');
         Route::put('{id}/update-details', [VacancyController::class, 'updateVacancyDetail'])->name('vacancies.details.update');
         Route::get('{year}/transfer', [VacancyController::class, 'transferVacancy'])->name('vacancies.transfer');
+        Route::post('{id}/direct-invite', [VacancyController::class, 'directInvite'])->name('vacancies.direct.invite');
     });
 
     Route::prefix('vacancies-participant')->group(function () {

@@ -99,7 +99,12 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Vacancy List') }} {{ now()->year }}</h4>
+                                <div>
+                                    <span class="mr-3 font-weight-bold" style="font-size: 1.2rem;color:#6777ef;">{{ __('Vacancy List') }} {{ now()->year }}</span>
+                                    @if ($prevVacancy > 0)
+                                        <button type="button" class="btn btn-warning" onclick="transferVacancy({{ now()->year }})">Transfer Sisa Formasi dari {{ now()->year - 1 }}</button>
+                                    @endif
+                                </div>
                                 <div>
                                     <button type="button" class="btn btn-info" data-toggle="modal"
                                         data-target="#exampleModalCenter"> <i class="fa fa-upload"></i> Impor Data
@@ -115,14 +120,8 @@
                                             <tr>
                                                 <th width="5%">{{ __('#') }}</th>
                                                 <th width="20%">{{ __('Instansi') }}</th>
-                                                <th width="10%">{{ __('Level') }}</th>
-                                                <th width="20%" class="course-table-title">{{ __('Study') }}</th>
-                                                <th width="10%">{{ __('Employment Grade') }}</th>
-                                                <th width="10%">{{ __('Employment Status') }}</th>
-                                                <th width="10%">{{ __('Cost Type') }}</th>
-                                                <th width="10%">{{ __('Age Limit') }}</th>
-                                                <th width="10%">{{ __('Year') }}</th>
-                                                <th width="20%">{{ __('Notes') }}</th>
+                                                <th width="15%" class="course-table-title">{{ __('Study') }}</th>
+                                                <th width="30%">{{ __('Details') }}</th>
                                                 <th width="5%">{{ __('Number of Participants') }}</th>
                                                 <th width="5%">{{ __('Action') }}</th>
                                             </tr>
@@ -132,14 +131,23 @@
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $vacancy->instansi->name ?? '-' }}</td>
-                                                    <td>{{ $vacancy->educationLevel() }}</td>
-                                                    <td>{{ $vacancy->study->name }}</td>
-                                                    <td class="text-center">{{ \App\Enums\EmploymentGrade::from($vacancy->employment_grade)->label() }}</td>
-                                                    <td>{{ $vacancy->employmentStatus() }}</td>
-                                                    <td>{{ $vacancy->costType() }}</td>
-                                                    <td class="text-center">{{ $vacancy->age_limit }}</td>
-                                                    <td>{{ $vacancy->year }}</td>
-                                                    <td>{!! $vacancy->description !!}</td>
+                                                    <td>
+                                                        {{ $vacancy->educationLevel() }} - {{ explode(' - ',$vacancy->study->name)[0] }}
+                                                        <br>
+                                                        {{ explode(' - ',$vacancy->study->name)[1] }} ({{ $vacancy->year }})
+                                                    </td>
+                                                    <td>
+                                                        <ul>
+                                                        @foreach ($vacancy->details as $key => $detail)
+                                                            <li>
+                                                                <strong>Kriteria {{ $key+1 }}</strong><br>
+                                                                <span>Status: {{ $detail->employment_status }}</span><br>
+                                                                <span>Biaya: {{ $detail->cost_type }}</span><br>
+                                                                <span>Umur: {{ $detail->age_limit }}</span>
+                                                            </li>
+                                                        @endforeach
+                                                        </ul>
+                                                    </td>
                                                     <td class="text-center">
                                                         <span
                                                             class="Jumlah Pendaftar">{{ $vacancy->users()->count() }}</span>/<span
@@ -240,6 +248,7 @@
 @endsection
 
 @push('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @if (session('success'))
         <script>
             toastr.success("{{ session('success') }}", "Success", {
@@ -298,6 +307,22 @@
                     })
                 }
             });
+        }
+
+        function transferVacancy(year) {
+            Swal.fire({
+                title: 'Anda yakin?',
+                text: "Anda ingin mentransfer seluruh sisa formasi tahun " + year + " ke tahun saat ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, saya yakin!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/admin/vacancies/"+year+"/transfer";
+                }
+            })
         }
     </script>
 @endpush

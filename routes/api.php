@@ -50,6 +50,8 @@ Route::name('api.')->group(function () {
     Route::get('/courses/{slug}/tos', [CourseApiController::class, 'courseTos'])->name('courses.tos');
     Route::post('/courses/{slug}/accept-tos', [CourseApiController::class, 'acceptTos'])->name('courses.accept-tos');
 
+    Route::get('/courses/{lessonId}/get-file', [StudentLearningApiController::class, 'getFilePathUrl'])->name('courses.get-file');
+
     // Lesson
     Route::name('lessons.')->group(function () {
         Route::get('/lessons/{slug}/questions', [CourseApiController::class, 'lessonQuestions'])->name('questions');

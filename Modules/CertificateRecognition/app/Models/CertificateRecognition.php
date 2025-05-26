@@ -31,7 +31,7 @@ class CertificateRecognition extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    // protected $fillable = [];
     protected $guarded = ['id'];
 
     // protected static function newFactory(): CertificateRecognitionFactory

@@ -80,7 +80,7 @@
                                                 <th>No</th>
                                                 <th>{{ __('Name') }}</th>
                                                 <th>{{ __('Instansi') }}</th>
-                                                <th>{{ __('Goal') }}</th>
+                                                <th>{{ __('Course Name') }}</th>
                                                 <th>{{ __('Status') }}</th>
                                                 <th>{{ __('Approval Status') }}</th>
                                                 <th>{{ __('Certificate Status') }}</th>
@@ -95,7 +95,7 @@
                                                             href="{{ route('admin.certificate-recognition.show', $certificate->id) }}">{{ $certificate->name }}</a>
                                                     </td>
                                                     <td>{{ $certificate->instansi->name }}</td>
-                                                    <td>{{ $certificate->goal }}</td>
+                                                    <td>{{ $certificate->name }}</td>
                                                     <td>
                                                         <div class="badge badge-{{ $certificate->stat['color'] }}">
                                                             {{ __($certificate->stat['label']) }}</div>

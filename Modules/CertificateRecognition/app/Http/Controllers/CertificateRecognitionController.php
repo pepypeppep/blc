@@ -21,7 +21,6 @@ class CertificateRecognitionController extends Controller
      */
     public function index(Request $request)
     {
-
         $query = CertificateRecognition::query();
 
         if ($request->has('is_approved') && $request->query('is_approved') != '') {
@@ -32,6 +31,12 @@ class CertificateRecognitionController extends Controller
         if ($request->has('certificate_status') && $request->query('certificate_status') != '') {
             $certificate_status = $request->query('certificate_status', request('certificate_status'));
             $query->where('certificate_status', $certificate_status);
+        }
+
+        if (auth()->user()->hasRole('Super Admin')) {
+            $query->where('status', '!=', CertificateRecognition::STATUS_IS_DRAFT);
+        } elseif (auth()->user()->hasRole('Admin OPD')) {
+            $query->where('instansi_id', auth()->user()->instansi_id);
         }
 
         $certificateRecognitions = $query
@@ -47,7 +52,7 @@ class CertificateRecognitionController extends Controller
     public function create()
     {
         $instansis  = Instansi::all();
-        $users      = User::all();
+        $users      = User::with('instansi')->where('role', 'student')->get();
 
         $certificateRecognition = session('certificateRecognition', null);
 
@@ -69,7 +74,7 @@ class CertificateRecognitionController extends Controller
             'start_at'              => 'nullable|date',
             'end_at'                => 'nullable|date|after_or_equal:start_at',
             'jp'                    => 'nullable|integer|min:0',
-            'status'                => 'required|in:is_draft,published,verification,rejected',
+            'status'                => 'required|in:is_draft,verification',
             'participants'          => 'nullable|array',
             'participants.*'        => 'nullable|integer|exists:users,id',
         ]);
@@ -103,11 +108,8 @@ class CertificateRecognitionController extends Controller
                 ]);
             }
         }
-        return response()->json([
-            'status' => 'success',
-            'message' => __('Successfully created certificate recognition'),
-            'redirect' => route('admin.certificate-recognition.index')
-        ]);
+
+        return redirect()->route('admin.certificate-recognition.index')->with('success', 'Certificate Recognition created successfully.');
     }
 
     /**

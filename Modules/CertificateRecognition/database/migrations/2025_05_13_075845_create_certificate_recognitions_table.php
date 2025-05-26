@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('is_approved')->default('pending');
             $table->string('certificate_status')->default('pending');
             $table->longText('notes')->nullable();
+            $table->string('documentation_link')->nullable();
             $table->timestamps();
         });
     }

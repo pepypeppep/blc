@@ -61,7 +61,7 @@
                                 <td>{{ __('Status Kepegawaian') }}</td>
                                 <td>
                                     @php
-                                        $employmentStatus = $vacancy->employmentStatus();
+                                        $employmentStatus = $vacancy;
                                     @endphp
                                     {{ $employmentStatus ? $employmentStatus : '-' }}
                                 </td>
@@ -79,7 +79,7 @@
                                 <td>{{ __('Pembiayaan') }}</td>
                                 <td>
                                     @php
-                                        $fundingSource = $vacancy->cost_type;
+                                        $fundingSource = $vacancyUser->cost_type;
                                     @endphp
                                     {{ $fundingSource ? $fundingSource : '-' }}
                                 </td>

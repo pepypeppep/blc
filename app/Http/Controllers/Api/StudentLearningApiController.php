@@ -599,7 +599,7 @@ class StudentLearningApiController extends Controller
                 ->count();
 
             // Ambil quiz dengan jumlah pertanyaan
-            $quiz = Quiz::withCount('questions')->findOrFail($quizId);
+            $quiz = Quiz::with('questions.answers')->withCount('questions')->findOrFail($quizId);
 
             // Cek limit attempt
             if (!is_null($quiz->attempt) && $attempt >= $quiz->attempt) {

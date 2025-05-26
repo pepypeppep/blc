@@ -8,16 +8,18 @@ use Illuminate\Support\Str;
 use App\Models\QuizQuestion;
 use Illuminate\Http\Request;
 use App\Models\CourseChapter;
+use App\Models\FollowUpAction;
 use App\Models\CourseChapterItem;
+use App\Imports\QuizQuestionImport;
 use App\Models\CourseChapterLesson;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Modules\Order\app\Models\Enrollment;
 use Illuminate\Contracts\Session\Session;
 use App\Http\Requests\Frontend\QuizLessonCreateRequest;
-use App\Imports\QuizQuestionImport;
-use App\Models\FollowUpAction;
-use Maatwebsite\Excel\Facades\Excel;
 use Modules\Course\app\Http\Requests\ChapterLessonRequest;
 
 class CourseContentController extends Controller
@@ -418,6 +420,14 @@ class CourseContentController extends Controller
             ]);
         }
 
+        $quiz = Quiz::findOrFail($quizId);
+
+        $users = Enrollment::where('course_id', $quiz->course_id)->pluck('user_id');
+        foreach ($users as $userId) {
+            $cacheKey = "quiz_{$quizId}_user_{$userId}_questions";
+            Cache::forget($cacheKey);
+        }
+
         return response()->json(['status' => 'success', 'message' => __('Question created successfully')]);
     }
 
@@ -456,6 +466,14 @@ class CourseContentController extends Controller
                 'correct' => isset($request->correct[$key]) ? 1 : 0,
                 'question_id' => $question->id
             ]);
+        }
+
+        $quiz = Quiz::findOrFail($question->quiz_id);
+
+        $users = Enrollment::where('course_id', $quiz->course_id)->pluck('user_id');
+        foreach ($users as $userId) {
+            $cacheKey = "quiz_{$quiz->id}_user_{$userId}_questions";
+            Cache::forget($cacheKey);
         }
 
         return response()->json(['status' => 'success', 'message' => __('Question updated successfully')]);

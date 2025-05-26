@@ -81,11 +81,11 @@
                     checkAdminHasPermission('customer.view') ||
                     checkAdminHasPermission('location.view'))
                 <li class="menu-header">{{ __('Manage Users') }}</li>
-                @if (
+                {{-- @if (
                     (Module::isEnabled('InstructorRequest') && checkAdminHasPermission('instructor.request.list')) ||
                         checkAdminHasPermission('instructor.request.setting'))
                     @include('instructorrequest::sidebar')
-                @endif
+                @endif --}}
 
                 @if (Module::isEnabled('Customer') && checkAdminHasPermission('customer.view'))
                     @include('customer::sidebar')

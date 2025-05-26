@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CourseChapterItem extends Model
 {
@@ -17,7 +16,7 @@ class CourseChapterItem extends Model
         'instructor_id',
         'chapter_id',
         'type',
-        'order',
+        'order'
     ];
 
     function lesson(): HasOne
@@ -54,6 +53,7 @@ class CourseChapterItem extends Model
     {
         return $this->hasMany(Quiz::class, 'chapter_item_id', 'id');
     }
+
     /**
      * Boot method to handle model events.
      */

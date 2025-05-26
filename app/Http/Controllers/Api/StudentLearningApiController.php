@@ -1211,4 +1211,18 @@ class StudentLearningApiController extends Controller
 
         return $this->errorResponse('Rencana tindak lanjut gagal disimpan.', [], 500);
     }
+
+    public function getFilePathUrl($lessonId)
+    {
+        try {
+            $lesson = CourseChapterLesson::find($lessonId);
+            return response()->file(Storage::disk('private')->path($lesson->file_path));
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve file',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

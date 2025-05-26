@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
-class CourseChapterLesson extends Model {
+class CourseChapterLesson extends Model
+{
     use HasFactory;
 
     protected $fillable = [
@@ -25,19 +27,36 @@ class CourseChapterLesson extends Model {
         'is_free',
     ];
 
-    function lessonProgress(): HasOne {
+    protected $appends = ['file_path_url'];
+
+    function lessonProgress(): HasOne
+    {
         return $this->hasOne(CourseProgress::class, 'lesson_id', 'id');
     }
-    function course(): BelongsTo {
+    function course(): BelongsTo
+    {
         return $this->belongsTo(Course::class, 'course_id', 'id');
     }
-    function chapterItem(): BelongsTo {
+    function chapterItem(): BelongsTo
+    {
         return $this->belongsTo(CourseChapterItem::class, 'chapter_item_id', 'id');
     }
-    function live(): HasOne {
+    function live(): HasOne
+    {
         return $this->hasOne(CourseLiveClass::class, 'lesson_id', 'id');
     }
-    protected static function boot() {
+
+    protected function filePathUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->file_type == 'pdf'
+                ? route('api.courses.get-file', ['lessonId' => $this->id])
+                : null
+        );
+    }
+
+    protected static function boot()
+    {
         parent::boot();
 
         static::deleting(function ($courseChapterLesson) {

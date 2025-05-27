@@ -629,7 +629,7 @@ class StudentLearningApiController extends Controller
                     ->get();
 
                 // Simpan cache sesuai due_date
-                Cache::put($cacheKey, $questions, Carbon::parse($quiz->due_date));
+                Cache::put($cacheKey, $questions, now()->addMinutes((int) $quiz->time));
             }
 
             // Menyembunyikan jawaban benar (correct) agar tidak bisa diakses dari frontend dan disalahgunakan

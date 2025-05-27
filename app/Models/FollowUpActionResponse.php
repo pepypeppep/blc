@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class FollowUpActionResponse extends Model
 {
@@ -15,6 +16,8 @@ class FollowUpActionResponse extends Model
         'participant_id',
         'instructor_id',
     ];
+
+    protected $appends = ['file_path_url'];
 
     //relation to participant
     public function participant()
@@ -31,5 +34,13 @@ class FollowUpActionResponse extends Model
     public function follow_up_action()
     {
         return $this->belongsTo(FollowUpAction::class);
+    }
+
+    protected function filePathUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->participant_file ? route('api.courses.get-file', ['type' => 'rtl', 'id' => $this->id])
+                : null
+        );
     }
 }

@@ -50,7 +50,7 @@ class CourseChapterLesson extends Model
     {
         return Attribute::make(
             get: fn() => $this->file_type == 'pdf'
-                ? route('api.courses.get-file', ['lessonId' => $this->id])
+                ? route('api.courses.get-file', ['type' => 'lesson', 'id' => $this->id])
                 : null
         );
     }

@@ -1212,11 +1212,16 @@ class StudentLearningApiController extends Controller
         return $this->errorResponse('Rencana tindak lanjut gagal disimpan.', [], 500);
     }
 
-    public function getFilePathUrl($lessonId)
+    public function getFilePathUrl($type, $id)
     {
         try {
-            $lesson = CourseChapterLesson::find($lessonId);
-            return response()->file(Storage::disk('private')->path($lesson->file_path));
+            if ($type == 'lesson') {
+                $lesson = CourseChapterLesson::find($id);
+                return response()->file(Storage::disk('private')->path($lesson->file_path));
+            } else if ($type == 'rtl') {
+                $data = FollowUpActionResponse::find($id);
+                return response()->file(Storage::disk('private')->path('rtl/' . $data->participant_file));
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

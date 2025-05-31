@@ -33,14 +33,25 @@ class HomeController extends Controller
     function index()
     {
         try {
-            $section_data = SectionTranslation::select('sections.name', 'section_translations.content')
+            $section_data = SectionTranslation::select('sections.id', 'sections.name', 'sections.global_content', 'section_translations.content')
                 ->join('sections', 'section_translations.section_id', '=', 'sections.id')
                 ->get();
 
             $sections = [];
             foreach ($section_data as $key => $section) {
-                $sections[str_replace('_section', '', $section->name)] = $section->content;
+                if (strpos($section->global_content, 'custom-images') !== false) {
+                    foreach (json_decode($section->global_content, true) as $key => $value) {
+                        if (strpos($value, 'custom-images') !== false) {
+                            $sections[str_replace('_section', '', $section->name)][$key] = env('APP_URL') . '/get-section-asset/' . $section->id . '/attr/' . $key;
+                        }
+                    }
+                }
+                $sections[str_replace('_section', '', $section->name)] = [
+                    // 'content' => json_decode(json_encode(array_merge((array)(json_decode(str_replace('uploads', env('APP_URL') . '/uploads', $section->global_content))), (array)$section->content)))
+                    'content' => array_merge((array)$section->content, $sections[str_replace('_section', '', $section->name)])
+                ];
             }
+            return $sections;
             $contactSection = ContactSection::first();
             $sections['contact_us'] = json_decode(json_encode([
                 'address' => $contactSection->address,

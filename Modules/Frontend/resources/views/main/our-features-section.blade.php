@@ -258,7 +258,7 @@
                 });
 
                 $('#image-preview-one').css({
-                    'background-image': 'url({{ asset($ourFeature?->global_content?->image_one) }})',
+                    'background-image': "url('{{ route('get.section.asset',[$ourFeature?->id,'image_one']) }}')",
                     'background-size': 'contain',
                     'background-position': 'center',
                     'background-repeat': 'no-repeat'
@@ -275,7 +275,7 @@
                 });
 
                 $('#image-preview-two').css({
-                    'background-image': 'url({{ asset($ourFeature?->global_content?->image_two) }})',
+                    'background-image': "url('{{ route('get.section.asset',[$ourFeature?->id,'image_two']) }}')",
                     'background-size': 'contain',
                     'background-position': 'center',
                     'background-repeat': 'no-repeat'
@@ -292,7 +292,7 @@
                 });
 
                 $('#image-preview-three').css({
-                    'background-image': 'url({{ asset($ourFeature?->global_content?->image_three) }})',
+                    'background-image': "url('{{ route('get.section.asset',[$ourFeature?->id,'image_three']) }}')",
                     'background-size': 'contain',
                     'background-position': 'center',
                     'background-repeat': 'no-repeat'
@@ -309,7 +309,7 @@
                 });
 
                 $('#image-preview-four').css({
-                    'background-image': 'url({{ asset($ourFeature?->global_content?->image_four) }})',
+                    'background-image': "url('{{ route('get.section.asset',[$ourFeature?->id,'image_four']) }}')",
                     'background-size': 'contain',
                     'background-position': 'center',
                     'background-repeat': 'no-repeat'

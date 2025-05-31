@@ -2,7 +2,10 @@
 
 namespace Modules\Frontend\app\Traits;
 
-trait UpdateSectionTraits {
+use Illuminate\Support\Facades\Storage;
+
+trait UpdateSectionTraits
+{
     /**
      * Updates the specified text and image fields in the given content object.
      *
@@ -18,7 +21,8 @@ trait UpdateSectionTraits {
      *
      * @return mixed The updated content object after applying the changes.
      */
-    private function updateSectionContent($content, $request, array $fields, array $images = []) {
+    private function updateSectionContent($content, $request, array $fields, array $images = [])
+    {
         if (is_null($content)) {
             $content = new \stdClass();
         }
@@ -33,8 +37,13 @@ trait UpdateSectionTraits {
         // Update image fields
         foreach ($images as $image) {
             if ($request->hasFile($image)) {
-                $file_name = file_upload($request->$image, 'uploads/custom-images/', $content->$image ?? null);
-                $content->$image = $file_name;
+                // $file_name = file_upload($request->$image, 'uploads/custom-images/', $content->$image ?? null);
+
+                $file = $request->$image;
+                $filename = 'custom-images/' . time() . '.' . $file->getClientOriginalExtension();
+                $path = Storage::disk('private')->put($filename, file_get_contents($file));
+
+                $content->$image = $filename;
             }
         }
 

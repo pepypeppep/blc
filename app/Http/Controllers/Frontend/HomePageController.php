@@ -2,41 +2,42 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Enums\ThemeList;
-use App\Http\Controllers\Controller;
-use App\Jobs\DefaultMailJob;
-use App\Mail\DefaultMail;
-use App\Models\Course;
 use App\Models\User;
+use App\Models\Course;
+use App\Enums\ThemeList;
+use App\Mail\DefaultMail;
+use Illuminate\View\View;
+use App\Jobs\DefaultMailJob;
+use Illuminate\Http\Request;
 use App\Models\UserEducation;
 use App\Models\UserExperience;
 use App\Rules\CustomRecaptcha;
 use App\Traits\MailSenderTrait;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Session;
-use Illuminate\View\View;
-use Modules\Article\app\Models\Article;
-use Modules\Badges\app\Models\Badge;
-use Modules\Blog\app\Models\Blog;
-use Modules\Brand\app\Models\Brand;
-use Modules\Course\app\Models\CourseCategory;
 use Modules\Faq\app\Models\Faq;
-use Modules\Frontend\app\Models\FeaturedCourseSection;
-use Modules\Frontend\app\Models\FeaturedInstructor;
-use Modules\Frontend\app\Models\Section;
-use Modules\GlobalSetting\app\Models\EmailTemplate;
+use Illuminate\Http\JsonResponse;
+use Modules\Blog\app\Models\Blog;
+use Illuminate\Support\Facades\DB;
+use Modules\Brand\app\Models\Brand;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use Modules\Badges\app\Models\Badge;
+use Illuminate\Support\Facades\Cache;
 use Modules\Location\app\Models\City;
-use Modules\Location\app\Models\Country;
 use Modules\Location\app\Models\State;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Modules\Article\app\Models\Article;
+use Modules\Frontend\app\Models\Section;
+use Modules\Location\app\Models\Country;
+use Modules\Course\app\Models\CourseCategory;
 use Modules\PageBuilder\app\Models\CustomPage;
-use Modules\PendidikanLanjutan\app\Models\Vacancy;
-use Modules\PendidikanLanjutan\app\Models\VacancySchedule;
-use Modules\SiteAppearance\app\Models\SectionSetting;
 use Modules\Testimonial\app\Models\Testimonial;
+use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use Modules\Frontend\app\Models\FeaturedInstructor;
+use Modules\GlobalSetting\app\Models\EmailTemplate;
+use Modules\SiteAppearance\app\Models\SectionSetting;
+use Modules\Frontend\app\Models\FeaturedCourseSection;
+use Modules\PendidikanLanjutan\app\Models\VacancySchedule;
 
 class HomePageController extends Controller
 {
@@ -272,5 +273,13 @@ class HomePageController extends Controller
             }
         }
         return redirect('/');
+    }
+
+    public function getSectionAsset($id, $attr)
+    {
+        $section = Section::find($id);
+        $path = Storage::disk('private')->path($section->global_content->{$attr});
+
+        return response()->file($path);
     }
 }

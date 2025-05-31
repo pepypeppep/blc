@@ -95,13 +95,13 @@
             success_callback: null
         });
         $('#image-preview').css({
-            'background-image': 'url({{ asset($bannerSection?->global_content?->instructor_image) }})',
+            'background-image': "url('{{ route('get.section.asset',[$bannerSection?->id,'instructor_image']) }}')",
             'background-size': 'contain',
             'background-position': 'center',
             'background-repeat': 'no-repeat'
         });
         $('#image-preview-2').css({
-            'background-image': 'url({{ asset($bannerSection?->global_content?->student_image) }})',
+            'background-image': "url('{{ route('get.section.asset',[$bannerSection?->id,'student_image']) }}')",
             'background-size': 'contain',
             'background-position': 'center',
             'background-repeat': 'no-repeat'

@@ -306,27 +306,27 @@
             });
 
             $('#image-preview').css({
-                'background-image': "url('{{ asset($heroSection?->global_content?->banner_image) }}')",
+                'background-image': "url('{{ route('get.section.asset',[$heroSection?->id,'banner_image']) }}')",
                 'background-size': 'contain',
                 'background-position': 'center',
                 'background-repeat': 'no-repeat'
             });
             $('#image-preview-2').css({
-                'background-image': "url('{{ asset($heroSection?->global_content?->banner_background) }}')",
+                'background-image': "url('{{ route('get.section.asset',[$heroSection?->id,'banner_background']) }}')",
                 'background-size': 'contain',
                 'background-position': 'center',
                 'background-repeat': 'no-repeat'
             });
 
             $('#image-preview-3').css({
-                'background-image': "url('{{ asset($heroSection?->global_content?->hero_background) }}')",
+                'background-image': "url('{{ route('get.section.asset',[$heroSection?->id,'hero_background']) }}')",
                 'background-size': 'contain',
                 'background-position': 'center',
                 'background-repeat': 'no-repeat'
             });
 
             $('#image-preview-4').css({
-                'background-image': 'url({{ asset($heroSection?->global_content?->enroll_students_image) }})',
+                'background-image': "url('{{ route('get.section.asset',[$heroSection?->id,'enroll_students_image']) }}')",
                 'background-size': 'contain',
                 'background-position': 'center',
                 'background-repeat': 'no-repeat'

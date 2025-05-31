@@ -185,7 +185,7 @@
                 success_callback: null
             });
             $('#image-preview').css({
-                'background-image': "url('{{ asset($aboutSection?->global_content?->image) }}')",
+                'background-image': "url('{{ route('get.section.asset',[$aboutSection?->id,'image']) }}')",
                 'background-size': 'contain',
                 'background-position': 'center',
                 'background-repeat': 'no-repeat'

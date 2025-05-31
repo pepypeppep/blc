@@ -110,6 +110,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     // Public Certificate URL
     Route::get("/public/certificate/{uuid}", [CertificateController::class, 'publicCertificate'])->name('public.certificate');
 
+    Route::get("/get-section-asset/{id}/attr/{attr}", [HomePageController::class, 'getSectionAsset'])->name('get.section.asset');
+
 
 
     /**

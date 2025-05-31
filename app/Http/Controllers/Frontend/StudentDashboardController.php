@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Modules\PendidikanLanjutan\app\Models\VacancySchedule;
+use Modules\Pengumuman\app\Models\Pengumuman;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class StudentDashboardController extends Controller
@@ -43,12 +44,14 @@ class StudentDashboardController extends Controller
         $totalQuizAttempts = QuizResult::where('user_id', userAuth()->id)->count();
         $totalReviews = CourseReview::where('user_id', userAuth()->id)->count();
         $orders = Order::where('buyer_id', userAuth()->id)->orderBy('id', 'desc')->take(10)->get();
+        $pengumumans = Pengumuman::where('status', 'show')->get();
 
         return view('frontend.student-dashboard.index', compact(
             'totalEnrolledCourses',
             'totalQuizAttempts',
             'totalReviews',
-            'orders'
+            'orders',
+            'pengumumans'
         ));
     }
 

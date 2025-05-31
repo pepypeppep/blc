@@ -44,5 +44,17 @@
             </div>
 
         </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="dashboard__content-title">
+                    <h4 class="title">{{ __('Pengumuman') }}</h4>
+                </div>
+                @foreach ($pengumumans as $pengumuman)
+                    <div class="alert alert-primary" role="alert">
+                        {!! clean($pengumuman->content) !!}
+                    </div>
+                @endforeach
+            </div>
+        </div>
     </div>
 @endsection

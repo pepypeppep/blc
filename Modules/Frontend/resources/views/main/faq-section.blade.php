@@ -144,7 +144,7 @@
                 });
 
                 $('#image-preview').css({
-                    'background-image': 'url({{ asset($faqSection?->global_content?->image) }})',
+                    'background-image': "url('{{ route('get.section.asset',[$faqSection?->id,'image']) }}')",
                     'background-size': 'contain',
                     'background-position': 'center',
                     'background-repeat': 'no-repeat'

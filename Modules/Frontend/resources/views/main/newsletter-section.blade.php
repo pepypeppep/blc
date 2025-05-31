@@ -67,7 +67,7 @@
             success_callback: null
         });
         $('#image-preview').css({
-            'background-image': 'url({{ asset($newsletter?->global_content?->image) }})',
+            'background-image': "url('{{ route('get.section.asset',[$newsletter?->id,'image']) }}')",
             'background-size': 'contain',
             'background-position': 'center',
             'background-repeat': 'no-repeat'

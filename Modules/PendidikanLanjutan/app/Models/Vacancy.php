@@ -70,11 +70,13 @@ class Vacancy extends Model
             return 'Anda tidak memiliki akses ke lowongan ini';
         }
 
-        if ($this->open_at > now()) {
+        $vacancySchedule = VacancySchedule::where('year', now()->year)->first();
+
+        if ($vacancySchedule && $vacancySchedule->start_at > now()) {
             return 'Lowongan belum dibuka';
         }
 
-        if ($this->close_at < now()) {
+        if ($vacancySchedule && $vacancySchedule->end_at < now()) {
             return 'Lowongan sudah ditutup';
         }
 

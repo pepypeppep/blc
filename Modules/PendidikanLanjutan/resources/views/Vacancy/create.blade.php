@@ -49,17 +49,17 @@
                                             </div>
 
                                             <div class="form-group col-md-4">
-                                                <label for="employment_grade">{{ __('Employment Grade') }} <span
+                                                <label for="employee_grade_id">{{ __('Employment Grade') }} <span
                                                         class="text-danger">*</span></label>
-                                                <select name="employment_grade" class="form-control select2" id="employment_grade">
-                                                    @foreach(\App\Enums\EmploymentGrade::cases() as $grade)
-                                                        <option value="{{ $grade->value }}"
-                                                            {{ old('employment_grade', $selected ?? '') === $grade->value ? 'selected' : '' }}>
-                                                            {{ $grade->label() }}
+                                                <select name="employee_grade_id" class="form-control select2" id="employee_grade_id">
+                                                    @foreach($employeeGrades as $grade)
+                                                        <option value="{{ $grade->id }}"
+                                                            {{ old('employee_grade_id', $selected ?? '') === $grade->id ? 'selected' : '' }}>
+                                                            {{ $grade->name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                @error('employment_grade')
+                                                @error('employee_grade_id')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
@@ -84,12 +84,12 @@
                                                         class="text-danger">*</span></label>
                                                 <select name="education_level" class="form-control select2"
                                                     id="education_level">
-                                                    <option value="strata_1">{{ __('Strata I') }}</option>
-                                                    <option value="strata_2">{{ __('Strata II') }}</option>
-                                                    <option value="strata_3">{{ __('Strata III') }}</option>
-                                                    <option value="profesi_ppds">{{ __('Profesi, PPDS (Dokter Spesialis)') }}
+                                                    <option value="S-1">{{ __('Strata I') }}</option>
+                                                    <option value="S-2">{{ __('Strata II') }}</option>
+                                                    <option value="S-3">{{ __('Strata III') }}</option>
+                                                    <option value="Profesi PPDS">{{ __('Profesi, PPDS (Dokter Spesialis)') }}
                                                     </option>
-                                                    <option value="ppds_subspesialis">{{ __('PPDS (Dokter Subspesialis)') }}
+                                                    <option value="PPDS Subspesialis">{{ __('PPDS (Dokter Subspesialis)') }}
                                                     </option>
                                                 </select>
                                                 @error('education_level')

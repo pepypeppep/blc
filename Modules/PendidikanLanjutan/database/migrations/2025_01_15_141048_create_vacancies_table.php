@@ -16,7 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('instansi_id')->nullable();
             $table->unsignedBigInteger('study_id');
             $table->string('education_level');
-            $table->string('employment_grade');
+            // $table->string('employment_grade');
+            $table->unsignedBigInteger('employee_grade_id');
             $table->integer('formation');
             $table->text('description')->nullable();
             $table->year('year');

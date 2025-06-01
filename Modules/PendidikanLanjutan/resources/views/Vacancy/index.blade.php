@@ -132,9 +132,9 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $vacancy->instansi->name ?? '-' }}</td>
                                                     <td>
-                                                        {{ $vacancy->educationLevel() }} - {{ explode(' - ',$vacancy->study->name)[0] }}
+                                                        {{ $vacancy->educationLevel() }} - {{ $vacancy->study->name }}
                                                         <br>
-                                                        {{ explode(' - ',$vacancy->study->name)[1] }} ({{ $vacancy->year }})
+                                                        {{ $vacancy->study->university }} ({{ $vacancy->year }})
                                                     </td>
                                                     <td>
                                                         <ul>

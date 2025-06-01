@@ -19,6 +19,10 @@
                 </li>
             @endadminCan
 
+            @if (Module::isEnabled('Pengumuman') && checkAdminHasPermission('pengumuman.view'))
+                    @include('pengumuman::sidebar')
+                @endif
+
             @if (checkAdminHasPermission('course.view') ||
                     checkAdminHasPermission('course.certificate.management') ||
                     checkAdminHasPermission('badge.management') ||

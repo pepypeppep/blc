@@ -37,7 +37,7 @@ class StudentPendidikanLanjutanController extends Controller
         $vacancies = Vacancy::where('instansi_id', userAuth()->instansi_id)
             ->where('year', $schedule->year ?? -1)->paginate($perPage);
 
-        return view('frontend.student-dashboard.continuing-education.index', compact('vacancies'));
+        return view('frontend.student-dashboard.continuing-education.index', compact('vacancies', 'schedule'));
     }
 
     // list pendidikan yang sudah diambil

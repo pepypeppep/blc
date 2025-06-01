@@ -62,13 +62,14 @@ class DatabaseSeeder extends Seeder
             CustomPageSeeder::class,
             FooterSettingSeeder::class,
             CurrencySeeder::class,
+            EmployeeGradeSeeder::class,
 
             PendidikanLanjutanDatabaseSeeder::class,
             TagSeeder::class,
             EnrollmentSeeder::class,
             ArticleDatabaseSeeder::class,
             TosSeeder::class,
-            CertificateRecognitionDatabaseSeeder::class,
+            CertificateRecognitionDatabaseSeeder::class
         ]);
     }
 }

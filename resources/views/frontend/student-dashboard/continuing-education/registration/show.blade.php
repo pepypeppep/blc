@@ -82,54 +82,54 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="col-xl-1">
-
-                        </div>
-                        <div class="col-xl-3 p-3">
+                        <div class="col-xl-4">
                             <h5 class="mb-4">Timeline</h5>
                             <div class="bsb-timeline-1">
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-12">
-                                            <ul class="timeline">
-                                                @foreach ($logs as $log)
-                                                    <li class="timeline-item">
-                                                        <div class="timeline-body">
-                                                            <div class="timeline-content">
-                                                                <div class="card border-0">
-                                                                    <div class="card-body p-0">
-                                                                        <h6 class="card-subtitle text-secondary mb-1">
-                                                                            {{ formatDate($log->created_at) }}
-                                                                        </h6>
-                                                                        <h6 class="card-title mb-2">{{ $log->name }}
-                                                                            @if ($log->status === 'created')
-                                                                                <span
-                                                                                    class="badge bg-warning">{{ $log->status }}</span>
-                                                                            @elseif($log->status === 'verification')
-                                                                                <span
-                                                                                    class="badge bg-info">{{ $log->status }}</span>
-                                                                            @elseif($log->status === 'assessment')
-                                                                                <span
-                                                                                    class="badge bg-primary">{{ $log->status }}</span>
-                                                                            @elseif($log->status === 'eligible')
-                                                                                <span
-                                                                                    class="badge bg-success">{{ $log->status }}</span>
-                                                                            @elseif($log->status === 'rejected')
-                                                                                <span
-                                                                                    class="badge bg-danger">{{ $log->status }}</span>
-                                                                            @else
-                                                                                <span
-                                                                                    class="badge bg-secondary">{{ $log->status }}</span>
-                                                                            @endif
-                                                                        </h6>
-                                                                        <p>{!! $log->description !!}</p>
+                                            <div style="height: 100vh; overflow-y: scroll;" class="p-2">
+                                                <ul class="timeline">
+                                                    @foreach ($logs as $log)
+                                                        <li class="timeline-item">
+                                                            <div class="timeline-body">
+                                                                <div class="timeline-content">
+                                                                    <div class="card border-0">
+                                                                        <div class="card-body p-0">
+                                                                            <h6 class="card-subtitle text-secondary mb-1">
+                                                                                {{ formatDate($log->created_at) }}
+                                                                            </h6>
+                                                                            <h6 class="card-title mb-2">{{ $log->name }}
+                                                                                <br>
+                                                                                @if ($log->status === 'created')
+                                                                                    <span
+                                                                                        class="badge bg-warning">{{ $log->status }}</span>
+                                                                                @elseif($log->status === 'verification')
+                                                                                    <span
+                                                                                        class="badge bg-info">{{ $log->status }}</span>
+                                                                                @elseif($log->status === 'assessment')
+                                                                                    <span
+                                                                                        class="badge bg-primary">{{ $log->status }}</span>
+                                                                                @elseif($log->status === 'eligible')
+                                                                                    <span
+                                                                                        class="badge bg-success">{{ $log->status }}</span>
+                                                                                @elseif($log->status === 'rejected')
+                                                                                    <span
+                                                                                        class="badge bg-danger">{{ $log->status }}</span>
+                                                                                @else
+                                                                                    <span
+                                                                                        class="badge bg-secondary">{{ $log->status }}</span>
+                                                                                @endif
+                                                                            </h6>
+                                                                            <p>{!! $log->description !!}</p>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

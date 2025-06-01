@@ -29,7 +29,7 @@ class VacancySeeder extends Seeder
             [
                 'study_id' => 1,
                 'instansi_id' => 19,
-                'education_level' => 'strata_1',
+                'education_level' => 'S-1',
                 'employment_grade' => 'juru_ia',
                 'formation' => 3,
                 'year' => 2025,
@@ -39,7 +39,7 @@ class VacancySeeder extends Seeder
             [
                 'study_id' => 2,
                 'instansi_id' => 19,
-                'education_level' => 'strata_2',
+                'education_level' => 'S-2',
                 'employment_grade' => 'juru_ia',
                 'formation' => 2,
                 'year' => 2025,
@@ -48,7 +48,7 @@ class VacancySeeder extends Seeder
             ],
             [
                 'study_id' => 3,
-                'education_level' => 'strata_3',
+                'education_level' => 'S-3',
                 'employment_grade' => 'juru_ic',
                 'formation' => 1,
                 'year' => 2025,

@@ -451,7 +451,7 @@ trait PermissionsTrait
                 ],
             ],
             [
-                'group_name' => 'sertifikat pengakuan',
+                'group_name' => 'pengakuan sertifikat',
                 'permissions' => [
                     'sertifikat.pengakuan.view',
                     'sertifikat.pengakuan.store',

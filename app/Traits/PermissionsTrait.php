@@ -366,16 +366,16 @@ trait PermissionsTrait
         ],
     ];
 
-    public static array $certificateRecognitionPermissions = [
-        'group_name' => 'certificate recognition',
+    public static array $sertifikatPengakuanPermissions = [
+        'group_name' => 'pengakuan sertifikat',
         'permissions' => [
-            'certificate.recognition.view',
-            'certificate.recognition.store',
-            'certificate.recognition.create',
-            'certificate.recognition.edit',
-            'certificate.recognition.update',
-            'certificate.recognition.destroy',
-            'certificate.recognition.verify',
+            'sertifikat.pengakuan.view',
+            'sertifikat.pengakuan.store',
+            'sertifikat.pengakuan.create',
+            'sertifikat.pengakuan.edit',
+            'sertifikat.pengakuan.update',
+            'sertifikat.pengakuan.destroy',
+            'sertifikat.pengakuan.verify',
         ],
     ];
 
@@ -411,7 +411,7 @@ trait PermissionsTrait
             self::$badgePermission,
             self::$PendidikanLanjutanPermissions,
             self::$PendidikanLanjutanManagementPermissions,
-            self::$certificateRecognitionPermissions,
+            self::$sertifikatPengakuanPermissions,
         ];
 
         $permissions = [];
@@ -449,7 +449,18 @@ trait PermissionsTrait
                     'course.delete',
                     'course.view',
                 ],
-            ]
+            ],
+            [
+                'group_name' => 'sertifikat pengakuan',
+                'permissions' => [
+                    'sertifikat.pengakuan.view',
+                    'sertifikat.pengakuan.store',
+                    'sertifikat.pengakuan.create',
+                    'sertifikat.pengakuan.edit',
+                    'sertifikat.pengakuan.update',
+                    'sertifikat.pengakuan.destroy',
+                ],
+            ],
         ];
 
         $permissions = [];

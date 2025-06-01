@@ -127,6 +127,18 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <h4>{{ __('Tautan Google Drive') }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="">{{ __('Link') }}</label>
+                                    <input type="text" name="documentation_link" class="form-control"
+                                        value="{{ $certificate->documentation_link }}" disabled>
+                                </div>
+                            </div>
+                        </div>
                         @if ($certificate->status != CertificateRecognition::STATUS_PUBLISHED)
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between">
@@ -158,7 +170,7 @@
                             </div>
                         @endif
                     </div>
-                    <div class="col-lg-12">
+                    <div class="col-lg-6">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('Daftar Peserta') }}</h4>
@@ -171,16 +183,28 @@
                                                 <th style="width:1%">No</th>
                                                 <th style="width:35%">{{ __('Name') }}</th>
                                                 <th style="width:35%">{{ __('Jabatan') }}</th>
-                                                <th style="width:15%">{{ __('Status (ASN/Non/Lainnya)') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse ($users as $user)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $user->name }}</td>
+                                                    <td class="row">
+                                                        <div class="col-12">
+                                                            <strong>{{ $user->name }}</strong>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <span>Status ASN :</span>
+                                                            @if ($user->asn_status == "PNS")
+                                                                <span class="badge badge-primary">PNS</span>
+                                                            @elseif ($user->asn_status == "PPPK")
+                                                                <span class="badge badge-success">PPPK</span>
+                                                            @else
+                                                                <span class="badge badge-warning">Lainnya</span>
+                                                            @endif
+                                                        </div>
+                                                    </td>
                                                     <td>{{ $user->jabatan }}</td>
-                                                    <td>{{ $user->asn_status }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
@@ -192,6 +216,42 @@
                                 </div>
                                 <div class="d-flex justify-content-end">
                                     {{ $users->links() }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <h4>{{ __('Daftar Materi Pelatihan') }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class=" max-h-400">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:1%">No</th>
+                                                <th style="width:35%">{{ __('Name') }}</th>
+                                                <th style="width:35%">{{ __('JP') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($pelatihans as $pelatihan)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $pelatihan->name }}</td>
+                                                    <td>{{ $pelatihan->jp }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4" class="text-center">{{ __('No data found') }}</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    {{ $pelatihans->links() }}
                                 </div>
                             </div>
                         </div>

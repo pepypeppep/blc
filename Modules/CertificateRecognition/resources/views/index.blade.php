@@ -67,8 +67,8 @@
                                 <h4>{{ __('Certificate Recognition List') }}</h4>
                                 <div>
                                     <div>
-                                        <a href="{{ route('admin.certificate-recognition.create') }}" class="btn btn-primary"> <i
-                                                class="fa fa-plus"></i>{{ __('Add New') }}</a>
+                                        <a href="{{ route('admin.certificate-recognition.create') }}"
+                                            class="btn btn-primary"> <i class="fa fa-plus"></i>{{ __('Add New') }}</a>
                                     </div>
                                 </div>
                             </div>
@@ -110,20 +110,20 @@
                                                             class="badge badge-{{ $certificate->certificate_stat['color'] }}">
                                                             {{ __($certificate->certificate_stat['label']) }}</div>
                                                     </td>
-                                                    <td class="text-center">
+                                                    <td class="flex text-end justify-end items-end">
                                                         @if ($certificate->status != CertificateRecognition::STATUS_PUBLISHED)
-                                                            @adminCan('certificate.recognition.verify')
+                                                            @adminCan('sertifikat.pengakuan.verify')
                                                                 <a href="{{ route('admin.certificate-recognition.verify', $certificate->id) }}"
                                                                     class="btn btn-primary btn-sm"><i class="fa fa-check"></i>
                                                                 </a>
                                                             @endadminCan
                                                         @endif
-                                                        @adminCan('certificate.recognition.view')
+                                                        @adminCan('sertifikat.pengakuan.view')
                                                             <a href="{{ route('admin.certificate-recognition.show', $certificate->id) }}"
                                                                 class="btn btn-info btn-sm"><i class="fa fa-eye"></i>
                                                             </a>
                                                         @endadminCan
-                                                        @adminCan('certificate.recognition.destroy')
+                                                        @adminCan('sertifikat.pengakuan.destroy')
                                                             <form
                                                                 action="{{ route('admin.certificate-recognition.destroy', $certificate->id) }}"
                                                                 method="POST" id="delete-form-{{ $certificate->id }}"

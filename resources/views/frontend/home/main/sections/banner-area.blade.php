@@ -19,9 +19,9 @@
             </div>
             <div class="col-lg-6">
                 <div class="banner__images">
-                    <img src="{{ asset($hero?->global_content?->banner_image) }}" alt="img" class="main-img">
+                    <img src="{{ route('get.section.asset',[$hero?->id,'banner_image']) }}" alt="img" class="main-img">
                     <div class="shape big-shape" data-aos="fade-up-right" data-aos-delay="600">
-                        <img src="{{  asset($hero?->global_content?->banner_background) }}" alt="shape" class="tg-motion-effects1">
+                        <img src="{{ route('get.section.asset',[$hero?->id,'banner_background']) }}" alt="shape" class="tg-motion-effects1">
                     </div>
                     <img src="{{ asset('frontend/img/banner/bg_dots.svg') }}" alt="shape"
                         class="shape bg-dots rotateme">
@@ -32,7 +32,7 @@
                         data-aos-delay="200">
                         <p class="title"><span>{{ $hero?->content?->total_student }}</span>
                             {{ __('Enrolled Students') }}</p>
-                        <img src="{{ asset($hero?->global_content?->enroll_students_image) }}" alt="img">
+                        <img src="{{ route('get.section.asset',[$hero?->id,'enroll_students_image']) }}" alt="img">
                     </div>
                     <div class="banner__student instructor aos-init aos-animate" data-aos="fade-left"
                         data-aos-delay="200">

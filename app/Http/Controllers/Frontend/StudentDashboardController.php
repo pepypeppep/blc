@@ -40,7 +40,7 @@ class StudentDashboardController extends Controller
 {
     public function index(): View
     {
-        $totalEnrolledCourses = Enrollment::where('user_id', userAuth()->id)->count();
+        $totalEnrolledCourses = Enrollment::where('user_id', userAuth()->id)->where('has_access', 1)->count();
         $totalQuizAttempts = QuizResult::where('user_id', userAuth()->id)->count();
         $totalReviews = CourseReview::where('user_id', userAuth()->id)->count();
         $orders = Order::where('buyer_id', userAuth()->id)->orderBy('id', 'desc')->take(10)->get();

@@ -379,6 +379,18 @@ trait PermissionsTrait
         ],
     ];
 
+    public static array $pengumumanPermissions = [
+        'group_name' => 'pengumuman',
+        'permissions' => [
+            'pengumuman.view',
+            'pengumuman.create',
+            'pengumuman.store',
+            'pengumuman.edit',
+            'pengumuman.update',
+            'pengumuman.delete',
+        ],
+    ];
+
     private static function getSuperAdminPermissions(): array
     {
         $reflection = new ReflectionClass(__TRAIT__);

@@ -5,6 +5,7 @@ namespace Modules\PendidikanLanjutan\app\Http\Controllers;
 use App\Models\User;
 use App\Models\Instansi;
 use Illuminate\Http\Request;
+use App\Models\EmployeeGrade;
 use App\Imports\VacanciesImport;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -17,8 +18,8 @@ use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyUser;
 use Modules\PendidikanLanjutan\app\Models\VacancyDetail;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
-use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserDirect;
+use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
 
 class VacancyController extends Controller
 {
@@ -93,7 +94,7 @@ class VacancyController extends Controller
             'study_id' => 'required|integer|exists:studies,id',
             'instansi_id' => 'required|integer|exists:instansis,id',
             'education_level' => 'required|string',
-            'employment_grade' => 'required|string',
+            'employee_grade_id' => 'required|integer|exists:employee_grades,id',
             'formation' => 'required|integer',
             'description' => 'nullable|string',
             'year' => 'required|digits:4|integer|between:1900,' . date('Y')
@@ -103,7 +104,7 @@ class VacancyController extends Controller
             'instansi_id.required' => 'Instansi wajib diisi.',
             'instansi_id.exists' => 'Instansi yang dipilih tidak valid.',
             'education_level.required' => 'Jenjang pendidikan wajib diisi.',
-            'employment_grade.required' => 'Pangkat/Golongan pekerjaan wajib diisi.',
+            'employee_grade_id.required' => 'Pangkat/Golongan pekerjaan wajib diisi.',
             'formation.required' => 'Formasi wajib diisi.',
             'year.required' => 'Tahun wajib diisi.',
             'year.digits' => 'Tahun harus terdiri dari 4 digit.',
@@ -118,7 +119,7 @@ class VacancyController extends Controller
                 'study_id',
                 'instansi_id',
                 'education_level',
-                'employment_grade',
+                'employee_grade_id',
                 'formation',
                 'description',
                 'year',
@@ -150,8 +151,9 @@ class VacancyController extends Controller
         $directMembers = VacancyUserDirect::where('vacancy_id', $id)->get();
         $users = User::whereNotIn('id', $directMembers->pluck('user_id'))->where('role', 'student')->get();
         $members = VacancyUser::where('vacancy_id', $id)->get();
+        $employeeGrades = EmployeeGrade::all();
 
-        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy', 'instansi', 'studies', 'attachments', 'directMembers', 'users', 'members'));
+        return view('pendidikanlanjutan::Vacancy.edit', compact('vacancy', 'instansi', 'studies', 'attachments', 'directMembers', 'users', 'members', 'employeeGrades'));
     }
 
     /**
@@ -164,7 +166,7 @@ class VacancyController extends Controller
             'study_id' => 'required|integer|exists:studies,id',
             'instansi_id' => 'required|integer|exists:instansis,id',
             'education_level' => 'required|string',
-            'employment_grade' => 'required|string',
+            'employee_grade_id' => 'required|integer|exists:employee_grades,id',
             'formation' => 'required|integer',
             'description' => 'nullable|string',
             'year' => 'required|digits:4|integer|between:1900,' . date('Y'),
@@ -177,7 +179,7 @@ class VacancyController extends Controller
             'instansi_id.required' => 'Instansi wajib diisi.',
             'instansi_id.exists' => 'Instansi yang dipilih tidak valid.',
             'education_level.required' => 'Jenjang pendidikan wajib diisi.',
-            'employment_grade.required' => 'Pangkat/Golongan pekerjaan wajib diisi.',
+            'employee_grade_id.required' => 'Pangkat/Golongan pekerjaan wajib diisi.',
             'formation.required' => 'Formasi wajib diisi.',
             'year.required' => 'Tahun wajib diisi.',
             'year.digits' => 'Tahun harus terdiri dari 4 digit.',
@@ -193,7 +195,7 @@ class VacancyController extends Controller
                 'study_id',
                 'instansi_id',
                 'education_level',
-                'employment_grade',
+                'employee_grade_id',
                 'formation',
                 'description',
                 'year',

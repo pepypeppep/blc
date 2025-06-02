@@ -5,7 +5,7 @@
               <div class="col-xl-6">
                   <div class="instructor__item-two tg-svg">
                       <div class="instructor__thumb-two">
-                          <img src="{{ asset($bannerSection?->global_content?->instructor_image) }}" alt="img">
+                          <img src="{{ route('get.section.asset',[$bannerSection?->id,'instructor_image']) }}" alt="img">
                           <div class="shape-one">
                               <img src="{{ asset('frontend/img/instructor/instructor_shape01.svg') }}" alt="img"
                                   class="injectable">
@@ -29,7 +29,7 @@
               <div class="col-xl-6">
                   <div class="instructor__item-two tg-svg">
                       <div class="instructor__thumb-two">
-                          <img src="{{ asset($bannerSection?->global_content?->student_image) }}" alt="img">
+                          <img src="{{ route('get.section.asset',[$bannerSection?->id,'student_image']) }}" alt="img">
                           <div class="shape-one">
                               <img src="{{ asset('frontend/img/instructor/instructor_shape01.svg') }}" alt="img"
                                   class="injectable">

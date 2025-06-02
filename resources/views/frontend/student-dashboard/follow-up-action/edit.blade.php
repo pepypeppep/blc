@@ -9,13 +9,13 @@
             <div class="col-12">
                 <div class="dashboard__review-table">
                     @if ($items->count() > 0)
-                        <form id="contentForm" enctype="multipart/form-data"
+                        <form id="contentForm" enctype="multipart/form-data" class="instructor__profile-form course-form"
                             action="{{ route('student.follow-up-action.update', $followUpAction->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="form-group">
-                                <label for="kursus">Kursus</label>
-                                <select name="course_id" class="form-control" id="kursus">
+                                <label for="course">{{ __('Course') }} <code>*</code></label>
+                                <select name="course_id" class="form-control select2" id="kursus">
                                     <option value="">Pilih Kursus</option>
                                     @foreach ($items as $item)
                                         <option value="{{ $item->course->id }}"
@@ -29,7 +29,7 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group mt-3">
 
                                 <div class="mt-2">
                                     <label for="fileSurat" class="form-label">Unggah File Rencana Tindak Lanjut</label>
@@ -39,7 +39,7 @@
                                         <h5 class="mb-3">Pilih berkas atau drag & drop di sini</h5>
                                         <p class="text-muted">Hanya format PDF, maksimal 30MB</p>
                                         <input name="file_path" type="file" id="fileInput" accept=".pdf">
-                                        <label for="fileInput">Telusuri Berkas</label>
+                                        <label  class="btn btn-primary text-white" for="fileInput">Telusuri Berkas</label>
                                     </div>
                                     <div id="fileInfoExisting">
                                         <div class="file-existing">
@@ -86,18 +86,16 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group mt-3">
-                                <label for="catatan">Resume Rencana Tindak Lanjut</label>
-                                @csrf
-                                <input type="hidden" name="summary" id="summary">
-                                <div id="editor"></div>
+                            <div class="form-group mt-4">
+                                <label for="catatan">Resume Rencana Tindak Lanjut<code>*</code></label>
+                                <textarea  name="summary" id="summary" class="text-editor form-control summernote"></textarea>
                                 <br>
 
                                 @error('summary')
                                     <small class="text-danger d-block">{{ $message }}</small>
                                 @enderror
                             </div>
-                            <button type="submit" class="bg-primary text-white">Simpan</button>
+                            <button class="btn btn-primary mb-3" type="submit">{{ __('Save') }}</button>
                         </form>
                     @else
                         <div class="text-center d-flex flex-column align-items-center flex-md-row">
@@ -140,8 +138,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body p-0">
-                        <iframe src="{{ route('student.follow-up-action.files', $followUpAction->file_path) }}"
-                            style="width: 100%; height: 100vh;" frameborder="0"></iframe>
+                        {{-- <iframe src="{{ route('student.follow-up-action.files', $followUpAction->file_path) }}"
+                            style="width: 100%; height: 100vh;" frameborder="0"></iframe> --}}
                     </div>
                 </div>
             </div>
@@ -303,6 +301,11 @@
 
         .select2-selection.select2-selection--single {
             height: 30px !important;
+        }
+        .upload-card label.btn {
+            width: auto;
+            display: inline-block;
+            padding: 0.5rem 1rem;
         }
     </style>
 @endpush

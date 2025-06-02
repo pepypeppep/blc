@@ -32,5 +32,6 @@
     "Installer": true,
     "PendidikanLanjutan": true,
     "Article": true,
-    "CertificateRecognition": true
+    "CertificateRecognition": true,
+    "Pengumuman": true
 }

@@ -63,17 +63,17 @@ class StudentFollowUpActionController extends Controller
 
     public function create()
     {
-        abort(404);
-        // //data course
-        // $items = CourseProgress::with('course')
-        //     ->where(
-        //         'user_id',
-        //         userAuth()->id,
-        //     )
-        //     ->where('watched', 1)
-        //     ->get();
+        // abort(404);
+        //data course
+        $items = CourseProgress::with('course')
+            ->where(
+                'user_id',
+                userAuth()->id,
+            )
+            ->where('watched', 1)
+            ->get();
 
-        // return view('frontend.student-dashboard.follow-up-action.create', compact('items'));
+        return view('frontend.student-dashboard.follow-up-action.create', compact('items'));
     }
 
     public function store(Request $request)
@@ -127,18 +127,18 @@ class StudentFollowUpActionController extends Controller
     }
     public function edit($id)
     {
-        abort(404);
-        // $followUpAction = FollowUpAction::findOrFail($id);
+        // abort(404);
+        $followUpAction = FollowUpAction::findOrFail($id);
 
-        // $items = CourseProgress::with('course')
-        //     ->where(
-        //         'user_id',
-        //         userAuth()->id,
-        //     )
-        //     ->where('watched', 1)
-        //     ->get();
+        $items = CourseProgress::with('course')
+            ->where(
+                'user_id',
+                userAuth()->id,
+            )
+            ->where('watched', 1)
+            ->get();
 
-        // return view('frontend.student-dashboard.follow-up-action.edit', compact('followUpAction', 'items'));
+        return view('frontend.student-dashboard.follow-up-action.edit', compact('followUpAction', 'items'));
     }
 
     public function update(Request $request, $id)

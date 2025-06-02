@@ -44,5 +44,20 @@
             </div>
 
         </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="dashboard__content-title">
+                    <h4 class="title">{{ __('Pengumuman') }}</h4>
+                </div>
+                @forelse ($pengumumans as $pengumuman)
+                    <div class="alert alert-primary" role="alert">
+                        <h6 class="alert-heading">{{ $pengumuman->title }}</h6>
+                        {!! clean($pengumuman->content) !!}
+                    </div>
+                @empty
+                    <p class="text-muted text-center">{{ __('Tidak ada pengumuman.') }}</p>
+                @endforelse
+            </div>
+        </div>
     </div>
 @endsection

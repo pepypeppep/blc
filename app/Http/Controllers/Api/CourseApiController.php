@@ -1424,7 +1424,7 @@ class CourseApiController extends Controller
 
             $course = Course::where('slug', $slug)->firstOrFail();
 
-            $reviews = CourseReview::whereHas('course', function ($q) use ($slug) {
+            $reviews = CourseReview::with('user', 'course')->whereHas('course', function ($q) use ($slug) {
                 $q->where('slug', $slug);
             })->where(function ($query) use ($request) {
                 $query->where('status', 1)
@@ -1443,7 +1443,7 @@ class CourseApiController extends Controller
                     'success' => false,
                     'message' => 'Tidak ada ulasan ditemukan',
                     'data' => [],
-                ], 404);
+                ], 200);
             }
 
             return response()->json([

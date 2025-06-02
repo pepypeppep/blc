@@ -646,7 +646,7 @@ class StudentLearningApiController extends Controller
 
             $data = [
                 'quiz' => $quiz,
-                'attempt' => $attempt,
+                'user_attempt' => $attempt,
                 'due_date' => $quiz->due_date,
             ];
 

@@ -117,12 +117,13 @@
                                                                     class="btn btn-primary btn-sm"><i class="fa fa-check"></i>
                                                                 </a>
                                                             @endadminCan
+                                                        @else
+                                                            @adminCan('sertifikat.pengakuan.view')
+                                                                <a href="{{ route('admin.certificate-recognition.show', $certificate->id) }}"
+                                                                    class="btn btn-info btn-sm"><i class="fa fa-eye"></i>
+                                                                </a>
+                                                            @endadminCan
                                                         @endif
-                                                        @adminCan('sertifikat.pengakuan.view')
-                                                            <a href="{{ route('admin.certificate-recognition.show', $certificate->id) }}"
-                                                                class="btn btn-info btn-sm"><i class="fa fa-eye"></i>
-                                                            </a>
-                                                        @endadminCan
                                                         @adminCan('sertifikat.pengakuan.destroy')
                                                             <form
                                                                 action="{{ route('admin.certificate-recognition.destroy', $certificate->id) }}"

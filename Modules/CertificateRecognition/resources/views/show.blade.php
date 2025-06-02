@@ -44,30 +44,28 @@
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Goal') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->goal }}</p>
+                                            <div class="render-content">{!! $certificate->goal !!}</div>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Competency') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->competency }}</p>
+                                            <div class="render-content">{!! $certificate->competency !!}</div>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Indicator of Success') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">
-                                                {{ $certificate->indicator_of_success }}</p>
+                                            <div class="render-content">{!! $certificate->indicator_of_success !!}</div>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Activity Plan') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->activity_plan }}
-                                            </p>
+                                            <div class="render-content">{!! $certificate->activity_plan !!}</div>
                                         </div>
                                     </div>
                                     <div class="col-lg-5 mb-4">
@@ -111,7 +109,7 @@
                                         alt="" style="width: 50%; height: auto;"
                                         onerror="this.onerror=null; this.src='{{ asset('assets/img/no-image.png') }}'">
                                 </div>
-                                @if ($certificate->certificate->background2)
+                                @if ($certificate->certificate?->background2)
                                     <div class="form-group">
                                         <label for="">{{ __('Back Image') }} <code>( 1123px * 794px )
                                                 *</code></label>
@@ -129,13 +127,11 @@
                         </div>
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Tautan Google Drive') }}</h4>
+                                <h4>{{ __('Tautan Dokumentasi') }}</h4>
                             </div>
                             <div class="card-body">
-                                <div class="form-group">
-                                    <label for="">{{ __('Link') }}</label>
-                                    <input type="text" name="documentation_link" class="form-control"
-                                        value="{{ $certificate->documentation_link }}" disabled>
+                                <div class="form-group d-flex justify-content-center">
+                                    <a href="{{ $certificate->documentation_link }}" target="_blank" class="btn btn-primary">Lihat Dokumentasi</a>
                                 </div>
                             </div>
                         </div>
@@ -358,4 +354,11 @@
             });
         }
     </script>
+@endpush
+@push('css')
+    <style>
+        .render-content {
+            font-size: 1.1rem !important;
+        }
+    </style>
 @endpush

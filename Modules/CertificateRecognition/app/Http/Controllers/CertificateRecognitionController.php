@@ -219,7 +219,7 @@ class CertificateRecognitionController extends Controller
             $certificate->update([
                 'is_approved' => CertificateRecognition::IS_APPROVED_APPROVED,
                 'status' => CertificateRecognition::STATUS_PUBLISHED,
-                'certificate_status' => CertificateRecognition::CERTIFICATE_STATUS_FINISH,
+                'certificate_status' => CertificateRecognition::CERTIFICATE_STATUS_PROCESS,
             ]);
         }
 

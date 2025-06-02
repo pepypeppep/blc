@@ -152,4 +152,9 @@ class CertificateRecognition extends Model
     {
         return $this->belongsTo(CertificateBuilder::class);
     }
+
+    public function materials()
+    {
+        return $this->hasMany(CertificateRecognitionMaterials::class);
+    }
 }

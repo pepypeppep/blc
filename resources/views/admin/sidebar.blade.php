@@ -38,7 +38,7 @@
                     @include('certificatebuilder::sidebar')
                 @endif
 
-                @if (Module::isEnabled('CertificateRecognition') && checkAdminHasPermission('certificate.recognition.view'))
+                @if (Module::isEnabled('CertificateRecognition') && checkAdminHasPermission('sertifikat.pengakuan.view'))
                     @include('certificaterecognition::sidebar')
                 @endif
 

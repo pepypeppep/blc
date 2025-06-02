@@ -44,30 +44,28 @@
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Goal') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->goal }}</p>
+                                            <div class="render-content">{!! $certificate->goal !!}</div>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Competency') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->competency }}</p>
+                                            <div class="render-content">{!! $certificate->competency !!}</div>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Indicator of Success') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">
-                                                {{ $certificate->indicator_of_success }}</p>
+                                            <div class="render-content">{!! $certificate->indicator_of_success !!}</div>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Activity Plan') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->activity_plan }}
-                                            </p>
+                                            <div class="render-content">{!! $certificate->activity_plan !!}</div>
                                         </div>
                                     </div>
                                     <div class="col-lg-5 mb-4">
@@ -111,7 +109,7 @@
                                         alt="" style="width: 50%; height: auto;"
                                         onerror="this.onerror=null; this.src='{{ asset('assets/img/no-image.png') }}'">
                                 </div>
-                                @if ($certificate->certificate->background2)
+                                @if ($certificate->certificate?->background2)
                                     <div class="form-group">
                                         <label for="">{{ __('Back Image') }} <code>( 1123px * 794px )
                                                 *</code></label>
@@ -125,6 +123,16 @@
                                         @enderror
                                     </div>
                                 @endif
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <h4>{{ __('Tautan Dokumentasi') }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group d-flex justify-content-center">
+                                    <a href="{{ $certificate->documentation_link }}" target="_blank" class="btn btn-primary">Lihat Dokumentasi</a>
+                                </div>
                             </div>
                         </div>
                         @if ($certificate->status != CertificateRecognition::STATUS_PUBLISHED)
@@ -157,8 +165,31 @@
                                 </div>
                             </div>
                         @endif
+                        @if ($certificate->status == CertificateRecognition::STATUS_PUBLISHED)
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h4>{{ __('Certificate Status') }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12 d-flex align-items-center">
+                                            <h6 class="text-center mb-0">{{ __('Published') }}</h6>
+                                            &nbsp;
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                                fill="#6ac88e" stroke="#ffffff" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-badge-check-icon lucide-badge-check">
+                                                <path
+                                                    d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+                                                <path d="m9 12 2 2 4-4" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
-                    <div class="col-lg-12">
+                    <div class="col-lg-6">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('Daftar Peserta') }}</h4>
@@ -171,16 +202,28 @@
                                                 <th style="width:1%">No</th>
                                                 <th style="width:35%">{{ __('Name') }}</th>
                                                 <th style="width:35%">{{ __('Jabatan') }}</th>
-                                                <th style="width:15%">{{ __('Status (ASN/Non/Lainnya)') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse ($users as $user)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $user->name }}</td>
+                                                    <td class="row">
+                                                        <div class="col-12">
+                                                            <strong>{{ $user->name }}</strong>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <span>Status ASN :</span>
+                                                            @if ($user->asn_status == 'PNS')
+                                                                <span class="badge badge-primary">PNS</span>
+                                                            @elseif ($user->asn_status == 'PPPK')
+                                                                <span class="badge badge-success">PPPK</span>
+                                                            @else
+                                                                <span class="badge badge-warning">Lainnya</span>
+                                                            @endif
+                                                        </div>
+                                                    </td>
                                                     <td>{{ $user->jabatan }}</td>
-                                                    <td>{{ $user->asn_status }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
@@ -192,6 +235,42 @@
                                 </div>
                                 <div class="d-flex justify-content-end">
                                     {{ $users->links() }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <h4>{{ __('Daftar Materi Pelatihan') }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class=" max-h-400">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:1%">No</th>
+                                                <th style="width:35%">{{ __('Name') }}</th>
+                                                <th style="width:35%">{{ __('JP') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($pelatihans as $pelatihan)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $pelatihan->name }}</td>
+                                                    <td>{{ $pelatihan->jp }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4" class="text-center">{{ __('No data found') }}</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    {{ $pelatihans->links() }}
                                 </div>
                             </div>
                         </div>
@@ -275,4 +354,11 @@
             });
         }
     </script>
+@endpush
+@push('css')
+    <style>
+        .render-content {
+            font-size: 1.1rem !important;
+        }
+    </style>
 @endpush

@@ -176,10 +176,11 @@ class CertificateRecognitionController extends Controller
      */
     public function show($id)
     {
-        checkAdminHasPermissionAndThrowException('certificate.recognition.view');
+        checkAdminHasPermissionAndThrowException('sertifikat.pengakuan.view');
         $certificate = CertificateRecognition::with('instansi', 'certificate', 'users')->find($id);
         $users = $certificate->users()->paginate(10);
-        return view('certificaterecognition::verify', compact('certificate', 'users'));
+        $pelatihans = $certificate->materials()->paginate(10);
+        return view('certificaterecognition::show', compact('certificate', 'users', 'pelatihans'));
     }
 
     /**
@@ -203,30 +204,22 @@ class CertificateRecognitionController extends Controller
      */
     public function destroy($id)
     {
-        checkAdminHasPermissionAndThrowException('certificate.recognition.destroy');
+        checkAdminHasPermissionAndThrowException('sertifikat.pengakuan.destroy');
         $certificate = CertificateRecognition::find($id);
         $certificate->delete();
         return redirect()->route('admin.certificate-recognition.index')->with('success', 'Successfully deleted certificate recognition');
     }
 
-    public function verify($id)
-    {
-        checkAdminHasPermissionAndThrowException('certificate.recognition.verify');
-        $certificate = CertificateRecognition::with('instansi', 'certificate', 'users')->find($id);
-        $users = $certificate->users()->paginate(10);
-        return view('certificaterecognition::verify', compact('certificate', 'users'));
-    }
-
     public function verifyUpdate(Request $request, $id)
     {
-        checkAdminHasPermissionAndThrowException('certificate.recognition.verify');
+        checkAdminHasPermissionAndThrowException('sertifikat.pengakuan.verify');
         $certificate = CertificateRecognition::find($id);
 
         if ($request->status === CertificateRecognition::IS_APPROVED_APPROVED) {
             $certificate->update([
                 'is_approved' => CertificateRecognition::IS_APPROVED_APPROVED,
                 'status' => CertificateRecognition::STATUS_PUBLISHED,
-                'certificate_status' => CertificateRecognition::CERTIFICATE_STATUS_FINISH,
+                'certificate_status' => CertificateRecognition::CERTIFICATE_STATUS_PROCESS,
             ]);
         }
 

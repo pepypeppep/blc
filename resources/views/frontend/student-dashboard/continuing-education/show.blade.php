@@ -3,12 +3,25 @@
 @section('dashboard-contents')
     @php
         $isExist = count($vacancy->users) > 0;
+        $detailId = $vacancyUser->vacancy_detail_id ?? 0;
     @endphp
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title">
             <h4 class="title">{{ __('Detail Program Pendidikan Lanjutan') }}</h4>
         </div>
         <div class="row">
+            <div class="col-12 mb-2">
+                <label for="vacancy" class="form-label">Pilih Skema Pendidikan Lanjutan<span class="text-danger">
+                        *</span></label>
+                <select class="form-select" aria-label="Pilih Skema Pendidikan Lanjutan" id="skemaId"
+                    onchange="skemaOnChange(this)" {{ $detailId ? 'disabled' : '' }}>
+                    @foreach ($vacancyDetail as $item)
+                        <option value="{{ $item->id }}" {{ $detailId == $item->id ? 'selected' : '' }}>
+                            {{ $item->employment_status }} | {{ $item->cost_type }} | Batas
+                            Usia Pensiun {{ $item->age_limit }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div class="col-12">
                 <div class="dashboard__review-table table-responsive">
                     <table class="table">
@@ -40,50 +53,19 @@
                                     @endif
                                 </td>
                             </tr>
-                            <tr>
-                                <td>{{ __('Batas Usia Pensiun') }}</td>
-                                <td>
-                                    @php
-                                        $retirementAge = $vacancy->age_limit;
-                                    @endphp
-                                    {{ $retirementAge ? $retirementAge : '-' }}
-                                </td>
-                                <td class="text-center">
-                                    @if ($passAgeLimit)
-                                        <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
-                                    @else
-                                        <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
-                                            style="width: 24px; height: 24px; font-size: 16px;"></i>
-                                    @endif
-                                </td>
+                            <tr id="batasUsiaPensiunId">
                             </tr>
-                            <tr>
-                                <td>{{ __('Status Kepegawaian') }}</td>
-                                <td>
-                                    @php
-                                        $employmentStatus = $vacancy;
-                                    @endphp
-                                    {{ $employmentStatus ? $employmentStatus : '-' }}
-                                </td>
-                                <td></td>
-                                {{-- <td class="text-center">
-                                    @if ($passEmploymeeStatus)
-                                        <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
-                                    @else
-                                        <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
-                                            style="width: 24px; height: 24px; font-size: 16px;"></i>
-                                    @endif
-                                </td> --}}
+                            <tr id="statusKepegawaanId">
                             </tr>
-                            <tr>
+                            <tr id="pembiayaanId">
                                 <td>{{ __('Pembiayaan') }}</td>
-                                <td>
+                                {{-- <td>
                                     @php
                                         $fundingSource = $vacancyUser->cost_type;
                                     @endphp
                                     {{ $fundingSource ? $fundingSource : '-' }}
                                 </td>
-                                <td></td>
+                                <td></td> --}}
                                 {{-- <td class="text-center">
                                     <i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
                                         style="width: 24px; height: 24px; font-size: 16px;"></i>
@@ -127,22 +109,7 @@
             <div class="col-12 mt-4">
                 <div class="p-3">
                     @if (!$isExist)
-                        @if ($passAgeLimit && $passJenjangPendidikanTerakhir)
-                            <div style="background: #d3ffde;"
-                                class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4 border border-success">
-                                {{-- @if ($vacancy->status) --}}
-                                <p class="mb-0 fs-5 text-dark fw-bold text-center">
-                                    Anda memenuhi semua syarat Pendidikan Lanjutan
-                                </p>
-                            </div>
-                        @elseif (!$passAgeLimit || !$passJenjangPendidikanTerakhir)
-                            <div style="background: #ffd3d3;"
-                                class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4 border border-danger">
-                                <p class="mb-0 fs-5 text-dark fw-bold text-center">
-                                    Anda belum memenuhi syarat Pendidikan Lanjutan
-                                </p>
-                            </div>
-                        @endif
+                        <div id="statusContainer" class="text-end"></div>
                     @elseif($isExist)
                         <div style="background: #ffc224"
                             class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4">
@@ -155,7 +122,7 @@
             </div>
         </div>
 
-        @if ($passAgeLimit && $passJenjangPendidikanTerakhir)
+        @if (isset($vacancyUser) && $vacancyUser->vacancy_detail_id && $vacancyUser->vacancy_detail_id != 0)
             <div class="row" id="attachment_container">
                 <h5 class="heading-title mt-5">{{ __('Lampiran yang Diperlukan') }}</h5>
                 <div class="col-12">
@@ -252,13 +219,13 @@
 
         <div class="row">
             <div class="col-12 text-end">
-                @if (!$isExist && $meetCondition && $passAgeLimit && $passJenjangPendidikanTerakhir)
-                    <form action="{{ route('student.continuing-education.register', $vacancy->id) }}" method="POST"
+                @if (!$isExist && $meetCondition && $vacancyUser->status == 'register' && $vacancyUser->vacancy_detail_id && $vacancyUser->vacancy_detail_id != 0)
+                    <form action="{{ route('student.continuing-education.ajukanBerkas', $vacancy->id) }}" method="POST"
                         class="d-inline">
                         @csrf
                         @method('POST')
                         <button type="submit" class="btn mt-4 mb-3">
-                            {{ __('Ajukan Pendaftaran') }} <i class="fa fa-arrow-right"></i>
+                            {{ __('Ajukan Berkas Pendaftaran') }} <i class="fa fa-arrow-right"></i>
                         </button>
                     </form>
                 @endif
@@ -269,11 +236,115 @@
 
 @push('scripts')
     <script>
+        var schemas = @json($vacancyDetail);
+
         document.addEventListener('DOMContentLoaded', function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
+
+            const selectSkemaId = document.getElementById('skemaId');
+            const selectedSkemaId = @json($detailId);
+            if (schemas.length > 0) {
+                selectSkemaId.value = selectedSkemaId ? selectedSkemaId : schemas[0].id;
+                selectSkemaId.dispatchEvent(new Event('change'));
+            }
         });
+
+
+        function skemaOnChange(e) {
+            const value = e.value;
+            const selectedData = schemas.find(item => item.id == value);
+            const batasUsiaPensiunId = document.getElementById('batasUsiaPensiunId');
+            const statusKepegawaanId = document.getElementById('statusKepegawaanId');
+            const pembiayaanId = document.getElementById('pembiayaanId');
+            const statusContainer = document.getElementById('statusContainer');
+
+            batasUsiaPensiunId.innerHTML = '';
+            statusKepegawaanId.innerHTML = '';
+            pembiayaanId.innerHTML = '';
+
+            if (selectedData) {
+                const passAgeLimit = selectedData.age_limit <= {{ $bup }};
+                const passJenjangPendidikanTerakhir = {{ $passJenjangPendidikanTerakhir ? 'true' : 'false' }};
+                const vacancyDetailId = {{ $detailId }};
+
+                var html = `
+                <td>{{ __('Batas Usia Pensiun') }}</td>
+                <td>${selectedData.age_limit}</td>
+                <td class="text-center">
+                `
+                if (passAgeLimit) {
+                    html += `<i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>`
+                } else {
+                    html += `<i class="fas fa-times bg-danger-subtle text-danger rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        style="width: 24px; height: 24px; font-size: 16px;"></i>`
+                }
+                html += `</td>`
+
+                batasUsiaPensiunId.innerHTML = html;
+
+
+                var yie = ``
+                if (passJenjangPendidikanTerakhir && passAgeLimit) {
+
+
+                    if (!vacancyDetailId || vacancyDetailId == 0) {
+                        yie = `<div style="background: #d3ffde;"
+                                class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4 border border-success">
+                                {{-- @if ($vacancy->status) --}}
+                                <p class="mb-0 fs-5 text-dark fw-bold text-center">
+                                    Anda memenuhi semua syarat Pendidikan Lanjutan
+                                </p>
+                            </div>`;
+                        yie += `<form action="{{ route('student.continuing-education.ajukanDaftar', $vacancy->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                <input type="hidden" name="schema_id" value="${selectedData.id}">
+                                <button type="submit" class="btn mt-4 mb-3">
+                                    {{ __('Ajukan Pendaftaran') }} <i class="fa fa-arrow-right"></i>
+                                </button>
+                            </form>`
+                    } else {
+                        yie = `<div style="background: #d3ffde;"
+                                class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4 border border-success">
+                                {{-- @if ($vacancy->status) --}}
+                                <p class="mb-0 fs-5 text-dark fw-bold text-center">
+                                    Anda sudah terdaftar, silahkan upload berkas yang diperlukan
+                                </p>
+                            </div>`;
+                    }
+
+                } else {
+                    yie = `<div style="background: #ffd3d3;"
+                                class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4 border border-danger">
+                                <p class="mb-0 fs-5 text-dark fw-bold text-center">
+                                    Anda belum memenuhi syarat Pendidikan Lanjutan
+                                </p>
+                            </div>`;
+                }
+
+                statusContainer.innerHTML = yie;
+            }
+
+            if (selectedData) {
+                var html = `
+                <td>{{ __('Status Kepegawaian') }}</td>
+                <td>${selectedData.employment_status}</td>
+                <td></td>
+                `
+
+                statusKepegawaanId.innerHTML = html;
+            }
+
+            if (selectedData) {
+                var html = `
+                <td>{{ __('Pembiayaan') }}</td>
+                <td>${selectedData.cost_type}</td>
+                `
+
+                pembiayaanId.innerHTML = html;
+            }
+        }
     </script>
 @endpush

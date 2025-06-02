@@ -21,8 +21,10 @@ use App\Http\Requests\Frontend\StudentVacancyReportRequest;
 use App\Http\Requests\Frontend\UploadRequirementFileRequest;
 use Modules\PendidikanLanjutan\app\Models\VacancyActivation;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyDetail;
 use Modules\PendidikanLanjutan\app\Models\VacancyUserAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyMasterReportFiles;
+use Modules\PendidikanLanjutan\app\Models\VacancyUserDirect;
 
 class StudentPendidikanLanjutanController extends Controller
 {
@@ -34,8 +36,17 @@ class StudentPendidikanLanjutanController extends Controller
             ->where('start_at', '<=', now())
             ->where('end_at', '>=', now())
             ->first();
-        $vacancies = Vacancy::where('instansi_id', userAuth()->instansi_id)
-            ->where('year', $schedule->year ?? -1)->paginate($perPage);
+
+        $vacancyDirects = VacancyUserDirect::where('user_id', userAuth()->id)->get();
+        $vacancies = [];
+
+        if ($vacancyDirects->count() > 0) {
+            $vacancyDirectIds = $vacancyDirects->pluck('vacancy_id')->toArray();
+            $vacancies = Vacancy::whereIn('id', $vacancyDirectIds)->where('instansi_id', userAuth()->instansi_id)->where('year', $schedule->year ?? -1)->paginate($perPage);
+        } else {
+            $vacancies = Vacancy::where('instansi_id', userAuth()->instansi_id)->where('year', $schedule->year ?? -1)->paginate($perPage);
+            $vacancyDirects = collect();
+        }
 
         return view('frontend.student-dashboard.continuing-education.index', compact('vacancies', 'schedule'));
     }
@@ -99,10 +110,9 @@ class StudentPendidikanLanjutanController extends Controller
         }
 
         $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $id)->first();
+        $vacancyDetail = VacancyDetail::where('vacancy_id', $id)->get();
 
-        $passAgeLimit = $vacancy->age_limit <= $user->bup;
-        // $educationLevels = explode('/', $user->tingkat_pendidikan);
-        // $passJenjangPendidikanTerakhir = in_array($vacancy->education_level, array_filter($educationLevels));
+        $bup = $user->bup ?? 0;
         $passJenjangPendidikanTerakhir = educationFilter($vacancy->education_level, $user->tingkat_pendidikan);
 
         $base = VacancyAttachment::syarat()->where('vacancy_id', $id)->where('is_active', 1);
@@ -116,7 +126,7 @@ class StudentPendidikanLanjutanController extends Controller
         $meetCondition = (count($vacancyTakeConditions) == count($vacancyConditions));
 
 
-        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy', 'vacancyUser', 'vacancyConditions', 'meetCondition', 'passAgeLimit', 'passJenjangPendidikanTerakhir'));
+        return view('frontend.student-dashboard.continuing-education.show', compact('vacancy', 'vacancyUser', 'vacancyDetail', 'bup', 'vacancyConditions', 'meetCondition', 'passJenjangPendidikanTerakhir'));
     }
 
 
@@ -146,16 +156,15 @@ class StudentPendidikanLanjutanController extends Controller
             return redirect()->back()->with(['messege' => $isEligible, 'alert-type' => 'error']);
         }
 
-        DB::beginTransaction();
+        $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $vacancy->id)->first();
+        if (!$vacancyUser) {
+            return redirect()->back()->with(['messege' => 'Anda belum terdaftar', 'alert-type' => 'error']);
+        }
 
-        VacancyUser::firstOrCreate([
-            'user_id' => userAuth()->id,
-            'vacancy_id' => $attachment->vacancy_id
-        ], [
-            'status' => VacancyUser::STATUS_REGISTER,
-        ]);
+        if (!$vacancyUser->vacancy_detail_id || $vacancyUser->vacancy_detail_id == 0) {
+            return redirect()->back()->with(['messege' => 'Anda belum memiliki skema program pendidikan lanjutan', 'alert-type' => 'error']);
+        }
 
-        $vacancyUser = VacancyUser::where('user_id', userAuth()->id)->where('vacancy_id', $attachment->vacancy_id)->first();
         $vacancyUserAttachment = VacancyUserAttachment::with('vacancyattachment')->where('vacancy_attachment_id', $attachment->id)->where('vacancy_user_id', $vacancyUser->id)->first();
         $file = $request->file('file');
 
@@ -164,7 +173,6 @@ class StudentPendidikanLanjutanController extends Controller
         ]);
 
         if ($validator->fails()) {
-            DB::rollBack();
             return redirect()->back()->withFragment('attachment_container')->with(['messege' => $validator->errors()->first(), 'alert-type' => 'error']);
         }
 
@@ -196,12 +204,9 @@ class StudentPendidikanLanjutanController extends Controller
         vacancyLog($request);
 
         if (!$result) {
-            DB::rollBack();
             return redirect()->back()->withFragment('attachment_container')->with(['messege' => __('Upload file requirement failed'), 'alert-type' => 'error']);
         }
 
-
-        DB::commit();
         return redirect()->back()->withFragment('attachment_container')->with(['messege' => __('Upload file requirement successfully'), 'alert-type' => 'success']);
     }
 
@@ -218,8 +223,76 @@ class StudentPendidikanLanjutanController extends Controller
         return response()->file(storage_path('app/private/' . $VacancyUserAttachment->file));
     }
 
+    public function ajukanDaftar(Request $request, $vacancyId)
+    {
+        $request->validate([
+            'schema_id' => 'required',
+        ], [
+            'schema_id.required' => 'Silahkan pilih skema program pendidikan lanjutan',
+        ]);
+
+        $user = userAuth();
+        if (!$user->canAccessContinuingEducation()) {
+            return redirect()->back()->with(['messege' => __('Anda tidak memiliki akses ke program pendidikan lanjutan'), 'alert-type' => 'error']);
+        }
+
+        $vacancyDetail = VacancyDetail::where('id', $request->schema_id)->where('vacancy_id', $vacancyId)->first();
+
+        if (!$vacancyDetail) {
+            return redirect()->back()->with(['messege' => 'Skema program pendidikan lanjutan tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $vacancyId)->first();
+
+        if ($vacancyUser) {
+            return redirect()->back()->with(['messege' => 'Anda sudah terdaftar', 'alert-type' => 'error']);
+        }
+
+        $vacancy = Vacancy::findOrFail($vacancyId);
+
+        if (!$vacancy) {
+            return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
+        }
+
+        $isEligible = $vacancy->isEligible($user);
+        if ($isEligible) {
+            return redirect()->back()->with(['messege' => $isEligible, 'alert-type' => 'error']);
+        }
+
+        $schedule = VacancySchedule::where('year', now()->year)
+            ->where('start_at', '<=', now())
+            ->where('end_at', '>=', now())
+            ->first();
+
+        $vacancyDirects = VacancyUserDirect::where('user_id', userAuth()->id)->get();
+
+        if ($vacancyDirects->count() > 0) {
+            $vacancyDirectIds = $vacancyDirects->pluck('vacancy_id')->toArray();
+            $vacancies = Vacancy::whereIn('id', $vacancyDirectIds)->where('instansi_id', userAuth()->instansi_id)->where('year', $schedule->year ?? -1)->get();
+
+            if ($vacancies->count() > 0 && !$vacancies->contains($vacancy)) {
+                return redirect()->back()->with(['messege' => 'Anda hanya dapat mendaftar program pendidikan lanjutan yang sudah diundang / diinvite', 'alert-type' => 'error']);
+            }
+        }
+
+
+
+        $result = VacancyUser::firstOrCreate([
+            'user_id' => $user->id,
+            'vacancy_id' => $vacancy->id,
+            'vacancy_detail_id' => $request->schema_id,
+            'status' => VacancyUser::STATUS_REGISTER
+        ]);
+
+        if (!$result) {
+            return redirect()->back()->with(['messege' => 'Pendaftaran gagal', 'alert-type' => 'error']);
+        }
+
+        return redirect()->route('student.continuing-education.show', $vacancy->id)->with(['messege' => 'Pendaftaran berhasil', 'alert-type' => 'success']);
+    }
+
     // pengajuan pendaftaran
-    public function register(Request $request, $vacancyId)
+    public function ajukanBerkas(Request $request, $vacancyId)
     {
         $user = userAuth();
         if (!$user->canAccessContinuingEducation()) {
@@ -244,6 +317,14 @@ class StudentPendidikanLanjutanController extends Controller
         }
 
         $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $vacancy->id)->first();
+        if (!$vacancyUser) {
+            return redirect()->back()->with(['messege' => 'Anda belum terdaftar', 'alert-type' => 'error']);
+        }
+
+        if (!$vacancyUser->vacancy_detail_id || $vacancyUser->vacancy_detail_id == 0) {
+            return redirect()->back()->with(['messege' => 'Anda belum memiliki skema program pendidikan lanjutan', 'alert-type' => 'error']);
+        }
+
         $base = VacancyAttachment::syarat()->where('vacancy_id', $vacancy->id)->where('is_active', 1);
         $vacancyConditions = $base->with('attachment')->get();
         $vacancyTakeConditions = $base->whereHas('attachment', function ($query) use ($vacancyUser) {

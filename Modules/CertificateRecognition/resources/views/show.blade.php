@@ -169,6 +169,29 @@
                                 </div>
                             </div>
                         @endif
+                        @if ($certificate->status == CertificateRecognition::STATUS_PUBLISHED)
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h4>{{ __('Certificate Status') }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12 d-flex align-items-center">
+                                            <h6 class="text-center mb-0">{{ __('Published') }}</h6>
+                                            &nbsp;
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                                fill="#6ac88e" stroke="#ffffff" stroke-width="1.5"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-badge-check-icon lucide-badge-check">
+                                                <path
+                                                    d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+                                                <path d="m9 12 2 2 4-4" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     <div class="col-lg-6">
                         <div class="card">
@@ -195,9 +218,9 @@
                                                         </div>
                                                         <div class="col-12">
                                                             <span>Status ASN :</span>
-                                                            @if ($user->asn_status == "PNS")
+                                                            @if ($user->asn_status == 'PNS')
                                                                 <span class="badge badge-primary">PNS</span>
-                                                            @elseif ($user->asn_status == "PPPK")
+                                                            @elseif ($user->asn_status == 'PPPK')
                                                                 <span class="badge badge-success">PPPK</span>
                                                             @else
                                                                 <span class="badge badge-warning">Lainnya</span>

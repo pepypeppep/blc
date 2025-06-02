@@ -180,7 +180,7 @@ class CertificateRecognitionController extends Controller
         $certificate = CertificateRecognition::with('instansi', 'certificate', 'users')->find($id);
         $users = $certificate->users()->paginate(10);
         $pelatihans = $certificate->materials()->paginate(10);
-        return view('certificaterecognition::verify', compact('certificate', 'users', 'pelatihans'));
+        return view('certificaterecognition::show', compact('certificate', 'users', 'pelatihans'));
     }
 
     /**
@@ -208,14 +208,6 @@ class CertificateRecognitionController extends Controller
         $certificate = CertificateRecognition::find($id);
         $certificate->delete();
         return redirect()->route('admin.certificate-recognition.index')->with('success', 'Successfully deleted certificate recognition');
-    }
-
-    public function verify($id)
-    {
-        checkAdminHasPermissionAndThrowException('sertifikat.pengakuan.verify');
-        $certificate = CertificateRecognition::with('instansi', 'certificate', 'users')->find($id);
-        $users = $certificate->users()->paginate(10);
-        return view('certificaterecognition::verify', compact('certificate', 'users'));
     }
 
     public function verifyUpdate(Request $request, $id)

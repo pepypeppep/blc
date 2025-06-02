@@ -113,7 +113,7 @@
                                                     <td class="flex text-end justify-end items-end">
                                                         @if ($certificate->status != CertificateRecognition::STATUS_PUBLISHED)
                                                             @adminCan('sertifikat.pengakuan.verify')
-                                                                <a href="{{ route('admin.certificate-recognition.verify', $certificate->id) }}"
+                                                                <a href="{{ route('admin.certificate-recognition.show', $certificate->id) }}"
                                                                     class="btn btn-primary btn-sm"><i class="fa fa-check"></i>
                                                                 </a>
                                                             @endadminCan

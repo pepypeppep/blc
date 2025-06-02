@@ -2,6 +2,7 @@
 
 namespace Modules\PendidikanLanjutan\Database\Seeders;
 
+use App\Models\EmployeeGrade;
 use Illuminate\Database\Seeder;
 use Modules\PendidikanLanjutan\app\Models\Study;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
@@ -29,8 +30,8 @@ class VacancySeeder extends Seeder
             [
                 'study_id' => 1,
                 'instansi_id' => 19,
-                'education_level' => 'S-1',
-                'employment_grade' => 'juru_ia',
+                'education_level' => collect(['S-1', 'S-2', 'S-3'])->random(),
+                'employee_grade_id' => EmployeeGrade::inRandomOrder()->first()->id,
                 'formation' => 3,
                 'year' => 2025,
                 'open_at' => now(),
@@ -39,8 +40,8 @@ class VacancySeeder extends Seeder
             [
                 'study_id' => 2,
                 'instansi_id' => 19,
-                'education_level' => 'S-2',
-                'employment_grade' => 'juru_ia',
+                'education_level' => collect(['S-1', 'S-2', 'S-3'])->random(),
+                'employee_grade_id' => EmployeeGrade::inRandomOrder()->first()->id,
                 'formation' => 2,
                 'year' => 2025,
                 'open_at' => now(),
@@ -48,8 +49,8 @@ class VacancySeeder extends Seeder
             ],
             [
                 'study_id' => 3,
-                'education_level' => 'S-3',
-                'employment_grade' => 'juru_ic',
+                'education_level' => collect(['S-1', 'S-2', 'S-3'])->random(),
+                'employee_grade_id' => EmployeeGrade::inRandomOrder()->first()->id,
                 'formation' => 1,
                 'year' => 2025,
                 'open_at' => now(),

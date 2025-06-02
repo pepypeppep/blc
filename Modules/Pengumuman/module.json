@@ -1,0 +1,11 @@
+{
+    "name": "Pengumuman",
+    "alias": "pengumuman",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Pengumuman\\app\\Providers\\PengumumanServiceProvider"
+    ],
+    "files": []
+}

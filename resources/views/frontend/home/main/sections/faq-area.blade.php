@@ -9,7 +9,7 @@
                       </div>
                   </div>
                   <div class="faq__img">
-                      <img src="{{ asset($faqSection?->global_content?->image) }}" alt="img">
+                      <img src="{{ route('get.section.asset',[$faqSection?->id,'image']) }}" alt="img">
                       <div class="shape-one">
                           <img src="{{ asset('frontend/img/others/faq_shape01.svg') }}" class="injectable tg-motion-effects4"
                               alt="img">

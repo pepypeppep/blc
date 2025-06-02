@@ -76,7 +76,7 @@
                                             class="form-check cursor-pointer lesson-item {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}"
                                                 data-lesson-id="{{ $chapterItem->lesson->id }}"
                                                 data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
-                                                data-type="{{ $chapterItem->type }}">
+                                                data-type="{{ $chapterItem->type }}" data-duration="{{ $chapterItem->lesson->duration }}">
                                             <input @checked(in_array($chapterItem->lesson->id, $alreadyWatchedLectures))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->lesson->id }}" value="1"

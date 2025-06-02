@@ -83,6 +83,7 @@ $(document).ready(function () {
         var chapterId = $(this).attr("data-chapter-id");
         var courseId = $(this).attr("data-course-id");
         var type = $(this).attr("data-type");
+        var duration = $(this).attr("data-duration");
 
         var index = ids.indexOf(lessonId);
         if (index !== 0) {
@@ -334,21 +335,22 @@ $(document).ready(function () {
                 if (document.getElementById("google-drive-player")) {
                     const markCompleteBtn = document.getElementById("mark-complete-btn");
                     let lessonCompleted = false;
+                    let file_duration = duration * 60;
 
                     // Show completion button after 5 seconds
                     setTimeout(() => {
                         if (markCompleteBtn) markCompleteBtn.style.display = "block";
-                    }, 5000);
+                    }, file_duration * 1000);
 
                     // If we know video duration, auto-complete after that time + buffer
-                    if (file_info.duration) {
+                    if (file_duration) {
                         setTimeout(() => {
                             if (!lessonCompleted) {
                                 completeLesson(lessonId);
                                 lessonCompleted = true;
                                 if (markCompleteBtn) markCompleteBtn.style.display = "none";
                             }
-                        }, (file_info.duration + 10) * 1000); // 10 second buffer
+                        }, (file_duration + 10) * 1000); // 10 second buffer
                     }
 
                     // Manual completion handler

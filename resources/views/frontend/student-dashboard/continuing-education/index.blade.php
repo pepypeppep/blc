@@ -13,10 +13,9 @@
                         <thead>
                             <tr>
                                 <th>{{ __('#') }}</th>
-                                <th width="30%">{{ __('Program Studi Pendidikan Lanjutan') }}</th>
-                                <th>{{ __('Batas Usia Pendaftaran') }}</th>
+                                <th width="50%">{{ __('Program Studi Pendidikan Lanjutan') }}</th>
                                 <th width="20%">{{ __('Tanggal Mulai Pendaftaran') }}</th>
-                                <th width="20%">{{ __('Tanggal Penutupan Pendaftaran') }}</th>
+                                <th width="20%">{{ __('Tanggal Akhir Pendaftaran') }}</th>
                                 <th>{{ __('Action') }}</th>
                             </tr>
                         </thead>
@@ -24,17 +23,14 @@
                             @forelse ($vacancies as $key => $vacancy)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
-                                    <td>{{ $vacancy->study->name }}</td>
-                                    <td>{{ $vacancy->age_limit }}
-                                        {{-- @if ($vacancy->details->isNotEmpty())
-                                            {{ $vacancy->details->first()->value_type ?? '-' }}
-                                        @else
-                                            {{ '-' }}
-                                        @endif --}}
+                                    <td>
+                                        ({{ $vacancy->education_level }}) {{ $vacancy->study->name }}
+                                        <br>
+                                        {{ $vacancy->study->university }}
                                     </td>
-                                    <td>{{ $vacancy->open_at ? \Carbon\Carbon::parse($vacancy->open_at)->format('d F Y') : '-' }}
+                                    <td>{{ \Carbon\Carbon::parse($schedule->start_at)->format('d F Y') }}
                                     </td>
-                                    <td>{{ $vacancy->close_at ? \Carbon\Carbon::parse($vacancy->close_at)->format('d F Y') : '-' }}
+                                    <td>{{ \Carbon\Carbon::parse($schedule->end_at)->format('d F Y') }}
                                     </td>
                                     <td class="text-center">
                                         <a href="{{ route('student.continuing-education.show', $vacancy->id) }}"

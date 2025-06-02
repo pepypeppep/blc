@@ -48,7 +48,7 @@ class StudentPendidikanLanjutanController extends Controller
             $vacancyDirects = collect();
         }
 
-        return view('frontend.student-dashboard.continuing-education.index', compact('vacancies'));
+        return view('frontend.student-dashboard.continuing-education.index', compact('vacancies', 'schedule'));
     }
 
     // list pendidikan yang sudah diambil

@@ -62,6 +62,8 @@ class User extends Authenticatable
         'username',
         'verification_token',
         'fcm_token',
+        'asn_status',
+        'ninebox'
     ];
 
     /**

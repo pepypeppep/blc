@@ -80,6 +80,7 @@ class UsersSync extends Command
                 'tingkat_pendidikan' => $user['tingkat_pendidikan'],
                 'tmt_golongan' => $user['tmt_golongan'],
                 'tmt_jabatan' => $user['tmt_jabatan'],
+                'asn_status' => $user['jenis_asn']
             ]);
         }
 

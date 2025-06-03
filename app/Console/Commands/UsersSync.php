@@ -58,6 +58,10 @@ class UsersSync extends Command
             } else {
                 $unorID = $user['id_unor'];
             }
+
+            $nineboxData = Http::get('https://asn.bantulkab.go.id/makansajaapi/api/external/pegawai/' . $user['nip'])
+                ->json();
+
             User::updateOrCreate([
                 'username' => $user['nip'],
             ], [
@@ -80,7 +84,8 @@ class UsersSync extends Command
                 'tingkat_pendidikan' => $user['tingkat_pendidikan'],
                 'tmt_golongan' => $user['tmt_golongan'],
                 'tmt_jabatan' => $user['tmt_jabatan'],
-                'asn_status' => $user['jenis_asn']
+                'asn_status' => $user['jenis_asn'],
+                'ninebox' => $nineboxData->data->ninebox
             ]);
         }
 

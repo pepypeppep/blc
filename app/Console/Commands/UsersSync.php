@@ -85,7 +85,7 @@ class UsersSync extends Command
                 'tmt_golongan' => $user['tmt_golongan'],
                 'tmt_jabatan' => $user['tmt_jabatan'],
                 'asn_status' => $user['jenis_asn'],
-                'ninebox' => $nineboxData->data->ninebox
+                'ninebox' => $nineboxData['data']['ninebox'] ?? null
             ]);
         }
 

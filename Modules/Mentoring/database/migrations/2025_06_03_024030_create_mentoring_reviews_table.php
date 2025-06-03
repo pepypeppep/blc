@@ -17,11 +17,11 @@ return new class extends Migration
             $table->text('planned_session_changed')->nullable();
             $table->boolean('is_target')->default(0);
             $table->text('target_description')->nullable();
-            $table->interger('discipline')->default(0);
+            $table->integer('discipline')->default(0);
             $table->text('discipline_description')->nullable();
-            $table->interger('teamwork')->default(0);
+            $table->integer('teamwork')->default(0);
             $table->text('teamwork_description')->nullable();
-            $table->interger('initiative')->default(0);
+            $table->integer('initiative')->default(0);
             $table->text('initiative_description')->nullable();
             $table->unsignedBigInteger('mentoring_id')->onDelete('cascade');
             $table->timestamps();

@@ -54,10 +54,6 @@
                     </li>
                 </ul>
             </li>
-            {{-- <li class="{{ Route::is('vacancies-participant.index') ? 'active' : '' }}">
-                <a href="{{ route('vacancies-participant.index') }}">
-                    <img src="{{ asset('uploads/website-images/announcement.svg') }}">{{ __('ContinuingEducation') }}</a>
-            </li> --}}
 
             <li class="">
                 <a class="d-flex align-items-center text-decoration-none" data-bs-toggle="collapse"
@@ -91,6 +87,43 @@
                                 <path d="M.5 0a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-1 0V.5A.5.5 0 0 1 .5 0M2 1.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-4a.5.5 0 0 1-.5-.5zm2 4a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm2 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1-.5-.5zm2 4a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5z"/>
                             </svg>
                             {{ __('Riwayat Pendaftaran') }}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="">
+                <a class="d-flex align-items-center text-decoration-none" data-bs-toggle="collapse"
+                    href="#mentoringMenu" role="button" aria-expanded="true"
+                    aria-controls="mentoringMenu" id="mentoringToggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-easel2" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 0a.5.5 0 0 1 .447.276L8.81 1h4.69A1.5 1.5 0 0 1 15 2.5V11h.5a.5.5 0 0 1 0 1h-2.86l.845 3.379a.5.5 0 0 1-.97.242L12.11 14H3.89l-.405 1.621a.5.5 0 0 1-.97-.242L3.36 12H.5a.5.5 0 0 1 0-1H1V2.5A1.5 1.5 0 0 1 2.5 1h4.691l.362-.724A.5.5 0 0 1 8 0M2 11h12V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5zm9.61 1H4.39l-.25 1h7.72z"/>
+                    </svg>
+                    {{ __('Mentoring') }}
+                    <i class="fa fa-chevron-down ms-auto collapse-icon " style="font-size: 10px;"></i>
+                </a>
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.mentee.index') || Route::is('student.mentee.index') ? 'show' : '' }}"
+                    id="mentoringMenu">
+                    <li
+                        class="list-group-item ps-3 text-sm {{ Route::is('student.mentee.index') ? 'active' : '' }}">
+                        <a href="{{ route('student.mentee.index') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
+                                <path d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1z"/>
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1"/>
+                            </svg>
+                            {{ __('Mentee') }}
+                        </a>
+                    </li>
+                </ul>
+                <ul class="collapse list-unstyled mt-2 ps-4 {{ Route::is('student.mentor.index') || Route::is('student.mentor.index') ? 'show' : '' }}"
+                    id="mentoringMenu">
+                    <li
+                        class="list-group-item ps-3 text-sm {{ Route::is('student.mentor.index') ? 'active' : '' }}">
+                        <a href="{{ route('student.mentor.index') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                            </svg>
+                            {{ __('Mentor') }}
                         </a>
                     </li>
                 </ul>

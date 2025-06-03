@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Mentoring\app\Http\Controllers\MentoringController;
+use Modules\Mentoring\app\Http\Controllers\MenteeController;
+use Modules\Mentoring\app\Http\Controllers\MentorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,10 +16,6 @@ use Modules\Mentoring\app\Http\Controllers\MentoringController;
 */
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' => 'student.'], function () {
-    Route::get('/mentee', function () {
-        return 'Page Mentee';
-    })->name('mentee.index');
-    Route::get('/mentor', function () {
-        return 'Page Mentor';
-    })->name('mentor.index');
+    Route::get('/mentee', [MenteeController::class, 'index'])->name('mentee.index');
+    Route::get('/mentor', [MentorController::class, 'index'])->name('mentor.index');
 });

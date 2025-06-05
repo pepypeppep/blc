@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('unors', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('instansi_id')->nullable();
+            $table->unsignedBigInteger('unor_jenis_id')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name')->index();
             $table->timestamps();

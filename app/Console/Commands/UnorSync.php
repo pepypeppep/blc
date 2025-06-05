@@ -45,6 +45,7 @@ class UnorSync extends Command
             Unor::updateOrCreate([
                 'id' => $unorData['id'],
             ], [
+                'unor_jenis_id' => $unorData['id_jenis_unor'],
                 'parent_id' => $unorData['parent_id'],
                 'name' => $unorData['name'],
             ]);

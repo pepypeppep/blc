@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('unor_jenis', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('level')->nullable();
+            $table->integer('order');
             $table->timestamps();
         });
     }

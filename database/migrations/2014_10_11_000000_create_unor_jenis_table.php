@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('unors', function (Blueprint $table) {
+        Schema::create('unor_jenis', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('instansi_id')->nullable();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->string('name')->index();
+            $table->string('name');
+            $table->integer('level')->nullable();
             $table->timestamps();
-            $table->foreign('parent_id')->references('id')->on('unors')->onDelete('restrict')->onUpdate('restrict');
         });
     }
 
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('unors');
+        Schema::dropIfExists('unor_jenis');
     }
 };

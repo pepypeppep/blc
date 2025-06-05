@@ -41,8 +41,6 @@ class UnorSync extends Command
 
         $unorsData = $response->json('result');
 
-
-
         foreach ($unorsData as $unorData) {
             Unor::updateOrCreate([
                 'id' => $unorData['id'],

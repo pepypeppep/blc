@@ -124,6 +124,10 @@ $(document).ready(function () {
                 return {
                     q: params.term, // search term
                     page: params.page,
+                    instansi_id: $("#instansi_id_hidden").val(), // filter instansi
+                    unit_id: $("#unit_id").val(), // filter unit organisasi
+                    jabatan: $("#jabatan").val(), // filter jabatan
+                    ninebox: $("#ninebox").val(), // filter 9 box
                 };
             },
             processResults: function (data, params) {
@@ -144,6 +148,128 @@ $(document).ready(function () {
         templateSelection: formatRepoSelection,
     });
 
+    /**
+     * NINEBOX
+     */
+
+    // Inisialisasi Select2 instansi
+    // $('#instansi_id').select2({
+    //     placeholder: 'Pilih Instansi...',
+    //     allowClear: true,
+    //     ajax: {
+    //         url: '/admin/courses/get-instansi',
+    //         dataType: 'json',
+    //         delay: 250,
+    //         data: function (params) {
+    //             return {
+    //                 search: params.term // term pencarian dari user
+    //             };
+    //         },
+    //         processResults: function (data) {
+    //             return {
+    //                 results: data.map(function (item) {
+    //                     return {
+    //                         id: item.unor_id, // value dari select2
+    //                         text: item.name, // teks yg muncul
+    //                         instansi_id: item.instansi_id // data tambahan
+    //                     };
+    //                 })
+    //             };
+    //         },
+    //         cache: true
+    //     }
+    // });
+
+    // // Saat opsi dipilih, kosongkan select2 participant
+    // // $('#instansi_id').on('select2:select', function (e) {
+    // //     $("#participant_select").val(null).trigger('change');
+    // // });
+
+    // // Saat opsi dipilih, simpan instansi_id ke input hidden
+    // $('#instansi_id').on('select2:select', function (e) {
+    //     var data = e.params.data;
+    //     $('#instansi_id_hidden').val(data.instansi_id);
+    // });
+
+    // // Saat opsi di-clear, kosongkan input hidden
+    // $('#instansi_id').on('select2:clear', function (e) {
+    //     $('#instansi_id_hidden').val('');
+    // });
+
+    // Select2 untuk Instansi
+    $('#instansi_id').select2({
+        placeholder: 'Pilih Instansi...',
+        allowClear: true,
+        ajax: {
+            url: '/admin/courses/get-instansi',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.map(function (item) {
+                        return {
+                            id: item.unor_id,
+                            text: item.name,
+                            instansi_id: item.instansi_id
+                        };
+                    })
+                };
+            },
+            cache: true
+        }
+    }).on('select2:select', function (e) {
+        var data = e.params.data;
+        $('#instansi_id_hidden').val(data.instansi_id);
+
+        // Reset unit_id saat instansi berubah
+        $('#unit_id').val(null).trigger('change');
+
+        // Set parent_id (unor_id) untuk digunakan di Select2 unit
+        $('#unit_id').data('parent-id', data.id);
+    }).on('select2:clear', function () {
+        $('#instansi_id_hidden').val('');
+        $('#unit_id').val(null).trigger('change');
+        $('#unit_id').data('parent-id', null);
+    });
+
+    // Select2 untuk Unit Organisasi
+    $('#unit_id').select2({
+        placeholder: 'Pilih Unit Organisasi...',
+        allowClear: true,
+        ajax: {
+            url: '/admin/courses/get-unor',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term,
+                    parent_id: $('#unit_id').data('parent-id') // ambil dari data atribut
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.map(function (item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        };
+                    })
+                };
+            },
+            cache: true
+        }
+    });
+
+
+    /**
+     * END NINEBOX
+     */
+
     function formatRepo(repo) {
         if (repo.loading) {
             return repo.text;
@@ -151,16 +277,16 @@ $(document).ready(function () {
 
         var $container = $(
             "<div class='select2-result-repository clearfix'>" +
-            "<div class='select2-result-repository__avatar'><img src='" +
-            "/" +
-            repo.image +
-            "' /></div>" +
+            // "<div class='select2-result-repository__avatar'><img src='" +
+            // "/" +
+            // repo.image +
+            // "' /></div>" +
             "<div class='select2-result-repository__meta'>" +
             "<div class='select2-result-repository__title'>" +
             repo.name +
             "</div>" +
             "<div class='select2-result-repository__description'>" +
-            repo.email +
+            repo.nip +
             "</div>" +
             "</div>" +
             "</div>"
@@ -792,3 +918,5 @@ $(document).ready(function () {
         });
     });
 });
+
+

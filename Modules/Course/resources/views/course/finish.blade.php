@@ -27,6 +27,45 @@
                                     <input type="hidden" name="next_step" value="4">
 
                                     <div class="row">
+
+                                        <div class="col-md-6">
+                                            <label for="instansi_id" class="form-label">Instansi</label>
+                                            <input type="hidden" id="instansi_id_hidden" name="instansi_id" />
+
+                                            <select id="instansi_id" class="form-select select2"
+                                                style="width: 100%;"></select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="unit_id" class="form-label">Unit Organisasi</label>
+                                                <select id="unit_id" class="form-select select2 w-100"></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="jabatan" class="form-label">Jabatan</label>
+                                                <select id="jabatan" class="form-select select2 w-100">
+                                                    <option value="">Pilih Jabatan</option>
+                                                    @foreach ($jabatans as $key => $value)
+                                                        <option value="{{ $value }}">{{ $value }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="ninebox" class="form-label">9 Box</label>
+                                                <select id="ninebox" class="form-select select2 w-100">
+                                                    <option value="">Pilih Box</option>
+                                                    @for ($i = 1; $i <= 9; $i++)
+                                                        <option value="{{ $i }}">{{ $i }} Box
+                                                        </option>
+                                                    @endfor
+                                                </select>
+                                            </div>
+                                        </div>
+
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <div class="d-flex justify-content-between">

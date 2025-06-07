@@ -11,7 +11,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="mb-0"><strong>{{ $mentoring->title }}</strong></h5>
-                    <span class="badge
+                    <span class="badge fs-6
                         @php
                             $statusColors = [
                                 'Draft' => 'bg-secondary',
@@ -44,7 +44,7 @@
                     </div>
 
                     <div class="text-end flex-grow-1">
-                        <h6 class="mb-1"><strong>{{ __('Surat Kesediaan Membimbing dari Mentor') }}</strong></h6>
+                        <h6 class="mb-1"><strong>{{ __('Surat Kesediaan Mentor') }}</strong></h6>
                         @if ($mentoring->mentor_availability_letter)
                             <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'mentor_availability_letter']) }}" target="_blank" class="btn-outline-primary btn-sm">
                                 <i class="fa fa-file-pdf"></i> Lihat Surat
@@ -165,63 +165,74 @@
         </div>
     </div>
 @endsection
+
+@push('modals')
 <!-- Modal Edit Session -->
     <div class="modal fade" id="editSessionModal" tabindex="-1" aria-labelledby="editSessionModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <form method="POST" action="{{ route('student.mentee.update.session') }}" enctype="multipart/form-data" class="modal-content">
-                @csrf
-                @method('PUT')
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editSessionModalLabel">Isi Detail Pertemuan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="session_id" class="form-label">Pilih Pertemuan<code>*</code></label>
-                        <select class="form-select" name="session_id" id="modal-session-id" required>
-                            <option value="" disabled selected>Pilih Jadwal Pertemuan</option>
-                            @foreach($mentoring->mentoringSessions as $session)
-                                @if(empty($session->activity)) {{-- hanya tampilkan yang belum ada aktivitas --}}
-                                    <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} - {{ \Carbon\Carbon::parse($session->mentoring_date)->format('d M Y H:i') }}</option>
-                                @endif
-                            @endforeach
-                        </select>
+            <div class="modal-content">
+                <form method="POST" action="{{ route('student.mentee.update.session') }}" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editSessionModalLabel">Isi Detail Pertemuan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                     </div>
-                    <div class="mb-3">
-                        <label for="activity" class="form-label">Deskripsi Kegiatan<code>*</code></label>
-                        <textarea class="form-control summernote" name="activity" id="modal-activity" required></textarea>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="modal-session-id" class="form-label">Pilih Pertemuan<code>*</code></label>
+                            <select class="form-select" name="session_id" id="modal-session-id" required>
+                                <option value="" disabled selected>Pilih Jadwal Pertemuan</option>
+                                @foreach($mentoring->mentoringSessions as $session)
+                                    @if(empty($session->activity))
+                                        <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} - {{ \Carbon\Carbon::parse($session->mentoring_date)->format('d M Y H:i') }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-activity" class="form-label">Deskripsi Kegiatan<code>*</code></label>
+                            <textarea class="form-control summernote" name="activity" id="modal-activity" style="height:150px;" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-obstacle" class="form-label">Hambatan</label>
+                            <textarea class="form-control summernote" name="obstacle" id="modal-obstacle" style="height:150px;"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Dokumentasi<code>*</code></label>
+                            <input type="file" class="form-control" name="image" id="image"  accept="image/jpeg,image/png" required>
+                            <small class="form-text text-danger">
+                                Berkas harus berupa <strong>JPG/PNG</strong> dengan ukuran maksimal 2MB.
+                            </small>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="obstacle" class="form-label">Hambatan</label>
-                        <textarea class="form-control summernote" name="obstacle" id="modal-obstacle"></textarea>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button> -->
                     </div>
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Dokumentasi (JPG/PNG, maks. 2MB)<code>*</code></label>
-                        <input type="file" class="form-control" name="image" accept="image/jpeg,image/png">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button> -->
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const editModal = document.getElementById('editSessionModal');
+<!-- End Modal Edit Session -->
+@endpush
 
-    // Bersihkan dan inisialisasi summernote tiap modal muncul
+@push('styles')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+@endpush
+
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+<script>
+$(document).ready(function() {
     $('#editSessionModal').on('shown.bs.modal', function () {
-        // Destroy dulu kalau sudah pernah diinisialisasi, supaya gak duplikat
+        // console.log('Modal shown, initialize summernote');
         if ($('#modal-activity').next('.note-editor').length) {
             $('#modal-activity').summernote('destroy');
         }
         if ($('#modal-obstacle').next('.note-editor').length) {
             $('#modal-obstacle').summernote('destroy');
         }
-
         // Init Summernote
         $('#modal-activity').summernote({
             height: 120,
@@ -231,27 +242,6 @@ document.addEventListener('DOMContentLoaded', function () {
             height: 120,
             placeholder: 'Tulis hambatan jika ada...',
         });
-    });
-
-    // Saat modal akan tampil, isi data dari tombol yang ditekan
-    editModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const sessionId = button.getAttribute('data-session-id');
-        const meeting = button.getAttribute('data-meeting');
-
-        // Isi hidden input (jika diperlukan server side)
-        editModal.querySelector('#modal-session-id-hidden').value = sessionId;
-
-        // Set select sesuai sessionId tombol
-        const select = editModal.querySelector('#modal-session-select');
-        select.value = sessionId;
-
-        // Ubah judul modal
-        editModal.querySelector('#editSessionModalLabel').textContent = 'Isi Detail Pertemuan ' + meeting;
-
-        // Kosongkan konten summernote saat modal terbuka (opsional)
-        $('#modal-activity').summernote('reset');
-        $('#modal-obstacle').summernote('reset');
     });
 });
 </script>

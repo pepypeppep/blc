@@ -143,6 +143,7 @@
             {!! customCode()->javascript !!}
         </script>
     @endif
+    @stack('modals')
 </body>
 
 </html>

@@ -65,6 +65,18 @@ class MentorController extends Controller
         $mentoring->reason = $request->reason;
         $mentoring->save();
 
+        // Send notification
+        sendNotification([
+            'user_id' => $mentoring->mentee_id,
+            'title' => 'Pengajuan Mentoring Ditolak',
+            'body' => "Pengajuan mentoring Anda untuk topik '{$mentoring->title}' telah ditolak oleh mentor, dengan alasan: {$request->reason}",
+            'link' => route('student.mentee.show', $mentoring->id),
+            'path' => [
+                'module' => 'mentoring',
+                'id' => $mentoring->id,
+            ]
+        ]);
+
         return response()->json(['status' => 'success', 'message' => 'Berhasil menolak pengajuan mentoring'], 200);
     }
 
@@ -83,6 +95,18 @@ class MentorController extends Controller
 
         $mentoring->status = Mentoring::STATUS_PROCESS;
         $mentoring->save();
+
+         // Send notification
+        sendNotification([
+            'user_id' => $mentoring->mentee_id,
+            'title' => 'Pengajuan Mentoring Disetujui',
+            'body' => "Pengajuan mentoring Anda untuk topik '{$mentoring->title}' telah disetujui oleh mentor.",
+            'link' => route('student.mentee.show', $mentoring->id),
+            'path' => [
+                'module' => 'mentoring',
+                'id' => $mentoring->id,
+            ]
+        ]);
 
         return redirect()->route('student.mentor.index')->with(['messege' => 'Pengajuan berhasil', 'alert-type' => 'success']);
     }
@@ -122,6 +146,18 @@ class MentorController extends Controller
         $session->mentoring_instructions = $request->mentoring_instructions;
         $session->status = MentoringSession::STATUS_REVIEWED;
         $session->save();
+
+         // Send notification
+        sendNotification([
+            'user_id' => $mentoring->mentee_id,
+            'title' => 'Mentoring telah Direview oleh Mentor',
+            'body' => "Sesi mentoring Anda untuk topik '{$mentoring->title}' telah direview oleh mentor.",
+            'link' => route('student.mentee.show', $mentoring->id),
+            'path' => [
+                'module' => 'mentoring',
+                'id' => $mentoring->id,
+            ]
+        ]);
 
 
         $sessionCount = MentoringSession::where('mentoring_id', $mentoring->id)

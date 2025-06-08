@@ -57,7 +57,7 @@
                     <div class="my-2 border-bottom border-2 py-4">
                         <h5>{{ __('Session') }} {{ \Carbon\Carbon::parse($session->mentoring_date)->format('d M Y') }}
                         </h5>
-                        @if ($mentoring->status === Mentoring::STATUS_PROCESS || $mentoring->status === Mentoring::STATUS_DONE)
+                        @if ($mentoring->status === Mentoring::STATUS_PROCESS || $mentoring->status === Mentoring::STATUS_DONE || $mentoring->status === Mentoring::STATUS_EVALUATION)
                             @if (\Carbon\Carbon::parse($session->mentoring_date) < \Carbon\Carbon::now())
                                 @if ($session->status == 'pending')
                                     @include('frontend.student-dashboard.mentoring.mentee.partials.session-submit')

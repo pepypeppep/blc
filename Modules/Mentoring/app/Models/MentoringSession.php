@@ -14,7 +14,12 @@ class MentoringSession extends Model
     protected $table = 'mentoring_sessions';
     protected $guarded = ['id'];
 
-    public function Mentoring() {
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_REPORTED = 'reported';
+    public const STATUS_REVIEWED = 'reviewed';
+
+    public function Mentoring()
+    {
         return $this->belongsTo(Mentoring::class);
     }
 }

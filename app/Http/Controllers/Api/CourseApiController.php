@@ -500,19 +500,20 @@ class CourseApiController extends Controller
                 ->where('slug', $slug)
                 ->where('status', 'active');
 
-            if ($request->has('user_id')) {
-                $authorId = $request->user_id;
-                $query->whereHas('enrollments', function ($q) use ($authorId) {
-                    $q->where('user_id', $authorId);
-                    $q->where('has_access', 1);
-                });
-            }
+            // if ($request->has('user_id')) {
+            //     $authorId = $request->user_id;
+            //     $query->whereHas('enrollments', function ($q) use ($authorId) {
+            //         $q->where('user_id', $authorId);
+            //         $q->where('has_access', 1);
+            //     });
+            // }
 
             $course = $query->firstOrFail();
 
             if ($request->has('user_id')) {
                 $userId = $request->user_id;
                 $course->course_user_progress_api = $course->getCourseUserProgressApi($userId);
+                $course->enrollments->where('user_id', $userId)->first();
             }
 
             return response()->json([

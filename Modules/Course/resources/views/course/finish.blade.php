@@ -27,13 +27,66 @@
                                     <input type="hidden" name="next_step" value="4">
 
                                     <div class="row">
+
+                                        <div class="col-md-6">
+                                            <label for="instansi_id" class="form-label">Instansi</label>
+                                            <input type="hidden" id="instansi_id_hidden" name="instansi_id" />
+
+                                            <select id="instansi_id" class="form-select select2"
+                                                style="width: 100%;"></select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="unit_id" class="form-label">Unit Organisasi</label>
+                                                <select id="unit_id" class="form-select select2 w-100"></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="jabatan" class="form-label">Jabatan</label>
+                                                <select id="jabatan" class="form-select select2 w-100">
+                                                    <option value="">Pilih Jabatan</option>
+                                                    @foreach ($jabatans as $key => $value)
+                                                        <option value="{{ $value }}">{{ $value }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="ninebox" class="form-label">9 Box</label>
+                                                <select id="ninebox" class="form-select select2 w-100">
+                                                    <option value="">Pilih Box</option>
+                                                    @for ($i = 1; $i <= 9; $i++)
+                                                        <option value="{{ $i }}">{{ $i }} Box
+                                                        </option>
+                                                    @endfor
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group mb-2">
+                                                <button type="button" id="select_all_participants_btn"
+                                                    class="btn btn-outline-primary btn-sm" disabled>
+                                                    <i class="fa fa-users"></i> Pilih semua peserta berdasarkan filter
+                                                </button>
+                                                <div id="select_all_loader" style="display: none; margin-top: 5px;">
+                                                    <i class="fa fa-spinner fa-spin text-primary"></i> Mengambil data
+                                                    peserta...
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
+
                                                 <div class="d-flex justify-content-between">
                                                     <label for="">{{ __('Select course participant') }}</label>
                                                     <span>{{ __('Number of Participants') }} : <span class="text-danger"
                                                             id="participant_count">{{ count($course->enrollments) }}</span></span>
                                                 </div>
+
                                                 <select class="select2 participant_select form-control"
                                                     name="participants[]" multiple="multiple">
                                                     @foreach ($course?->enrollments as $enrollment)
@@ -93,6 +146,11 @@
 
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
             color: #fff;
+        }
+
+        #select_all_loader {
+            font-size: 14px;
+            color: #555;
         }
     </style>
 @endpush

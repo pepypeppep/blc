@@ -67,12 +67,26 @@
                                         </div>
 
                                         <div class="col-md-12">
+                                            <div class="form-group mb-2">
+                                                <button type="button" id="select_all_participants_btn"
+                                                    class="btn btn-outline-primary btn-sm" disabled>
+                                                    <i class="fa fa-users"></i> Pilih semua peserta berdasarkan filter
+                                                </button>
+                                                <div id="select_all_loader" style="display: none; margin-top: 5px;">
+                                                    <i class="fa fa-spinner fa-spin text-primary"></i> Mengambil data
+                                                    peserta...
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
                                             <div class="form-group">
+
                                                 <div class="d-flex justify-content-between">
                                                     <label for="">{{ __('Select course participant') }}</label>
                                                     <span>{{ __('Number of Participants') }} : <span class="text-danger"
                                                             id="participant_count">{{ count($course->enrollments) }}</span></span>
                                                 </div>
+
                                                 <select class="select2 participant_select form-control"
                                                     name="participants[]" multiple="multiple">
                                                     @foreach ($course?->enrollments as $enrollment)
@@ -132,6 +146,11 @@
 
         .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
             color: #fff;
+        }
+
+        #select_all_loader {
+            font-size: 14px;
+            color: #555;
         }
     </style>
 @endpush

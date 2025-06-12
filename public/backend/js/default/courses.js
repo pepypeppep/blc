@@ -149,52 +149,67 @@ $(document).ready(function () {
     });
 
     /**
-     * NINEBOX
+     * select all participants
      */
 
-    // Inisialisasi Select2 instansi
-    // $('#instansi_id').select2({
-    //     placeholder: 'Pilih Instansi...',
-    //     allowClear: true,
-    //     ajax: {
-    //         url: '/admin/courses/get-instansi',
-    //         dataType: 'json',
-    //         delay: 250,
-    //         data: function (params) {
-    //             return {
-    //                 search: params.term // term pencarian dari user
-    //             };
-    //         },
-    //         processResults: function (data) {
-    //             return {
-    //                 results: data.map(function (item) {
-    //                     return {
-    //                         id: item.unor_id, // value dari select2
-    //                         text: item.name, // teks yg muncul
-    //                         instansi_id: item.instansi_id // data tambahan
-    //                     };
-    //                 })
-    //             };
-    //         },
-    //         cache: true
-    //     }
-    // });
+    const $selectAllBtn = $("#select_all_participants_btn");
+    const $loader = $("#select_all_loader");
 
-    // // Saat opsi dipilih, kosongkan select2 participant
-    // // $('#instansi_id').on('select2:select', function (e) {
-    // //     $("#participant_select").val(null).trigger('change');
-    // // });
+    // Enable tombol jika ada filter yang dipilih
+    function checkFilterCondition() {
+        if (
+            $("#instansi_id_hidden").val() ||
+            $("#unit_id").val() ||
+            $("#jabatan").val() ||
+            $("#ninebox").val()
+        ) {
+            $selectAllBtn.prop("disabled", false);
+        } else {
+            $selectAllBtn.prop("disabled", true);
+        }
+    }
 
-    // // Saat opsi dipilih, simpan instansi_id ke input hidden
-    // $('#instansi_id').on('select2:select', function (e) {
-    //     var data = e.params.data;
-    //     $('#instansi_id_hidden').val(data.instansi_id);
-    // });
+    // Cek saat filter berubah
+    $("#instansi_id, #unit_id, #jabatan, #ninebox").on("change", function () {
+        checkFilterCondition();
+    });
 
-    // // Saat opsi di-clear, kosongkan input hidden
-    // $('#instansi_id').on('select2:clear', function (e) {
-    //     $('#instansi_id_hidden').val('');
-    // });
+    // Tombol pilih semua
+    $selectAllBtn.on("click", function () {
+        $loader.show();
+        $.ajax({
+            url: "/admin/courses/get-students",
+            data: {
+                q: '', // kosongkan search
+                instansi_id: $("#instansi_id_hidden").val(),
+                unit_id: $("#unit_id").val(),
+                jabatan: $("#jabatan").val(),
+                ninebox: $("#ninebox").val()
+            },
+            success: function (data) {
+                const newOptions = [];
+
+                data.forEach(function (student) {
+                    // Cek jika belum ada di select2
+                    if ($(".participant_select option[value='" + student.id + "']").length === 0) {
+                        const newOption = new Option(student.name, student.id, true, true);
+                        newOption.dataset.nip = student.nip ?? '';
+                        newOptions.push(newOption);
+                        $(".participant_select").append(newOption);
+                    }
+                });
+
+                $(".participant_select").trigger("change"); // update UI select2
+            },
+            complete: function () {
+                $loader.hide();
+            },
+            error: function () {
+                alert("Gagal mengambil data peserta.");
+                $loader.hide();
+            }
+        });
+    });
 
     // Select2 untuk Instansi
     $('#instansi_id').select2({
@@ -265,9 +280,14 @@ $(document).ready(function () {
         }
     });
 
+    $(".participant_select").on("change", function () {
+        const selectedCount = $(this).val()?.length || 0;
+        $("#participant_count").text(selectedCount);
+    });
+
 
     /**
-     * END NINEBOX
+     * end select all participants
      */
 
     function formatRepo(repo) {

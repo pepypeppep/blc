@@ -34,10 +34,10 @@
                             <p>{{ $mentoring->title }}</p>
                         </div>
                     </div>
-                    <div class="col-md-6 mt-2">
+                    <div class="col-md-6 mt-3">
                         <div>
-                            <h6 class="description">{{ __('Description') }}</h6>
-                            <span>{{ $mentoring->description }}</span>
+                            <h6 class="mentor">{{ __('Mentor') }}</h6>
+                            <span>{{ $mentoring->mentor->name }}({{ $mentoring->mentor->email }})</span>
                         </div>
                     </div>
                     <div class="col-md-6 mt-2">
@@ -46,10 +46,10 @@
                             <span>{{ $mentoring->purpose }}</span>
                         </div>
                     </div>
-                    <div class="col-md-6 mt-3">
+                    <div class="col-md-6 mt-2">
                         <div>
-                            <h6 class="mentor">{{ __('Mentor') }}</h6>
-                            <span>{{ $mentoring->mentor->name }}({{ $mentoring->mentor->email }})</span>
+                            <h6 class="description">{{ __('Description') }}</h6>
+                            <span>{{ $mentoring->description }}</span>
                         </div>
                     </div>
                     <div class="col-md-12 mt-2">
@@ -87,13 +87,14 @@
             <div class="row">
                 <div class="col-12 justify-content-between d-flex align-items-center">
                     <button type="button" onclick="handleTolakMentoring(event, {{ $mentoring->id }})"
-                        class="btn btn-danger mt-4 mb-3">
+                        class="btn-danger mt-4 mb-3">
                         {{ __('Tolak Mentoring') }} <i class="fa fa-arrow-right"></i>
                     </button>
-                    <form action="{{ route('student.mentor.approve', $mentoring->id) }}" method="POST" class="d-inline">
+                    <form action="{{ route('student.mentor.approve', $mentoring->id) }}" method="POST" class="d-inline" id="approve_mentoring">
                         @csrf
                         @method('POST')
-                        <button type="submit" class="btn mt-4 mb-3">
+                        <button type="button" class="btn mt-4 mb-3"
+                            onclick="handleApproveMentoring(event)">
                             {{ __('Lanjutkan Proses Mentoring') }} <i class="fa fa-arrow-right"></i>
                         </button>
                     </form>
@@ -148,5 +149,22 @@
                 }
             })
         };
+
+        function handleApproveMentoring(event) {
+            event.preventDefault();
+            swal.fire({
+                title: 'Apakah Anda yakin ingin memproses mentoring ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                    event.target.submit();
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Proses!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#approve_mentoring').submit();
+                }
+            })
+        }
     </script>
 @endpush

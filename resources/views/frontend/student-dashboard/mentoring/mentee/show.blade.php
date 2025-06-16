@@ -79,12 +79,12 @@
                     @if(!empty($session->activity))
                         <div class="card mb-3 shadow-sm">
                             <div class="card-body">
-                                <h6 class="mb-2">
-                                    <strong>Pertemuan {{ $loop->iteration }}</strong>
-                                    <span class="text-muted small ms-2">
-                                        - {{ \Carbon\Carbon::parse($session->mentoring_date)->format('d M Y H:i') }}
-                                    </span>
-                                </h6>
+                                <div class="d-flex justify-content-between mb-2">
+                                <strong>Pertemuan {{ $loop->iteration }}</strong>
+                                    <small class="text-muted">
+                                        {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}
+                                    </small>
+                                </div>
 
                                 <div class="mb-2">
                                     <strong class="d-block">Deskripsi Kegiatan:</strong>
@@ -108,11 +108,44 @@
                                 </div>
                             </div>
                         </div>
+                    @else
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Pertemuan {{ $loop->iteration }}</strong><br>
+                                    <small class="text-muted">
+                                        {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}
+                                    </small>
+                                </div>
+
+                                @if(empty($session->activity))
+                                    <span class="badge bg-warning text-dark">Belum ada aktivitas</span>
+                                @endif
+                            </li>
+                        </ul>
                     @endif
                 @endforeach
                 
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6><strong>Laporan Akhir Mentoring</strong></h6>
+                        <span class="text-muted small">
+                            Laporan akhir dari kegiatan mentoring yang telah dilakukan.
+                        </span>
+                    </div>
+                    @if ($mentoring->isProcessOrDone() && !$hasIncompleteSessions)
+                        @if ($mentoring->final_report)
+                            <div class="mt-2">
+                                <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}" 
+                                target="_blank" 
+                                class="btn btn-outline-primary btn-sm">
+                                    <i class="fa fa-file-pdf"></i> Buka di Tab Baru
+                                </a>
+                            </div>
+                        @endif
+                    @endif
+                </div>
                 <div class="mb-3">
-                    <h6><strong>Laporan Akhir Mentoring</strong></h6>
                     @if (!$mentoring->final_report)
                     <div class="alert alert-info">
                         <strong>Ketentuan :</strong><br>
@@ -128,13 +161,6 @@
                                 width="100%" 
                                 height="500px" 
                                 class="border rounded shadow-sm" />
-                            <div class="mt-2">
-                                <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}" 
-                                target="_blank" 
-                                class="btn btn-outline-primary btn-sm">
-                                    <i class="fa fa-file-pdf"></i> Buka di Tab Baru
-                                </a>
-                            </div>
                         @else
                         <form action="{{ route('student.mentee.report', $mentoring->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
@@ -185,7 +211,7 @@
                                 <option value="" disabled selected>Pilih Jadwal Pertemuan</option>
                                 @foreach($mentoring->mentoringSessions as $session)
                                     @if(empty($session->activity))
-                                        <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} - {{ \Carbon\Carbon::parse($session->mentoring_date)->format('d M Y H:i') }}</option>
+                                        <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} - {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}</option>
                                     @endif
                                 @endforeach
                             </select>

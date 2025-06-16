@@ -65,7 +65,7 @@
                                         @for ($i = 0; $i < $totalSessions; $i++)
                                             <div class="input-group mb-2">
                                                 <span class="input-group-text text-dark">Pertemuan {{ $i + 1 }}</span>
-                                                <input type="datetime-local" name="sessions[]" class="form-control" 
+                                                <input type="text" name="sessions[]" class="form-control datetimepicker" 
                                                     value="{{ $sessions[$i] ?? '' }}" required>
                                             </div>
                                         @endfor
@@ -112,9 +112,24 @@
     </div>
 @endsection
 
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@endpush
+
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        flatpickr(".datetimepicker", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true,
+            altInput: true,
+            altFormat: "l, d F Y - H:i",
+            locale: "id"
+        });
+
         const totalSessionInput = document.getElementById('total_session');
         const sessionGroup = document.getElementById('session-datetime-group');
         const sessionWarning = document.getElementById('session-warning');
@@ -134,9 +149,9 @@
                 span.innerText = `Pertemuan ${i + 1}`;
 
                 const input = document.createElement('input');
-                input.type = 'datetime-local';
+                input.type = 'text';
                 input.name = 'sessions[]';
-                input.className = 'form-control';
+                input.className = 'form-control datetimepicker';
                 input.required = true;
 
                 // Set old value if available
@@ -148,6 +163,21 @@
                 inputGroup.appendChild(input);
                 sessionWrapper.appendChild(inputGroup);
             }
+
+            document.querySelectorAll('.datetimepicker').forEach(el => {
+                if (el._flatpickr) {
+                    el._flatpickr.destroy();
+                }
+            });
+            
+            flatpickr(".datetimepicker", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true,
+                altInput: true,
+                altFormat: "l, d F Y - H:i",
+                locale: "id"
+            });
         }
 
         function updateSessionsVisibility() {

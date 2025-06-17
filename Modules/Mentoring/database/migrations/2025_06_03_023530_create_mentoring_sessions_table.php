@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('mentoring_sessions', function (Blueprint $table) {
             $table->id();
             $table->string('activity');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->dateTime('mentoring_date');
             $table->text('mentoring_note');
             $table->text('mentoring_instructions');
             $table->unsignedBigInteger('mentoring_id')->onDelete('cascade');
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

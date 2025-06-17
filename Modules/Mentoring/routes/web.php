@@ -27,5 +27,15 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::get('/{id}/img', [MenteeController::class, 'viewImage'])->name('view.img');
         Route::put('/{id}/submit', [MenteeController::class, 'submitForApproval'])->name('submit');
     });
-    Route::get('/mentor', [MentorController::class, 'index'])->name('mentor.index');
+
+    Route::group(['prefix' => 'mentor', 'as' => 'mentor.'], function () {
+        Route::get('/', [MentorController::class, 'index'])->name('index');
+        Route::get('{id}/show', [MentorController::class, 'show'])->name('show');
+        Route::post('{id}/approve', [MentorController::class, 'approve'])->name('approve');
+        Route::post('{id}/reject', [MentorController::class, 'reject'])->name('reject');
+        Route::post('{id}/review', [MentorController::class, 'review'])->name('review');
+        Route::get('{id}/evaluasi', [MentorController::class, 'evaluasi'])->name('evaluasi');
+        Route::post('{id}/evaluasi', [MentorController::class, 'evaluasiStore'])->name('evaluasi.store');
+        Route::post('{id}/kirim-evaluasi', [MentorController::class, 'kirimEvaluasi'])->name('evaluasi.kirim');
+    });
 });

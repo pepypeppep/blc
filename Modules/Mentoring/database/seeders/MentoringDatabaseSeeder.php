@@ -11,6 +11,9 @@ class MentoringDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+         $this->call([
+             MentoringSeeder::class,
+             MentoringSessionSeeder::class,
+         ]);
     }
 }

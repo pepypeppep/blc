@@ -19,18 +19,66 @@ class Mentoring extends Model
     public const STATUS_SUBMISSION = "Pengajuan";
     public const STATUS_PROCESS = "Proses";
     public const STATUS_DONE = "Selesai";
+    public const STATUS_EVALUATION = "Penilaian";
     public const STATUS_REJECT = "Tolak";
 
-    public function mentor() : BelongsTo {
+    public function mentor(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'mentor_id', 'id');
     }
 
-    public function mentee() : BelongsTo {
+    public function mentee(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'mentee_id', 'id');
     }
 
-    public function mentoringSessions() {
+    public function mentoringSessions()
+    {
         return $this->hasMany(MentoringSession::class);
+    }
+
+    public function getStatAttribute(): array
+    {
+        if ($this->status === $this::STATUS_DRAFT) {
+            return [
+                'label' => 'Draft',
+                'color' => 'secondary'
+            ];
+        }
+        if ($this->status === $this::STATUS_SUBMISSION) {
+            return [
+                'label' => 'Pengajuan',
+                'color' => 'warning'
+            ];
+        }
+        if ($this->status === $this::STATUS_PROCESS) {
+            return [
+                'label' => 'Proses',
+                'color' => 'info'
+            ];
+        }
+        if ($this->status === $this::STATUS_EVALUATION) {
+            return [
+                'label' => 'Penilaian',
+                'color' => 'primary'
+            ];
+        }
+        if ($this->status === $this::STATUS_DONE) {
+            return [
+                'label' => 'Selesai',
+                'color' => 'success'
+            ];
+        }
+        if ($this->status === $this::STATUS_REJECT) {
+            return [
+                'label' => 'Ditolak',
+                'color' => 'danger'
+            ];
+        }
+        return [
+            'label' => 'Unknown',
+            'color' => 'secondary'
+        ];
     }
 
     public function isProcessOrDone(): bool
@@ -48,5 +96,4 @@ class Mentoring extends Model
         }
         abort(404);
     }
-
 }

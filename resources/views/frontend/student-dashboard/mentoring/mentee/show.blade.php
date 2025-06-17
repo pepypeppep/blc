@@ -125,7 +125,7 @@
                         </ul>
                     @endif
                 @endforeach
-                
+
                 <div class="mb-3 d-flex justify-content-between align-items-center">
                     <div>
                         <h6><strong>Laporan Akhir Mentoring</strong></h6>
@@ -136,8 +136,8 @@
                     @if ($mentoring->isProcessOrDone() && !$hasIncompleteSessions)
                         @if ($mentoring->final_report)
                             <div class="mt-2">
-                                <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}" 
-                                target="_blank" 
+                                <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
+                                target="_blank"
                                 class="btn btn-outline-primary btn-sm">
                                     <i class="fa fa-file-pdf"></i> Buka di Tab Baru
                                 </a>
@@ -156,10 +156,10 @@
                     @endif
                     @if ($mentoring->isProcessOrDone() && !$hasIncompleteSessions)
                         @if ($mentoring->final_report)
-                            <embed src="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}" 
-                                type="application/pdf" 
-                                width="100%" 
-                                height="500px" 
+                            <embed src="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
+                                type="application/pdf"
+                                width="100%"
+                                height="500px"
                                 class="border rounded shadow-sm" />
                         @else
                         <form action="{{ route('student.mentee.report', $mentoring->id) }}" method="POST" enctype="multipart/form-data">
@@ -171,7 +171,7 @@
                                 </span>
                                 <input id="file_name" readonly class="form-control" type="text"
                                     placeholder="Belum ada file dipilih" onclick="document.getElementById('final_report').click();">
-                                
+
                                 <input id="final_report" name="final_report" class="d-none" type="file"
                                     onchange="document.getElementById('file_name').value = this.files[0]?.name || '';"
                                     accept=".pdf" required>

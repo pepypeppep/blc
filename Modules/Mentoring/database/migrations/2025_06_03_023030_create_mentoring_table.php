@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('mentoring', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
-            $table->text('purpose');
+            $table->text('description')->nullable();
+            $table->text('purpose')->nullable();
             $table->integer('total_session');
             $table->string('mentor_availability_letter');
-            $table->string('final_report');
+            $table->string('final_report')->nullable();
             $table->unsignedBigInteger('mentor_id')->onDelete('cascade');
             $table->unsignedBigInteger('mentee_id')->onDelete('cascade');
             $table->string('status')->default('Draft');
+            $table->string('reason')->nullable();
             $table->timestamps();
         });
     }

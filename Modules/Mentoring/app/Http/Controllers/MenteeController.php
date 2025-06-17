@@ -17,9 +17,11 @@ class MenteeController extends Controller
     public function index()
     {
         $user = userAuth();
-        $mentorings = Mentoring::where('mentee_id', $user->id)->orderBy('id', 'asc')->get();
+        $mentorings = Mentoring::where('mentee_id', $user->id)->orderByDesc('id')->paginate();
+
         return view('frontend.student-dashboard.mentoring.mentee.index', compact('mentorings'));
     }
+
 
     public function create()
     {
@@ -93,7 +95,7 @@ class MenteeController extends Controller
     public function show($id)
     {
         $mentoring = Mentoring::with('mentor', 'mentoringSessions')->findOrFail($id);
-        $hasIncompleteSessions = $mentoring->mentoringSessions->contains(function($session) {
+        $hasIncompleteSessions = $mentoring->mentoringSessions->contains(function ($session) {
             return empty($session->activity);
         });
         return view('frontend.student-dashboard.mentoring.mentee.show', compact('mentoring', 'hasIncompleteSessions'));
@@ -142,7 +144,7 @@ class MenteeController extends Controller
             Storage::disk('private')->put($fileName, file_get_contents($img));
             $session->image = $fileName;
         }
-        
+
         $session->save();
 
         //kirim notifikasi

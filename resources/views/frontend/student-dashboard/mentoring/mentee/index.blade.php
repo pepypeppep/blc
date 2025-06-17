@@ -38,7 +38,7 @@
                                         $badgeClass = $statusColors[$mentoring->status] ?? 'bg-light text-dark';
                                     @endphp
 
-                                    <td class="text-center"> 
+                                    <td class="text-center">
                                         <div class="badge {{ $badgeClass }}">
                                             {{ $mentoring->status }}
                                         </div>
@@ -68,6 +68,9 @@
                         </tbody>
                     </table>
 
+                    <div class="d-flex justify-content-center">
+                        {{ $mentorings->links() }}
+                    </div>
                 </div>
             </div>
         </div>

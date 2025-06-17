@@ -3,7 +3,7 @@
 @section('dashboard-contents')
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between">
-            <h4 class="title">{{ __('Mentee') }}</h4>
+            <h4 class="title">{{ __('Mentoring List') }}</h4>
             <div>
                 <button type="button" onclick="location.href='{{ route('student.mentee.create') }}'"
                     class="btn">{{ __('Tambah Tema Mentoring') }}</button>

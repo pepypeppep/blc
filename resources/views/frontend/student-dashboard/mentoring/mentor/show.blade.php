@@ -6,8 +6,13 @@
 
 @section('dashboard-contents')
     <div class="dashboard__content-wrap">
-        <div class="dashboard__content-title">
-            <h4 class="title">{{ __('Mentoring') }} "{{ $mentoring->title }}"</h4>
+        <div class="dashboard__content-title d-flex justify-content-between align-items-center">
+            <h4 class="">{{ __('Detail Tema Mentoring') }}</h4>
+            <a href="{{ route('student.mentor.index') }}" class="btn btn-secondary btn-sm">{{ __('Kembali') }}</a>
+        </div>
+
+        @if ($mentoring->status == Mentoring::STATUS_EVALUATION || $mentoring->status == Mentoring::STATUS_DONE)
+        <div class="mt-3 border-top pt-3">
             @if ($mentoring->status == Mentoring::STATUS_EVALUATION)
                 <div class="mt-2 alert alert-warning" role="alert">
                     <strong>{{ __('Silahkan Menyelesaikan Evaluasi melalui tautan berikut') }}</strong>
@@ -25,64 +30,175 @@
                 </div>
             @endif
         </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="row">
-                    <div class="col-md-6 mt-2">
-                        <div>
-                            <h6 class="title">{{ __('Title') }}</h6>
-                            <p>{{ $mentoring->title }}</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mt-3">
-                        <div>
-                            <h6 class="mentor">{{ __('Mentor') }}</h6>
-                            <span>{{ $mentoring->mentor->name }}({{ $mentoring->mentor->email }})</span>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mt-2">
-                        <div>
-                            <h6 class="purpose">{{ __('Purpose') }}</h6>
-                            <span>{{ $mentoring->purpose }}</span>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mt-2">
-                        <div>
-                            <h6 class="description">{{ __('Description') }}</h6>
-                            <span>{{ $mentoring->description }}</span>
-                        </div>
-                    </div>
-                    <div class="col-md-12 mt-2">
-                        <div class="form-group">
-                            <h6 for="file">{{ __('Surat Kesediaan Mentor') }}
-                            </h6>
-                            <span>{{ $mentoring->mentor_availability_letter ? $mentoring->mentor_availability_letter : '-' }}</span>
+        @endif
+
+         <div class="mt-3 border-top pt-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">{{ $mentoring->title }}</h5>
+                <span class="badge fs-6
+                    @php
+                        $statusColors = [
+                            'Draft' => 'bg-secondary',
+                            'Pengajuan' => 'bg-warning',
+                            'Proses' => 'bg-info',
+                            'Selesai' => 'bg-success',
+                            'Tolak' => 'bg-danger',
+                        ];
+                        echo $statusColors[$mentoring->status] ?? 'bg-light text-dark';
+                    @endphp
+                ">
+                    {{ $mentoring->status }}
+                </span>
+            </div>
+
+            <div class="mb-3 border-top pt-3 mt-4">
+                <h6 class="title">{{ __('Main Issue') }}</h6>
+                <div>{!! $mentoring->description !!}</div>
+            </div>
+
+            <div class="mb-3">
+                <h6 class="title">{{ __('Purpose') }}</h6>
+                <div>{!! $mentoring->purpose !!}</div>
+            </div>
+
+            <div class="mb-3 d-flex align-items-center gap-4 border-top pt-3 mt-4">
+                <div>
+                    <h6 class="mb-1 title">{{ __('Mentor') }}</h6>
+                    <p class="mb-0">{{ $mentoring->mentor->name ?? '-' }}</p>
+                </div>
+
+                <div class="text-end flex-grow-1">
+                    <h6 class="mb-1 title">{{ __('Surat Kesediaan Mentor') }}</h6>
+                    @if ($mentoring->mentor_availability_letter)
+                        <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'mentor_availability_letter']) }}" target="_blank" class="btn-outline-primary btn-sm">
+                            <i class="fa fa-file-pdf"></i> Lihat Surat
+                        </a>
+                    @else
+                        <p class="text-muted mb-0">Tidak ada file.</p>
+                    @endif
+                </div>
+            </div>
+
+            <div class="mb-3 d-flex justify-content-between align-items-center border-top pt-3 mt-4">
+                <div>
+                    <h6 class="title">{{ __('Session Datetime') }} <span title="Jumlah pertemuan">({{ $mentoring->total_session }})</span></h6>
+                    <span class="text-muted small">
+                        Lakukan sesi mentoring sesuai jadwal dan laporkan hasil penugasan.
+                    </span>
+                </div>
+            </div>
+
+            <div class="accordion" id="accordionPanelsStayOpenExample">
+                @foreach($mentoring->mentoringSessions as $session)
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-{{$loop->iteration}}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-{{$loop->iteration}}">
+                            <div class="d-block">
+                                <div>
+                                    <strong>Pertemuan {{ $loop->iteration }}</strong>
+                                    {!! !empty($session->activity) ? '<span class="badge bg-info">Terisi</span>' : '' !!}
+                                </div>
+                                <div>
+                                    <small class="text-muted">
+                                        {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}
+                                    </small>
+                                </div>
+                            </div>
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapse-{{$loop->iteration}}" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            @if(!empty($session->activity))
+                                <div>
+                                    <strong class="d-block">Deskripsi Kegiatan:</strong>
+                                    <div class="text-body">{!! $session->activity ?: '<em>Tidak ada deskripsi kegiatan.</em>' !!}</div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <strong class="d-block">Hambatan:</strong>
+                                    <div class="text-body">{!! $session->description ?: '<em>Tidak ada hambatan dicatat.</em>' !!}</div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <strong class="d-block">Dokumentasi:</strong>
+                                    @if ($session->image && Storage::disk('private')->exists($session->image))
+                                        <a href="{{ route('student.mentee.view.img', $session->id) }}" target="_blank">
+                                            <img src="{{ route('student.mentee.view.img', $session->id) }}" alt="img" class="img-thumbnail mt-2" style="max-width: 200px;">
+                                        </a>
+                                    @else
+                                        <p class="text-muted"><em>Belum ada dokumentasi gambar.</em></p>
+                                    @endif
+                                </div>
+
+                                <div class="mb-2">
+                                    <form action="{{ route('student.mentor.review', $session->id) }}" method="POST" class="d-inline"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    @method('POST')
+                                        <div class="form-group mt-4">
+                                            <label for="mentoring_note">{{ __('Catatan') }} <code>*</code></label>
+                                            <textarea name="mentoring_note" class="text-editor form-control summernote">{!! clean(@$session?->mentoring_note) !!}</textarea>
+                                        </div>
+                                        <div class="form-group mt-4">
+                                            <label for="mentoring_instructions">{{ __('Arahan') }} <code>*</code></label>
+                                            <textarea name="mentoring_instructions" class="text-editor form-control summernote">{!! clean(@$session?->mentoring_instructions) !!}</textarea>
+                                        </div>
+                                        @if (!$session->mentoring_note && !$session->mentoring_instructions && $mentoring->status == 'Proses')
+                                            <div class="row">
+                                                <div class="col-12 text-end">
+
+                                                    <button type="submit" class="btn mt-4 mb-3">
+                                                        {{ __('Kirim') }} <i class="fa fa-arrow-right"></i>
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </form>
+                                </div>
+                            @else
+                                <div class="text-center">
+                                    <h4 class="text-muted">Belum ada kegiatan</h4>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 mt-4">
-                <h4 class="title">{{ __('Sessions') }}</h4>
-                @foreach ($mentoring->mentoringSessions as $key => $session)
-                    <div class="my-2 border-bottom border-2 py-4">
-                        <h5>{{ __('Session') }} {{ \Carbon\Carbon::parse($session->mentoring_date)->format('d M Y') }}
-                        </h5>
-                        @if ($mentoring->status == Mentoring::STATUS_PROCESS || $mentoring->status == Mentoring::STATUS_DONE)
-                            @if (
-                                $session->activity &&
-                                    $session->description &&
-                                    $session->image &&
-                                    (!$session->mentoring_note && !$session->mentoring_instructions) &&
-                                    $mentoring->status == 'Proses')
-                                @include('frontend.student-dashboard.mentoring.mentor.partials.session-submit')
-                            @elseif ($mentoring->status == 'Proses' && $session->mentoring_note && $session->mentoring_instructions)
-                                @include('frontend.student-dashboard.mentoring.mentor.partials.session-done')
-                            @endif
-                        @endif
-                    </div>
                 @endforeach
             </div>
+
+            <div class="mb-3 d-flex justify-content-between align-items-center border-top pt-3 mt-4">
+                <div>
+                    <h6 class="title">Laporan Akhir Mentoring</h6>
+                    <span class="text-muted small">
+                        Laporan akhir dari kegiatan mentoring yang telah dilakukan.
+                    </span>
+                </div>
+                @if ($mentoring->isProcessOrDone() && !$hasIncompleteSessions)
+                    @if ($mentoring->final_report)
+                        <div class="mt-2">
+                            <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
+                            target="_blank"
+                            class="btn btn-outline-primary btn-sm">
+                                <i class="fa fa-file-pdf"></i> Buka di Tab Baru
+                            </a>
+                        </div>
+                    @endif
+                @endif
+            </div>
+            <div class="mb-3">
+                @if ($mentoring->isProcessOrDone() && !$hasIncompleteSessions)
+                    @if ($mentoring->final_report)
+                        <embed src="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
+                            type="application/pdf"
+                            width="100%"
+                            height="500px"
+                            class="border rounded shadow-sm" />
+                    @endif
+                @endif
+            </div>
         </div>
+
         @if ($mentoring->status == Mentoring::STATUS_SUBMISSION)
             <div class="row">
                 <div class="col-12 justify-content-between d-flex align-items-center">
@@ -157,7 +273,6 @@
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
-                    event.target.submit();
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya, Proses!',
             }).then((result) => {

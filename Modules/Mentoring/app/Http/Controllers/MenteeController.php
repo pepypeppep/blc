@@ -17,7 +17,7 @@ class MenteeController extends Controller
     public function index()
     {
         $user = userAuth();
-        $mentorings = Mentoring::where('mentee_id', $user->id)->orderByDesc('id')->paginate();
+        $mentorings = Mentoring::where('mentee_id', $user->id)->orderByDesc('id')->paginate(10);
 
         return view('frontend.student-dashboard.mentoring.mentee.index', compact('mentorings'));
     }

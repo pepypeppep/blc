@@ -24,6 +24,7 @@ class MentorController extends Controller
                     ->orWhere('status', Mentoring::STATUS_EVALUATION)
                     ->orWhere('status', Mentoring::STATUS_DONE);
             })
+            ->orderByDesc('id')
             ->paginate(10);
         return view('frontend.student-dashboard.mentoring.mentor.index', compact('mentorTopics'));
     }
@@ -34,12 +35,15 @@ class MentorController extends Controller
         $mentoring = Mentoring::with(["mentoringSessions" => function ($query) {
             $query->orderBy('mentoring_date', 'asc');
         }])->where('id', $id)->where('mentor_id', $user->id)->first();
+        $hasIncompleteSessions = $mentoring->mentoringSessions->contains(function ($session) {
+            return empty($session->activity);
+        });
 
         if (!$mentoring) {
             return redirect()->back()->with(['messege' => 'Mentoring not found', 'alert-type' => 'error']);
         }
 
-        return view('frontend.student-dashboard.mentoring.mentor.show', compact('mentoring'));
+        return view('frontend.student-dashboard.mentoring.mentor.show', compact('mentoring', 'hasIncompleteSessions'));
     }
 
     public function reject(Request $request, $id)
@@ -96,7 +100,7 @@ class MentorController extends Controller
         $mentoring->status = Mentoring::STATUS_PROCESS;
         $mentoring->save();
 
-         // Send notification
+        // Send notification
         sendNotification([
             'user_id' => $mentoring->mentee_id,
             'title' => 'Pengajuan Mentoring Disetujui',
@@ -147,7 +151,7 @@ class MentorController extends Controller
         $session->status = MentoringSession::STATUS_REVIEWED;
         $session->save();
 
-         // Send notification
+        // Send notification
         sendNotification([
             'user_id' => $mentoring->mentee_id,
             'title' => 'Mentoring telah Direview oleh Mentor',

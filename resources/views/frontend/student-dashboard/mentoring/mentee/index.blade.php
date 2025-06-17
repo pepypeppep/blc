@@ -3,30 +3,24 @@
 @section('dashboard-contents')
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between">
-<<<<<<< HEAD
             <h4 class="title">{{ __('Mentoring List') }}</h4>
             <div>
                 <button type="button" onclick="location.href='{{ route('student.mentee.create') }}'"
                     class="btn">{{ __('Tambah Tema Mentoring') }}</button>
-=======
-            <h4 class="title">{{ __('Mentee') }}</h4>
-            <div>
-                <button type="button" onclick="location.href='{{ route('student.mentee.create') }}'"
-                        class="btn">{{ __('Tambah Topik') }}</button>
->>>>>>> module/mentoring
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-<<<<<<< HEAD
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
+                <div class="dashboard__review-table table-responsive">
+                    <table class="table table-borderless">
                         <thead>
                             <tr>
                                 <th>{{ __('#') }}</th>
-                                <th>{{ __('Judul') }}</th>
+                                <th>{{ __('Title') }}</th>
+                                <th>{{ __('Mentor') }}</th>
+                                <th>{{ __('Total Session') }}</th>
                                 <th class="text-center">{{ __('Status') }}</th>
-                                <th class="text-center">{{ __('Aksi') }}</th>
+                                <th class="text-center">{{ __('Action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,23 +28,9 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $mentoring->title }}</td>
-                                    @php
-                                        $statusColors = [
-                                            'Draft' => 'bg-secondary',
-                                            'Pengajuan' => 'bg-warning',
-                                            'Proses' => 'bg-info',
-                                            'Selesai' => 'bg-success',
-                                            'Tolak' => 'bg-danger',
-                                        ];
-
-                                        $badgeClass = $statusColors[$mentoring->status] ?? 'bg-light text-dark';
-                                    @endphp
-
-                                    <td class="text-center">
-                                        <div class="badge {{ $badgeClass }}">
-                                            {{ $mentoring->status }}
-                                        </div>
-                                    </td>
+                                    <td>{{ $mentoring->mentor->name }}</td>
+                                    <td class="text-center">{{ $mentoring->total_session }}</td>
+                                    <td class="text-center"><div class="badge bg-{{ $mentoring->stat['color'] }}">{{ $mentoring->stat['label'] }}</div></td>
                                     <td class="text-nowrap">
                                         <div class="dashboard__mentee-action d-inline-flex align-items-center gap-2">
                                             @if ($mentoring->status === 'Draft')
@@ -76,48 +56,10 @@
                         </tbody>
                     </table>
 
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center mt-3">
                         {{ $mentorings->links() }}
                     </div>
                 </div>
-=======
-                <div class="dashboard__review-table table-responsive">
-                    <table class="table table-borderless">
-                        <thead>
-                        <tr>
-                            <th>{{ __('#') }}</th>
-                            <th>{{ __('Title') }}</th>
-                            <th>{{ __('Mentor') }}</th>
-                            <th>{{ __('Total Session') }}</th>
-                            <th>{{ __('Status') }}</th>
-                            <th>{{ __('Action') }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @forelse ($menteeTopics as $key => $item)
-                            <tr>
-                                <td>{{ $key + 1 }}</td>
-                                <td>{{ $item->title }}</td>
-                                <td>{{ $item->mentor->name }}</td>
-                                <td>{{ $item->total_session }}</td>
-                                <td><div class="badge bg-{{ $item->stat['color'] }}">{{ $item->stat['label'] }}</div></td>
-                                <td class="text-center">
-                                    <a href="{{ route('student.mentee.show', $item->id) }}"
-                                       class="align-middle" data-bs-toggle="tooltip" title="Lihat selengkapnya">
-                                        <i class="fas fa-eye"></i> {{ __('View') }}
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center">{{ __('Pendaftaran Program Pendidikan Lanjutan belum dibuka') }}</td>
-                            </tr>
-                        @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                {{ $menteeTopics->links() }}
->>>>>>> module/mentoring
             </div>
         </div>
     </div>

@@ -8,7 +8,7 @@
 </div>
 <div class="form-group mt-2">
     <h6 for="file">{{ __('Foto') }}</h6>
-    <a href="{{ route('student.mentee.laporan-foto', $session->id) }}" target="_blank">{{ $session->image }}</a>
+    {{-- <a href="{{ route('student.mentee.laporan-foto', $session->id) }}" target="_blank">{{ $session->image }}</a> --}}
 </div>
 <form action="{{ route('student.mentor.review', $session->id) }}" method="POST" class="d-inline"
     enctype="multipart/form-data">

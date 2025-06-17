@@ -16,15 +16,16 @@ use Modules\Mentoring\app\Http\Controllers\MentorController;
 */
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' => 'student.'], function () {
-    Route::group(['prefix' => 'mentee', 'as' => 'mentee.'], function () {
+    Route::prefix('/mentee')->name('mentee.')->group(function () {
         Route::get('/', [MenteeController::class, 'index'])->name('index');
-        Route::get('create', [MenteeController::class, 'create'])->name('create');
-        Route::post('store', [MenteeController::class, 'store'])->name('store');
-        Route::get('{id}/show', [MenteeController::class, 'show'])->name('show');
-        Route::post('{id}/ajukan', [MenteeController::class, 'ajukan'])->name('ajukan');
-        Route::post('{id}/lapor', [MenteeController::class, 'lapor'])->name('lapor');
-        Route::get('{id}/laporan-foto', [MenteeController::class, 'getReportFoto'])->name('laporan-foto');
-        Route::get('{id}/surat-kesediaan', [MenteeController::class, 'getSuratKesediaan'])->name('surat-kesediaan');
+        Route::get('/create', [MenteeController::class, 'create'])->name('create');
+        Route::post('/', [MenteeController::class, 'store'])->name('store');
+        Route::put('/session/update', [MenteeController::class, 'updateSession'])->name('update.session');
+        Route::put('/{mentoring}/report', [MenteeController::class, 'updateFinalReport'])->name('report');
+        Route::get('/{id}', [MenteeController::class, 'show'])->name('show');
+        Route::get('/{id}/document/{type}', [MenteeController::class, 'showDocument'])->name('view.document');
+        Route::get('/{id}/img', [MenteeController::class, 'viewImage'])->name('view.img');
+        Route::put('/{id}/submit', [MenteeController::class, 'submitForApproval'])->name('submit');
     });
 
     Route::group(['prefix' => 'mentor', 'as' => 'mentor.'], function () {

@@ -2098,10 +2098,14 @@
     "Registrant": "Pendaftar",
     "Certificate Verification": "Verifikasi Sertifikat",
     "Certificate Image": "Gambar Sertifikat",
-    "Total Session": "Jumlah Sesi",
+    "Main Issue": "Pokok Permasalahan",
+    "Purpose": "Tujuan",
+    "Total Session": "Jumlah Pertemuan",
+    "Session Datetime": "Pelaksanaan Pertemuan",
+    "Upload Mentor Availability Letter": "Unggah Surat Kesediaan Mentor",
+    "Mentoring List": "Daftar Mentoring",
     "Session Name": "Nama Sesi",
     "Session": "Sesi",
     "Sessions": "Sesi",
-    "Purpose": "Tujuan",
     "Activity": "Kegiatan"
 }

@@ -3,13 +3,11 @@
 namespace Modules\Mentoring\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Modules\Mentoring\app\Models\Mentoring;
 use Modules\Mentoring\app\Models\MentoringSession;
+use app\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MenteeController extends Controller
 {
@@ -18,207 +16,191 @@ class MenteeController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-        $menteeTopics = Mentoring::where('mentee_id', $user->id)->paginate(10);
-        return view('frontend.student-dashboard.mentoring.mentee.index', compact('menteeTopics'));
+        $user = userAuth();
+        $mentorings = Mentoring::where('mentee_id', $user->id)->orderByDesc('id')->paginate();
+
+        return view('frontend.student-dashboard.mentoring.mentee.index', compact('mentorings'));
     }
 
-    public function create(Request $request): object
+
+    public function create()
     {
         $mentors = User::all();
         return view('frontend.student-dashboard.mentoring.mentee.create', compact('mentors'));
     }
 
-    public function store(Request $request): object
+    public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'purpose' => 'required',
-            'total_session' => 'required|integer|min:1|max:7',
-            'file_name' => 'required|string|max:255',
-            'file' => 'required|mimes:pdf|max:2048',
-        ], [
-            'file.required' => 'File is required',
-            'file_name.required' => 'File name is required',
-            'title.required' => 'Title is required',
-            'description.required' => 'Description is required',
-            'purpose.required' => 'Purpose is required',
-            'total_session.required' => 'Total session is required',
-            'file.mimes' => 'File must be pdf',
-            'file.max' => 'File size must be less than 2MB',
+        $user = userAuth();
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'main_issue' => 'required|string',
+            'purpose' => 'required|string',
+            'total_session' => 'required|integer|min:3',
+            'sessions' => 'required|array|min:3',
+            'sessions.*' => 'required|date',
+            'mentor' => 'required|exists:users,id',
+            'file' => 'required|file|mimes:pdf|max:5120',
         ]);
 
-        for ($i = 1; $i <= $request->total_session; $i++) {
-            if (!$request->hasAny(['session_' . $i, 'session_date_' . $i])) {
-                return redirect()->back()->with(['messege' => 'Session ' . $i . ' is required', 'alert-type' => 'error']);
+        //Cek ketentuan pelaksanaan pertemuan
+        $monthlyCount = [];
+        foreach ($validated['sessions'] as $session) {
+            $monthKey = \Carbon\Carbon::parse($session)->format('Y-m');
+
+            if (!isset($monthlyCount[$monthKey])) {
+                $monthlyCount[$monthKey] = 0;
+            }
+
+            $monthlyCount[$monthKey]++;
+
+            if ($monthlyCount[$monthKey] > 2) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['sessions' => 'Maaf Anda hanya diperbolehkan mengajukan maksimal 2 pertemuan dalam satu bulan. Permintaan Anda melebihi batas yang telah ditentukan.']);
             }
         }
 
-        try {
-            DB::beginTransaction();
+        $mentoring = Mentoring::create([
+            'title' => $validated['title'],
+            'description' => $validated['main_issue'],
+            'purpose' => $validated['purpose'],
+            'total_session' => $validated['total_session'],
+            'mentor_id' => $validated['mentor'],
+            'mentee_id' => $user->id,
+            'status' => Mentoring::STATUS_DRAFT,
+        ]);
 
+        if ($request->hasFile('file')) {
+            $path = 'mentoring/' . now()->year . '/' . $mentoring->id . '/';
             $file = $request->file('file');
-            $filename = 'surat-kesediaan-mentor' . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $path = Storage::disk('private')->put('mentoring/documents/'  . $filename, file_get_contents($file));
+            $fileName = $path . 'mentor_letter' . $file->getClientOriginalExtension();
+            Storage::disk('private')->put($fileName, file_get_contents($file));
 
-            $mentoring = Mentoring::create([
-                'title' => $request->title,
-                'description' => $request->description,
-                'purpose' => $request->purpose,
-                'total_session' => $request->total_session,
-                'mentor_id' => $request->mentor,
-                'mentee_id' => userAuth()->id,
-                'mentor_availability_letter' => $path,
-                'status' => Mentoring::STATUS_DRAFT,
+            $mentoring->update([
+                'mentor_availability_letter' => $fileName
             ]);
-
-            for ($i = 1; $i <= $request->total_session; $i++) {
-                Mentoringsession::create([
-                    'mentoring_id' => $mentoring->id,
-                    'activity' => $request['session_' . $i],
-                    'description' => $request['session_description_' . $i],
-                    'mentoring_date' => $request['session_date_' . $i],
-                    'status' => MentoringSession::STATUS_PENDING,
-
-                ]);
-            }
-
-            DB::commit();
-            return redirect()->route('student.mentee.index')->with(['messege' => __('Mentoring Topic Added'), 'alert-type' => 'success']);
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return redirect()->back()->with(['messege' => $th->getMessage(), 'alert-type' => 'error']);
         }
+
+        foreach ($validated['sessions'] as $dateTime) {
+            MentoringSession::create([
+                'mentoring_id' => $mentoring->id,
+                'mentoring_date' => $dateTime,
+            ]);
+        }
+
+        return redirect()->route('student.mentee.index')->with('success', 'Tema mentoring berhasil ditambah!');
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $user = auth()->user();
-        $mentoring = Mentoring::with(["mentoringSessions" => function ($query) {
-            $query->orderBy('mentoring_date', 'asc');
-        }])->where('id', $id)->where('mentee_id', $user->id)->first();
-
-        if (!$mentoring) {
-            return redirect()->back()->with(['messege' => 'Mentoring not found', 'alert-type' => 'error']);
-        }
-
-        return view('frontend.student-dashboard.mentoring.mentee.show', compact('mentoring'));
+        $mentoring = Mentoring::with('mentor', 'mentoringSessions')->findOrFail($id);
+        $hasIncompleteSessions = $mentoring->mentoringSessions->contains(function ($session) {
+            return empty($session->activity);
+        });
+        return view('frontend.student-dashboard.mentoring.mentee.show', compact('mentoring', 'hasIncompleteSessions'));
     }
 
-    public function ajukan(Request $request, $id)
+    public function submitForApproval($id)
     {
-        $user = auth()->user();
-        $mentoring = Mentoring::where('id', $id)->where('mentee_id', $user->id)->first();
-
-        if (!$mentoring) {
-            return redirect()->back()->with(['messege' => 'Mentoring not found', 'alert-type' => 'error']);
-        }
-
-        if ($mentoring->status != Mentoring::STATUS_DRAFT) {
-            return redirect()->back()->with(['messege' => 'Pengajuan hanya bisa dilakukan jika memiliki status Draft', 'alert-type' => 'error']);
+        $mentoring = Mentoring::findOrFail($id);
+        if ($mentoring->status !== Mentoring::STATUS_DRAFT) {
+            return back()->with('error', 'Mentoring sudah diajukan.');
         }
 
         $mentoring->status = Mentoring::STATUS_SUBMISSION;
+        $mentoring->updated_at = now();
         $mentoring->save();
 
-        return redirect()->route('student.mentee.show', $mentoring->id)->with(['messege' => 'Pengajuan berhasil', 'alert-type' => 'success']);
-    }
-
-    public function lapor(Request $request, $id)
-    {
-        $request->validate([
-            'file' => 'required|mimes:jpeg,png,jpg|max:2048',
-            'activity' => 'required|string|max:255',
-            'description' => 'required|string|max:1000',
-        ], [
-            'activity.required' => 'Activity is required',
-            'description.required' => 'Description is required',
-            'file.required' => 'File is required',
-            'file.mimes' => 'File must be jpeg, png, or jpg',
-            'file.max' => 'File size must be less than 2MB',
+        //kirim notifikasi
+        sendNotification([
+            'user_id' => $mentoring->mentor_id,
+            'title' => 'Pengajuan Mentoring Baru',
+            'body' => "Seorang mentee telah mengajukan permohonan mentoring. Silakan tinjau dan tindak lanjuti.",
+            'link' => route('student.mentor.index'),
+            'path' => null,
         ]);
 
-        $user = auth()->user();
-        $session = MentoringSession::with('mentoring')->where('id', $id)->first();
-
-        if (!$session) {
-            return redirect()->back()->with(['messege' => 'Mentoring not found', 'alert-type' => 'error']);
-        }
-
-        if ($session->mentoring->mentee_id != $user->id) {
-            return redirect()->back()->with(['messege' => 'Anda tidak memiliki akses ke sesi ini', 'alert-type' => 'error']);
-        }
-
-        if ($session->mentoring->status != Mentoring::STATUS_PROCESS) {
-            return redirect()->back()->with(['messege' => 'Laporan hanya bisa dilakukan jika memiliki status Process', 'alert-type' => 'error']);
-        }
-
-        if ($session->mentoring_date > \Carbon\Carbon::now()) {
-            return redirect()->back()->with(['messege' => 'Laporan hanya bisa dilakukan setelah tanggal sesi dimulai', 'alert-type' => 'error']);
-        }
-
-        try {
-            $file = $request->file('file');
-            $filename = 'laporan-photo' . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $path = Storage::disk('private')->put('mentoring/photos/' . $session->mentoring_id . '/' . $filename, file_get_contents($file));
-
-            if (!$path) {
-                return redirect()->back()->with(['messege' => 'Gagal menyimpan file', 'alert-type' => 'error']);
-            }
-
-
-            $session->activity = $request->activity;
-            $session->description = $request->description;
-            $session->image = $filename;
-            $session->status = MentoringSession::STATUS_REPORTED;
-            $session->save();
-
-            return redirect()->route('student.mentee.show', $session->mentoring_id)->with(['messege' => 'Laporan berhasil dikirim', 'alert-type' => 'success']);
-        } catch (\Throwable $th) {
-            return redirect()->back()->with(['messege' => $th->getMessage(), 'alert-type' => 'error']);
-        }
+        return redirect()->route('student.mentee.index')->with('success', 'Mentoring berhasil diajukan.');
     }
 
-    public function getReportFoto($id)
+    public function updateSession(Request $request)
     {
-        $user = auth()->user();
-        $session = MentoringSession::with('mentoring')->where('id', $id)->first();
+        $request->validate([
+            'session_id' => 'required|exists:mentoring_sessions,id',
+            'activity' => 'required|string',
+            'obstacle' => 'nullable|string',
+            'image' => 'required|image|mimes:jpeg,png|max:2048',
+        ]);
 
-        if (!$session) {
-            return redirect()->back()->with(['messege' => 'Sesi mentoring tidak ditemukan', 'alert-type' => 'error']);
+        $session = MentoringSession::with('mentoring')->findOrFail($request->session_id);
+        $session->activity = $request->activity;
+        $session->description = $request->obstacle;
+
+        if ($request->hasFile('image')) {
+            $path = 'mentoring/' . now()->year . '/' . $session->mentoring_id . '/';
+            $img = $request->file('image');
+            $fileName = $path . 'documentation/' . $session->id . "." . $img->getClientOriginalExtension();
+            Storage::disk('private')->put($fileName, file_get_contents($img));
+            $session->image = $fileName;
         }
 
-        if ($session->image) {
-            $filePath = 'mentoring/photos/' . $session->mentoring_id . '/' . $session->image;
-            if (Storage::disk('private')->exists($filePath)) {
-                return Storage::disk('private')->download($filePath);
-            } else {
-                return redirect()->back()->with(['messege' => 'File tidak ditemukan', 'alert-type' => 'error']);
-            }
-        } else {
-            return redirect()->back()->with(['messege' => 'Tidak ada foto laporan yang tersedia', 'alert-type' => 'error']);
-        }
+        $session->save();
+
+        //kirim notifikasi
+        sendNotification([
+            'user_id' => $session->mentoring->mentor_id,
+            'title' => 'Laporan Pertemuan Baru',
+            'body' => "Mentee telah melaporkan hasil pertemuan. Silakan periksa laporan tersebut.",
+            'link' => route('student.mentor.index'),
+            'path' => null,
+        ]);
+
+        return back()->with('success', 'Detail pertemuan berhasil diperbarui.');
     }
 
-    public function getSuratKesediaan($id)
+    public function updateFinalReport(Request $request, Mentoring $mentoring)
     {
-        $user = auth()->user();
-        $mentoring = Mentoring::where('id', $id)->where('mentee_id', $user->id)->orWhere('mentor_id', $user->id)->first();
+        $request->validate([
+            'final_report' => 'required|file|mimes:pdf,doc,docx|max:5120',
+        ]);
 
-        if (!$mentoring) {
-            return redirect()->back()->with(['messege' => 'Mentoring not found', 'alert-type' => 'error']);
+        if ($request->hasFile('final_report')) {
+            $path = 'mentoring/' . now()->year . '/' . $mentoring->id . '/';
+            $file = $request->file('final_report');
+            $fileName = $path . 'final_report' . $file->getClientOriginalExtension();
+            Storage::disk('private')->put($fileName, file_get_contents($file));
+
+            $mentoring->update([
+                'final_report' => $fileName
+            ]);
         }
 
-        if ($mentoring->mentor_availability_letter) {
-            $filePath = 'mentoring/documents/' . $mentoring->mentor_availability_letter;
-            if (Storage::disk('private')->exists($filePath)) {
-                return Storage::disk('private')->download($filePath);
-            } else {
-                return redirect()->back()->with(['messege' => 'File not found', 'alert-type' => 'error']);
-            }
+        //kirim notifikasi
+        sendNotification([
+            'user_id' => $mentoring->mentor_id,
+            'title' => 'Laporan Akhir Telah Diunggah',
+            'body' => "Mentee telah mengunggah laporan akhir mentoring. Silakan periksa dokumen tersebut.",
+            'link' => route('student.mentor.index'),
+            'path' => null,
+        ]);
+
+        return redirect()->back()->with('success', 'Laporan akhir berhasil diunggah.');
+    }
+
+    public function showDocument($id, $type)
+    {
+        $mentoring = Mentoring::findOrFail($id);
+        return $mentoring->getDocumentResponse($type);
+    }
+
+    public function viewImage($id)
+    {
+        $session = MentoringSession::findOrFail($id);
+        if (Storage::disk('private')->exists($session->image)) {
+            return Storage::disk('private')->response($session->image);
         } else {
-            return redirect()->back()->with(['messege' => 'No availability letter found', 'alert-type' => 'error']);
+            abort(404);
         }
     }
 }

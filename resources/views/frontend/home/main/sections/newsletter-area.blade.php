@@ -3,7 +3,7 @@
         <div class="row align-items-center">
             <div class="col-lg-4">
                 <div class="newsletter__img-wrap">
-                    <img src="{{ asset($newsletterSection?->global_content?->image) }}" alt="img">
+                    <img src="{{ route('get.section.asset',[$newsletterSection?->id,'image']) }}" alt="img">
                     <img src="{{ asset('frontend/img/others/newsletter_shape01.png') }}" alt="img" data-aos="fade-up"
                         data-aos-delay="400">
                     <img src="{{ asset('frontend/img/others/newsletter_shape02.png') }}" alt="img"

@@ -79,17 +79,17 @@
                                                         @enderror
                                                     </div>
                                                     <div class="form-group col-md-4">
-                                                        <label for="employment_grade">{{ __('Employment Grade') }} <span
+                                                        <label for="employee_grade_id">{{ __('Employment Grade') }} <span
                                                                 class="text-danger">*</span></label>
-                                                        <select name="employment_grade" class="form-control select2" id="employment_grade">
-                                                            @foreach(\App\Enums\EmploymentGrade::cases() as $grade)
-                                                                <option value="{{ $grade->value }}"
-                                                                    {{ $vacancy->employment_grade === $grade->value ? 'selected' : '' }}>
-                                                                    {{ $grade->label() }}
+                                                        <select name="employee_grade_id" class="form-control select2" id="employee_grade_id">
+                                                            @foreach($employeeGrades as $grade)
+                                                                <option value="{{ $grade->id }}"
+                                                                    {{ $vacancy->employee_grade_id == $grade->id ? 'selected' : '' }}>
+                                                                    {{ $grade->name }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
-                                                        @error('employment_grade')
+                                                        @error('employee_grade_id')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>
@@ -114,21 +114,21 @@
                                                                 class="text-danger">*</span></label>
                                                         <select name="education_level" class="form-control select2"
                                                             id="education_level">
-                                                            <option value="strata_1"
-                                                                {{ $vacancy->education_level == 'strata_1' ? 'selected' : '' }}>
+                                                            <option value="S-1"
+                                                                {{ $vacancy->education_level == 'S-1' ? 'selected' : '' }}>
                                                                 {{ __('Strata I') }}</option>
-                                                            <option value="strata_2"
-                                                                {{ $vacancy->education_level == 'strata_2' ? 'selected' : '' }}>
+                                                            <option value="S-2"
+                                                                {{ $vacancy->education_level == 'S-2' ? 'selected' : '' }}>
                                                                 {{ __('Strata II') }}</option>
-                                                            <option value="strata_3"
-                                                                {{ $vacancy->education_level == 'strata_3' ? 'selected' : '' }}>
+                                                            <option value="S-3"
+                                                                {{ $vacancy->education_level == 'S-3' ? 'selected' : '' }}>
                                                                 {{ __('Strata III') }}</option>
-                                                            <option value="profesi_ppds"
-                                                                {{ $vacancy->education_level == 'profesi_ppds' ? 'selected' : '' }}>
+                                                            <option value="Profesi PPDS"
+                                                                {{ $vacancy->education_level == 'Profesi PPDS' ? 'selected' : '' }}>
                                                                 {{ __('Profesi, PPDS (Dokter Spesialis)') }}
                                                             </option>
-                                                            <option value="ppds_subspesialis"
-                                                                {{ $vacancy->education_level == 'ppds_subspesialis' ? 'selected' : '' }}>
+                                                            <option value="PPDS Subspesialis"
+                                                                {{ $vacancy->education_level == 'PPDS Subspesialis' ? 'selected' : '' }}>
                                                                 {{ __('PPDS (Dokter Subspesialis)') }}
                                                             </option>
                                                         </select>

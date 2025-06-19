@@ -63,6 +63,7 @@ class DatabaseSeeder extends Seeder
             CustomPageSeeder::class,
             FooterSettingSeeder::class,
             CurrencySeeder::class,
+            EmployeeGradeSeeder::class,
 
             PendidikanLanjutanDatabaseSeeder::class,
             TagSeeder::class,
@@ -71,8 +72,6 @@ class DatabaseSeeder extends Seeder
             TosSeeder::class,
             CertificateRecognitionDatabaseSeeder::class,
             InstructorEvaluationDatabaseSeeder::class
-
-
         ]);
     }
 }

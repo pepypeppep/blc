@@ -1,0 +1,31 @@
+{
+    "name": "nwidart/pengumuman",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Pengumuman\\": "",
+            "Modules\\Pengumuman\\App\\": "app/",
+            "Modules\\Pengumuman\\Database\\Factories\\": "database/factories/",
+            "Modules\\Pengumuman\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Pengumuman\\Tests\\": "tests/"
+        }
+    }
+}

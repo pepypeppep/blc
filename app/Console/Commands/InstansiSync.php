@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Instansi;
+use App\Models\Unor;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
@@ -33,11 +34,15 @@ class InstansiSync extends Command
         $instansiDatas = json_decode(json_encode($response->json(), true));
 
         foreach ($instansiDatas->data as $instansiData) {
-            Instansi::updateOrCreate([
+            $instansi = Instansi::updateOrCreate([
                 'esurat_id' => $instansiData->uuid,
             ], [
                 'unor_id' => $instansiData->unor_id,
                 'name' => $instansiData->name,
+            ]);
+
+            Unor::where('id', $instansi->unor_id)->update([
+                'instansi_id' => $instansi->id,
             ]);
         }
 

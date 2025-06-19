@@ -33,5 +33,6 @@
     "PendidikanLanjutan": true,
     "Article": true,
     "CertificateRecognition": true,
+    "Pengumuman": true,
     "InstructorEvaluation": true
 }

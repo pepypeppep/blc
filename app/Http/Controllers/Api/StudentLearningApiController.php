@@ -629,7 +629,7 @@ class StudentLearningApiController extends Controller
                     ->get();
 
                 // Simpan cache sesuai due_date
-                Cache::put($cacheKey, $questions, Carbon::parse($quiz->due_date));
+                Cache::put($cacheKey, $questions, now()->addMinutes((int) $quiz->time));
             }
 
             // Menyembunyikan jawaban benar (correct) agar tidak bisa diakses dari frontend dan disalahgunakan
@@ -646,7 +646,7 @@ class StudentLearningApiController extends Controller
 
             $data = [
                 'quiz' => $quiz,
-                'attempt' => $attempt,
+                'user_attempt' => $attempt,
                 'due_date' => $quiz->due_date,
             ];
 
@@ -1210,5 +1210,24 @@ class StudentLearningApiController extends Controller
         }
 
         return $this->errorResponse('Rencana tindak lanjut gagal disimpan.', [], 500);
+    }
+
+    public function getFilePathUrl($type, $id)
+    {
+        try {
+            if ($type == 'lesson') {
+                $lesson = CourseChapterLesson::find($id);
+                return response()->file(Storage::disk('private')->path($lesson->file_path));
+            } else if ($type == 'rtl') {
+                $data = FollowUpActionResponse::find($id);
+                return response()->file(Storage::disk('private')->path('rtl/' . $data->participant_file));
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve file',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

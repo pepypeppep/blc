@@ -19,6 +19,10 @@
                 </li>
             @endadminCan
 
+            @if (Module::isEnabled('Pengumuman') && checkAdminHasPermission('pengumuman.view'))
+                    @include('pengumuman::sidebar')
+                @endif
+
             @if (checkAdminHasPermission('course.view') ||
                     checkAdminHasPermission('course.certificate.management') ||
                     checkAdminHasPermission('badge.management') ||
@@ -34,7 +38,7 @@
                     @include('certificatebuilder::sidebar')
                 @endif
 
-                @if (Module::isEnabled('CertificateRecognition') && checkAdminHasPermission('certificate.recognition.view'))
+                @if (Module::isEnabled('CertificateRecognition') && checkAdminHasPermission('sertifikat.pengakuan.view'))
                     @include('certificaterecognition::sidebar')
                 @endif
 

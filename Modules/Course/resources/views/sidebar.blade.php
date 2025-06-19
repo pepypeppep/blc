@@ -1,7 +1,7 @@
 @if (Module::isEnabled('Language') && Route::has('admin.course.index'))
     @php
         $pendingCourseCount = \App\Models\Course::where('is_approved', 'pending')->count();
-        if (auth()->user()->hasRole('Super Admin')) {
+        if (auth()->user()?->hasRole('Super Admin') || adminAuth()->hasRole('Super Admin')) {
             $courseIds = \App\Models\Course::where('status', 'active')->get()->pluck('id');
         } else {
             $courseIds = \App\Models\Course::where('instansi_id', auth()->user()->instansi_id)->where('status', 'active')->get()->pluck('id');

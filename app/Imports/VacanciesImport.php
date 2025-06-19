@@ -9,7 +9,9 @@ use Modules\PendidikanLanjutan\app\Models\Vacancy;
 use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
 use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
 use App\Enums\EmploymentGrade;
+use App\Models\EmployeeGrade;
 use App\Models\Instansi;
+use Modules\PendidikanLanjutan\app\Models\VacancyDetail;
 
 class VacanciesImport implements ToModel, WithHeadingRow
 {
@@ -34,23 +36,29 @@ class VacanciesImport implements ToModel, WithHeadingRow
             return null;
         }
 
-        if (!in_array($row['pangkatgolongan'], EmploymentGrade::values())) {
+        $employeeGrade = EmployeeGrade::where('name', $row['pangkatgolongan'])->first();
+        if (!$employeeGrade) {
             throw new \Exception("Invalid pangkat/golongan: {$row['pangkatgolongan']}");
         }
 
         // Dump the row for debugging purposes
         // dump($row);
 
-        $study = Study::firstOrCreate(['name' => $row['program_studi']]);
+        $study = Study::firstOrCreate([
+            'name' => $row['program_studi'],
+            'university' => $row['universitas'],
+            'grade' => $row['jenjang'],
+        ]);
         $studyId = $study->id ?? 1;
         $instansi = Instansi::where('name', $row['instansi'])->first();
+        $employeeGrade = EmployeeGrade::where('name', $row['pangkatgolongan'])->first();
 
         $existing = Vacancy::where('study_id', $studyId)
             ->where('instansi_id', $instansi->id)
             ->where('education_level', $row['jenjang'])
-            ->where('employment_grade', $row['pangkatgolongan'])
+            ->where('employee_grade_id', $employeeGrade->id)
             ->where('year', $row['tahun'])
-            ->whereHas('detail', function ($query) use ($row) {
+            ->whereHas('details', function ($query) use ($row) {
                 $query->where('employment_status', $row['status_kepegawaian'])
                     ->where('cost_type', $row['jenis_biaya'])
                     ->where('age_limit', $row['batas_usia']);
@@ -65,17 +73,16 @@ class VacanciesImport implements ToModel, WithHeadingRow
 
         $this->imported++;
 
-        $vacancy = new Vacancy([
+        $vacancy = Vacancy::firstOrCreate([
             'study_id' => $studyId,
             'instansi_id' => $instansi->id,
             'education_level' => $row['jenjang'],
-            'employment_grade' => $row['pangkatgolongan'],
+            'employee_grade_id' => $employeeGrade->id,
             'formation' => $row['jumlah_formasi'],
             'year' => $row['tahun'],
+        ], [
             'description' => $row['catatan'] ?? null, // Assuming 'catatan' is optional
         ]);
-
-        $vacancy->save();
 
         $vacancy->details()->create([
             'employment_status' => $row['status_kepegawaian'],

@@ -110,6 +110,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     // Public Certificate URL
     Route::get("/public/certificate/{uuid}", [CertificateController::class, 'publicCertificate'])->name('public.certificate');
 
+    Route::get("/get-section-asset/{id}/attr/{attr}", [HomePageController::class, 'getSectionAsset'])->name('get.section.asset');
+
 
 
     /**
@@ -168,7 +170,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
         Route::get('continuing-education', [StudentPendidikanLanjutanController::class, 'index'])->name('continuing-education');
         Route::get('continuing-education/{id}', [StudentPendidikanLanjutanController::class, 'continuingEducationDetail'])->name('continuing-education.show');
-        Route::post('continuing-education/{id}/register', [StudentPendidikanLanjutanController::class, 'register'])->name('continuing-education.register');
+        Route::post('continuing-education/{id}/ajukan-daftar', [StudentPendidikanLanjutanController::class, 'ajukanDaftar'])->name('continuing-education.ajukanDaftar');
+        Route::post('continuing-education/{id}/ajukan-berkas', [StudentPendidikanLanjutanController::class, 'ajukanBerkas'])->name('continuing-education.ajukanBerkas');
         Route::put('continuing-education/{id}/ajukan-kembali', [StudentPendidikanLanjutanController::class, 'ajukanKembali'])->name('continuing-education.ajukanKembali');
         Route::post('continuing-education-attachment/{id}', [StudentPendidikanLanjutanController::class, 'uploadRequirementFile'])->name('continuing-education.attachment');
         Route::get('continuing-education-attachment/{id}/{user_id}', [StudentPendidikanLanjutanController::class, 'viewRequirementFile'])->name('continuing-education.attachment.view');

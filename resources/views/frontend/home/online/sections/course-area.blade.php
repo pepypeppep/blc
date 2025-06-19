@@ -15,7 +15,11 @@
                                 $allCoursesIds = json_decode(
                                     $featuredCourse?->all_category_ids ? $featuredCourse->all_category_ids : '[]',
                                 );
-                                $allCourses = App\Models\Course::with('favoriteBy','category.translation', 'instructor:id,name')
+                                $allCourses = App\Models\Course::with(
+                                    'favoriteBy',
+                                    'category.translation',
+                                    'instructor:id,name',
+                                )
                                     ->whereIn('id', $allCoursesIds)
                                     ->withCount([
                                         'reviews as avg_rating' => function ($query) {
@@ -40,7 +44,8 @@
                                             ->first();
                                         $categoryOneIds = json_decode($featuredCourse->category_one_ids);
                                         $categoryOneCourses = App\Models\Course::with(
-                                            'favoriteBy','category.translation',
+                                            'favoriteBy',
+                                            'category.translation',
                                             'instructor:id,name',
                                         )
                                             ->whereIn('id', $categoryOneIds)
@@ -67,7 +72,8 @@
                                             ->first();
                                         $categoryTwoIds = json_decode($featuredCourse->category_two_ids);
                                         $categoryTwoCourses = App\Models\Course::with(
-                                            'favoriteBy','category.translation',
+                                            'favoriteBy',
+                                            'category.translation',
                                             'instructor:id,name',
                                         )
                                             ->whereIn('id', $categoryTwoIds)
@@ -96,7 +102,8 @@
                                             ->first();
                                         $categoryThreeIds = json_decode($featuredCourse->category_three_ids);
                                         $categoryThreeCourses = App\Models\Course::with(
-                                            'favoriteBy','category.translation',
+                                            'favoriteBy',
+                                            'category.translation',
                                             'instructor:id,name',
                                         )
                                             ->whereIn('id', $categoryThreeIds)
@@ -124,7 +131,8 @@
                                             ->first();
                                         $categoryFourIds = json_decode($featuredCourse->category_four_ids);
                                         $categoryFourCourses = App\Models\Course::with(
-                                            'favoriteBy','category.translation',
+                                            'favoriteBy',
+                                            'category.translation',
                                             'instructor:id,name',
                                         )
                                             ->whereIn('id', $categoryFourIds)
@@ -152,7 +160,8 @@
                                             ->first();
                                         $categoryFiveIds = json_decode($featuredCourse->category_five_ids);
                                         $categoryFiveCourses = App\Models\Course::with(
-                                            'favoriteBy','category.translation',
+                                            'favoriteBy',
+                                            'category.translation',
                                             'instructor:id,name',
                                         )
                                             ->whereIn('id', $categoryFiveIds)
@@ -184,17 +193,44 @@
                     <div class="swiper-wrapper">
                         @foreach ($allCourses ?? [] as $course)
                             <div class="swiper-slide">
-                                <div class="courses__item shine__animate-item">
-                                    <div class="courses__item-thumb">
+                                <div class="courses__item shine__animate-item position-relative">
+                                    {{-- <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
                                             <img src="{{ asset($course->thumbnail) }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
                                             <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
                                         </a>
+                                    </div> --}}
+                                    <div class="courses__item-thumb position-relative"
+                                        style="height: 260px; overflow: hidden; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                                        <!-- Badge Type (Kiri Atas) -->
+                                        <span
+                                            class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
+                                            style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
+                                            {{ $course->type }}
+                                        </span>
+
+                                        <!-- Wishlist Icon (Kanan Atas) -->
+                                        <a href="javascript:;" class="position-absolute top-0 end-0 m-2"
+                                            style="z-index: 10; color: #ff69b4;" data-slug="{{ $course?->slug }}"
+                                            aria-label="WishList">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart fa-lg"></i>
+                                        </a>
+
+                                        <!-- Gambar -->
+                                        <a href="{{ route('course.show', $course->slug) }}"
+                                            class="d-block w-100 h-100">
+                                            <img src="{{ $course->thumbnail_url }}" alt="img" class="w-100 h-100"
+                                                style="object-fit: cover; display: block;">
+                                        </a>
                                     </div>
+
+
                                     <div class="courses__item-content">
                                         <ul class="courses__item-meta list-wrap">
                                             <li class="courses__item-tag">
@@ -204,6 +240,7 @@
                                             <li class="avg-rating"><i class="fas fa-star"></i>
                                                 {{ number_format($course->avg_rating, 1) ?? 0 }}
                                             </li>
+
                                         </ul>
                                         <h5 class="title"><a
                                                 href="{{ route('course.show', $course->slug) }}">{{ truncate($course->title, 50) }}</a>
@@ -265,17 +302,45 @@
                     <div class="swiper-wrapper">
                         @foreach ($categoryOneCourses ?? [] as $course)
                             <div class="swiper-slide">
-                                <div class="courses__item shine__animate-item">
-                                    <div class="courses__item-thumb">
+                                <div class="courses__item shine__animate-item position-relative">
+                                    {{-- <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
                                             <img src="{{ asset($course->thumbnail) }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        </a>
+                                    </div> --}}
+                                    <div class="courses__item-thumb position-relative"
+                                        style="height: 260px; overflow: hidden; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                                        <!-- Badge Type (Kiri Atas) -->
+                                        <span
+                                            class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
+                                            style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
+                                            {{ $course->type }}
+                                        </span>
+
+                                        <!-- Wishlist Icon (Kanan Atas) -->
+                                        <a href="javascript:;" class="position-absolute top-0 end-0 m-2"
+                                            style="z-index: 10; color: #ff69b4;" data-slug="{{ $course?->slug }}"
+                                            aria-label="WishList">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart fa-lg"></i>
+                                        </a>
+
+                                        <!-- Gambar -->
+                                        <a href="{{ route('course.show', $course->slug) }}"
+                                            class="d-block w-100 h-100">
+                                            <img src="{{ $course->thumbnail_url }}" alt="img"
+                                                class="w-100 h-100" style="object-fit: cover; display: block;">
                                         </a>
                                     </div>
+
+
                                     <div class="courses__item-content">
                                         <ul class="courses__item-meta list-wrap">
                                             <li class="courses__item-tag">
@@ -345,17 +410,33 @@
                     <div class="swiper-wrapper">
                         @foreach ($categoryTwoCourses ?? [] as $course)
                             <div class="swiper-slide">
-                                <div class="courses__item shine__animate-item">
-                                    <div class="courses__item-thumb">
-                                        <a href="{{ route('course.show', $course->slug) }}"
-                                            class="shine__animate-link">
-                                            <img src="{{ asset($course->thumbnail) }}" alt="img">
+                                <div class="courses__item shine__animate-item position-relative">
+                                    <div class="courses__item-thumb position-relative"
+                                        style="height: 260px; overflow: hidden; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                                        <!-- Badge Type (Kiri Atas) -->
+                                        <span
+                                            class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
+                                            style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
+                                            {{ $course->type }}
+                                        </span>
+
+                                        <!-- Wishlist Icon (Kanan Atas) -->
+                                        <a href="javascript:;" class="position-absolute top-0 end-0 m-2"
+                                            style="z-index: 10; color: #ff69b4;" data-slug="{{ $course?->slug }}"
+                                            aria-label="WishList">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart fa-lg"></i>
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+
+                                        <!-- Gambar -->
+                                        <a href="{{ route('course.show', $course->slug) }}"
+                                            class="d-block w-100 h-100">
+                                            <img src="{{ $course->thumbnail_url }}" alt="img"
+                                                class="w-100 h-100" style="object-fit: cover; display: block;">
                                         </a>
                                     </div>
+
+
                                     <div class="courses__item-content">
                                         <ul class="courses__item-meta list-wrap">
                                             <li class="courses__item-tag">
@@ -425,17 +506,45 @@
                     <div class="swiper-wrapper">
                         @foreach ($categoryThreeCourses ?? [] as $course)
                             <div class="swiper-slide">
-                                <div class="courses__item shine__animate-item">
-                                    <div class="courses__item-thumb">
+                                <div class="courses__item shine__animate-item position-relative">
+                                    {{-- <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
                                             <img src="{{ asset($course->thumbnail) }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        </a>
+                                    </div> --}}
+                                    <div class="courses__item-thumb position-relative"
+                                        style="height: 260px; overflow: hidden; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                                        <!-- Badge Type (Kiri Atas) -->
+                                        <span
+                                            class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
+                                            style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
+                                            {{ $course->type }}
+                                        </span>
+
+                                        <!-- Wishlist Icon (Kanan Atas) -->
+                                        <a href="javascript:;" class="position-absolute top-0 end-0 m-2"
+                                            style="z-index: 10; color: #ff69b4;" data-slug="{{ $course?->slug }}"
+                                            aria-label="WishList">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart fa-lg"></i>
+                                        </a>
+
+                                        <!-- Gambar -->
+                                        <a href="{{ route('course.show', $course->slug) }}"
+                                            class="d-block w-100 h-100">
+                                            <img src="{{ $course->thumbnail_url }}" alt="img"
+                                                class="w-100 h-100" style="object-fit: cover; display: block;">
                                         </a>
                                     </div>
+
+
                                     <div class="courses__item-content">
                                         <ul class="courses__item-meta list-wrap">
                                             <li class="courses__item-tag">
@@ -505,17 +614,45 @@
                     <div class="swiper-wrapper">
                         @foreach ($categoryFourCourses ?? [] as $course)
                             <div class="swiper-slide">
-                                <div class="courses__item shine__animate-item">
-                                    <div class="courses__item-thumb">
+                                <div class="courses__item shine__animate-item position-relative">
+                                    {{-- <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
                                             <img src="{{ asset($course->thumbnail) }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        </a>
+                                    </div> --}}
+                                    <div class="courses__item-thumb position-relative"
+                                        style="height: 260px; overflow: hidden; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                                        <!-- Badge Type (Kiri Atas) -->
+                                        <span
+                                            class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
+                                            style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
+                                            {{ $course->type }}
+                                        </span>
+
+                                        <!-- Wishlist Icon (Kanan Atas) -->
+                                        <a href="javascript:;" class="position-absolute top-0 end-0 m-2"
+                                            style="z-index: 10; color: #ff69b4;" data-slug="{{ $course?->slug }}"
+                                            aria-label="WishList">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart fa-lg"></i>
+                                        </a>
+
+                                        <!-- Gambar -->
+                                        <a href="{{ route('course.show', $course->slug) }}"
+                                            class="d-block w-100 h-100">
+                                            <img src="{{ $course->thumbnail_url }}" alt="img"
+                                                class="w-100 h-100" style="object-fit: cover; display: block;">
                                         </a>
                                     </div>
+
+
                                     <div class="courses__item-content">
                                         <ul class="courses__item-meta list-wrap">
                                             <li class="courses__item-tag">
@@ -585,17 +722,45 @@
                     <div class="swiper-wrapper">
                         @foreach ($categoryFiveCourses ?? [] as $course)
                             <div class="swiper-slide">
-                                <div class="courses__item shine__animate-item">
-                                    <div class="courses__item-thumb">
+                                <div class="courses__item shine__animate-item position-relative">
+                                    {{-- <div class="courses__item-thumb">
                                         <a href="{{ route('course.show', $course->slug) }}"
                                             class="shine__animate-link">
                                             <img src="{{ asset($course->thumbnail) }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        </a>
+                                    </div> --}}
+                                    <div class="courses__item-thumb position-relative"
+                                        style="height: 260px; overflow: hidden; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                                        <!-- Badge Type (Kiri Atas) -->
+                                        <span
+                                            class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
+                                            style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
+                                            {{ $course->type }}
+                                        </span>
+
+                                        <!-- Wishlist Icon (Kanan Atas) -->
+                                        <a href="javascript:;" class="position-absolute top-0 end-0 m-2"
+                                            style="z-index: 10; color: #ff69b4;" data-slug="{{ $course?->slug }}"
+                                            aria-label="WishList">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart fa-lg"></i>
+                                        </a>
+
+                                        <!-- Gambar -->
+                                        <a href="{{ route('course.show', $course->slug) }}"
+                                            class="d-block w-100 h-100">
+                                            <img src="{{ $course->thumbnail_url }}" alt="img"
+                                                class="w-100 h-100" style="object-fit: cover; display: block;">
                                         </a>
                                     </div>
+
+
                                     <div class="courses__item-content">
                                         <ul class="courses__item-meta list-wrap">
                                             <li class="courses__item-tag">

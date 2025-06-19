@@ -25,6 +25,7 @@ class CourseStoreRequest extends FormRequest
             'description' => ['required', 'string', 'max:5000'],
             'instructor' => ['nullable', 'numeric'],
             'instansi' => ['required', 'numeric'],
+            'type_course' => ['required', 'string'],
         ];
 
         return $rules;
@@ -53,6 +54,8 @@ class CourseStoreRequest extends FormRequest
             'instructor.numeric' => __('Instructor must be a number'),
             'instansi.required' => __('instansi is required'),
             'instansi.numeric' => __('instansi must be a number'),
+            'type_course.required' => __('Type course is required'),
+            'type_course.string' => __('Type course must be a string'),
         ];
     }
 }

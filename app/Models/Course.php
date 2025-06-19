@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  *
@@ -263,5 +265,25 @@ class Course extends Model
                 $review->delete();
             });
         });
+    }
+
+    public static function getTypeOptions(): array
+    {
+        // Ambil definisi kolom type dari tabel 'courses'
+        $type = DB::selectOne("SHOW COLUMNS FROM courses WHERE Field = 'type'");
+
+        // Ambil bagian enum dari kolom (misal: enum('a','b','c'))
+        preg_match("/^enum\((.*)\)$/", $type->Type, $matches);
+
+        // Ubah ke array PHP
+        $enumValues = [];
+        if (isset($matches[1])) {
+            foreach (explode(',', $matches[1]) as $value) {
+                $v = trim($value, "'");
+                $enumValues[$v] = $v === 'course' ? 'Kursus' : Str::title($v); // bisa diganti ucfirst atau custom label
+            }
+        }
+
+        return $enumValues;
     }
 }

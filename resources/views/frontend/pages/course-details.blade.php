@@ -51,13 +51,16 @@
                             <ul class="list-wrap">
                                 <li class="author-two">
                                     @if ($course->instructor)
-                                    <img src="{{ asset($course->instructor->image) }}" alt="img" class="instructor-avatar">
+                                        <img src="{{ asset($course->instructor->image) }}" alt="img"
+                                            class="instructor-avatar">
                                     @else
-                                    <img src="{{ asset('frontend/img/others/h5_about_shape02.png') }}" alt="img" class="instructor-avatar">
+                                        <img src="{{ asset('frontend/img/others/h5_about_shape02.png') }}" alt="img"
+                                            class="instructor-avatar">
                                     @endif
                                     {{ __('By') }}
                                     @if ($course->instructor)
-                                    <a href="{{ route('instructor-details', $course->instructor->id) }}">{{ $course->instructor->name }}</a>
+                                        <a
+                                            href="{{ route('instructor-details', $course->instructor->id) }}">{{ $course->instructor->name }}</a>
                                     @else
                                         Tim Diklat
                                     @endif
@@ -81,12 +84,12 @@
                                     aria-selected="false">{{ __('Curriculum') }}</button>
                             </li>
                             @if ($course->instructor)
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="instructors-tab" data-bs-toggle="tab"
-                                    data-bs-target="#instructors-tab-pane" type="button" role="tab"
-                                    aria-controls="instructors-tab-pane"
-                                    aria-selected="false">{{ __('Instructors') }}</button>
-                            </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="instructors-tab" data-bs-toggle="tab"
+                                        data-bs-target="#instructors-tab-pane" type="button" role="tab"
+                                        aria-controls="instructors-tab-pane"
+                                        aria-selected="false">{{ __('Instructors') }}</button>
+                                </li>
                             @endif
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="reviews-tab" data-bs-toggle="tab"
@@ -251,98 +254,108 @@
                                 </div>
                             </div>
                             @if ($course->instructor)
-                            <div class="tab-pane fade" id="instructors-tab-pane" role="tabpanel"
-                                aria-labelledby="instructors-tab" tabindex="0">
+                                <div class="tab-pane fade" id="instructors-tab-pane" role="tabpanel"
+                                    aria-labelledby="instructors-tab" tabindex="0">
 
-                                <div class="courses__instructors-wrap">
-                                    <div class="courses__instructors-thumb">
-                                        <img src="{{ asset($course->instructor->image) }}" alt="img" class="instructor-thumb">
-                                    </div>
-                                    <div class="courses__instructors-content">
-                                        <h2 class="title">{{ $course->instructor->name }}</h2>
-                                        <span class="designation">{{ $course->instructor->job_title }}</span>
-                                        <p>{{ $course->instructor->short_bio }}</p>
-                                        <div class="instructor__social">
-                                            <ul class="list-wrap justify-content-start">
-                                                @if ($course->instructor->facebook)
-                                                    <li><a href="{{ $course->instructor->facebook }}"
-                                                            aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                                                    </li>
-                                                @endif
-                                                @if ($course->instructor->twitter)
-                                                    <li><a href="{{ $course->instructor->twitter }}"
-                                                            aria-label="Twitter"><i class="fab fa-twitter"></i></a></li>
-                                                @endif
-                                                @if ($course->instructor->linkedin)
-                                                    <li><a href="{{ $course->instructor->linkedin }}"
-                                                            aria-label="Linkedin"><i class="fab fa-linkedin"></i></a></li>
-                                                @endif
-                                                @if ($course->instructor->github)
-                                                    <li><a href="{{ $course->instructor->github }}"
-                                                            aria-label="Github"><i class="fab fa-github"></i></a></li>
-                                                @endif
+                                    <div class="courses__instructors-wrap">
+                                        <div class="courses__instructors-thumb">
+                                            <img src="{{ asset($course->instructor->image) }}" alt="img"
+                                                class="instructor-thumb">
+                                        </div>
+                                        <div class="courses__instructors-content">
+                                            <h2 class="title">{{ $course->instructor->name }}</h2>
+                                            <span class="designation">{{ $course->instructor->job_title }}</span>
+                                            <p>{{ $course->instructor->short_bio }}</p>
+                                            <div class="instructor__social">
+                                                <ul class="list-wrap justify-content-start">
+                                                    @if ($course->instructor->facebook)
+                                                        <li><a href="{{ $course->instructor->facebook }}"
+                                                                aria-label="Facebook"><i
+                                                                    class="fab fa-facebook-f"></i></a>
+                                                        </li>
+                                                    @endif
+                                                    @if ($course->instructor->twitter)
+                                                        <li><a href="{{ $course->instructor->twitter }}"
+                                                                aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                                        </li>
+                                                    @endif
+                                                    @if ($course->instructor->linkedin)
+                                                        <li><a href="{{ $course->instructor->linkedin }}"
+                                                                aria-label="Linkedin"><i class="fab fa-linkedin"></i></a>
+                                                        </li>
+                                                    @endif
+                                                    @if ($course->instructor->github)
+                                                        <li><a href="{{ $course->instructor->github }}"
+                                                                aria-label="Github"><i class="fab fa-github"></i></a></li>
+                                                    @endif
 
-                                                @if ($course->instructor->facebook)
-                                                    <li><a href="{{ $course->instructor->facebook }}"
-                                                            aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                                                    </li>
-                                                @endif
-                                                @if ($course->instructor->twitter)
-                                                    <li><a href="{{ $course->instructor->twitter }}"
-                                                            aria-label="Twitter"><i class="fab fa-twitter"></i></a></li>
-                                                @endif
-                                                @if ($course->instructor->website)
-                                                    <li><a href="{{ $course->instructor->website }}"
-                                                            aria-label="Website"><i class="fas fa-link"></i></a></li>
-                                                @endif
-                                                @if ($course->instructor->github)
-                                                    <li><a href="{{ $course->instructor->github }}"
-                                                            aria-label="Github"><i class="fab fa-github"></i></a></li>
-                                                @endif
-                                            </ul>
+                                                    @if ($course->instructor->facebook)
+                                                        <li><a href="{{ $course->instructor->facebook }}"
+                                                                aria-label="Facebook"><i
+                                                                    class="fab fa-facebook-f"></i></a>
+                                                        </li>
+                                                    @endif
+                                                    @if ($course->instructor->twitter)
+                                                        <li><a href="{{ $course->instructor->twitter }}"
+                                                                aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                                                        </li>
+                                                    @endif
+                                                    @if ($course->instructor->website)
+                                                        <li><a href="{{ $course->instructor->website }}"
+                                                                aria-label="Website"><i class="fas fa-link"></i></a></li>
+                                                    @endif
+                                                    @if ($course->instructor->github)
+                                                        <li><a href="{{ $course->instructor->github }}"
+                                                                aria-label="Github"><i class="fab fa-github"></i></a></li>
+                                                    @endif
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                @if ($course->partnerInstructors->count() > 0)
-                                    <h3 class="title mt-3">{{ __('Partner Instructors') }}</h3>
-                                    @foreach ($course->partnerInstructors as $instructor)
-                                        <div class="courses__instructors-wrap">
-                                            <div class="courses__instructors-thumb">
-                                                <img src="{{ asset($instructor->instructor->image) }}" alt="img">
-                                            </div>
-                                            <div class="courses__instructors-content">
-                                                <h2 class="title">{{ $instructor->instructor->name }}</h2>
-                                                <span class="designation">{{ $instructor->instructor->job_title }}</span>
-                                                <p>{{ $instructor->instructor->short_bio }}</p>
-                                                <div class="instructor__social">
-                                                    <ul class="list-wrap justify-content-start">
-                                                        @if ($instructor->instructor->facebook)
-                                                            <li><a href="{{ $instructor->instructor->facebook }}"
-                                                                    aria-label="Facebook"><i
-                                                                        class="fab fa-facebook-f"></i></a></li>
-                                                        @endif
-                                                        @if ($instructor->instructor->twitter)
-                                                            <li><a href="{{ $instructor->instructor->twitter }}"
-                                                                    aria-label="Twitter"><i
-                                                                        class="fab fa-twitter"></i></a></li>
-                                                        @endif
-                                                        @if ($instructor->instructor->website)
-                                                            <li><a href="{{ $instructor->instructor->website }}"
-                                                                    aria-label="Website"><i class="fas fa-link"></i></a>
-                                                            </li>
-                                                        @endif
-                                                        @if ($instructor->instructor->github)
-                                                            <li><a href="{{ $instructor->instructor->github }}"
-                                                                    aria-label="Github"><i class="fab fa-github"></i></a>
-                                                            </li>
-                                                        @endif
-                                                    </ul>
+                                    @if ($course->partnerInstructors->count() > 0)
+                                        <h3 class="title mt-3">{{ __('Partner Instructors') }}</h3>
+                                        @foreach ($course->partnerInstructors as $instructor)
+                                            <div class="courses__instructors-wrap">
+                                                <div class="courses__instructors-thumb">
+                                                    <img src="{{ asset($instructor->instructor->image) }}"
+                                                        alt="img">
+                                                </div>
+                                                <div class="courses__instructors-content">
+                                                    <h2 class="title">{{ $instructor->instructor->name }}</h2>
+                                                    <span
+                                                        class="designation">{{ $instructor->instructor->job_title }}</span>
+                                                    <p>{{ $instructor->instructor->short_bio }}</p>
+                                                    <div class="instructor__social">
+                                                        <ul class="list-wrap justify-content-start">
+                                                            @if ($instructor->instructor->facebook)
+                                                                <li><a href="{{ $instructor->instructor->facebook }}"
+                                                                        aria-label="Facebook"><i
+                                                                            class="fab fa-facebook-f"></i></a></li>
+                                                            @endif
+                                                            @if ($instructor->instructor->twitter)
+                                                                <li><a href="{{ $instructor->instructor->twitter }}"
+                                                                        aria-label="Twitter"><i
+                                                                            class="fab fa-twitter"></i></a></li>
+                                                            @endif
+                                                            @if ($instructor->instructor->website)
+                                                                <li><a href="{{ $instructor->instructor->website }}"
+                                                                        aria-label="Website"><i
+                                                                            class="fas fa-link"></i></a>
+                                                                </li>
+                                                            @endif
+                                                            @if ($instructor->instructor->github)
+                                                                <li><a href="{{ $instructor->instructor->github }}"
+                                                                        aria-label="Github"><i
+                                                                            class="fab fa-github"></i></a>
+                                                                </li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endforeach
-                                @endif
-                            </div>
+                                        @endforeach
+                                    @endif
+                                </div>
                             @endif
                             <div class="tab-pane fade" id="reviews-tab-pane" role="tabpanel"
                                 aria-labelledby="reviews-tab" tabindex="0">
@@ -540,6 +553,12 @@
                                         class="injectable">
                                     {{ __('JPL') }}
                                     <span>{{ $course->jp }}</span>
+                                </li>
+                                <li>
+                                    <img src="{{ asset('frontend/img/icons/course_icon06.svg') }}" alt="img"
+                                        class="injectable">
+                                    {{ __('Tipe Kursus') }}
+                                    <span>{{ $course->type == 'course' ? 'Kursus' : ucwords($course->type) }}</span>
                                 </li>
                                 <li>
                                     <img src="{{ asset('frontend/img/icons/course_icon03.svg') }}" alt="img"

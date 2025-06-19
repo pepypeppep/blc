@@ -75,8 +75,12 @@ class CourseController extends Controller
     function create()
     {
         $instansis = Instansi::orderBy('name', 'asc')->get();
+
+        $typeOptions = Course::getTypeOptions();
+
+
         $instructors = User::where('role', 'instructor')->orderBy('name', 'asc')->get();
-        return view('course::course.create', compact('instructors', 'instansis'));
+        return view('course::course.create', compact('instructors', 'instansis', 'typeOptions'));
     }
 
     function editView(string $id)
@@ -95,11 +99,16 @@ class CourseController extends Controller
             return redirect()->back()->with(['alert-type' => 'error', 'messege' => __('Course not found')]);
         }
 
+
+        $typeOptions = Course::getTypeOptions(); // Get the type options array
+
         Session::put('course_create', $id);
         $instructors = User::where('role', 'instructor')->get();
         $instansis = Instansi::get();
         $editMode = true;
-        return view('course::course.create', compact('course', 'editMode', 'instructors', 'instansis'));
+
+
+        return view('course::course.create', compact('course', 'editMode', 'instructors', 'instansis', 'typeOptions'));
     }
 
     function store(CourseStoreRequest $request)
@@ -126,6 +135,7 @@ class CourseController extends Controller
         }
 
         $course->title = $request->title;
+        $course->type = $request->type_course;
         $course->seo_description = $request->title;
         $course->demo_video_storage = 'upload';
         $course->demo_video_source = $request->demo_video_storage == 'upload' ? $request->upload_path : $request->external_path;
@@ -162,7 +172,8 @@ class CourseController extends Controller
                 $instructors = User::where('role', 'instructor')->get();
                 $instansis = Instansi::get();
                 $editMode = true;
-                return view('course::course.create', compact('course', 'editMode', 'instructors', 'instansis'));
+                $typeOptions = Course::getTypeOptions();
+                return view('course::course.create', compact('course', 'editMode', 'instructors', 'instansis', 'typeOptions'));
                 break;
             case '2':
                 $courseId = request('id');
@@ -576,6 +587,7 @@ class CourseController extends Controller
             $course = Course::with(['chapters.chapterItems.lesson', 'levels', 'languages', 'partnerInstructors'])->findOrFail($id);
             $newCourse = $course->replicate();
             $newCourse->title = $course->title . ' - Copy';
+            $newCourse->type = $course->type;
             $newCourse->slug = generateUniqueSlug(Course::class, $course->title) . now()->timestamp;
             $newCourse->status = Course::STATUS_IS_DRAFT;
             $newCourse->is_approved = Course::ISAPPROVED_PENDING;

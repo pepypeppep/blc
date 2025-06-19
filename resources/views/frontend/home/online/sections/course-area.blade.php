@@ -211,7 +211,7 @@
                                         <span
                                             class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
                                             style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
-                                            {{ $course->type }}
+                                            {{ $course->type == 'course' ? 'Kursus' : ucwords($course->type) }}
                                         </span>
 
                                         <!-- Wishlist Icon (Kanan Atas) -->
@@ -321,7 +321,7 @@
                                         <span
                                             class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
                                             style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
-                                            {{ $course->type }}
+                                            {{ $course->type == 'course' ? 'Kursus' : ucwords($course->type) }}
                                         </span>
 
                                         <!-- Wishlist Icon (Kanan Atas) -->
@@ -417,7 +417,7 @@
                                         <span
                                             class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
                                             style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
-                                            {{ $course->type }}
+                                            {{ $course->type == 'course' ? 'Kursus' : ucwords($course->type) }}
                                         </span>
 
                                         <!-- Wishlist Icon (Kanan Atas) -->
@@ -525,7 +525,7 @@
                                         <span
                                             class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
                                             style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
-                                            {{ $course->type }}
+                                            {{ $course->type == 'course' ? 'Kursus' : ucwords($course->type) }}
                                         </span>
 
                                         <!-- Wishlist Icon (Kanan Atas) -->
@@ -633,7 +633,7 @@
                                         <span
                                             class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
                                             style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
-                                            {{ $course->type }}
+                                            {{ $course->type == 'course' ? 'Kursus' : ucwords($course->type) }}
                                         </span>
 
                                         <!-- Wishlist Icon (Kanan Atas) -->
@@ -741,7 +741,7 @@
                                         <span
                                             class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
                                             style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
-                                            {{ $course->type }}
+                                            {{ $course->type == 'course' ? 'Kursus' : ucwords($course->type) }}
                                         </span>
 
                                         <!-- Wishlist Icon (Kanan Atas) -->

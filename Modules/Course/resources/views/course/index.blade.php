@@ -170,7 +170,7 @@
                                                             @endif
                                                             |
                                                             Tipe Kursus: <span
-                                                                class="text-dark font-weight-bold">{{ $course->type }}</span>
+                                                                class="text-dark font-weight-bold">{{ $course->type == 'course' ? 'Kursus' : ucwords($course->type) }}</span>
                                                             |
                                                             JPL: <span
                                                                 class="text-dark font-weight-bold">{{ $course->jp }}</span>

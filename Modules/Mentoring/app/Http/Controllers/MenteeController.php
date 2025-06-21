@@ -145,6 +145,7 @@ class MenteeController extends Controller
             $session->image = $fileName;
         }
 
+        $session->status = MentoringSession::STATUS_REPORTED;
         $session->save();
 
         //kirim notifikasi

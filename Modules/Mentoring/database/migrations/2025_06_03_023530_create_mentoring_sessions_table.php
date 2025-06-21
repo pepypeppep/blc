@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->dateTime('mentoring_date');
+            $table->dateTime('mentoring_date_changed')->nullable();
             $table->text('mentoring_note');
             $table->text('mentoring_instructions');
             $table->unsignedBigInteger('mentoring_id')->onDelete('cascade');

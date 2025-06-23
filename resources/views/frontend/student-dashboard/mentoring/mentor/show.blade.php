@@ -139,7 +139,7 @@ $statusColors = [
                         Laporan akhir dari kegiatan mentoring yang telah dilakukan.
                     </span>
                 </div>
-                @if ($mentoring->isProcessOrDone() && !$hasIncompleteSessions)
+                @if ($mentoring->isProcessOrEvaluationOrDone() && !$hasIncompleteSessions)
                     @if ($mentoring->final_report)
                         <div class="mt-2">
                             <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
@@ -151,7 +151,7 @@ $statusColors = [
                 @endif
             </div>
             <div class="mb-3">
-                @if ($mentoring->isProcessOrDone() && !$hasIncompleteSessions)
+                @if ($mentoring->isProcessOrEvaluationOrDone() && !$hasIncompleteSessions)
                     @if ($mentoring->final_report)
                         <embed
                             src="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"

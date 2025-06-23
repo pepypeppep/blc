@@ -173,7 +173,8 @@ class MenteeController extends Controller
             Storage::disk('private')->put($fileName, file_get_contents($file));
 
             $mentoring->update([
-                'final_report' => $fileName
+                'final_report' => $fileName,
+                'status' => Mentoring::STATUS_EVALUATION
             ]);
         }
 

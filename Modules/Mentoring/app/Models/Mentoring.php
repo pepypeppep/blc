@@ -86,6 +86,11 @@ class Mentoring extends Model
         return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_DONE]);
     }
 
+    public function isProcessOrEvaluationOrDone(): bool
+    {
+        return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_EVALUATION, self::STATUS_DONE]);
+    }
+
     public function getDocumentResponse($column)
     {
         if (!$this->$column) {

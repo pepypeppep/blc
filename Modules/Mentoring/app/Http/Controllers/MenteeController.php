@@ -145,6 +145,7 @@ class MenteeController extends Controller
             $session->image = $fileName;
         }
 
+        $session->status = MentoringSession::STATUS_REPORTED;
         $session->save();
 
         //kirim notifikasi
@@ -172,7 +173,8 @@ class MenteeController extends Controller
             Storage::disk('private')->put($fileName, file_get_contents($file));
 
             $mentoring->update([
-                'final_report' => $fileName
+                'final_report' => $fileName,
+                'status' => Mentoring::STATUS_EVALUATION
             ]);
         }
 

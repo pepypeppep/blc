@@ -118,16 +118,20 @@ class MentorController extends Controller
     public function review(Request $request, $id)
     {
         $request->validate([
+            'mentoring_date' => 'required',
             'mentoring_note' => 'required',
             'mentoring_instructions' => 'required',
         ], [
+            'mentoring_date.required' => 'Tanggal mentoring tidak boleh kosong',
             'mentoring_note.required' => 'Catatan mentoring tidak boleh kosong',
             'mentoring_instructions.required' => 'Instruksi mentoring tidak boleh kosong',
         ]);
 
+        // dd($request->all(), $id);
         $user = auth()->user();
         $session = MentoringSession::with('mentoring')->where('id', $id)->first();
 
+        // dd($session, $id);
         if (!$session) {
             return redirect()->back()->with(['messege' => 'Sesi mentoring tidak ditemukan', 'alert-type' => 'error']);
         }

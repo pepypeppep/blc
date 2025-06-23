@@ -30,23 +30,42 @@
                                         <input class="form-check-input" type="radio" name="target" id="target_no"
                                             value="0"
                                             {{ @$review->is_target == '0' ? 'checked' : (old('target') == '0' ? 'checked' : '') }}>
-                                        <label class="form-check-label" for="target_no">{{ __('No') }}</label>
+                                        <label class="form-check-label" for="target_no">{{ __('Tidak') }}</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 my-2">
                                 <div class="form-group">
                                     <div class="form-group mt-4">
-                                        <label for="target_description">{{ __('Catatan Target') }} <code>*</code></label>
-                                        <textarea name="target_description" class="text-editor form-control summernote"
-                                            {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->target_description) }}</textarea>
+                                        @if ($mentoring->status == Mentoring::STATUS_DONE)
+                                            <h6>{{ __('Catatan Target') }}</h6>
+                                            <p>{!! clean(@$review?->target_description) !!}</p>
+                                        @else
+                                            <label for="target_description">{{ __('Catatan Target') }}
+                                                <code>*</code></label>
+                                            <textarea name="target_description" class="text-editor form-control summernote"
+                                                {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->target_description) }}</textarea>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-4">
                                 <div class="form-group">
                                     <label for="tingkat_disiplin">{{ __('Tingkat Kedisiplinan') }} <code>*</code></label>
-                                    <div class="form-check form-check-inline d-flex flex-row">
+
+                                    @if ($mentoring->status != Mentoring::STATUS_DONE)
+                                    <select class="form-select" name="tingkat_disiplin" required>
+                                        <option value="" disabled selected>Pilih Nilai</option>
+                                        @for ($i = 1; $i <= 10; $i++)
+                                            <option value="{{ $i }}"
+                                                {{ @$review->discipline == $i ? 'selected' : (old('tingkat_disiplin') == $i ? 'selected' : '') }}>
+                                                {{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                    @else
+                                        {{ @$review->discipline }}
+                                    @endif
+                                    {{-- <div class="form-check form-check-inline d-flex flex-row">
                                         @for ($i = 1; $i <= 10; $i++)
                                             <div class="form-check form-check-inline mr-2">
                                                 <input class="form-check-input" type="radio" name="tingkat_disiplin"
@@ -57,23 +76,41 @@
                                                     for="disiplin{{ $i }}">{{ $i }}</label>
                                             </div>
                                         @endfor
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <div class="form-group mt-4">
-                                        <label for="disiplin_description">{{ __('Catatan Kedisiplinan') }}
-                                            <code>*</code></label>
-                                        <textarea name="disiplin_description" class="text-editor form-control summernote"
-                                            {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->discipline_description) }}</textarea>
+                                        @if ($mentoring->status == Mentoring::STATUS_DONE)
+                                            <h6>{{ __('Catatan Kedisiplinan') }}</h6>
+                                            <p>{!! clean(@$review?->discipline_description) !!}</p>
+                                        @else
+                                            <label for="disiplin_description">{{ __('Catatan Kedisiplinan') }}
+                                                <code>*</code></label>
+                                            <textarea name="disiplin_description" class="text-editor form-control summernote"
+                                                {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->discipline_description) }}</textarea>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-4">
                                 <div class="form-group">
                                     <label for="kerjasama">{{ __('Tingkat Kerjasama') }} <code>*</code></label>
-                                    <div class="form-check form-check-inline d-flex flex-row">
+
+                                    @if ($mentoring->status != Mentoring::STATUS_DONE)
+                                        <select class="form-select" name="kerjasama" required>
+                                            <option value="" disabled selected>Pilih Nilai</option>
+                                            @for ($i = 1; $i <= 10; $i++)
+                                                <option value="{{ $i }}"
+                                                    {{ @$review->teamwork == $i ? 'selected' : (old('kerjasama') == $i ? 'selected' : '') }}>
+                                                    {{ $i }}</option>
+                                            @endfor
+                                        </select>
+                                    @else
+                                        {{ @$review->teamwork }}
+                                    @endif
+                                    {{-- <div class="form-check form-check-inline d-flex flex-row">
                                         @for ($i = 1; $i <= 10; $i++)
                                             <div class="form-check form-check-inline mr-2">
                                                 <input class="form-check-input" type="radio" name="kerjasama"
@@ -84,23 +121,41 @@
                                                     for="disiplin{{ $i }}">{{ $i }}</label>
                                             </div>
                                         @endfor
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <div class="form-group mt-4">
-                                        <label for="kerjasama_description">{{ __('Catatan Kerjasama') }}
-                                            <code>*</code></label>
-                                        <textarea name="kerjasama_description" class="text-editor form-control summernote"
-                                            {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->teamwork_description) }}</textarea>
+                                        @if ($mentoring->status == Mentoring::STATUS_DONE)
+                                            <h6>{{ __('Catatan Kerjasama') }}</h6>
+                                            <p>{!! clean(@$review?->teamwork_description) !!}</p>
+                                        @else
+                                            <label for="kerjasama_description">{{ __('Catatan Kerjasama') }}
+                                                <code>*</code></label>
+                                            <textarea name="kerjasama_description" class="text-editor form-control summernote"
+                                                {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->teamwork_description) }}</textarea>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-4">
                                 <div class="form-group">
                                     <label for="inisiatif">{{ __('Tingkat Initiatif') }} <code>*</code></label>
-                                    <div class="form-check form-check-inline d-flex flex-row">
+
+                                    @if ($mentoring->status != Mentoring::STATUS_DONE)
+                                        <select class="form-select" name="inisiatif" required>
+                                            <option value="" disabled selected>Pilih Nilai</option>
+                                            @for ($i = 1; $i <= 10; $i++)
+                                                <option value="{{ $i }}"
+                                                    {{ @$review->initiative == $i ? 'selected' : (old('initiative') == $i ? 'selected' : '') }}>
+                                                    {{ $i }}</option>
+                                            @endfor
+                                        </select>
+                                    @else
+                                        {{ @$review->initiative }}
+                                    @endif
+                                    {{-- <div class="form-check form-check-inline d-flex flex-row">
                                         @for ($i = 1; $i <= 10; $i++)
                                             <div class="form-check form-check-inline mr-2">
                                                 <input class="form-check-input" type="radio" name="inisiatif"
@@ -111,16 +166,21 @@
                                                     for="inisiatif{{ $i }}">{{ $i }}</label>
                                             </div>
                                         @endfor
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <div class="form-group mt-4">
-                                        <label for="inisiatif_description">{{ __('Catatan Initiatif') }}
-                                            <code>*</code></label>
-                                        <textarea name="inisiatif_description" class="text-editor form-control summernote"
-                                            {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->initiative_description) }}</textarea>
+                                        @if ($mentoring->status == Mentoring::STATUS_DONE)
+                                            <h6>{{ __('Catatan Initiatif') }}</h6>
+                                            <p>{!! clean(@$review?->teamwork_description) !!}</p>
+                                        @else
+                                            <label for="inisiatif_description">{{ __('Catatan Initiatif') }}
+                                                <code>*</code></label>
+                                            <textarea name="inisiatif_description" class="text-editor form-control summernote"
+                                                {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->initiative_description) }}</textarea>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +193,7 @@
                             <button type="submit" class="btn btn-danger mt-4 mb-3" form="evaluasi_form">
                                 {{ __('Simpan Evaluasi') }} <i class="fa fa-arrow-right"></i>
                             </button>
-                            <button type="submit" class="btn btn-danger mt-4 mb-3"
+                            <button type="button" class="btn btn-primary mt-4 mb-3"
                                 onclick="handleKirimEvaluasiDanKirimKeKepegawaian(event, {{ $mentoring->id }})">
                                 {{ __('Kirim Evaluasi Ke Kepegawaian') }} <i class="fa fa-arrow-right"></i>
                             </button>
@@ -145,7 +205,7 @@
     </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script>
         function handleKirimEvaluasiDanKirimKeKepegawaian(event, id) {
             event.preventDefault();
@@ -160,9 +220,14 @@
                 cancelButtonText: '{{ __('Batal') }}'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // Store original action to restore if needed
+                    const originalAction = form.action;
+
+                    // Set new action
                     form.action = "{{ route('student.mentor.evaluasi.kirim', $mentoring->id) }}";
                     form.submit();
                 }
             });
         }
     </script>
+@endpush

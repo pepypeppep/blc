@@ -89,7 +89,7 @@ class MenteeController extends Controller
             ]);
         }
 
-        return redirect()->route('student.mentee.index')->with('success', 'Tema mentoring berhasil ditambah!');
+        return redirect()->route('student.mentee.index')->with(['messege' => 'Tema mentoring berhasil ditambahkan!', 'alert-type' => 'success']);
     }
 
     public function show($id)
@@ -121,7 +121,7 @@ class MenteeController extends Controller
             'path' => null,
         ]);
 
-        return redirect()->route('student.mentee.index')->with('success', 'Mentoring berhasil diajukan.');
+        return redirect()->route('student.mentee.index')->with(['messege' => 'Mentoring berhasil diajukan!', 'alert-type' => 'success']);
     }
 
     public function updateSession(Request $request)
@@ -157,7 +157,7 @@ class MenteeController extends Controller
             'path' => null,
         ]);
 
-        return back()->with('success', 'Detail pertemuan berhasil diperbarui.');
+        return back() > with(['messege' => 'Detail pertemuan berhasil diperbarui!', 'alert-type' => 'success']);
     }
 
     public function updateFinalReport(Request $request, Mentoring $mentoring)
@@ -187,7 +187,7 @@ class MenteeController extends Controller
             'path' => null,
         ]);
 
-        return redirect()->back()->with('success', 'Laporan akhir berhasil diunggah.');
+        return back() > with(['messege' => 'Laporan akhir berhasil diunggah!', 'alert-type' => 'success']);
     }
 
     public function showDocument($id, $type)

@@ -1679,7 +1679,7 @@ class CourseApiController extends Controller
     public function questions(Request $request, $slug)
     {
         try {
-            $questions = LessonQuestion::with('course:id,title,slug,thumbnail', 'user:id,name', 'lesson', 'replies')
+            $questions = LessonQuestion::with('course:id,title,slug,thumbnail', 'user:id,name', 'lesson', 'replies.user:id,name')
                 ->whereHas('course', function ($q) use ($slug) {
                     $q->where('slug', $slug);
                 })

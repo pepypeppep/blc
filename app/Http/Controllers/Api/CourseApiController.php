@@ -1691,7 +1691,7 @@ class CourseApiController extends Controller
                     'success' => false,
                     'message' => 'Tidak ada pertanyaan ditemukan',
                     'data' => [],
-                ], 404);
+                ], 200);
             }
 
             return response()->json([

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->integer('total_session');
             $table->text('learning_resources')->nullable();
             $table->string('spt');
-            $table->string('final_report')->nullable();
             $table->foreignId('coach_id')->constrained('users')->onDelete('cascade');
             $table->string('status')->default('Draft');
             $table->timestamps();

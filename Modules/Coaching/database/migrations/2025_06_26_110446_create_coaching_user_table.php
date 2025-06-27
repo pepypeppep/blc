@@ -15,6 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('coaching_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // coachee
+            $table->boolean('is_joined')->nullable()->default(null);
+            $table->timestamp('joined_at')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('final_report')->nullable();
+            $table->timestamps();
         });
     }
 

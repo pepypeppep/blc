@@ -13,8 +13,8 @@ class CoachingAssessment extends Model
     protected $table = 'coaching_assesments';
     protected $guarded = ['id'];
     
-    public function coaching()
+    public function coachingUser()
     {
-        return $this->belongsTo(Coaching::class);
+        return $this->belongsTo(CoachingUser::class);
     }
 }

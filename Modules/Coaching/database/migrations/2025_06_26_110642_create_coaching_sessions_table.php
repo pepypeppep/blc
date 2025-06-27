@@ -13,13 +13,8 @@ return new class extends Migration
     {
         Schema::create('coaching_sessions', function (Blueprint $table) {
             $table->id();
-            $table->string('activity');
-            $table->text('description')->nullable();
-            $table->string('image')->nullable();
             $table->dateTime('coaching_date');
             $table->dateTime('coaching_date_changed')->nullable();
-            $table->text('coaching_note');
-            $table->text('coaching_instructions');
             $table->unsignedBigInteger('coaching_id')->onDelete('cascade');
             $table->string('status')->default('pending');
             $table->timestamps();

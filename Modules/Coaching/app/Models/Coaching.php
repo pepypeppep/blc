@@ -21,12 +21,20 @@ class Coaching extends Model
 
     public function coachees()
     {
-        return $this->belongsToMany(User::class, 'coaching_user');
+        return $this->belongsToMany(User::class, 'coaching_user')
+            ->using(CoachingUser::class)
+            ->withPivot(['id', 'is_joined', 'joined_at', 'notes'])
+            ->withTimestamps();
     }
 
     public function coach()
     {
         return $this->belongsTo(User::class, 'coach_id');
+    }
+
+    public function coachingSessions()
+    {
+        return $this->hasMany(CoachingSession::class);
     }
 
     public function getStatAttribute(): array
@@ -59,10 +67,5 @@ class Coaching extends Model
             'label' => 'Unknown',
             'color' => 'secondary'
         ];
-    }
-
-    public function assessment()
-    {
-        return $this->hasOne(CoachingAssessment::class);
     }
 }

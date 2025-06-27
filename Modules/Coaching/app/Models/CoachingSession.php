@@ -13,8 +13,13 @@ class CoachingSession extends Model
     protected $table = 'coaching_sessions';
     protected $guarded = ['id'];
 
-    public function Coaching()
+    public function coaching()
     {
         return $this->belongsTo(Coaching::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(CoachingSessionDetail::class);
     }
 }

@@ -32,4 +32,16 @@ class CoachingUser extends Pivot
     {
         return $this->hasOne(CoachingAssessment::class, 'coaching_user_id');
     }
+
+    public function scopeJoined($query)
+    {
+        return $query->where('is_joined', true);
+    }
+
+    public function scopeForCoach($query, $coachId, $coachingId)
+    {
+        return $query->whereHas('coaching', function ($q) use ($coachId, $coachingId) {
+            $q->where('id', $coachingId)->where('coach_id', $coachId);
+        });
+    }
 }

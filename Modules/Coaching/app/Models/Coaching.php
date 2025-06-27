@@ -17,14 +17,24 @@ class Coaching extends Model
     public const STATUS_DRAFT = "Draft";
     public const STATUS_CONSENSUS = "Konsensus";
     public const STATUS_PROCESS = "Proses";
+    public const STATUS_EVALUATION = "Penilaian";
     public const STATUS_DONE = "Selesai";
 
     public function coachees()
     {
         return $this->belongsToMany(User::class, 'coaching_users')
             ->using(CoachingUser::class)
-            ->withPivot(['id', 'is_joined', 'joined_at', 'notes'])
+            ->withPivot(['id', 'is_joined', 'joined_at', 'notes', 'final_report'])
             ->withTimestamps();
+    }
+
+    public function joinedCoachees()
+    {
+        return $this->belongsToMany(User::class, 'coaching_users')
+            ->using(CoachingUser::class)
+            ->withPivot(['id', 'is_joined', 'joined_at', 'notes', 'final_report'])
+            ->withTimestamps()
+            ->wherePivot('is_joined', true);
     }
 
     public function coach()
@@ -67,5 +77,10 @@ class Coaching extends Model
             'label' => 'Unknown',
             'color' => 'secondary'
         ];
+    }
+
+    public function isProcessOrEvaluationOrDone(): bool
+    {
+        return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_EVALUATION, self::STATUS_DONE]);
     }
 }

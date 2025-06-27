@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('activity');
             $table->text('description')->nullable();
             $table->string('image')->nullable();
-            $table->text('coaching_note');
-            $table->text('coaching_instructions');
+            $table->text('coaching_note')->nullable();
+            $table->text('coaching_instructions')->nullable();
             $table->timestamps();
         });
     }

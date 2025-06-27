@@ -21,7 +21,7 @@ class Coaching extends Model
 
     public function coachees()
     {
-        return $this->belongsToMany(User::class, 'coaching_user')
+        return $this->belongsToMany(User::class, 'coaching_users')
             ->using(CoachingUser::class)
             ->withPivot(['id', 'is_joined', 'joined_at', 'notes'])
             ->withTimestamps();

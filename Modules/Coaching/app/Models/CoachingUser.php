@@ -8,7 +8,7 @@ use App\Models\User;
 
 class CoachingUser extends Pivot
 {
-    protected $table = 'coaching_user';
+    protected $table = 'coaching_users';
 
     protected $fillable = [
         'coaching_id',
@@ -30,6 +30,6 @@ class CoachingUser extends Pivot
 
     public function assessment()
     {
-        return $this->hasOne(CoachingAssessment::class);
+        return $this->hasOne(CoachingAssessment::class, 'coaching_user_id');
     }
 }

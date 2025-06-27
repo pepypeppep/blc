@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('teamwork_description')->nullable();
             $table->unsignedTinyInteger('initiative_level')->default(0);;
             $table->text('initiative_description')->nullable();
-            $table->unsignedBigInteger('coaching_id')->onDelete('cascade');
+            $table->foreignId('coaching_user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('coaching_session_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('coaching_session_id')->constrained()->onDelete('cascade');
-            $table->foreignId('coaching_user_id')->constrained('coaching_user')->onDelete('cascade');
+            $table->foreignId('coaching_user_id')->constrained()->onDelete('cascade');
             $table->string('activity');
             $table->text('description')->nullable();
             $table->string('image')->nullable();

@@ -10,11 +10,11 @@ class CoachingAssessment extends Model
 {
     use HasFactory;
 
-    protected $table = 'coaching_assesments';
+    protected $table = 'coaching_assessments';
     protected $guarded = ['id'];
     
     public function coachingUser()
     {
-        return $this->belongsTo(CoachingUser::class);
+        return $this->belongsTo(CoachingUser::class, 'coaching_user_id');
     }
 }

@@ -37,6 +37,15 @@ class Coaching extends Model
             ->wherePivot('is_joined', true);
     }
 
+    public function respondedCoachees()
+    {
+        return $this->belongsToMany(User::class, 'coaching_users')
+            ->using(CoachingUser::class)
+            ->withPivot(['id', 'is_joined', 'joined_at', 'notes', 'final_report'])
+            ->withTimestamps()
+            ->wherePivotNotNull('is_joined');
+    }
+
     public function coach()
     {
         return $this->belongsTo(User::class, 'coach_id');
@@ -67,6 +76,12 @@ class Coaching extends Model
                 'color' => 'info'
             ];
         }
+        if ($this->status === $this::STATUS_EVALUATION) {
+            return [
+                'label' => 'Penilaian',
+                'color' => 'primary'
+            ];
+        }
         if ($this->status === $this::STATUS_DONE) {
             return [
                 'label' => 'Selesai',
@@ -82,5 +97,10 @@ class Coaching extends Model
     public function isProcessOrEvaluationOrDone(): bool
     {
         return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_EVALUATION, self::STATUS_DONE]);
+    }
+
+    public function isEvaluationOrDone(): bool
+    {
+        return in_array($this->status, [self::STATUS_EVALUATION, self::STATUS_DONE]);
     }
 }

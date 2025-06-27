@@ -86,7 +86,7 @@
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
                                     <label for="coachee">{{ __('Coachee') }} <code>*</code></label>
-                                    <select name="coachee[]" id="coachee" class="form-control select2" multiple required data-min="1" data-max="2">
+                                    <select name="coachee[]" id="coachee" class="form-control select2" multiple required data-min="1" data-max="10">
                                         @foreach ($coachees as $coachee)
                                             <option value="{{ $coachee->id }}" {{ collect(old('coachee'))->contains($coachee->id) ? 'selected' : '' }}>
                                                 {{ $coachee->name }}

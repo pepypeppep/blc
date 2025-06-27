@@ -208,7 +208,8 @@ class CoachController extends Controller
     {
         $user = auth()->user();
         $data = CoachingUser::with(['coachee', 'assessment', 'coaching'])
-                ->where('id', $coacheeId)
+                ->where('coaching_id', $coachingId)
+                ->where('user_id', $coacheeId)
                 ->forCoach($user->id, $coachingId)
                 ->first();
 

@@ -31,7 +31,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $coaching->title }}</td>
-                                    <td>{!! $coaching->main_issue !!}</td>
+                                    <td>{!! truncate(strip_tags($coaching->main_issue)) !!}</td>
                                     <td class="text-center">{{ $coaching->total_session }}</td>
                                     <td>
                                         <span class="badge bg-success">{{ $coaching->joinedCoachees()->count() }}</span> /

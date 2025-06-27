@@ -61,18 +61,18 @@
                     <div class="flex-grow-1 me-3" style="min-width: 250px; max-width: 100%;">
                         <h6 class="title">
                             {{ __('List Coachee') }} 
-                            <span title="Jumlah pertemuan">({{ $coaching->coachees()->count() }})</span>
+                            <span title="Jumlah coachee yang telah merespon">({{ $coaching->respondedCoachees()->count() }}/{{ $coaching->coachees()->count() }})</span>
                         </h6>
                         <span class="text-muted small d-block">
                             Lakukan sesi coaching bersama dengan coachee yang telah dipilih dan bergabung.
                         </span>
                         @if ($coaching->status == Coaching::STATUS_DRAFT)
                         <span class="text-muted small d-block">
-                            Klik <strong>Buat Konsensus</stroong> agar coachee dapat melakukan konsensus (menyetujui/menolak).
+                            Klik <strong>Buat Konsensus</strong> agar coachee dapat melakukan konsensus (menyetujui/menolak).
                         </span>
                         @elseif ($coaching->status == Coaching::STATUS_CONSENSUS)
                         <span class="text-muted small d-block">
-                            Klik <strong>Mulai Proses Coaching</stroong> agar sesi pertemuan bisa dilakukan.
+                            Klik <strong>Mulai Proses Coaching</strong> agar sesi pertemuan bisa dilakukan.
                         </span>
                         @elseif ($coaching->status == Coaching::STATUS_PROCESS)
                         <span class="text-muted small d-block">
@@ -108,8 +108,7 @@
                             <tr>
                                 <th class="border px-4 py-2">Nama</th>
                                 <th class="border px-4 py-2">Status</th>
-                                <th class="border px-4 py-2">Bergabung pada</th>
-                                <th class="border px-4 py-2">Keterangan</th>
+                                <th class="border px-4 py-2">Keterangan Konsensus</th>
                                 <th class="border px-4 py-2">Aksi</th>
                             </tr>
                         </thead>
@@ -126,17 +125,23 @@
                                         <span class="badge bg-danger">Menolak</span>
                                     @endif
                                 </td>
-                                <td class="border px-4 py-2">{{ \Carbon\Carbon::parse($coachee->pivot->joined_at)->translatedFormat('d F Y H:i') ?? '-' }}</td>
-                                <td class="border px-4 py-2">{{ $coachee->pivot->notes ?? '-' }}</td>
+                                <td class="border px-4 py-2">
+                                    @if ($coachee->pivot->is_joined && $coachee->pivot->joined_at)
+                                        <small>Dibuat : {{ \Carbon\Carbon::parse($coachee->pivot->joined_at)->translatedFormat('d F Y H:i') }}</small>
+                                    @else
+                                        {{ $coachee->pivot->notes ? truncate(strip_tags($coachee->pivot->notes)) : '-' }}<br/> 
+                                        <small>Dibuat : {{ \Carbon\Carbon::parse($coachee->pivot->updated_at)->translatedFormat('d F Y H:i') }}</small>
+                                    @endif
+                                </td>
                                 <td class="border px-4 py-2">
                                     <div class="dashboard__action d-inline-flex align-items-center gap-2">
-                                        @if ($coachee->pivot->final_report && $coachee->pivot->is_joined)
-                                        <a href="{{ route('student.coach.view.report', $coachee->pivot->id) }}" class="btn-action-primary" title="Lihat" target="_blank">
-                                            <i class="fa fa-eye"></i> &nbsp;{{ __('Laporan Akhir') }}
-                                        </a>
-                                        <a class="btn-action-warning" href="{{ route('student.coach.penilaian', [$coaching->id, $coachee->id]) }}">
-                                            <i class="fa fa-check-circle"></i> &nbsp;{{ __('Nilai') }}
-                                        </a>
+                                        @if ($coachee->pivot->final_report && $coachee->pivot->is_joined && $coaching->isEvaluationOrDone())
+                                            <a href="{{ route('student.coach.view.report', $coachee->pivot->id) }}" class="btn-action-primary" title="Lihat Laporan Akhir" target="_blank">
+                                                <i class="fa fa-eye"></i> &nbsp;{{ __('Laporan Akhir') }}
+                                            </a>
+                                            <a class="btn-action-warning" href="{{ route('student.coach.penilaian', [$coaching->id, $coachee->id]) }}">
+                                                <i class="fa fa-check-circle"></i> &nbsp;{{ __('Nilai') }}
+                                            </a>
                                         @else
                                         <a href="javascript:void(0)"
                                             class="btn-action-primary disabled"
@@ -228,7 +233,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="border px-4 py-2 max-w-[50px] text-break whitespace-normal">
-                                                    {{ $detail->activity ?? '-' }} <br/>
+                                                    {{ $detail?->activity ? truncate(strip_tags($detail->activity)) : '-' }} <br/>
                                                     @if ($detail?->created_at)
                                                         <small class="text-muted">
                                                             Dibuat pada {{ $detail->created_at->translatedFormat('d F Y H:i') }}
@@ -236,7 +241,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="border px-4 py-2">
-                                                    {!! $detail->coaching_note ?? '<em>Belum direview</em>' !!}
+                                                   {!! $detail?->coaching_note ? truncate(strip_tags($detail->coaching_note)) : '<em>Belum direview</em>' !!}
                                                 </td>
                                                 <td class="border px-4 py-2">
                                                     <div class="dashboard__action d-inline-flex align-items-center gap-2">

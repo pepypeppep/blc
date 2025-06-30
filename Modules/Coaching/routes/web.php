@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Coaching\app\Http\Controllers\CoacheeController;
 use Modules\Coaching\app\Http\Controllers\CoachingController;
+use Modules\Coaching\app\Http\Controllers\CoachController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,16 +28,18 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
     });
 
     Route::group(['prefix' => 'coach', 'as' => 'coach.'], function () {
-        Route::get('/', function () {
-            return 'Coach';
-        })->name('index');
-        // Route::get('/', [MentorController::class, 'index'])->name('index');
-        // Route::get('{id}/show', [MentorController::class, 'show'])->name('show');
-        // Route::post('{id}/approve', [MentorController::class, 'approve'])->name('approve');
-        // Route::post('{id}/reject', [MentorController::class, 'reject'])->name('reject');
-        // Route::post('{id}/review', [MentorController::class, 'review'])->name('review');
-        // Route::get('{id}/evaluasi', [MentorController::class, 'evaluasi'])->name('evaluasi');
-        // Route::post('{id}/evaluasi', [MentorController::class, 'evaluasiStore'])->name('evaluasi.store');
-        // Route::post('{id}/kirim-evaluasi', [MentorController::class, 'kirimEvaluasi'])->name('evaluasi.kirim');
+        Route::get('/', [CoachController::class, 'index'])->name('index');
+        Route::get('/create', [CoachController::class, 'create'])->name('create');
+        Route::post('/', [CoachController::class, 'store'])->name('store');
+        Route::get('/{coachingId}', [CoachController::class, 'show'])->name('show');
+        Route::put('/{coachingId}/set-consensus', [CoachController::class, 'initiateConsensus'])->name('set-consensus');
+        Route::put('/{coachingId}/proses-coaching', [CoachController::class, 'processCoaching'])->name('process-coaching');
+        Route::get('{coachingId}/penilaian/{coacheeId}', [CoachController::class, 'assessment'])->name('penilaian');
+        Route::post('{coachingId}/penilaian/{coacheeId}', [CoachController::class, 'assessmentStore'])->name('penilaian.store');
+        Route::post('{coachingId}/kirim-penilaian/{coacheeId}', [CoachController::class, 'assessmentSubmit'])->name('penilaian.kirim');
+        Route::get('/{detailId}/img', [CoachController::class, 'viewImage'])->name('view.img');
+        Route::get('/{id}/document', [CoachController::class, 'showDocumentSpt'])->name('view.spt');
+        Route::get('/{id}/report', [CoachController::class, 'showReport'])->name('view.report');
+        Route::post('/review', [CoachController::class, 'reviewStore'])->name('review');
     });
 });

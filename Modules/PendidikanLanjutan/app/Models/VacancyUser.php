@@ -48,6 +48,16 @@ class VacancyUser extends Pivot
         return $this->belongsTo(Vacancy::class);
     }
 
+    /**
+     * Get the detail that owns the VacancyUser
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function detail(): BelongsTo
+    {
+        return $this->belongsTo(VacancyDetail::class, 'vacancy_detail_id');
+    }
+
     public function getStatAttribute()
     {
         if ($this->status == $this->STATUS_REGISTER) {

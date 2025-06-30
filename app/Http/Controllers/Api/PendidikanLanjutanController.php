@@ -47,6 +47,21 @@ class PendidikanLanjutanController extends Controller
         try {
             $perPage = $request->get('per_page', 10);
             $user = User::where('id', $request->user_id)->firstOrFail();
+            $sch = VacancySchedule::where('year', now()->year)->first();
+            if (now() <= $sch->start_at) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pendaftaran belum dibuka',
+                    'data' => []
+                ]);
+            } elseif (now() >= $sch->end_at) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pendaftaran sudah ditutup',
+                    'data' => []
+                ]);
+            }
+
             $schedule = VacancySchedule::where('year', now()->year)
                 ->where('start_at', '<=', now())
                 ->where('end_at', '>=', now())
@@ -220,8 +235,7 @@ class PendidikanLanjutanController extends Controller
         try {
             $perPage = $request->get('per_page', 10);
             $user = User::where('id', $request->user_id)->firstOrFail();
-            $vacancies = Vacancy::with('instansi:id,name', 'study:id,name', 'users.user:id,name')
-                // ->whereIn('id', $vacancyUserIds)
+            $vacancies = Vacancy::with('instansi:id,name', 'study:id,name', 'users.user:id,name', 'users.detail')
                 ->whereHas('users', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })

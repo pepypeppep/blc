@@ -2544,6 +2544,41 @@
                 }
             }
         },
+        "/pendidikan-lanjutan/riwayat": {
+            "get": {
+                "tags": [
+                    "Pendidikan Lanjutan"
+                ],
+                "summary": "Get riwayat pendidikan lanjutan",
+                "description": "Get riwayat pendidikan lanjutan",
+                "operationId": "2591bb4d6d20346056673ec05b3b8317",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
         "/student-learning/{slug}": {
             "get": {
                 "tags": [

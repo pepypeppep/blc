@@ -184,4 +184,57 @@ class PendidikanLanjutanController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/pendidikan-lanjutan/riwayat",
+     *     summary="Get riwayat pendidikan lanjutan",
+     *     description="Get riwayat pendidikan lanjutan",
+     *     tags={"Pendidikan Lanjutan"},
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Per page",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="query",
+     *         description="User id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response"
+     *     )
+     * )
+     */
+    public function history(Request $request)
+    {
+        try {
+            $perPage = $request->get('per_page', 10);
+            $user = User::where('id', $request->user_id)->firstOrFail();
+            $vacancyUserIds = VacancyUser::where('user_id', $user->id)->get()->pluck('vacancy_id');
+            $vacancies = Vacancy::with('instansi:id,name', 'study:id,name')
+                ->whereIn('id', $vacancyUserIds)->paginate($perPage);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Vacancy retrieved successfully',
+                'data' => $vacancies
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve vacancy',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

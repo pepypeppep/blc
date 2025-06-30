@@ -107,7 +107,7 @@ class PendidikanLanjutanController extends Controller
                 ->where('start_at', '<=', now())
                 ->where('end_at', '>=', now())
                 ->first();
-            $vacancy = Vacancy::with(['instansi:id,name', 'study:id,name', 'users' => function ($query) use ($user) {
+            $vacancy = Vacancy::with(['details', 'employeeGrade:id,name', 'instansi:id,name', 'study:id,name', 'users' => function ($query) use ($user) {
                 $query->where('user_id', $user->id)->whereNotIn('status', [VacancyUser::STATUS_REGISTER]); // next update with value_type, unor, dll
             }])->where('year', $schedule->year ?? -1)->findOrFail($id);
 
@@ -220,9 +220,12 @@ class PendidikanLanjutanController extends Controller
         try {
             $perPage = $request->get('per_page', 10);
             $user = User::where('id', $request->user_id)->firstOrFail();
-            $vacancyUserIds = VacancyUser::where('user_id', $user->id)->get()->pluck('vacancy_id');
-            $vacancies = Vacancy::with('instansi:id,name', 'study:id,name')
-                ->whereIn('id', $vacancyUserIds)->paginate($perPage);
+            $vacancies = Vacancy::with('instansi:id,name', 'study:id,name', 'users.user:id,name')
+                // ->whereIn('id', $vacancyUserIds)
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->paginate($perPage);
 
             return response()->json([
                 'success' => true,

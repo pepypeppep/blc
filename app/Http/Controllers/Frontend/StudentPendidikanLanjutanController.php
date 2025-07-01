@@ -113,7 +113,7 @@ class StudentPendidikanLanjutanController extends Controller
         $vacancyDetail = VacancyDetail::where('vacancy_id', $id)->get();
 
         $bup = $user->bup ?? 0;
-        $passJenjangPendidikanTerakhir = educationFilter($vacancy->education_level, $user->tingkat_pendidikan);
+        $passJenjangPendidikanTerakhir = educationFilter($vacancy->education_requirements, $user->tingkat_pendidikan);
 
         $base = VacancyAttachment::syarat()->where('vacancy_id', $id)->where('is_active', 1);
         $vacancyConditions = $base->with('attachment')->get();

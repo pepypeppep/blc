@@ -20,11 +20,9 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
     Route::prefix('/coachee')->name('coachee.')->group(function () {
         Route::get('/', [CoacheeController::class, 'index'])->name('index');
         Route::get('/{id}/show', [CoacheeController::class, 'show'])->name('show');
-        Route::get('/{id}/document', [CoacheeController::class, 'show'])->name('view.document');
-        Route::post('/{id}/report', [CoacheeController::class, 'report'])->name('report');
-        Route::post('/{id}/update', [CoacheeController::class, 'updateSession'])->name('update.session');
-        Route::post('/{id}/approve', [CoacheeController::class, 'submitForApproval'])->name('approve');
-        Route::post('/{id}/reject', [CoacheeController::class, 'reject'])->name('reject');
+        Route::post('/{id}/tolak-konsensus', [CoacheeController::class, 'tolakKonsensus'])->name('tolak-konsensus');
+        Route::post('/{id}/join-konsensus', [CoacheeController::class, 'joinKonsensus'])->name('join-konsensus');
+        Route::post('/submit-report', [CoacheeController::class, 'submitReport'])->name('submit-report');
     });
 
     Route::group(['prefix' => 'coach', 'as' => 'coach.'], function () {

@@ -117,8 +117,11 @@ class MenteeController extends Controller
             'user_id' => $mentoring->mentor_id,
             'title' => 'Pengajuan Mentoring Baru',
             'body' => "Seorang mentee telah mengajukan permohonan mentoring. Silakan tinjau dan tindak lanjuti.",
-            'link' => route('student.mentor.index'),
-            'path' => null,
+            'link' => route('student.mentor.show', $mentoring->id),
+            'path' => [
+                'module' => 'mentoring',
+                'id' => $mentoring->id,
+            ]
         ]);
 
         return redirect()->route('student.mentee.index')->with(['messege' => 'Mentoring berhasil diajukan!', 'alert-type' => 'success']);
@@ -153,8 +156,11 @@ class MenteeController extends Controller
             'user_id' => $session->mentoring->mentor_id,
             'title' => 'Laporan Pertemuan Baru',
             'body' => "Mentee telah melaporkan hasil pertemuan. Silakan periksa laporan tersebut.",
-            'link' => route('student.mentor.index'),
-            'path' => null,
+            'link' => route('student.mentor.show', $mentoring->id),
+            'path' => [
+                'module' => 'mentoring',
+                'id' => $mentoring->id,
+            ]
         ]);
 
         return back() > with(['messege' => 'Detail pertemuan berhasil diperbarui!', 'alert-type' => 'success']);
@@ -163,13 +169,13 @@ class MenteeController extends Controller
     public function updateFinalReport(Request $request, Mentoring $mentoring)
     {
         $request->validate([
-            'final_report' => 'required|file|mimes:pdf,doc,docx|max:5120',
+            'final_report' => 'required|file|mimes:pdf|max:5120',
         ]);
 
         if ($request->hasFile('final_report')) {
             $path = 'mentoring/' . now()->year . '/' . $mentoring->id . '/';
             $file = $request->file('final_report');
-            $fileName = $path . 'final_report' . $file->getClientOriginalExtension();
+            $fileName = $path . 'final_report.' . $file->getClientOriginalExtension();
             Storage::disk('private')->put($fileName, file_get_contents($file));
 
             $mentoring->update([
@@ -183,8 +189,11 @@ class MenteeController extends Controller
             'user_id' => $mentoring->mentor_id,
             'title' => 'Laporan Akhir Telah Diunggah',
             'body' => "Mentee telah mengunggah laporan akhir mentoring. Silakan periksa dokumen tersebut.",
-            'link' => route('student.mentor.index'),
-            'path' => null,
+            'link' => route('student.mentor.show', $mentoring->id),
+            'path' => [
+                'module' => 'mentoring',
+                'id' => $mentoring->id,
+            ]
         ]);
 
         return back() > with(['messege' => 'Laporan akhir berhasil diunggah!', 'alert-type' => 'success']);

@@ -144,7 +144,7 @@
                                                         <select name="education_requirements[]" multiple="multiple" class="form-control select2"
                                                             id="education_requirements">
                                                             @foreach (['SD', 'SMP', 'SMA', 'D-1', 'D-2', 'D-3', 'D-4', 'S-1', 'S-2', 'S-3'] as $sch)
-                                                            <option value="{{ $sch }}" {{ in_array($sch, json_decode($vacancy->education_requirements)) ? 'selected' : '' }}>{{ $sch}}</option>
+                                                            <option value="{{ $sch }}" {{ $vacancy->education_requirements && in_array($sch, json_decode($vacancy->education_requirements)) ? 'selected' : '' }}>{{ $sch}}</option>
                                                             @endforeach
                                                         </select>
                                                         @error('education_requirements')

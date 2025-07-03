@@ -20,16 +20,25 @@
                 <div class="dashboard__instructor-info">
                     <div class="dashboard__instructor-info-left">
                         <div class="thumb">
-                            <img src="{{ asset('frontend/img/frontend-avatar.png') }}" alt="img">
+                            {{-- <img src="{{ asset('frontend/img/frontend-avatar.png') }}" alt="img"> --}}
+                            <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ auth()->user()->nip }}.jpg" alt="img">
                         </div>
                         <div class="content">
                             <h4 class="title">{{ auth()->user()->name }}</h4>
                             <ul class="list-wrap">
                                 <li>
+                                    {{ auth()->user()->nip }}
+                                </li>
+                                {{-- <li>
+                                    {{ auth()->user()->nip }}
+                                </li> --}}
+                                {{-- @if (auth()->user()->email)
+                                <li>
                                     <img src="{{ asset('frontend/img/icons/envelope.svg') }}" alt="img"
                                         class="injectable">
                                     {{ auth()->user()->email }}
                                 </li>
+                                @endif --}}
                                 @if (auth()->user()->phone)
                                     <li>
                                         <img src="{{ asset('frontend/img/icons/phone.svg') }}" alt="img"

@@ -1,5 +1,9 @@
 @extends('frontend.student-dashboard.layouts.master')
 
+@php
+    use Modules\Mentoring\app\Models\MentoringSession;
+@endphp
+
 @section('dashboard-contents')
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between align-items-center">
@@ -196,7 +200,7 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editSessionModalLabel">Isi Detail Pertemuan</h5>
+                        <h5 class="modal-title" id="editSessionModalLabel">Isi Detail Pertemuans</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                     </div>
                     <div class="modal-body">
@@ -204,9 +208,22 @@
                             <label for="modal-session-id" class="form-label">Pilih Pertemuan<code>*</code></label>
                             <select class="form-select" name="session_id" id="modal-session-id" required>
                                 <option value="" disabled selected>Pilih Jadwal Pertemuan</option>
-                                @foreach($mentoring->mentoringSessions as $session)
+                                @foreach($mentoring->mentoringSessions as $index => $session)
+                                    @php
+                                        $isEnabled = true;
+                                        $note = '';
+
+                                        if ($index > 0) {
+                                            $previousSession = $mentoring->mentoringSessions[$index - 1];
+                                            if ($previousSession->status !== MentoringSession::STATUS_REVIEWED) {
+                                                $isEnabled = false;
+                                                $note = ' (Menunggu review mentor pada sesi sebelumnya)';
+                                            }
+                                        }
+                                    @endphp
                                     @if(empty($session->activity))
-                                        <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} - {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}</option>
+                                        <option value="{{ $session->id }}" {{ $isEnabled ? '' : 'disabled' }}>Pertemuan {{ $loop->iteration }} - {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}{{ $note }}
+                                        </option>
                                     @endif
                                 @endforeach
                             </select>

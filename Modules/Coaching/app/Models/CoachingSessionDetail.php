@@ -10,6 +10,8 @@ class CoachingSessionDetail extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function session()
     {
         return $this->belongsTo(CoachingSession::class, 'coaching_session_id');

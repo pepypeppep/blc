@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Coaching\app\Http\Controllers\CoacheeController;
 use Modules\Coaching\app\Http\Controllers\CoachingController;
 use Modules\Coaching\app\Http\Controllers\CoachController;
 
@@ -17,18 +18,11 @@ use Modules\Coaching\app\Http\Controllers\CoachController;
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' => 'student.'], function () {
     Route::prefix('/coachee')->name('coachee.')->group(function () {
-        Route::get('/', function () {
-            return 'Coachee';
-        })->name('index');
-        // Route::get('/', [MenteeController::class, 'index'])->name('index');
-        // Route::get('/create', [MenteeController::class, 'create'])->name('create');
-        // Route::post('/', [MenteeController::class, 'store'])->name('store');
-        // Route::put('/session/update', [MenteeController::class, 'updateSession'])->name('update.session');
-        // Route::put('/{mentoring}/report', [MenteeController::class, 'updateFinalReport'])->name('report');
-        // Route::get('/{id}', [MenteeController::class, 'show'])->name('show');
-        // Route::get('/{id}/document/{type}', [MenteeController::class, 'showDocument'])->name('view.document');
-        // Route::get('/{id}/img', [MenteeController::class, 'viewImage'])->name('view.img');
-        // Route::put('/{id}/submit', [MenteeController::class, 'submitForApproval'])->name('submit');
+        Route::get('/', [CoacheeController::class, 'index'])->name('index');
+        Route::get('/{id}/show', [CoacheeController::class, 'show'])->name('show');
+        Route::post('/{id}/tolak-konsensus', [CoacheeController::class, 'tolakKonsensus'])->name('tolak-konsensus');
+        Route::post('/{id}/join-konsensus', [CoacheeController::class, 'joinKonsensus'])->name('join-konsensus');
+        Route::post('/submit-report', [CoacheeController::class, 'submitReport'])->name('submit-report');
     });
 
     Route::group(['prefix' => 'coach', 'as' => 'coach.'], function () {

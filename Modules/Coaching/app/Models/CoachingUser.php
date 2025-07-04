@@ -44,4 +44,9 @@ class CoachingUser extends Pivot
             $q->where('id', $coachingId)->where('coach_id', $coachId);
         });
     }
+
+    public function isRejected()
+    {
+        return $this->is_joined == 0 && $this->notes != null;
+    }
 }

@@ -7,8 +7,6 @@
     use Modules\Mentoring\app\Models\Mentoring;
 @endphp
 @section('admin-content')
-
-
     <div class="main-content">
         <section class="section">
             <div class="section-header">
@@ -25,7 +23,8 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ $mentoring->title }}</h4>
-                                <div class="badge badge-{{ $mentoring->stat['color'] }}">{{ $mentoring->stat['label'] }}</div>
+                                <div class="badge badge-{{ $mentoring->stat['color'] }}">{{ $mentoring->stat['label'] }}
+                                </div>
                             </div>
 
                             <div class="card-body">
@@ -49,23 +48,61 @@
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Mentor') }}</p>
-                                            <div class="render-content">{{ $mentoring->mentor->name }}</div>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $mentoring->mentor->name }}</p>
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Session Datetime') }}</p>
-                                            <div class="render-content">
-                                               
+                                                Pelaksanaan Pertemuan ({{ count($mentoring->mentoringSessions) }})
+                                            </p>
+                                            <p class="mb-3" style="font-size: 1.1rem;">Lakukan sesi mentoring sesuai jadwal dan laporkan hasil penugasan.</p>
+
+                                            <div class="accordion card mb-2" id="mentoringAccordion">
+                                                @foreach($mentoring->mentoringSessions as $index => $session)
+                                                    <div class="accordion-item border border-secondary-subtle mb-2">
+                                                        <h2 class="accordion-header">
+                                                            <div class="accordion_header_content d-flex justify-content-between align-items-center">
+                                                                <button
+                                                                    class="accordion-button course-quiz-btn collapsed"
+                                                                    type="button"
+                                                                    data-toggle="collapse"
+                                                                    data-target="#mentoring-collapse{{ $index }}"
+                                                                    aria-expanded="false"
+                                                                    aria-controls="mentoring-collapse{{ $index }}"
+                                                                    style="width: 100%;">
+                                                                    <div class="text-start">
+                                                                        <p class="text-primary mb-1 text-left" style="font-size: 0.9rem; font-weight: 600;">
+                                                                            Pertemuan {{ $index + 1 }}
+                                                                        </p>
+                                                                        <div class="text-muted text-left" style="font-size: 0.85rem;">
+                                                                            {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}
+                                                                        </div>
+                                                                    </div>
+                                                                </button>
+                                                            </div>
+                                                        </h2>
+                                                        <div id="mentoring-collapse{{ $index }}"
+                                                            class="accordion-collapse collapse"
+                                                            data-bs-parent="#mentoringAccordion">
+                                                            <div class="accordion-body">
+                                                                <strong>Aktivitas:</strong><br>
+                                                                {{ $session->activity ?? 'Belum ada aktivitas yang diinput.' }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-lg-12 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Final Report Mentoring') }}</p>
-                                            <div class="render-content">Laporan akhir dari kegiatan mentoring yang telah dilakukan.</div>
+                                            <p class="mb-3" style="font-size: 1.1rem;">Laporan akhir dari kegiatan mentoring yang telah
+                                                dilakukan.</p>
+
                                         </div>
                                     </div>
                                 </div>
@@ -73,27 +110,39 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('List Mentee') }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label for="">{{ __('Front Image') }}</label>
-                                    <img src="{{ route('admin.certificate-builder.getBg', 1) }}"
-                                        alt="" style="width: 50%; height: auto;"
-                                        onerror="this.onerror=null; this.src='{{ asset('assets/img/no-image.png') }}'">
-                                </div>
+                        @php
+                            $mentee = $mentoring->mentee;
+                        @endphp
 
+                        @if($mentee)
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h4>{{ __('List Mentee') }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="https://i.pinimg.com/736x/f9/8a/db/f98adb0622aa2341ba29aaeb46901b33.jpg"
+                                            alt="{{ $mentee->name }}"
+                                            class="rounded-circle"
+                                            width="50" height="50"
+                                            style="object-fit: cover;">
+                                        <div class=" ml-2">
+                                            <strong>{{ $mentee->name }}</strong><br>
+                                            <small class="text-muted">{{ $mentee->email }}</small>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('Mentor Availability Letter') }}</h4>
                             </div>
                             <div class="card-body">
                                 <div class="form-group d-flex justify-content-center">
-                                    <a href="#" target="_blank" class="btn btn-outline-danger d-flex align-items-center gap-2" style="font-size: 1.5rem;">
+                                    <a href="#" target="_blank"
+                                        class="btn btn-outline-danger d-flex align-items-center gap-2"
+                                        style="font-size: 1.5rem;">
                                         <i class="fas fa-file-pdf fa-2x"></i> <!-- ikon PDF besar -->
                                         <span>Download PDF</span>
                                     </a>
@@ -101,81 +150,51 @@
                             </div>
                         </div>
                         <div class="card">
-                               <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h4 class="mb-0">{{ __('Certificate Status') }}</h4>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">{{ __('Certificate Status') }}</h4>
 
-                                    <a href="#" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="left" title="Tambah Certificate">
-                                        <i class="fas fa-plus"></i>
-                                    </a>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-group d-flex justify-content-center">
-                                        <div id="certificateBg"></div>
-                                        <input type="hidden" name="certificate"
-                                        value="" class="form-control">
-                                        <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-primary mt-3"
-                                        data-toggle="modal"
-                                        data-target="#certificateModal">{{ __('Choose Certificate') }} &nbsp;
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                                fill="#6ac88e" stroke="#ffffff" stroke-width="1.5"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-badge-check-icon lucide-badge-check">
-                                                <path
-                                                    d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
-                                                <path d="m9 12 2 2 4-4" />
-                                            </svg></button>
-                                    </div>
-                                    {{-- <div>
-                                        <div id="certificateBg"></div>
-                                        <input type="hidden" name="certificate"
-                                        value="" class="form-control">
-                                        <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-primary mt-3"
-                                        data-toggle="modal"
+                                <a href="#" class="btn btn-sm btn-primary" data-toggle="tooltip"
+                                    data-placement="left" title="Tambah Certificate">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group d-flex justify-content-center">
+                                    <div id="certificateBg"></div>
+                                    <input type="hidden" name="certificate" value="" class="form-control">
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
                                         data-target="#certificateModal">{{ __('Choose Certificate') }}</button>
-                                    </div> --}}
-                                    {{-- <div class="row">
-                                        <div class="col-12 d-flex align-items-center">
-                                            <h6 class="text-center mb-0">{{ __('Published') }}</h6>
-                                            &nbsp;
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                                fill="#6ac88e" stroke="#ffffff" stroke-width="1.5"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-badge-check-icon lucide-badge-check">
-                                                <path
-                                                    d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
-                                                <path d="m9 12 2 2 4-4" />
-                                            </svg>
-                                        </div>
-                                    </div> --}}
-                                    <div class="modal fade" id="certificateModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
-                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-xl" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header" style="padding: 25px 25px 0px 25px;">
-                                                    <h5 class="modal-title" id="certificateModalLabel">
-                                                        {{ __('Choose Certificate') }}</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body row">
-                                                    @foreach ($certificates as $certificate)
-                                                        <div class="col-md-3 d-flex flex-column">
-                                                            <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}" alt=""
-                                                                style="width: 100%; height: auto;">
-                                                            <button class="btn btn-primary mt-auto"
-                                                                onclick="chooseCertificate({{ $certificate->id }})">{{ __('Choose') }}</button>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
+                                </div>
+                                <div class="modal fade" id="certificateModal" data-backdrop="static"
+                                    data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header" style="padding: 25px 25px 0px 25px;">
+                                                <h5 class="modal-title" id="certificateModalLabel">
+                                                    {{ __('Choose Certificate') }}</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body row">
+                                                @foreach ($certificates as $certificate)
+                                                    <div class="col-md-3 d-flex flex-column">
+                                                        <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}"
+                                                            alt="" style="width: 100%; height: auto;">
+                                                        <button class="btn btn-primary mt-auto"
+                                                            onclick="chooseCertificate({{ $certificate->id }})">{{ __('Choose') }}</button>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     {{-- <div class="col-lg-6">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
@@ -266,14 +285,13 @@
             </div>
         </section>
     </div>
-
 @endsection
 {{-- @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 @endpush --}}
 
 @push('js')
- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

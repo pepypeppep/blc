@@ -62,7 +62,7 @@
                             Lakukan sesi coaching sesuai jadwal dan laporkan hasil penugasan.
                         </span>
                     </div>
-                    @if (true)
+                    @if (!$userCanSubmitFinalReport)
                         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#editSessionModal">
                             <i class="fa fa-edit"></i> Isi Kegiatan
@@ -123,37 +123,44 @@
                 </div>
                 <div class="mb-3">
                     @if (!$coachingUser->final_report)
-                        <div class="alert alert-info">
-                            <strong>Ketentuan :</strong><br>
-                            - Harap unggah laporan akhir yang telah <strong>ditandatangani oleh Coach</strong>.<br>
-                            - Format laporan akhir yang diunggah berupa file <strong>PDF</strong> dengan ukuran
-                            <strong>maksimal
-                                5MB</strong>.<br>
-                            - Laporan akhir dapat diunggah ketika Sesi Pertemuan Coaching telah selesai dilakukan.
-                        </div>
-                        <form
-                            action="{{ route('student.coachee.submit-final-report', ['coachingUserId' => $coachingUser->id, 'coachingId' => $coachingUser->coaching_id]) }}"
-                            method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <div class="input-group mb-3">
-                                <span class="input-group-text text-dark" style="cursor: pointer;"
-                                    onclick="document.getElementById('final_report').click();">
-                                    <i class="fa fa-file-pdf"></i> &nbsp;{{ __('Choose') }}
-                                </span>
-                                <input id="file_name" readonly class="form-control" type="text"
-                                    placeholder="Belum ada file dipilih"
-                                    onclick="document.getElementById('final_report').click();">
-
-                                <input id="final_report" name="final_report" class="d-none" type="file"
-                                    onchange="document.getElementById('file_name').value = this.files[0]?.name || '';"
-                                    accept=".pdf" required>
-
-                                <button type="submit" class="btn btn-primary btn-sm">
-                                    <i class="fa fa-upload"></i> Unggah
-                                </button>
+                        @if ($userCanSubmitFinalReport)
+                            <div class="alert alert-info">
+                                <strong>Ketentuan :</strong><br>
+                                - Harap unggah laporan akhir yang telah <strong>ditandatangani oleh Coach</strong>.<br>
+                                - Format laporan akhir yang diunggah berupa file <strong>PDF</strong> dengan ukuran
+                                <strong>maksimal
+                                    5MB</strong>.<br>
+                                - Laporan akhir dapat diunggah ketika Sesi Pertemuan Coaching telah selesai dilakukan.
                             </div>
-                        </form>
+                            <form
+                                action="{{ route('student.coachee.submit-final-report', ['coachingUserId' => $coachingUser->id, 'coachingId' => $coachingUser->coaching_id]) }}"
+                                method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text text-dark" style="cursor: pointer;"
+                                        onclick="document.getElementById('final_report').click();">
+                                        <i class="fa fa-file-pdf"></i> &nbsp;{{ __('Choose') }}
+                                    </span>
+                                    <input id="file_name" readonly class="form-control" type="text"
+                                        placeholder="Belum ada file dipilih"
+                                        onclick="document.getElementById('final_report').click();">
+
+                                    <input id="final_report" name="final_report" class="d-none" type="file"
+                                        onchange="document.getElementById('file_name').value = this.files[0]?.name || '';"
+                                        accept=".pdf" required>
+
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-upload"></i> Unggah
+                                    </button>
+                                </div>
+                            </form>
+                        @else
+                            <div class="alert alert-warning">
+                                <strong>Catatan:</strong> Anda belum menyelesaikan sesi pertemuan. Silakan lengkapi laporan
+                                akhir setelah semua sesi selesai.
+                            </div>
+                        @endif
                     @else
                         <div class="d-flex align-items-center">
                             <i class="fa fa-file-pdf me-2"></i>
@@ -163,6 +170,7 @@
                             </a>
                         </div>
                     @endif
+
                 </div>
             @endif
         </div>

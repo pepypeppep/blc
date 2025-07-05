@@ -35,15 +35,17 @@ class CoacheeController extends Controller
         })->with(['coaching.coach', 'coaching.coachingSessions.details' => function ($q) {
             return $q->where('coaching_user_id', userAuth()->id);
         }])->where('user_id', $user->id)->where('coaching_id', $id)->first();
-        
+
         if (!$coachingUser) {
             abort(403, 'Anda tidak memiliki izin untuk mengakses Coaching ini.');
         }
 
         $coaching = $coachingUser->coaching;
         $sessions = $coaching->coachingSessions;
+        $sessionsCount = $sessions->count();
+        $userCanSubmitFinalReport = CoachingSession::where('coaching_id', $coaching->id)->whereNot('status', "Pending")->count() == $sessionsCount && $coachingUser->final_report == null;
 
-        return view('frontend.student-dashboard.coaching.coachee.show', compact('coachingUser', 'coaching', 'sessions'));
+        return view('frontend.student-dashboard.coaching.coachee.show', compact('coachingUser', 'coaching', 'sessions', 'sessionsCount', 'userCanSubmitFinalReport'));
     }
 
     public function joinKonsensus($id)
@@ -199,7 +201,7 @@ class CoacheeController extends Controller
         return response()->file(Storage::disk('private')->path($coachingUser->final_report));
     }
 
-    public function submitFinalReport(Request $request, $coachingId, $coachingSessionId)
+    public function submitFinalReport(Request $request, $coachingId)
     {
         $request->validate([
             'final_report' => 'required|file|mimes:pdf|max:5120',
@@ -215,10 +217,12 @@ class CoacheeController extends Controller
 
             $details = CoachingSessionDetail::with(['session.coaching.coachingSessions' => function ($q) use ($coachingId) {
                 $q->where('coaching_id', $coachingId);
-            }])->where('coaching_session_id', $coachingSessionId)->where('coaching_user_id', $coachingUser->id)->first();
+            }])->where('coaching_user_id', $coachingUser->id)->count();
 
-            if (!$details) {
-                return redirect()->route('student.coachee.show', ['id' => $coachingId])->with(['alert-type' => 'error', 'messege' => __('Laporan tidak ditemukan')]);
+            $sessionsCount = CoachingSession::where('coaching_id', $coachingId)->count();
+
+            if ($details < $sessionsCount) {
+                return redirect()->route('student.coachee.show', ['id' => $coachingId])->with(['alert-type' => 'error', 'messege' => __('Anda belum menyelesaikan semua sesi Coaching. Pastikan Anda telah mengirimkan laporan untuk setiap sesi sebelum mengirimkan laporan akhir.')]);
             }
 
             if ($request->hasFile('final_report')) {

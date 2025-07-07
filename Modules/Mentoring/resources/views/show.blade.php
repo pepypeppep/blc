@@ -149,6 +149,8 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- jika status mentoring sudah selesai --}}
+                        @if ($mentoring->status == 'done')
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4 class="mb-0">{{ __('Certificate Status') }}</h4>
@@ -194,6 +196,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                     </div>
                     {{-- <div class="col-lg-6">
                         <div class="card">

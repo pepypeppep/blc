@@ -39,11 +39,11 @@ class CoacheeController extends Controller
         if (!$coachingUser) {
             abort(403, 'Anda tidak memiliki izin untuk mengakses Coaching ini.');
         }
-
+        
         $coaching = $coachingUser->coaching;
         $sessions = $coaching->coachingSessions;
         $sessionsCount = $sessions->count();
-        $userCanSubmitFinalReport = CoachingSession::where('coaching_id', $coaching->id)->whereNot('status', "Pending")->count() == $sessionsCount && $coachingUser->final_report == null;
+        $userCanSubmitFinalReport = CoachingSessionDetail::where('coaching_user_id', $coachingUser->id)->whereIn('coaching_session_id', $sessions->pluck('id'))->where('coaching_note', '!=', null)->where('coaching_instructions', '!=', null)->count() == $sessionsCount && $coachingUser->final_report == null;
 
         return view('frontend.student-dashboard.coaching.coachee.show', compact('coachingUser', 'coaching', 'sessions', 'sessionsCount', 'userCanSubmitFinalReport'));
     }
@@ -124,6 +124,11 @@ class CoacheeController extends Controller
 
         if (!$details) {
             $season = CoachingSession::with('coaching.coachingSessions')->where('id', $request->session_id)->first();
+
+            if ($season->coaching->status != Coaching::STATUS_PROCESS) {
+                return redirect()->route('student.coachee.show', ['id' => $season->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Pengisian laporan hanya dapat dilakukan pada sesi Coaching yang sedang berlangsung.')]);
+            }
+
             $coachingUser = CoachingUser::where('user_id', $user->id)->where('coaching_id', $season->coaching_id)->where('is_joined', 1)->first();
 
             if (!$coachingUser) {
@@ -154,6 +159,10 @@ class CoacheeController extends Controller
             }
 
             return redirect()->route('student.coachee.show', ['id' => $season->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Laporan gagal disimpan')]);
+        }
+
+        if ($details->session->coaching->status != Coaching::STATUS_PROCESS) {
+            return redirect()->route('student.coachee.show', ['id' => $details->session->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Pengisian laporan hanya dapat dilakukan pada sesi Coaching yang sedang berlangsung.')]);
         }
 
         if ($request->hasFile('image')) {

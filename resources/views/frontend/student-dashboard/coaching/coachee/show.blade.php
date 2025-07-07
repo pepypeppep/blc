@@ -1,5 +1,10 @@
 @extends('frontend.student-dashboard.layouts.master')
 
+@php
+    use Modules\Coaching\app\Models\Coaching;
+    use Modules\Coaching\app\Models\CoachingSessionDetail;
+@endphp
+
 @section('dashboard-contents')
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between align-items-center">
@@ -57,12 +62,12 @@
             @if ($coachingUser->is_joined == 1)
                 <div class="mb-3 d-flex justify-content-between align-items-center border-top pt-3 mt-4">
                     <div>
-                        <h6 class="title">{{ __('Session Datetime') }} <span title="Jumlah pertemuan">( 1 )</span></h6>
+                        <h6 class="title">{{ __('Session Datetime') }} <span title="Jumlah pertemuan"></span></h6>
                         <span class="text-muted small">
                             Lakukan sesi coaching sesuai jadwal dan laporkan hasil penugasan.
                         </span>
                     </div>
-                    @if (!$userCanSubmitFinalReport)
+                    @if ($coachingUser->coaching->status == Coaching::STATUS_PROCESS)
                         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#editSessionModal">
                             <i class="fa fa-edit"></i> Isi Kegiatan
@@ -80,7 +85,15 @@
                                     <div class="d-block">
                                         <div>
                                             <strong>Pertemuan {{ $loop->iteration }}</strong>
-                                            <span class="badge bg-info">{{ $session->status }}</span>
+                                            @if ($session->details->count() > 0)
+                                                @if ($session->details->first()->coaching_note && $session->details->first()->coaching_instructions)
+                                                    <span class="badge bg-warning">Ditinjau</span>
+                                                @else
+                                                    <span class="badge bg-info">Terisi</span>
+                                                @endif
+                                            @else
+                                                <span class="badge bg-secondary">Kosong</span>
+                                            @endif
                                         </div>
                                         <div>
                                             <small class="text-muted">
@@ -103,6 +116,18 @@
                                                     href="{{ route('student.coachee.preview', ['coachingId' => $session->coaching_id, 'coachingSessionId' => $session->id]) }}"
                                                     target="_blank">{{ $session->details->first()->image }}</a></p>
                                         </div>
+                                        @if ($session->details->first()->coaching_note)
+                                            <div class="mb-2">
+                                                <strong class="d-block">Catatan Coach:</strong>
+                                                <div class="text-body"><em>{!! $session->details->first()->coaching_note !!}</em></div>
+                                            </div>
+                                        @endif
+                                        @if ($session->details->first()->coaching_instructions)
+                                            <div class="mb-2">
+                                                <strong class="d-block">Instruksi Coach:</strong>
+                                                <div class="text-body"><em>{!! $session->details->first()->coaching_instructions !!}</em></div>
+                                            </div>
+                                        @endif
                                     @else
                                         <div class="text-center">
                                             <h4 class="text-muted">Belum ada kegiatan</h4>
@@ -157,8 +182,9 @@
                             </form>
                         @else
                             <div class="alert alert-warning">
-                                <strong>Catatan:</strong> Anda belum menyelesaikan sesi pertemuan. Silakan lengkapi laporan
-                                akhir setelah semua sesi selesai.
+                                <strong>Catatan:</strong> Anda mungkin belum menyelesaikan sesi pertemuan. Silakan lengkapi
+                                laporan
+                                akhir setelah semua sesi selesai dan tunggu coach untuk meninjau.
                             </div>
                         @endif
                     @else
@@ -213,9 +239,11 @@
                             <select class="form-select" name="session_id" id="modal-session-id" required>
                                 <option value="" disabled selected>Pilih Jadwal Pertemuan</option>
                                 @foreach ($sessions as $session)
-                                    <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} -
-                                        {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
-                                    </option>
+                                    @if ($session->details->count() == 0)
+                                        <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} -
+                                            {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>

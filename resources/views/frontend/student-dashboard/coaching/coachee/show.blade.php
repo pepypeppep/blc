@@ -112,9 +112,16 @@
                                         </div>
                                         <div class="mb-2">
                                             <strong class="d-block">Dokumentasi:</strong>
-                                            <p class="text-muted"><a
-                                                    href="{{ route('student.coachee.preview', ['coachingId' => $session->coaching_id, 'coachingSessionId' => $session->id]) }}"
-                                                    target="_blank">{{ $session->details->first()->image }}</a></p>
+                                            @if ($session->details->first()->image)
+                                                <a href="{{ route('student.coachee.preview', ['coachingId' => $session->coaching_id, 'coachingSessionId' => $session->id]) }}"
+                                                    target="_blank">
+                                                    <img src="{{ route('student.coachee.preview', ['coachingId' => $session->coaching_id, 'coachingSessionId' => $session->id]) }}"
+                                                        alt="Dokumentasi"
+                                                        style="max-width: 200px; max-height: 150px; display: block;">
+                                                </a>
+                                            @else
+                                                <p class="text-muted"><em>Tidak ada dokumentasi</em></p>
+                                            @endif
                                         </div>
                                         @if ($session->details->first()->coaching_note)
                                             <div class="mb-2">
@@ -188,13 +195,11 @@
                             </div>
                         @endif
                     @else
-                        <div class="d-flex align-items-center">
-                            <i class="fa fa-file-pdf me-2"></i>
-                            <a href="{{ route('student.coachee.preview-final-report', ['coachingId' => $coachingUser->coaching_id, 'coachingUserId' => $coachingUser->id]) }}"
-                                target="_blank" class="text-decoration-none">
-                                {{ $coachingUser->final_report }}
-                            </a>
-                        </div>
+                        <embed
+                            src="{{ route('student.coachee.preview-final-report', ['coachingId' => $coachingUser->coaching_id, 'coachingUserId' => $coachingUser->id]) }}"
+                            type="application/pdf"
+                            style="border:1px solid #ccc; border-radius:4px; cursor:pointer; width:100%; height:500px;"
+                            onclick="window.open('{{ route('student.coachee.preview-final-report', ['coachingId' => $coachingUser->coaching_id, 'coachingUserId' => $coachingUser->id]) }}', '_blank')" />
                     @endif
 
                 </div>

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Modules\Coaching\app\Models\Coaching;
 use Modules\Coaching\app\Models\CoachingSession;
 use Modules\Coaching\app\Models\CoachingSessionDetail;
-use Modules\Coaching\App\Models\CoachingUser;
+use Modules\Coaching\app\Models\CoachingUser;
 
 class CoacheeController extends Controller
 {

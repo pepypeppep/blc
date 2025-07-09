@@ -67,7 +67,7 @@
                             Lakukan sesi coaching sesuai jadwal dan laporkan hasil penugasan.
                         </span>
                     </div>
-                    @if ($coachingUser->coaching->status == Coaching::STATUS_PROCESS)
+                    @if ($coachingUser->coaching->status == Coaching::STATUS_PROCESS && $coachingUser->final_report == null && !$userCanSubmitFinalReport)
                         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#editSessionModal">
                             <i class="fa fa-edit"></i> Isi Kegiatan

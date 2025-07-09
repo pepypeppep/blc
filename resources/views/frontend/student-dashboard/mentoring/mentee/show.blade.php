@@ -83,6 +83,7 @@
                                 <div>
                                     <strong>Pertemuan {{ $loop->iteration }}</strong>
                                     {!! !empty($session->activity) ? '<span class="badge bg-info">Terisi</span>' : '' !!}
+                                    {!! !empty($session->mentoring_note) ? '<span class="badge bg-primary">Direviu</span>' : '' !!}
                                 </div>
                                 <div>
                                     <small class="text-muted">
@@ -115,6 +116,9 @@
                                         <p class="text-muted"><em>Belum ada dokumentasi gambar.</em></p>
                                     @endif
                                 </div>
+                                @if ($session->status == 'reviewed')
+                                    @include('frontend.student-dashboard.mentoring.mentor.partials.session-done')
+                                @endif
                             @else
                                 <div class="text-center">
                                     <h4 class="text-muted">Belum ada kegiatan</h4>

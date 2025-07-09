@@ -379,6 +379,19 @@ trait PermissionsTrait
         ],
     ];
 
+    public static array $mentoringPermissions = [
+        'group_name' => 'mentoring',
+        'permissions' => [
+            'mentoring.view',
+            'mentoring.create',
+            'mentoring.store',
+            'mentoring.edit',
+            'mentoring.update',
+            'mentoring.destroy',
+            'mentoring.verify',
+        ],
+    ];
+
     public static array $pengumumanPermissions = [
         'group_name' => 'pengumuman',
         'permissions' => [

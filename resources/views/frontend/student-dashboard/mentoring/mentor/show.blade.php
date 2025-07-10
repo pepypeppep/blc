@@ -222,8 +222,9 @@ $statusColors = [
         aria-labelledby="changeSessionDatetimeModalLabel" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="#" method="POST">
+                <form action="{{ route('student.mentor.update.session') }}" method="POST">
                     @csrf
+                    @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title" id="changeSessionDatetimeModalLabel">Ubah Jadwal Sesi Mentoring</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -231,7 +232,7 @@ $statusColors = [
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="session_number" class="form-label">Pilih Sesi</label>
-                            <select class="form-select" id="session_number" name="session_number" required>
+                            <select class="form-select" id="session_number" name="session_id" required>
                                 @foreach ($mentoring->mentoringSessions as $session)
                                     <option value="{{ $session->id }}">
                                         Pertemuan {{ $loop->iteration }} &mdash;
@@ -243,7 +244,7 @@ $statusColors = [
                         <div class="mb-3">
                             <label for="new_datetime" class="form-label">Tanggal &amp; Waktu Baru</label>
                             <input type="text" class="form-control datetimepicker" id="new_datetime"
-                                name="new_datetime" placeholder="Pilih tanggal & waktu baru" required>
+                                name="mentoring_date" placeholder="Pilih tanggal & waktu baru" required>
                         </div>
                     </div>
                     <div class="modal-footer">

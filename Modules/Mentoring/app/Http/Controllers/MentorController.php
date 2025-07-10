@@ -348,4 +348,31 @@ class MentorController extends Controller
 
         return redirect()->route('student.mentor.index')->with(['messege' => 'Evaluasi berhasil dikirim', 'alert-type' => 'success']);
     }
+
+    public function updateSession(Request $request)
+    {
+        $request->validate([
+            'mentoring_date' => 'required|date',
+            'session_id' => 'required|string',
+        ], [
+            'mentoring_date.required' => 'Tanggal mentoring tidak boleh kosong',
+            'session_id.required' => 'ID sesi tidak boleh kosong',
+        ]);
+
+        $user = auth()->user();
+        $session = MentoringSession::where('id', $request->session_id)->where('mentor_id', $user->id)->first();
+
+        if (!$session) {
+            return response()->json(['status' => 'error', 'message' => 'Sesi mentoring tidak ditemukan'], 404);
+        }
+
+        if ($session->status != MentoringSession::STATUS_PENDING) {
+            return response()->json(['status' => 'error', 'message' => 'Tanggal mentoring hanya bisa diubah saat mentor belum menerima sesi'], 400);
+        }
+
+        $session->mentoring_date = $request->mentoring_date;
+        $session->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Sesi mentoring berhasil diperbarui'], 200);
+    }
 }

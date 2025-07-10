@@ -4,7 +4,6 @@ namespace Modules\Coaching\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Coaching\Database\factories\CoachingSessionFactory;
 
 class CoachingSession extends Model
 {
@@ -12,6 +11,10 @@ class CoachingSession extends Model
 
     protected $table = 'coaching_sessions';
     protected $guarded = ['id'];
+
+    public const STATUS_PENDING = "Pending";
+    public const STATUS_PROCESS = "Process";
+    public const STATUS_DONE = "Done";
 
     public function coaching()
     {

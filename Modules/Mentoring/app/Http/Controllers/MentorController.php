@@ -203,25 +203,35 @@ class MentorController extends Controller
         $request->validate([
             'target' => 'required|in:0,1',
             'target_description' => 'required|string',
-            'tingkat_disiplin' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'tingkat_disiplin' => 'required|integer|min:1|max:100',
             'disiplin_description' => 'required|string',
-            'kerjasama' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'kerjasama' => 'required|integer|min:1|max:100',
             'kerjasama_description' => 'required|string',
-            'inisiatif' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'inisiatif' => 'required|integer|min:1|max:100',
             'inisiatif_description' => 'required|string',
+            'penguasaan_materi' => 'required|integer|min:1|max:100',
+            'penguasaan_materi_description' => 'required|string',
         ], [
             'target.required' => 'Target tidak boleh kosong',
             'target.in' => 'Target harus 0 (Tidak) atau 1 (Ya)',
             'target_description.required' => 'Deskripsi target tidak boleh kosong',
             'tingkat_disiplin.required' => 'Tingkat disiplin tidak boleh kosong',
-            'tingkat_disiplin.in' => 'Tingkat disiplin harus antara 1 sampai 10',
+            'tingkat_disiplin.min' => 'Tingkat disiplin minimal 1',
+            'tingkat_disiplin.max' => 'Tingkat disiplin maksimal 100',
             'disiplin_description.required' => 'Deskripsi disiplin tidak boleh kosong',
             'kerjasama.required' => 'Kerjasama tidak boleh kosong',
-            'kerjasama.in' => 'Kerjasama harus antara 1 sampai 10',
+            'kerjasama.min' => 'Kerjasama minimal 1',
+            'kerjasama.max' => 'Kerjasama maksimal 100',
             'kerjasama_description.required' => 'Deskripsi kerjasama tidak boleh kosong',
             'inisiatif.required' => 'Inisiatif tidak boleh kosong',
-            'inisiatif.in' => 'Inisiatif harus antara 1 sampai 10',
+            'inisiatif.min' => 'Inisiatif minimal 1',
+            'inisiatif.max' => 'Inisiatif maksimal 100',
             'inisiatif_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
+            'penguasaan_materi.required' => 'Penguasaan materi tidak boleh kosong',
+            'penguasaan_materi.integer' => 'Penguasaan materi harus berupa angka',
+            'penguasaan_materi.min' => 'Penguasaan materi minimal 1',
+            'penguasaan_materi.max' => 'Penguasaan materi maksimal 100',
+            'penguasaan_materi_description.required' => 'Deskripsi penguasaan materi tidak boleh kosong',
         ]);
 
 
@@ -249,6 +259,8 @@ class MentorController extends Controller
             $review->teamwork_description = $request->kerjasama_description;
             $review->initiative = $request->inisiatif;
             $review->initiative_description = $request->inisiatif_description;
+            $review->material_mastery = $request->penguasaan_materi;
+            $review->material_mastery_description = $request->penguasaan_materi_description;
             $review->save();
         } else {
             $review->is_target = $request->target;
@@ -259,6 +271,8 @@ class MentorController extends Controller
             $review->teamwork_description = $request->kerjasama_description;
             $review->initiative = $request->inisiatif;
             $review->initiative_description = $request->inisiatif_description;
+            $review->material_mastery = $request->penguasaan_materi;
+            $review->material_mastery_description = $request->penguasaan_materi_description;
             $review->save();
         }
 
@@ -270,26 +284,37 @@ class MentorController extends Controller
         $request->validate([
             'target' => 'required|in:0,1',
             'target_description' => 'required|string',
-            'tingkat_disiplin' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'tingkat_disiplin' => 'required|integer|min:1|max:100',
             'disiplin_description' => 'required|string',
-            'kerjasama' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'kerjasama' => 'required|integer|min:1|max:100',
             'kerjasama_description' => 'required|string',
-            'inisiatif' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'inisiatif' => 'required|integer|min:1|max:100',
             'inisiatif_description' => 'required|string',
+            'penguasaan_materi' => 'required|integer|min:1|max:100',
+            'penguasaan_materi_description' => 'required|string',
         ], [
             'target.required' => 'Target tidak boleh kosong',
             'target.in' => 'Target harus 0 (Tidak) atau 1 (Ya)',
             'target_description.required' => 'Deskripsi target tidak boleh kosong',
             'tingkat_disiplin.required' => 'Tingkat disiplin tidak boleh kosong',
-            'tingkat_disiplin.in' => 'Tingkat disiplin harus antara 1 sampai 10',
+            'tingkat_disiplin.min' => 'Tingkat disiplin minimal 1',
+            'tingkat_disiplin.max' => 'Tingkat disiplin maksimal 100',
             'disiplin_description.required' => 'Deskripsi disiplin tidak boleh kosong',
             'kerjasama.required' => 'Kerjasama tidak boleh kosong',
-            'kerjasama.in' => 'Kerjasama harus antara 1 sampai 10',
+            'kerjasama.min' => 'Kerjasama minimal 1',
+            'kerjasama.max' => 'Kerjasama maksimal 100',
             'kerjasama_description.required' => 'Deskripsi kerjasama tidak boleh kosong',
             'inisiatif.required' => 'Inisiatif tidak boleh kosong',
-            'inisiatif.in' => 'Inisiatif harus antara 1 sampai 10',
+            'inisiatif.min' => 'Inisiatif minimal 1',
+            'inisiatif.max' => 'Inisiatif maksimal 100',
             'inisiatif_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
+            'penguasaan_materi.required' => 'Penguasaan materi tidak boleh kosong',
+            'penguasaan_materi.integer' => 'Penguasaan materi harus berupa angka',
+            'penguasaan_materi.min' => 'Penguasaan materi minimal 1',
+            'penguasaan_materi.max' => 'Penguasaan materi maksimal 100',
+            'penguasaan_materi_description.required' => 'Deskripsi penguasaan materi tidak boleh kosong',
         ]);
+
         $user = auth()->user();
         $mentoring = Mentoring::where('id', $id)->where('mentor_id', $user->id)->first();
 
@@ -313,6 +338,8 @@ class MentorController extends Controller
             $review->teamwork_description = $request->kerjasama_description;
             $review->initiative = $request->inisiatif;
             $review->initiative_description = $request->inisiatif_description;
+            $review->material_mastery = $request->penguasaan_materi;
+            $review->material_mastery_description = $request->penguasaan_materi_description;
             $review->save();
         }
 

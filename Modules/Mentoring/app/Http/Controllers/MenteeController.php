@@ -157,7 +157,7 @@ class MenteeController extends Controller
             'path' => null,
         ]);
 
-        return back() > with(['messege' => 'Detail pertemuan berhasil diperbarui!', 'alert-type' => 'success']);
+        return redirect()->back()->with(['messege' => 'Detail pertemuan berhasil diperbarui!', 'alert-type' => 'success']);
     }
 
     public function updateFinalReport(Request $request, Mentoring $mentoring)

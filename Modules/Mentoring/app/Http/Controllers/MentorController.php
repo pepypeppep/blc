@@ -193,7 +193,7 @@ class MentorController extends Controller
             return redirect()->back()->with(['messege' => 'Evaluasi hanya bisa dilakukan jika mentoring dalam status penilaian', 'alert-type' => 'error']);
         }
 
-        $review = MentoringReview::where('mentoring_id', $mentoring->id)->first();
+        $review = MentoringReview::where('mentoring_id', $mentoring->id)->first();  
 
         return view('frontend.student-dashboard.mentoring.mentor.evaluasi', compact('mentoring', 'review'));
     }
@@ -351,6 +351,7 @@ class MentorController extends Controller
 
     public function updateSession(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'mentoring_date' => 'required|date',
             'session_id' => 'required|string',
@@ -360,19 +361,21 @@ class MentorController extends Controller
         ]);
 
         $user = auth()->user();
-        $session = MentoringSession::where('id', $request->session_id)->where('mentor_id', $user->id)->first();
+        $session = MentoringSession::whereHas('Mentoring', function ($query) use ($user) {
+            $query->where('mentor_id', $user->id);
+        })->where('id', $request->session_id)->first();
 
         if (!$session) {
-            return response()->json(['status' => 'error', 'message' => 'Sesi mentoring tidak ditemukan'], 404);
+            return redirect()->back()->with(['messege' => 'Sesi mentoring tidak ditemukan', 'alert-type' => 'error']);
         }
 
         if ($session->status != MentoringSession::STATUS_PENDING) {
-            return response()->json(['status' => 'error', 'message' => 'Tanggal mentoring hanya bisa diubah saat mentor belum menerima sesi'], 400);
+            return redirect()->back()->with(['messege' => 'Tanggal mentoring hanya bisa diubah saat mentor belum menerima sesi', 'alert-type' => 'error']);
         }
 
         $session->mentoring_date = $request->mentoring_date;
         $session->save();
 
-        return response()->json(['status' => 'success', 'message' => 'Sesi mentoring berhasil diperbarui'], 200);
+        return redirect()->back()->with(['messege' => 'Sesi mentoring berhasil diperbarui', 'alert-type' => 'success']);
     }
 }

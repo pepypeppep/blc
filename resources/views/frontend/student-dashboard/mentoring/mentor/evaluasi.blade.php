@@ -181,12 +181,12 @@
                                             <option value="" disabled selected>Pilih Nilai</option>
                                             @for ($i = 1; $i <= 100; $i++)
                                                 <option value="{{ $i }}"
-                                                    {{ @$review->penguasaan_materi == $i ? 'selected' : (old('penguasaan_materi') == $i ? 'selected' : '') }}>
+                                                    {{ @$review->material_mastery == $i ? 'selected' : (old('penguasaan_materi') == $i ? 'selected' : '') }}>
                                                     {{ $i }}</option>
                                             @endfor
                                         </select>
                                     @else
-                                        {{ @$review->penguasaan_materi }}
+                                        {{ @$review->material_mastery }}
                                     @endif
                                 </div>
                             </div>
@@ -195,12 +195,12 @@
                                     <div class="form-group mt-4">
                                         @if ($mentoring->status == Mentoring::STATUS_DONE)
                                             <h6>{{ __('Catatan Penguasaan Materi') }}</h6>
-                                            <p>{!! clean(@$review?->penguasaan_materi_description) !!}</p>
+                                            <p>{!! clean(@$review?->material_mastery_description) !!}</p>
                                         @else
                                             <label for="penguasaan_materi_description">{{ __('Catatan Penguasaan Materi') }}
                                                 <code>*</code></label>
                                             <textarea name="penguasaan_materi_description" class="text-editor form-control summernote"
-                                                {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->penguasaan_materi_description) }}</textarea>
+                                                {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->material_mastery_description) }}</textarea>
                                         @endif
                                     </div>
                                 </div>

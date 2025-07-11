@@ -199,7 +199,7 @@ class VacancyParticipantController extends Controller
             // if ($title == "Perjanjian Kinerja") {
             //     $status = 'final';
             // } else {
-            $status = 'draft';
+            $status = 'final';
             // }
 
             // Create Vacancy User Attachment

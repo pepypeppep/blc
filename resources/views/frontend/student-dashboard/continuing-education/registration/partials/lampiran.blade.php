@@ -73,9 +73,9 @@
                         <div id={{ 'collapse' . $lampiran->id }} class="accordion-collapse collapse"
                             data-bs-parent="#accordionExample" style="">
                             <div class="accordion-body">
-                                @if ($attachments->where('vacancy_attachment_id', $lampiran->id)->where('vacancy_user_id', $vacancy->id)->first())
+                                @if ($attachments->where('vacancy_attachment_id', $lampiran->id)->where('vacancy_user_id', $vacancyUser->id)->first())
                                     <object
-                                        data={{ Route('vacancies-participant.get.file', [$attachments->where('vacancy_attachment_id', $lampiran->id)->where('vacancy_user_id', $vacancy->id)->first()->vacancy_attachment_id, $vacancy->id]) }}
+                                        data={{ Route('vacancies-participant.get.file', [$attachments->where('vacancy_attachment_id', $lampiran->id)->where('vacancy_user_id', $vacancyUser->id)->first()->vacancy_attachment_id, $vacancyUser->id]) }}
                                         width="100%" height="500px">
                                         <span class="full-width rounded p-2 bg-danger text-white">Dokumen
                                             Tidak Ditemukan</span>

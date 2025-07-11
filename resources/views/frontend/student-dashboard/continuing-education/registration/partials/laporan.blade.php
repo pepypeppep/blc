@@ -4,8 +4,8 @@
 
 <div class="tab-pane fade" id="laporan-tab-panel" role="tabpanel" aria-labelledby="itemSeven-tab" tabindex="0">
     <div class="instructor__profile-form-wrap">
-        @if ($vacancy->status !== VacancyUser::STATUS_DONE)
-            <form action="{{ route('student.continuing-education.registration.report', $vacancy->id) }}" method="POST"
+        @if ($vacancyUser->vacancy->status !== VacancyUser::STATUS_DONE)
+            <form action="{{ route('student.continuing-education.registration.report', $vacancyUser->vacancy->id) }}" method="POST"
                 enctype="multipart/form-data" class="instructor__profile-form">
                 @csrf
 
@@ -60,7 +60,7 @@
                             <td>
                                 @if ($report->status !== 'accepted')
                                     <form class="d-inline" id="update-form-{{ $report->id }}"
-                                        action="{{ route('student.continuing-education.registration.report.update', ['id' => $vacancy->id, 'report_id' => $report->id]) }}"
+                                        action="{{ route('student.continuing-education.registration.report.update', ['id' => $vacancyUser->vacancy->id, 'report_id' => $report->id]) }}"
                                         method="POST" class="d-inline" enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
@@ -77,13 +77,13 @@
                                         <i class="fas fa-trash-alt text-danger"></i>
                                     </a>
                                     <form id="delete-form-{{ $report->id }}"
-                                        action="{{ route('student.continuing-education.registration.report.delete', ['id' => $vacancy->id, 'report_id' => $report->id]) }}"
+                                        action="{{ route('student.continuing-education.registration.report.delete', ['id' => $vacancyUser->vacancy->id, 'report_id' => $report->id]) }}"
                                         method="POST" class="d-none">
                                         @csrf
                                         @method('DELETE')
                                     </form>
                                 @endif
-                                <a href="{{ route('student.continuing-education.registration.report.view', ['id' => $vacancy->id, 'report_id' => $report->id]) }}"
+                                <a href="{{ route('student.continuing-education.registration.report.view', ['id' => $vacancyUser->vacancy->id, 'report_id' => $report->id]) }}"
                                     class="text-success" target="_blank"><i class="fa fa-eye"></i></a>
                             </td>
                         </tr>

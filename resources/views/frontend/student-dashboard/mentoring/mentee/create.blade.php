@@ -48,9 +48,9 @@
                                 <div class="form-group">
                                     <label for="total_session">{{ __('Total Session') }}<code>*</code></label>
                                     <input id="total_session" name="total_session" type="number" class="form-control"
-                                        placeholder="e.g. 3" required value="{{ old('total_session', 3) }}" min="3">
+                                        placeholder="e.g. 3" required value="{{ old('total_session', 3) }}" min="3" max="24">
                                     <div id="session-warning" class="text-danger mt-1" style="display: none;">
-                                        Jumlah pertemuan minimal 3 kali. Silakan perbarui input Anda.
+                                        Jumlah pertemuan minimal 3 kali dan maksimal 24 kali. Silakan perbarui input Anda.
                                     </div>
                                 </div>
                             </div>
@@ -134,11 +134,18 @@
         const sessionGroup = document.getElementById('session-datetime-group');
         const sessionWarning = document.getElementById('session-warning');
         const sessionWrapper = document.getElementById('session-wrapper');
-
         const oldSessions = JSON.parse(sessionWrapper.dataset.oldSessions || '[]');
+
+        let flatpickrInstances = [];
+
+        function destroyFlatpickrs() {
+            flatpickrInstances.forEach(fp => fp.destroy());
+            flatpickrInstances = [];
+        }
 
         function generateSessionInputs(total) {
             sessionWrapper.innerHTML = '';
+            destroyFlatpickrs();
 
             for (let i = 0; i < total; i++) {
                 const inputGroup = document.createElement('div');
@@ -164,26 +171,64 @@
                 sessionWrapper.appendChild(inputGroup);
             }
 
-            document.querySelectorAll('.datetimepicker').forEach(el => {
-                if (el._flatpickr) {
-                    el._flatpickr.destroy();
-                }
-            });
+            setupFlatpickrs();
+        }
 
-            flatpickr(".datetimepicker", {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                time_24hr: true,
-                altInput: true,
-                altFormat: "l, d F Y - H:i",
-                locale: "id"
+        function setupFlatpickrs() {
+            const inputs = sessionWrapper.querySelectorAll('.datetimepicker');
+            let previousDate = null;
+
+            inputs.forEach((input, index) => {
+                const instance = flatpickr(input, {
+                    enableTime: true,
+                    dateFormat: "Y-m-d H:i",
+                    time_24hr: true,
+                    altInput: true,
+                    altFormat: "l, d F Y - H:i",
+                    locale: "id",
+                    minDate: previousDate ? new Date(previousDate.getTime() + 60000) : null, // +1 menit dari sebelumnya
+                    onChange: function (selectedDates) {
+                        if (selectedDates.length > 0) {
+                            const selectedDate = selectedDates[0];
+
+                            // Jika pertemuan pertama, batasi semua input ke tahun yang sama
+                            if (index === 0) {
+                                const year = selectedDate.getFullYear();
+                                const maxDateInYear = new Date(year, 11, 31, 23, 59);
+
+                                for (let j = index + 1; j < flatpickrInstances.length; j++) {
+                                    const nextFp = flatpickrInstances[j];
+                                    const nextMinDate = new Date(selectedDate.getTime() + 60000);
+
+                                    nextFp.set('minDate', nextMinDate);
+                                    nextFp.set('maxDate', maxDateInYear);
+                                }
+                            } else {
+                                // Jika bukan pertemuan pertama, hanya set minDate untuk input berikutnya
+                                const nextInput = inputs[index + 1];
+                                if (nextInput && flatpickrInstances[index + 1]) {
+                                    flatpickrInstances[index + 1].set('minDate', new Date(selectedDate.getTime() + 60000));
+                                }
+                            }
+                        }
+                    }
+                });
+
+                if (input.value) {
+                    const parsed = instance.parseDate(input.value, "Y-m-d H:i");
+                    if (parsed) {
+                        previousDate = parsed;
+                    }
+                }
+
+                flatpickrInstances.push(instance);
             });
         }
 
         function updateSessionsVisibility() {
             const total = parseInt(totalSessionInput.value);
 
-            if (!isNaN(total) && total >= 3) {
+            if (!isNaN(total) && total >= 3 && total <= 24) {
                 sessionGroup.style.display = 'block';
                 sessionWarning.style.display = 'none';
 
@@ -195,13 +240,18 @@
                 sessionGroup.style.display = 'none';
                 sessionWarning.style.display = 'block';
                 sessionWrapper.innerHTML = '';
+                destroyFlatpickrs();
             }
         }
 
         totalSessionInput.addEventListener('input', function () {
             oldSessions.length = 0; // Clear old values if user changes input
+            
+            const total = parseInt(totalSessionInput.value);
+            if (!isNaN(total) && total >= 3 && total <= 24){
+                generateSessionInputs(total);
+            } 
             updateSessionsVisibility();
-            generateSessionInputs(parseInt(totalSessionInput.value));
         });
 
         updateSessionsVisibility();

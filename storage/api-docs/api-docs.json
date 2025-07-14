@@ -2381,6 +2381,340 @@
                 }
             }
         },
+        "/mentoring/mentee": {
+            "get": {
+                "tags": [
+                    "Mentee"
+                ],
+                "summary": "Get mentor topics",
+                "description": "Get mentor topics",
+                "operationId": "c18d056041d475d8cababf9f88034499",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Mentee"
+                ],
+                "summary": "Create mentoring topic",
+                "description": "Create mentoring topic",
+                "operationId": "ea6e43d0cbeec4796ea5eb505194dd68",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "main_issue",
+                                    "purpose",
+                                    "total_session",
+                                    "sessions",
+                                    "mentor",
+                                    "file"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Judul mentoring"
+                                    },
+                                    "main_issue": {
+                                        "type": "string",
+                                        "example": "Isu utama mentoring"
+                                    },
+                                    "purpose": {
+                                        "type": "string",
+                                        "example": "Tujuan mentoring"
+                                    },
+                                    "total_session": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "sessions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-07-01 08:00:00"
+                                        }
+                                    },
+                                    "mentor": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentee/{id}": {
+            "get": {
+                "tags": [
+                    "Mentee"
+                ],
+                "summary": "Get mentor topic by id",
+                "description": "Get mentor topic by id",
+                "operationId": "9d2eeb80192a1db61b637698674521fa",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Mentoring id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentee/{id}/submit-approval": {
+            "post": {
+                "tags": [
+                    "Mentee"
+                ],
+                "summary": "Submit mentoring for approval",
+                "description": "Submit mentoring for approval",
+                "operationId": "db63227659b3ecbead250273e68df597",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Mentoring id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mentoring submitted successfully"
+                    },
+                    "500": {
+                        "description": "Error submitting mentoring"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentee/update-session": {
+            "post": {
+                "tags": [
+                    "Mentee"
+                ],
+                "summary": "Update mentoring session",
+                "description": "Update mentoring session",
+                "operationId": "fca55a5a62191a102cbaaa8fd479b26a",
+                "requestBody": {
+                    "description": "Session and Image",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "session_id",
+                                    "activity",
+                                    "obstacle",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "session_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "activity": {
+                                        "type": "string",
+                                        "example": "Belajar Laravel"
+                                    },
+                                    "obstacle": {
+                                        "type": "string",
+                                        "example": "Tidak ada hambatan"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Session updated successfully"
+                    },
+                    "500": {
+                        "description": "Error updating session"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentee/{id}/final-report": {
+            "post": {
+                "tags": [
+                    "Mentee"
+                ],
+                "summary": "Update final report",
+                "description": "Update final report",
+                "operationId": "57edf7a9a9661a8ee95d655935ea6b7d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Mentoring ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Final report PDF",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "final_report",
+                                    "user_id"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "final_report": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Final report updated successfully"
+                    },
+                    "500": {
+                        "description": "Error updating final report"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/update-device-token": {
             "post": {
                 "tags": [
@@ -3987,6 +4321,10 @@
         {
             "name": "Bantara",
             "description": "Bantara"
+        },
+        {
+            "name": "Mentee",
+            "description": "Mentee"
         },
         {
             "name": "Notifications",

@@ -78,6 +78,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     /** Article Routes */
     Route::get('article', [ArticleController::class, 'index'])->name('article');
     Route::get('article/{slug}', [ArticleController::class, 'show'])->name('article.show');
+    Route::post('article/submit-review', [ArticleController::class, 'submitReview'])->name('article.submit-review');
     Route::post('article/submit-comment', [ArticleController::class, 'submitComment'])->name('article.submit-comment');
 
     /** About page routes */

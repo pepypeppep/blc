@@ -10,6 +10,7 @@ use Modules\Badges\database\seeders\BadgeSeeder;
 use Modules\Currency\database\seeders\CurrencySeeder;
 use Modules\Language\database\seeders\LanguageSeeder;
 use Modules\GlobalSetting\database\seeders\SeoInfoSeeder;
+use Modules\Mentoring\database\seeders\MentoringDatabaseSeeder;
 use Modules\Menubuilder\database\seeders\MenubuilderSeeder;
 use Modules\Frontend\database\seeders\HomePagesSectionSeeder;
 use Modules\GlobalSetting\database\seeders\EmailTemplateSeeder;
@@ -71,7 +72,8 @@ class DatabaseSeeder extends Seeder
             ArticleDatabaseSeeder::class,
             TosSeeder::class,
             CertificateRecognitionDatabaseSeeder::class,
-            InstructorEvaluationDatabaseSeeder::class
+            InstructorEvaluationDatabaseSeeder::class,
+            MentoringDatabaseSeeder::class,
         ]);
     }
 }

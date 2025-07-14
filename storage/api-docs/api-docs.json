@@ -576,6 +576,123 @@
                 }
             }
         },
+        "/certificates": {
+            "get": {
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Get certificates for student",
+                "operationId": "50e47ab4d36543d7eebd3d727a3b2c86",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User ID of student",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Daftar sertifikat ditemukan."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "courses": {
+                                                        "properties": {
+                                                            "course": {
+                                                                "type": "string",
+                                                                "example": "Pelatihan 1"
+                                                            },
+                                                            "completed_date": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "example": "2022-01-01 00:00:00"
+                                                            },
+                                                            "certificate_url": {
+                                                                "type": "string",
+                                                                "format": "uri",
+                                                                "example": "https://example.com/certificates/1"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "mentoring": {
+                                                        "type": "array",
+                                                        "items": []
+                                                    },
+                                                    "coaching": {
+                                                        "type": "array",
+                                                        "items": []
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tidak ada pelatihan yang terdaftar untuk user ID 1"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Terjadi kesalahan: "
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/bantara-callback/{enrollmentID}": {
             "post": {
                 "tags": [
@@ -2544,6 +2661,41 @@
                 }
             }
         },
+        "/pendidikan-lanjutan/riwayat": {
+            "get": {
+                "tags": [
+                    "Pendidikan Lanjutan"
+                ],
+                "summary": "Get riwayat pendidikan lanjutan",
+                "description": "Get riwayat pendidikan lanjutan",
+                "operationId": "2591bb4d6d20346056673ec05b3b8317",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
         "/student-learning/{slug}": {
             "get": {
                 "tags": [
@@ -3827,6 +3979,10 @@
         {
             "name": "Articles",
             "description": "Pengetahuan API Endpoints"
+        },
+        {
+            "name": "Certificates",
+            "description": "Certificates"
         },
         {
             "name": "Bantara",

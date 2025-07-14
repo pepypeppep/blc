@@ -34,5 +34,7 @@
     "Article": true,
     "CertificateRecognition": true,
     "Pengumuman": true,
-    "InstructorEvaluation": true
+    "InstructorEvaluation": true,
+    "Coaching": true,
+    "Mentoring": true
 }

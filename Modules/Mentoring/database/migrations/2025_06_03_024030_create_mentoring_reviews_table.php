@@ -23,6 +23,8 @@ return new class extends Migration
             $table->text('teamwork_description')->nullable();
             $table->integer('initiative')->default(0);
             $table->text('initiative_description')->nullable();
+            $table->integer('material_mastery')->default(0);
+            $table->text('material_mastery_description')->nullable();
             $table->unsignedBigInteger('mentoring_id')->onDelete('cascade');
             $table->timestamps();
         });

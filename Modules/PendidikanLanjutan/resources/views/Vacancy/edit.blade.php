@@ -94,21 +94,21 @@
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                <div class="form-group col-md-8 offset-md-2">
-                                                    <label>{{ __('Study') }} <span class="text-danger">*</span></label>
-                                                    <select name="study_id" class="form-control select2" id="study_id">
-                                                        <option value="">Pilih Program Studi</option>
-                                                        @foreach ($studies as $study)
-                                                            <option value="{{ $study->id }}"
-                                                                {{ $study->id == $vacancy->study_id ? 'selected' : '' }}>
-                                                                {{ $study->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('study_id')
-                                                        <span class="text-danger">{{ $message }}</span>
-                                                    @enderror
-                                                </div>
                                                 <div class="col-md-8 row px-0 offset-md-2">
+                                                    <div class="form-group col-md-8">
+                                                        <label>{{ __('Study') }} <span class="text-danger">*</span></label>
+                                                        <select name="study_id" class="form-control select2" id="study_id">
+                                                            <option value="">Pilih Program Studi</option>
+                                                            @foreach ($studies as $study)
+                                                                <option value="{{ $study->id }}"
+                                                                    {{ $study->id == $vacancy->study_id ? 'selected' : '' }}>
+                                                                    {{ $study->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('study_id')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
                                                     <div class="form-group col-md-4">
                                                         <label for="education_level">{{ __('Education Level') }} <span
                                                                 class="text-danger">*</span></label>
@@ -133,6 +133,21 @@
                                                             </option>
                                                         </select>
                                                         @error('education_level')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8 row px-0 offset-md-2">
+                                                    <div class="form-group col-md-4">
+                                                        <label for="education_requirements">{{ __('Education Requirements') }} <span
+                                                                class="text-danger">*</span></label>
+                                                        <select name="education_requirements[]" multiple="multiple" class="form-control select2"
+                                                            id="education_requirements">
+                                                            @foreach (['SD', 'SMP', 'SMA', 'D-1', 'D-2', 'D-3', 'D-4', 'S-1', 'S-2', 'S-3'] as $sch)
+                                                            <option value="{{ $sch }}" {{ $vacancy->education_requirements && in_array($sch, json_decode($vacancy->education_requirements)) ? 'selected' : '' }}>{{ $sch}}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('education_requirements')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
                                                     </div>

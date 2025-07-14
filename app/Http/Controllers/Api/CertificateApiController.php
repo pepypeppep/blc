@@ -2,15 +2,122 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Models\Course;
 use Illuminate\Http\Request;
-use App\Models\CourseChapterItem;
 use App\Models\CourseProgress;
+use App\Models\CourseChapterItem;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Modules\Order\app\Models\Enrollment;
+use Modules\CertificateRecognition\app\Models\CertificateRecognitionEnrollment;
 
 class CertificateApiController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/certificates",
+     *     summary="Get certificates for student",
+     *     tags={"Certificates"},
+     *     @OA\Parameter(
+     *         description="User ID of student",
+     *         in="query",
+     *         name="user_id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=true
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Daftar sertifikat ditemukan."
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="courses",
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="course",
+     *                             type="string",
+     *                             example="Pelatihan 1"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="completed_date",
+     *                             type="string",
+     *                             format="date-time",
+     *                             example="2022-01-01 00:00:00"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="certificate_url",
+     *                             type="string",
+     *                             format="uri",
+     *                             example="https://example.com/certificates/1"
+     *                         )
+     *                     ),
+     *                     @OA\Property(
+     *                         property="mentoring",
+     *                         type="array",
+     *                         items={}
+     *                     ),
+     *                     @OA\Property(
+     *                         property="coaching",
+     *                         type="array",
+     *                         items={}
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Tidak ada pelatihan yang terdaftar untuk user ID 1"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Terjadi kesalahan: "
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function getCertificatesForStudent(Request $request)
     {
         $user_id = $request->input('user_id');
@@ -73,10 +180,13 @@ class CertificateApiController extends Controller
                     // $html = str_replace('[instructor_name]', $course->instructor->name, $html);
 
                     $certificates[] = [
-                        'course' => $course->title,
-                        // 'certificate_html' => $html,
-                        'completed_date' => $completed_date,
-                        'certificate_url' => route('student.download-certificate', $course->id)
+                        'courses' => [
+                            'course' => $course->title,
+                            'completed_date' => $completed_date,
+                            'certificate_url' => route('student.download-certificate', $course->id)
+                        ],
+                        'mentoring' => [],
+                        'coaching' => [],
                     ];
                 }
             }
@@ -86,6 +196,39 @@ class CertificateApiController extends Controller
                     'success' => false,
                     'message' => 'Sertifikat tidak ditemukan.',
                 ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Daftar sertifikat ditemukan.',
+                'data' => $certificates,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getStudentCertificates(Request $request)
+    {
+        $user_id = $request->input('user_id');
+        try {
+            $certificates = CertificateRecognitionEnrollment::with('user:id,name', 'certificateRecognition.certificate')->where('user_id', $user_id)->orderByDesc('id')->get();
+            foreach ($certificates as $key => $cert) {
+                $certId = $cert->certificateRecognition->certificate->id;
+                $courseIds = Course::where('certificate_id', $certId)->get()->pluck('id');
+                $enrollments = Enrollment::where('user_id', $user_id)->whereIn('course_id', $courseIds)->get();
+                $courseId = $enrollments->first()->course_id;
+
+                $certificates[$key]->certificate_url = route('student.download-certificate', $courseId);
+            }
+            if (count($certificates) === 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sertifikat tidak ditemukan.',
+                ], 200);
             }
 
             return response()->json([
@@ -112,7 +255,7 @@ class CertificateApiController extends Controller
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 type="object",   
+     *                 type="object",
      *                 @OA\Property(
      *                     property="file",
      *                     type="file",

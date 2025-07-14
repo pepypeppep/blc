@@ -21,6 +21,8 @@ use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
 use Modules\Course\app\Http\Requests\CourseStoreRequest;
 use App\Events\UserBadgeUpdated;
+use App\Models\Unor;
+use App\Models\UnorJenis;
 use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
@@ -188,12 +190,57 @@ class CourseController extends Controller
             case '4':
                 $courseId = request('id');
                 $course = Course::findOrFail($courseId);
-                return view('course::course.finish', compact('course'));
+                $jenisList = ['dinas', 'sekolah', 'badan', 'kapanewon'];
+
+                $jabatans = User::whereNotNull('jabatan')->distinct('jabatan')->pluck('jabatan')->map(function ($item) {
+                    return ucwords(strtolower($item));
+                })->toArray();
+
+                return view('course::course.finish', compact(
+                    'course',
+                    'courseId',
+                    'jabatans'
+                ));
                 break;
             default:
                 break;
         }
     }
+
+    public function getIntansi(Request $request)
+    {
+        $jenisList = ['dinas', 'sekolah', 'badan', 'inspektorat', 'kapanewon'];
+
+        $query = DB::table('unors')
+            ->join('unor_jenis', 'unor_jenis.id', '=', 'unors.unor_jenis_id')
+            ->whereIn('unor_jenis.name', $jenisList)
+            ->select('unors.id as unor_id', 'unors.instansi_id', 'unors.name');
+
+        if ($request->has('search')) {
+            $query->where('unors.name', 'like', '%' . $request->search . '%');
+        }
+
+        return response()->json($query->limit(20)->get());
+    }
+
+    public function getUnor(Request $request)
+    {
+        $query = DB::table('unors')
+            ->select('id', 'name')
+            ->whereNotNull('parent_id');
+
+        // if ($request->filled('parent_id')) {
+        $query->where('parent_id', $request->parent_id);
+        // }
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        return response()->json($query->limit(20)->get());
+    }
+
+
 
     function update(Request $request)
     {
@@ -455,14 +502,71 @@ class CourseController extends Controller
 
     function getStudents(Request $request)
     {
-        $students = User::where('role', 'student')
+        // dd($request->all());
+        $query = User::where('role', 'student')
             ->where(function ($query) use ($request) {
                 $query->where('name', 'like', '%' . $request->q . '%')
                     ->orWhere('email', 'like', '%' . $request->q . '%');
-            })
-            ->get();
+            });
+
+        if ($request->get('instansi_id')) {
+            $query->where('instansi_id', $request->get('instansi_id'));
+        }
+
+        if ($request->get('unit_id')) {
+            $query->where('unor_id', $request->get('unit_id'));
+        }
+
+        if ($request->get('jabatan')) {
+            $query->whereRaw('lower(jabatan) = ?', [strtolower($request->get('jabatan'))]);
+        }
+
+        if ($request->get('ninebox')) {
+            $query->where('ninebox', $request->get('ninebox'));
+        }
+
+        $students = $query->get();
         return response()->json($students);
     }
+
+    // public function getStudents(Request $request)
+    // {
+    //     $query = User::query();
+
+    //     if ($request->filled('q')) {
+    //         $query->where(function ($q) use ($request) {
+    //             $q->where('name', 'like', '%' . $request->q . '%')
+    //                 ->orWhere('nip', 'like', '%' . $request->q . '%')
+    //                 ->orWhere('username', 'like', '%' . $request->q . '%');
+    //         });
+    //     }
+
+    //     if ($request->filled('unor_id')) {
+    //         $query->where('unor_id', $request->unor_id);
+
+    //         if ($request->filled('instansi_id')) {
+    //             $query->where('instansi_id', $request->instansi_id);
+    //         }
+    //     }
+
+    //     if ($request->filled('jabatan')) {
+    //         $query->whereRaw('lower(jabatan) like ?', ['%' . strtolower($request->jabatan) . '%']);
+    //     }
+
+    //     if ($request->filled('ninebox')) {
+    //         $query->where('ninebox', $request->ninebox);
+    //     }
+
+    //     $users = $query->limit(20)->get();
+
+    //     return response()->json($users->map(function ($user) {
+    //         return [
+    //             'id' => $user->id,
+    //             'text' => "{$user->name} ({$user->nip})",
+    //         ];
+    //     }));
+    // }
+
 
     function duplicate(string $id)
     {

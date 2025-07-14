@@ -299,18 +299,6 @@
                                                     {{ __('Pass') }}</button>
                                             </div>
                                         </form>
-                                    @elseif ($vacancyUser->status === 'eligible')
-                                        <div class="col-md-12 mb-2">
-                                            <div class="alert alert-success alert-has-icon alert-dismissible"
-                                                id="verifiedAlert">
-                                                <div class="alert-icon"><i class="far fa-check-circle"></i></div>
-                                                <div class="alert-body">
-                                                    <div class="alert-title">Lolos Assesment!</div>
-                                                    {!! $sectionLog->assLogs[0]->description ??
-                                                        'Pendaftar telah lolos tahap assessment dan akan melanjutkan ke tahap selanjutnya.' !!}
-                                                </div>
-                                            </div>
-                                        </div>
                                     @elseif ($vacancyUser->status === 'ineligible')
                                         <div class="col-md-12 mb-2">
                                             <div class="alert alert-danger alert-has-icon alert-dismissible"
@@ -320,6 +308,18 @@
                                                     <div class="alert-title">Tidak Lolos Assesment!</div>
                                                     {!! $sectionLog->assLogs[0]->description ??
                                                         'Pendaftar dinyatakan tidak lolos tahap assessment dan tidak dapat melanjutkan ke tahap selanjutnya.' !!}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="col-md-12 mb-2">
+                                            <div class="alert alert-success alert-has-icon alert-dismissible"
+                                                id="verifiedAlert">
+                                                <div class="alert-icon"><i class="far fa-check-circle"></i></div>
+                                                <div class="alert-body">
+                                                    <div class="alert-title">Lolos Assesment!</div>
+                                                    {!! $sectionLog->assLogs[0]->description ??
+                                                        'Pendaftar telah lolos tahap assessment dan akan melanjutkan ke tahap selanjutnya.' !!}
                                                 </div>
                                             </div>
                                         </div>
@@ -413,14 +413,14 @@
                                                                 <i class="fa fa-paper-plane" aria-hidden="true"></i>
                                                             </a>
                                                         @endif --}}
-                                                        @if ($attachment->name != 'Perjanjian Kinerja' && $ath)
+                                                        {{-- @if ($attachment->name != 'Perjanjian Kinerja' && $ath)
                                                             <button class="btn btn-primary px-2 btn-sm m-1"
                                                                 data-toggle="modal" data-target="#pdfModal"
                                                                 title="Lihat Draft {{ $attachment->name }}"
                                                                 onclick="setPDF('Draft {{ $attachment->name }}','{{ route('vacancies-participant.get.draft.file', [$attachment->id, $ath->vacancy_user_id]) }}')">
                                                                 <i class="fa fa-file-pdf" aria-hidden="true"></i>
                                                             </button>
-                                                        @endif
+                                                        @endif --}}
                                                         @if ($ath)
                                                             <button class="btn btn-danger px-2 btn-sm m-1"
                                                                 data-toggle="modal" data-target="#pdfModal"
@@ -511,7 +511,7 @@
                                                     </button>
                                                     @if ($report->status == 'pending')
                                                         <a href="javascript:void(0);" class="btn btn-success btn-sm m-1"
-                                                            title="Verifikasi Laporan" id="verifyButton">
+                                                            title="Verifikasi Laporan" data-toggle="modal" data-target="#verifyModal{{ $report->id }}">
                                                             <i class="fa fa-check-circle" aria-hidden="true"></i>
                                                         </a>
                                                     @endif
@@ -525,7 +525,7 @@
                                             </tr>
                                         @endforelse
                                     </table>
-                                    @if ($vacancyUser->status != 'activation' && $vacancyUser->status != 'done')
+                                    @if ($vacancyUser->status != 'activation' && $vacancyUser->status != 'done' && $vacancyReports->where('status', 'accepted')->count() == $vacancyReports->count())
                                         <hr>
                                         <div class="col-md-12 mb-2">
                                             <div class="alert alert-primary alert-has-icon alert-dismissible"
@@ -633,7 +633,7 @@
                                             @endforelse
                                         </tbody>
                                     </table>
-                                    @if (count($vacancyActivations) > 0 && $act_total == 1 && $vacancyUser->status == 'activation')
+                                    @if ($vacancyUser->status == 'activation' && $vacancyActivations->where('status', 'accepted')->count() == $vacancyActivations->count())
                                         <div class="col-md-12">
                                             <div class="alert alert-info alert-has-icon alert-dismissible"
                                                 id="studyCompletionAlert">
@@ -778,8 +778,9 @@
         </div>
     </div>
 
+    @foreach ($vacancyReports as $report)
     <!-- Modal Konfirmasi -->
-    <div class="modal fade" id="verifyModal" tabindex="-1" aria-labelledby="verifyModalLabel" aria-hidden="true">
+    <div class="modal fade" id="verifyModal{{ $report->id }}" tabindex="-1" aria-labelledby="verifyModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -789,10 +790,10 @@
                     </button>
                 </div>
                 <form method="POST"
-                    action="{{ route('admin.vacancies-participant.update.report.status', ['vacancyReportId' => $vacancyUser->vacancy_id]) }}">
+                    action="{{ route('admin.vacancies-participant.update.report.status', ['vacancyReportId' => $report->id]) }}">
                     @csrf
                     @method('PUT')
-                    <input type="hidden" name="statusReport" id="statusReport">
+                    <input type="hidden" name="statusReport" id="statusReport{{ $report->id }}">
                     <div class="modal-body">
                         <!-- <p></p> -->
                         <div id="error-message" class="alert alert-danger" style="display: none;">
@@ -806,14 +807,15 @@
                     </div>
                     <div class="modal-footer d-flex justify-content-between">
                         <button type="submit" class="btn btn-danger" id="rejectButton"
-                            onclick="document.getElementById('statusReport').value='rejected'">Tolak</button>
+                            onclick="document.getElementById('statusReport{{ $report->id }}').value='rejected'">Tolak</button>
                         <button type="submit" class="btn btn-success" id="acceptButton"
-                            onclick="document.getElementById('statusReport').value='accepted'">Terima</button>
+                            onclick="document.getElementById('statusReport{{ $report->id }}').value='accepted'">Terima</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    @endforeach
 
     @if ($vacancyUser->status === 'activation' || $vacancyUser->status === 'done')
         @foreach ($vacancyActivations as $activation)
@@ -833,7 +835,7 @@
                             action="{{ route('admin.vacancies-participant.update.activation.status', ['id' => $activation->id]) }}">
                             @csrf
                             @method('PUT')
-                            <input type="hidden" name="activation_status" id="activation_status">
+                            <input type="hidden" name="activation_status" id="activation_status{{ $activation->id }}">
                             <div class="modal-body">
                                 <div id="error-message" class="alert alert-danger" style="display: none;">
                                     <strong>Kesalahan!</strong> Alasan penolakan wajib diisi.
@@ -846,9 +848,9 @@
                             </div>
                             <div class="modal-footer d-flex justify-content-between">
                                 <button type="submit" class="btn btn-danger" id="rejectButton"
-                                    onclick="document.getElementById('activation_status').value='rejected'">Tolak</button>
+                                    onclick="document.getElementById('activation_status{{ $activation->id }}').value='rejected'">Tolak</button>
                                 <button type="submit" class="btn btn-success" id="acceptButton"
-                                    onclick="document.getElementById('activation_status').value='accepted'">Terima</button>
+                                    onclick="document.getElementById('activation_status{{ $activation->id }}').value='accepted'">Terima</button>
                             </div>
                         </form>
                     </div>

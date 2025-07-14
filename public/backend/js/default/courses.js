@@ -124,6 +124,10 @@ $(document).ready(function () {
                 return {
                     q: params.term, // search term
                     page: params.page,
+                    instansi_id: $("#instansi_id_hidden").val(), // filter instansi
+                    unit_id: $("#unit_id").val(), // filter unit organisasi
+                    jabatan: $("#jabatan").val(), // filter jabatan
+                    ninebox: $("#ninebox").val(), // filter 9 box
                 };
             },
             processResults: function (data, params) {
@@ -144,6 +148,148 @@ $(document).ready(function () {
         templateSelection: formatRepoSelection,
     });
 
+    /**
+     * select all participants
+     */
+
+    const $selectAllBtn = $("#select_all_participants_btn");
+    const $loader = $("#select_all_loader");
+
+    // Enable tombol jika ada filter yang dipilih
+    function checkFilterCondition() {
+        if (
+            $("#instansi_id_hidden").val() ||
+            $("#unit_id").val() ||
+            $("#jabatan").val() ||
+            $("#ninebox").val()
+        ) {
+            $selectAllBtn.prop("disabled", false);
+        } else {
+            $selectAllBtn.prop("disabled", true);
+        }
+    }
+
+    // Cek saat filter berubah
+    $("#instansi_id, #unit_id, #jabatan, #ninebox").on("change", function () {
+        checkFilterCondition();
+    });
+
+    // Tombol pilih semua
+    $selectAllBtn.on("click", function () {
+        $loader.show();
+        $.ajax({
+            url: "/admin/courses/get-students",
+            data: {
+                q: '', // kosongkan search
+                instansi_id: $("#instansi_id_hidden").val(),
+                unit_id: $("#unit_id").val(),
+                jabatan: $("#jabatan").val(),
+                ninebox: $("#ninebox").val()
+            },
+            success: function (data) {
+                const newOptions = [];
+
+                data.forEach(function (student) {
+                    // Cek jika belum ada di select2
+                    if ($(".participant_select option[value='" + student.id + "']").length === 0) {
+                        const newOption = new Option(student.name, student.id, true, true);
+                        newOption.dataset.nip = student.nip ?? '';
+                        newOptions.push(newOption);
+                        $(".participant_select").append(newOption);
+                    }
+                });
+
+                $(".participant_select").trigger("change"); // update UI select2
+            },
+            complete: function () {
+                $loader.hide();
+            },
+            error: function () {
+                alert("Gagal mengambil data peserta.");
+                $loader.hide();
+            }
+        });
+    });
+
+    // Select2 untuk Instansi
+    $('#instansi_id').select2({
+        placeholder: 'Pilih Instansi...',
+        allowClear: true,
+        ajax: {
+            url: '/admin/courses/get-instansi',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.map(function (item) {
+                        return {
+                            id: item.unor_id,
+                            text: item.name,
+                            instansi_id: item.instansi_id
+                        };
+                    })
+                };
+            },
+            cache: true
+        }
+    }).on('select2:select', function (e) {
+        var data = e.params.data;
+        $('#instansi_id_hidden').val(data.instansi_id);
+
+        // Reset unit_id saat instansi berubah
+        $('#unit_id').val(null).trigger('change');
+
+        // Set parent_id (unor_id) untuk digunakan di Select2 unit
+        $('#unit_id').data('parent-id', data.id);
+    }).on('select2:clear', function () {
+        $('#instansi_id_hidden').val('');
+        $('#unit_id').val(null).trigger('change');
+        $('#unit_id').data('parent-id', null);
+    });
+
+    // Select2 untuk Unit Organisasi
+    $('#unit_id').select2({
+        placeholder: 'Pilih Unit Organisasi...',
+        allowClear: true,
+        ajax: {
+            url: '/admin/courses/get-unor',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term,
+                    parent_id: $('#unit_id').data('parent-id') // ambil dari data atribut
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.map(function (item) {
+                        return {
+                            id: item.id,
+                            text: item.name
+                        };
+                    })
+                };
+            },
+            cache: true
+        }
+    });
+
+    $(".participant_select").on("change", function () {
+        const selectedCount = $(this).val()?.length || 0;
+        $("#participant_count").text(selectedCount);
+    });
+
+
+    /**
+     * end select all participants
+     */
+
     function formatRepo(repo) {
         if (repo.loading) {
             return repo.text;
@@ -151,16 +297,16 @@ $(document).ready(function () {
 
         var $container = $(
             "<div class='select2-result-repository clearfix'>" +
-            "<div class='select2-result-repository__avatar'><img src='" +
-            "/" +
-            repo.image +
-            "' /></div>" +
+            // "<div class='select2-result-repository__avatar'><img src='" +
+            // "/" +
+            // repo.image +
+            // "' /></div>" +
             "<div class='select2-result-repository__meta'>" +
             "<div class='select2-result-repository__title'>" +
             repo.name +
             "</div>" +
             "<div class='select2-result-repository__description'>" +
-            repo.email +
+            repo.nip +
             "</div>" +
             "</div>" +
             "</div>"
@@ -792,3 +938,5 @@ $(document).ready(function () {
         });
     });
 });
+
+

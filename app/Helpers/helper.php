@@ -1016,25 +1016,31 @@ if (!function_exists('appConfig')) {
 if (!function_exists('educationFilter')) {
     function educationFilter($vacEdu, $userEdu)
     {
-        $edu = [
-            'SD' => 1,
-            'SMP' => 2,
-            'SMA' => 3,
-            'D-1' => 4,
-            'D-2' => 5,
-            'D-3' => 6,
-            'D-4' => 7,
-            'S-1' => 7,
-            'S-2' => 8,
-            'S-3' => 9,
-        ];
+        $vacEdu = json_decode($vacEdu, true);
 
-        $vacancyEdu = $edu[$vacEdu];
-        $userEdu = $edu[$userEdu];
-
-        if ($userEdu == $vacancyEdu - 1) {
+        if (in_array($userEdu, $vacEdu)) {
             return true;
         }
+
+        // $edu = [
+        //     'SD' => 1,
+        //     'SMP' => 2,
+        //     'SMA' => 3,
+        //     'D-1' => 4,
+        //     'D-2' => 5,
+        //     'D-3' => 6,
+        //     'D-4' => 7,
+        //     'S-1' => 7,
+        //     'S-2' => 8,
+        //     'S-3' => 9,
+        // ];
+
+        // $vacancyEdu = $edu[$vacEdu];
+        // $userEdu = $edu[$userEdu];
+
+        // if ($userEdu == $vacancyEdu - 1) {
+        //     return true;
+        // }
 
         return false;
     }

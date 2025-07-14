@@ -500,19 +500,20 @@ class CourseApiController extends Controller
                 ->where('slug', $slug)
                 ->where('status', 'active');
 
-            if ($request->has('user_id')) {
-                $authorId = $request->user_id;
-                $query->whereHas('enrollments', function ($q) use ($authorId) {
-                    $q->where('user_id', $authorId);
-                    $q->where('has_access', 1);
-                });
-            }
+            // if ($request->has('user_id')) {
+            //     $authorId = $request->user_id;
+            //     $query->whereHas('enrollments', function ($q) use ($authorId) {
+            //         $q->where('user_id', $authorId);
+            //         $q->where('has_access', 1);
+            //     });
+            // }
 
             $course = $query->firstOrFail();
 
             if ($request->has('user_id')) {
                 $userId = $request->user_id;
                 $course->course_user_progress_api = $course->getCourseUserProgressApi($userId);
+                $course->enrollments->where('user_id', $userId)->first();
             }
 
             return response()->json([
@@ -1678,7 +1679,7 @@ class CourseApiController extends Controller
     public function questions(Request $request, $slug)
     {
         try {
-            $questions = LessonQuestion::with('course:id,title,slug,thumbnail', 'user:id,name', 'lesson', 'replies')
+            $questions = LessonQuestion::with('course:id,title,slug,thumbnail', 'user:id,name', 'lesson', 'replies.user:id,name')
                 ->whereHas('course', function ($q) use ($slug) {
                     $q->where('slug', $slug);
                 })
@@ -1690,7 +1691,7 @@ class CourseApiController extends Controller
                     'success' => false,
                     'message' => 'Tidak ada pertanyaan ditemukan',
                     'data' => [],
-                ], 404);
+                ], 200);
             }
 
             return response()->json([

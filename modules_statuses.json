@@ -33,5 +33,7 @@
     "PendidikanLanjutan": true,
     "Article": true,
     "CertificateRecognition": true,
-    "Pengumuman": true
+    "Pengumuman": true,
+    "Coaching": true,
+    "Mentoring": true
 }

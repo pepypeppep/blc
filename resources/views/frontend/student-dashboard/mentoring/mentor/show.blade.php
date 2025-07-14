@@ -176,12 +176,11 @@ $statusColors = [
             <div class="mb-3">
                 @if ($mentoring->status == Mentoring::STATUS_EVALUATION || $mentoring->status == Mentoring::STATUS_DONE)
                     <div class="mt-3 border-top pt-3">
-                        @if ($mentoring->status == Mentoring::STATUS_EVALUATION)
+                        @if ($mentoring->status == Mentoring::STATUS_EVALUATION && $mentoring->final_report)
                             <div class="mt-2 alert alert-warning" role="alert">
                                 <strong>{{ __('Silahkan Menyelesaikan Evaluasi melalui tautan berikut') }}</strong>
                                 <br>
-                                <a
-                                    href="{{ route('student.mentor.evaluasi', $mentoring->id) }}"><span>{{ __('Evaluasi Sekarang') }}</span></a>
+                                <a href="{{ route('student.mentor.evaluasi', $mentoring->id) }}" class="btn btn-sm btn-primary"><span>{{ __('Evaluasi Sekarang') }}</span></a>
                             </div>
                         @endif
                         @if ($mentoring->status == Mentoring::STATUS_DONE)

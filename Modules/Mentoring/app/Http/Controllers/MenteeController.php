@@ -187,7 +187,7 @@ class MenteeController extends Controller
             'path' => null,
         ]);
 
-        return back() > with(['messege' => 'Laporan akhir berhasil diunggah!', 'alert-type' => 'success']);
+        return redirect()->back()->with(['messege' => 'Laporan akhir berhasil diunggah!', 'alert-type' => 'success']);
     }
 
     public function showDocument($id, $type)

@@ -59,13 +59,27 @@ $statusColors = [
                 </div>
             </div>
 
-            <div class="mb-3 d-flex justify-content-between align-items-center border-top pt-3 mt-4">
-                <div>
-                    <h6 class="title">{{ __('Session Datetime') }} <span
-                            title="Jumlah pertemuan">({{ $mentoring->total_session }})</span></h6>
-                    <span class="text-muted small">
-                        Lakukan sesi mentoring sesuai jadwal dan laporkan hasil penugasan.
-                    </span>
+            <div class="mb-3 border-top pt-3 mt-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h6 class="title mb-1">
+                            {{ __('Jadwal Sesi Mentoring') }}
+                            <span class="badge bg-secondary ms-1" title="Jumlah pertemuan">
+                                {{ $mentoring->total_session }}
+                            </span>
+                        </h6>
+                        <span class="text-muted small">
+                            Pastikan setiap sesi mentoring dilakukan sesuai jadwal yang telah ditentukan.
+                        </span>
+                    </div>
+                    @if ($mentoring->status == Mentoring::STATUS_SUBMISSION)
+                    <div>
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal"
+                            data-bs-target="#changeSessionDatetimeModal">
+                            <i class="fa fa-calendar-alt me-1"></i> Ubah Jadwal Sesi
+                        </button>
+                    </div>
+                    @endif
                 </div>
             </div>
 
@@ -162,12 +176,11 @@ $statusColors = [
             <div class="mb-3">
                 @if ($mentoring->status == Mentoring::STATUS_EVALUATION || $mentoring->status == Mentoring::STATUS_DONE)
                     <div class="mt-3 border-top pt-3">
-                        @if ($mentoring->status == Mentoring::STATUS_EVALUATION)
+                        @if ($mentoring->status == Mentoring::STATUS_EVALUATION && $mentoring->final_report)
                             <div class="mt-2 alert alert-warning" role="alert">
                                 <strong>{{ __('Silahkan Menyelesaikan Evaluasi melalui tautan berikut') }}</strong>
                                 <br>
-                                <a
-                                    href="{{ route('student.mentor.evaluasi', $mentoring->id) }}"><span>{{ __('Evaluasi Sekarang') }}</span></a>
+                                <a href="{{ route('student.mentor.evaluasi', $mentoring->id) }}" class="btn btn-sm btn-primary"><span>{{ __('Evaluasi Sekarang') }}</span></a>
                             </div>
                         @endif
                         @if ($mentoring->status == Mentoring::STATUS_DONE)
@@ -202,10 +215,63 @@ $statusColors = [
             </div>
         @endif
     </div>
+
+    <!-- Modal for changing session datetime -->
+    <div class="modal fade" id="changeSessionDatetimeModal" tabindex="-1"
+        aria-labelledby="changeSessionDatetimeModalLabel" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="{{ route('student.mentor.update.session') }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changeSessionDatetimeModalLabel">Ubah Jadwal Sesi Mentoring</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="session_number" class="form-label">Pilih Sesi</label>
+                            <select class="form-select" id="session_number" name="session_id" required>
+                                @foreach ($mentoring->mentoringSessions as $session)
+                                    <option value="{{ $session->id }}">
+                                        Pertemuan {{ $loop->iteration }} &mdash;
+                                        {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_datetime" class="form-label">Tanggal &amp; Waktu Baru</label>
+                            <input type="text" class="form-control datetimepicker" id="new_datetime"
+                                name="mentoring_date" placeholder="Pilih tanggal & waktu baru" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0);
+            z-index: -9999;
+        }
+
+        .modal-body {
+            overflow: auto;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+    </style>
 @endpush
 
 @push('scripts')

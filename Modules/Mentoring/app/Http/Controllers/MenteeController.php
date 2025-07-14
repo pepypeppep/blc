@@ -163,7 +163,7 @@ class MenteeController extends Controller
             ]
         ]);
 
-        return back()-> with(['messege' => 'Detail pertemuan berhasil diperbarui!', 'alert-type' => 'success']);
+        return redirect()->back()->with(['messege' => 'Detail pertemuan berhasil diperbarui!', 'alert-type' => 'success']);
     }
 
     public function updateFinalReport(Request $request, Mentoring $mentoring)
@@ -196,7 +196,7 @@ class MenteeController extends Controller
             ]
         ]);
 
-        return back() > with(['messege' => 'Laporan akhir berhasil diunggah!', 'alert-type' => 'success']);
+        return redirect()->back()->with(['messege' => 'Laporan akhir berhasil diunggah!', 'alert-type' => 'success']);
     }
 
     public function showDocument($id, $type)

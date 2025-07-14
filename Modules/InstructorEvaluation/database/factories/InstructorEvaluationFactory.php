@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\InstructorEvaluation\Database\Factories;
+namespace Modules\InstructorEvaluation\database\factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

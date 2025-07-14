@@ -121,7 +121,7 @@
                                                                         {{-- Show certificate request button --}}
                                                                         <li class="ms-auto">
                                                                             <a class="basic-button"
-                                                                                href="{{ route('student.request-sign-certificate', $enroll->id) }}"><i
+                                                                                href="{{ route('student.request-sign-certificate', $enroll->uuid) }}"><i
                                                                                     class="certificate fas fa-signature"
                                                                                     style="color: #fafdff;"></i>
                                                                                 {{ __('Certificate Request') }}</a>

@@ -186,6 +186,13 @@
                                                             {!! nl2br(clean($certificate->description)) !!}
                                                         </div>
                                                     @endif
+
+                                                       @if ($certificate->description)
+                                                    <div id="signature2" class="draggable-element2"><img
+                                                            style="width: 100px; height: 100px;"
+                                                            src="{{ asset('backend/img/QRCode.png') }}" alt="">
+                                                    </div>
+                                                @endif
                                                 </div>
                                             </table>
                                         </div>

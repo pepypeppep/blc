@@ -166,8 +166,11 @@ class StudentDashboardController extends Controller
      * @throws DOMException
      * @throws GlobalException
      */
-    function requestSignCertificate(Enrollment $enrollment)
+    function requestSignCertificate(string $enrollment)
+
     {
+        $enrollment = Enrollment::where('uuid', $enrollment)->firstOrFail();
+        dd($enrollment);
         try {
             $course = $enrollment->course;
 
@@ -175,7 +178,7 @@ class StudentDashboardController extends Controller
                 return redirect()->back()->with(['messege' => __('Course not found'), 'alert-type' => 'error']);
             }
 
-            $courseChapers = CourseChapter::where('course_id', $course->id)
+            $courseChapters = CourseChapter::where('course_id', $course->id)
                 ->where('status', 'active')
                 ->get();
 
@@ -194,9 +197,9 @@ class StudentDashboardController extends Controller
             $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
 
             // TODO: enable this on production
-            // if ($courseCompletedPercent != 100) {
-            //     return abort(404);
-            // }
+            if ($courseCompletedPercent != 100) {
+                return abort(403, __('You have not completed the course yet'));
+            }
 
 
             $certificate = CertificateBuilder::findOrFail($course->certificate_id);
@@ -222,7 +225,12 @@ class StudentDashboardController extends Controller
             $qrcodeData = 'data:image/png;base64,' . base64_encode($qrcodeData);
 
 
-            $page1Html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate', 'cover1Base64', 'qrcodeData'))->render();
+            $page1Html = view('frontend.student-dashboard.certificate.index', [
+                'certificateItems' => $certificateItems,
+                'certificate' => $certificate,
+                'cover1Base64' => $cover1Base64,
+                'qrcodeData' => $qrcodeData
+            ])->render();
 
             $page1Html = str_replace('[student_name]', userAuth()->name, $page1Html);
             $page1Html = str_replace('[platform_name]', Cache::get('setting')->app_name, $page1Html);
@@ -230,10 +238,13 @@ class StudentDashboardController extends Controller
             $page1Html = str_replace('[date]', formatDate($completed_date), $page1Html);
             $page1Html = str_replace('[instructor_name]', $course->instructor->name, $page1Html);
 
-            $pdf1Data = Pdf::loadHTML($page1Html)
-                ->setPaper('A4', 'landscape')->setWarnings(false)->output();
+            // $pdf1Data = Pdf::loadHTML($page1Html)
+            //     ->setPaper('A4', 'landscape')->setWarnings(false)->output();
             // Log::info('render pdf 1 took ' . now()->diffInSeconds($now));
 
+            //=========
+            // page2
+            //=========
             $cover2Base64 = null;
             if (filled($certificate->background2)) {
                 if (!Storage::disk('private')->exists($certificate->background2)) {
@@ -241,21 +252,40 @@ class StudentDashboardController extends Controller
                 }
                 $cover2Base64 = base64_encode(file_get_contents(Storage::disk('private')->path($certificate->background2)));
             }
-            $page2Html = view('frontend.student-dashboard.certificate.summary', compact('course', 'certificateItems', 'certificate', 'courseChapers', 'cover2Base64'))->render();
+
+
+            $qrcodeData2 = QrCode::format('png')->size(200)
+                ->merge('/public/backend/img/logobantul.png')
+                ->generate(
+                    $qrCodePublicURL
+                );
+            $qrcodeData2 = 'data:image/png;base64,' . base64_encode($qrcodeData2);
+
+
+            $page2Html = view('frontend.student-dashboard.certificate.summary', [
+                'course' => $course,
+                'certificateItems' => $certificateItems,
+                'certificate' => $certificate,
+                'courseChapers' => $courseChapters,
+                'cover2Base64' => $cover2Base64,
+                'qrcodeData2' => $qrcodeData2
+            ])->render();
             $pdf2Data = Pdf::loadHTML($page2Html)
                 ->setPaper('A4', 'portrait')->setWarnings(false)->output();
 
             $m = new Merger();
-            $m->addRaw($pdf1Data);
+            // $m->addRaw($pdf1Data);
             $m->addRaw($pdf2Data);
             $output = $m->merge();
 
             // return output directly
-            // return response($output, 200)
-            //     ->header('Content-Type', 'application/pdf');
+            return response($output, 200)
+                ->header('Content-Type', 'application/pdf');
 
 
             // send to Bantara API endpoint
+            $url = sprintf('%s/internal/v1/tte/documents', appConfig('bantara_url'));
+
             $response = Http::attach(
                 'file',
                 $output,
@@ -265,7 +295,7 @@ class StudentDashboardController extends Controller
                 ->withHeaders([
                     'Authorization' => 'Bearer ' . appConfig('bantara_key'),
                 ])
-                ->post(sprintf('%s/internal/v1/tte/documents', appConfig('bantara_url')), [
+                ->post($url, [
                     'signer_nik' => appConfig('bantara_nik'),
                     'title' => sprintf("Sertifikat Pelatihan %s an %s", $course->title, $enrollment->user->name),
                     'description' => $enrollment->user->name,

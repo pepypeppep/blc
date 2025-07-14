@@ -21,10 +21,10 @@ use Modules\Frontend\database\seeders\FeaturedInstructorSectionSeeder;
 use Modules\InstructorRequest\database\seeders\InstructorRequestSeeder;
 use Modules\CertificateBuilder\database\seeders\CertificateBuilderSeeder;
 use Modules\CertificateBuilder\database\seeders\CertificateBuilderItemSeeder;
-use Modules\InstructorEvaluation\database\seeders\InstructorEvaluationDatabaseSeeder;
 use Modules\Order\database\seeders\EnrollmentSeeder;
 use Modules\PendidikanLanjutan\database\seeders\PendidikanLanjutanDatabaseSeeder;
 use Modules\CertificateRecognition\database\seeders\CertificateRecognitionDatabaseSeeder;
+use Modules\InstructorEvaluation\database\seeders\InstructorEvaluationDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -73,6 +73,7 @@ class DatabaseSeeder extends Seeder
             TosSeeder::class,
             CertificateRecognitionDatabaseSeeder::class,
             InstructorEvaluationDatabaseSeeder::class,
+            ConfigSeeder::class,
             MentoringDatabaseSeeder::class,
         ]);
     }

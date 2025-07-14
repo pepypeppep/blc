@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\InstructorEvaluation\App\Policies;
+namespace Modules\InstructorEvaluation\app\Policies;
 
 use App\Models\User;
 use Illuminate\Auth\Access\Response;

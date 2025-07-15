@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Mentoring\app\Http\Controllers\MenteeController;
 use Modules\Mentoring\app\Http\Controllers\MentorController;
+use Modules\Mentoring\app\Http\Controllers\MentoringController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,5 +39,14 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::post('{id}/evaluasi', [MentorController::class, 'evaluasiStore'])->name('evaluasi.store');
         Route::post('{id}/kirim-evaluasi', [MentorController::class, 'kirimEvaluasi'])->name('evaluasi.kirim');
         Route::put('/session/update', [MentorController::class, 'updateSession'])->name('update.session');
+    });
+});
+
+
+Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admin', 'translation']], function () {
+    Route::group(['prefix' => 'mentoring', 'as' => 'mentoring.'], function () {
+        Route::get('/', [MentoringController::class, 'index'])->name('index');
+        Route::get('{id}/show', [MentoringController::class, 'show'])->name('show');
+
     });
 });

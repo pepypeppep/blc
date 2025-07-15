@@ -107,46 +107,60 @@
                     <div class="blog-post-comment">
                         @if ($article->allow_comments == 1)
                             @auth
-                                <div class="comment-respond">
-                                    <h4 class="comment-reply-title">{{ __('Post a comment') }}</h4>
-                                    <div class="comment-note">
-                                        <p>{{ __('Please keep your comment under 1000 characters') }}</p>
-                                    </div>
-                                    <form action="{{ route('blog.submit-comment') }}" class="comment-form" method="post">
-                                        @csrf
-                                        <input type="hidden" name="blog_id" value="{{ $article->id }}">
-                                        <div class="form-grp mb-3">
-                                            <label for="">{{ __('Rate this course') }} <code>*</code></label>
-                                            <div class="d-flex align-items-center justify-content-start">
-                                                <div class="rating-stars d-flex justify-content-start flex-row-reverse">
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        <input type="radio" id="star{{ $i }}" name="rating"
-                                                            value="{{ $i }}"
-                                                            {{ old('rating') == $i ? 'checked' : '' }} />
-                                                        <label for="star{{ $i }}" class="star">&#9733;</label>
-                                                    @endfor
+                                @if (!$review)
+                                    <div class="comment-respond">
+                                        <h4 class="comment-reply-title">{{ __('Give a rating') }}</h4>
+                                        <div class="comment-note">
+                                            <p>{{ __('Please rate to add a comment.') }}</p>
+                                        </div>
+                                        <form action="{{ route('article.submit-review') }}" class="comment-form" method="post">
+                                            @csrf
+                                            <input type="hidden" name="article_id" value="{{ $article->id }}">
+                                            <div class="form-grp mb-3">
+                                                <label for="">{{ __('Rate this course') }} <code>*</code></label>
+                                                <div class="d-flex align-items-center justify-content-start">
+                                                    <div class="rating-stars d-flex justify-content-start flex-row-reverse">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <input type="radio" id="star{{ $i }}" name="rating"
+                                                                value="{{ $i }}"
+                                                                {{ old('rating') == $i ? 'checked' : '' }} />
+                                                            <label for="star{{ $i }}" class="star">&#9733;</label>
+                                                        @endfor
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <button class="btn btn-two arrow-btn">{{ __('Give a rating') }} <img
+                                                    src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
+                                                    class="injectable"></button>
+                                        </form>
+                                    </div>
+                                @else
+                                    <div class="comment-respond">
+                                        <h4 class="comment-reply-title">{{ __('Post a comment') }}</h4>
+                                        <div class="comment-note">
+                                            <p>{{ __('Please keep your comment under 1000 characters') }}</p>
                                         </div>
-                                        <div class="comment-field">
-                                            <label for="">Komentar</label>
-
-                                            <textarea placeholder="{{ __('Tulis Komentar') }}" name="comment"></textarea>
-                                        </div>
-                                        <!-- g-recaptcha -->
-                                        @if (Cache::get('setting')->recaptcha_status === 'active')
-                                            <div class="form-grp mt-3">
-                                                <div class="g-recaptcha"
-                                                    data-sitekey="{{ Cache::get('setting')->recaptcha_site_key }}"></div>
+                                        <form action="{{ route('article.submit-comment') }}" class="comment-form" method="post">
+                                            @csrf
+                                            <input type="hidden" name="article_id" value="{{ $article->id }}">
+                                            <div class="comment-field">
+                                                <textarea placeholder="{{ __('Tulis Komentar') }}" name="comment"></textarea>
                                             </div>
-                                        @endif
+                                            <!-- g-recaptcha -->
+                                            @if (Cache::get('setting')->recaptcha_status === 'active')
+                                                <div class="form-grp mt-3">
+                                                    <div class="g-recaptcha"
+                                                        data-sitekey="{{ Cache::get('setting')->recaptcha_site_key }}"></div>
+                                                </div>
+                                            @endif
 
-                                        <p class="form-submit"></p>
-                                        <button class="btn btn-two arrow-btn">{{ __('Post Comment') }} <img
-                                                src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
-                                                class="injectable"></button>
-                                    </form>
-                                </div>
+                                            <p class="form-submit"></p>
+                                            <button class="btn btn-two arrow-btn">{{ __('Post Comment') }} <img
+                                                    src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
+                                                    class="injectable"></button>
+                                        </form>
+                                    </div>
+                                @endif
                             @else
                                 <div class="alert alert-primary d-flex align-items-center" role="alert">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -280,7 +294,7 @@
         }
 
         .rating-stars .star {
-            font-size: 2.5rem;
+            font-size: 7rem;
             color: #ccc;
             cursor: pointer;
             transition: color 0.3s ease;

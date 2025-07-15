@@ -1060,3 +1060,25 @@ if (!function_exists('detectStorageType')) {
         return 'youtube';
     }
 }
+
+if (!function_exists('getPrivateFile')) {
+    function getPrivateFile(?string $path)
+    {
+        if (!$path || !Storage::disk('private')->exists($path)) {
+            abort(404);
+        }
+
+        return Storage::disk('private')->response($path);
+    }
+}
+
+if (!function_exists('authorizeCoachAccess')) {
+    function authorizeCoachAccess($coaching, $user = null)
+    {
+        $user = $user ?? auth()->user();
+
+        if ($coaching->coach_id !== $user->id) {
+            abort(403, 'Anda tidak memiliki izin untuk mengakses coaching ini.');
+        }
+    }
+}

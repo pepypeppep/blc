@@ -56,20 +56,20 @@
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
-                                        <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Selesai' ? 'active' : '' }}"
-                                        href="{{ route('admin.mentoring.index', ['status' => 'Selesai']) }}">
-                                            {{ __('Done') }} &nbsp;
-                                            <span class="badge {{ $status == 'Selesai' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
-                                                {{ $statusCounts['Selesai'] ?? 0 }}
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
                                         <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Penilaian' ? 'active' : '' }}"
                                         href="{{ route('admin.mentoring.index', ['status' => 'Penilaian']) }}">
                                             {{ __('Evaluation') }} &nbsp;
                                             <span class="badge {{ $status == 'Penilaian' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
                                                 {{ $statusCounts['Penilaian'] ?? 0 }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Selesai' ? 'active' : '' }}"
+                                        href="{{ route('admin.mentoring.index', ['status' => 'Selesai']) }}">
+                                            {{ __('Done') }} &nbsp;
+                                            <span class="badge {{ $status == 'Selesai' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                                {{ $statusCounts['Selesai'] ?? 0 }}
                                             </span>
                                         </a>
                                     </li>

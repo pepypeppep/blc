@@ -56,7 +56,7 @@
                                     @if ($mentoring->status != Mentoring::STATUS_DONE)
                                     <select class="form-select" name="tingkat_disiplin" required>
                                         <option value="" disabled selected>Pilih Nilai</option>
-                                        @for ($i = 1; $i <= 10; $i++)
+                                        @for ($i = 1; $i <= 100; $i++)
                                             <option value="{{ $i }}"
                                                 {{ @$review->discipline == $i ? 'selected' : (old('tingkat_disiplin') == $i ? 'selected' : '') }}>
                                                 {{ $i }}</option>
@@ -101,7 +101,7 @@
                                     @if ($mentoring->status != Mentoring::STATUS_DONE)
                                         <select class="form-select" name="kerjasama" required>
                                             <option value="" disabled selected>Pilih Nilai</option>
-                                            @for ($i = 1; $i <= 10; $i++)
+                                            @for ($i = 1; $i <= 100; $i++)
                                                 <option value="{{ $i }}"
                                                     {{ @$review->teamwork == $i ? 'selected' : (old('kerjasama') == $i ? 'selected' : '') }}>
                                                     {{ $i }}</option>
@@ -146,7 +146,7 @@
                                     @if ($mentoring->status != Mentoring::STATUS_DONE)
                                         <select class="form-select" name="inisiatif" required>
                                             <option value="" disabled selected>Pilih Nilai</option>
-                                            @for ($i = 1; $i <= 10; $i++)
+                                            @for ($i = 1; $i <= 100; $i++)
                                                 <option value="{{ $i }}"
                                                     {{ @$review->initiative == $i ? 'selected' : (old('initiative') == $i ? 'selected' : '') }}>
                                                     {{ $i }}</option>
@@ -155,18 +155,6 @@
                                     @else
                                         {{ @$review->initiative }}
                                     @endif
-                                    {{-- <div class="form-check form-check-inline d-flex flex-row">
-                                        @for ($i = 1; $i <= 10; $i++)
-                                            <div class="form-check form-check-inline mr-2">
-                                                <input class="form-check-input" type="radio" name="inisiatif"
-                                                    id="inisiatif{{ $i }}" value="{{ $i }}"
-                                                    {{ @$review->initiative == $i ? 'checked' : (old('inisiatif') == $i ? 'checked' : '') }}
-                                                    {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>
-                                                <label class="form-check-label"
-                                                    for="inisiatif{{ $i }}">{{ $i }}</label>
-                                            </div>
-                                        @endfor
-                                    </div> --}}
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -184,6 +172,39 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-12 mt-4">
+                                <div class="form-group">
+                                    <label for="penguasaan_materi">{{ __('Tingkat Penguasaan Materi') }} <code>*</code></label>
+
+                                    @if ($mentoring->status != Mentoring::STATUS_DONE)
+                                        <select class="form-select" name="penguasaan_materi" required>
+                                            <option value="" disabled selected>Pilih Nilai</option>
+                                            @for ($i = 1; $i <= 100; $i++)
+                                                <option value="{{ $i }}"
+                                                    {{ @$review->material_mastery == $i ? 'selected' : (old('penguasaan_materi') == $i ? 'selected' : '') }}>
+                                                    {{ $i }}</option>
+                                            @endfor
+                                        </select>
+                                    @else
+                                        {{ @$review->material_mastery }}
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="form-group mt-4">
+                                        @if ($mentoring->status == Mentoring::STATUS_DONE)
+                                            <h6>{{ __('Catatan Penguasaan Materi') }}</h6>
+                                            <p>{!! clean(@$review?->material_mastery_description) !!}</p>
+                                        @else
+                                            <label for="penguasaan_materi_description">{{ __('Catatan Penguasaan Materi') }}
+                                                <code>*</code></label>
+                                            <textarea name="penguasaan_materi_description" class="text-editor form-control summernote"
+                                                {{ $mentoring->status == Mentoring::STATUS_DONE ? 'disabled' : '' }}>{{ clean(@$review?->material_mastery_description) }}</textarea>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -195,7 +216,7 @@
                             </button>
                             <button type="button" class="btn btn-primary mt-4 mb-3"
                                 onclick="handleKirimEvaluasiDanKirimKeKepegawaian(event, {{ $mentoring->id }})">
-                                {{ __('Kirim Evaluasi Ke Kepegawaian') }} <i class="fa fa-arrow-right"></i>
+                                {{ __('Kirim Evaluasi Ke BKPSDM') }} <i class="fa fa-arrow-right"></i>
                             </button>
                         </div>
                     </div>

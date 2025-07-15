@@ -1,5 +1,9 @@
 @extends('frontend.student-dashboard.layouts.master')
 
+@php
+    use Modules\Mentoring\app\Models\Mentoring;
+@endphp
+
 @section('dashboard-contents')
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between">
@@ -33,7 +37,7 @@
                                     <td class="text-center"><div class="badge bg-{{ $mentoring->stat['color'] }}">{{ $mentoring->stat['label'] }}</div></td>
                                     <td class="text-nowrap">
                                         <div class="dashboard__mentee-action d-inline-flex align-items-center gap-2">
-                                            @if ($mentoring->status === 'Draft')
+                                            @if ($mentoring->status === Mentoring::STATUS_DRAFT)
                                                 <form action="{{ route('student.mentee.submit', $mentoring->id) }}" method="POST" class="form-submit d-inline">
                                                     @csrf
                                                     @method('PUT')

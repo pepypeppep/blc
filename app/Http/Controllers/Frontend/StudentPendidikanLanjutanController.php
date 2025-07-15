@@ -393,7 +393,7 @@ class StudentPendidikanLanjutanController extends Controller
 
         $reportFile = VacancyMasterReportFiles::where('id', $validated['name'])->first();
 
-        $reportExist = VacancyReport::where('vacancy_user_id', $vacancyUser->id)->where('name', $reportFile->name)->exists();
+        $reportExist = VacancyReport::where('vacancy_user_id', $vacancyUser->id)->where('name', $reportFile->name)->first();
 
         if ($reportExist) {
             DB::rollBack();
@@ -575,7 +575,7 @@ class StudentPendidikanLanjutanController extends Controller
             Storage::disk('private')->put($fileName, file_get_contents($file));
             $result = $vacancyActivation->update([
                 'file' => $fileName,
-                'status' => 'pending',
+                'status' => 'review',
             ]);
             if (!$result) {
                 return redirect()->back()->with(['messege' => 'Upload file gagal', 'alert-type' => 'error']);
@@ -597,7 +597,7 @@ class StudentPendidikanLanjutanController extends Controller
             'vacancy_attachment_id' => $vacancyAttachment->id,
             'name' => $fileName,
             'file' => $fileName,
-            'status' => 'pending',
+            'status' => 'review',
         ]);
         if (!$result) {
             return redirect()->back()->with(['messege' => 'Upload file gagal', 'alert-type' => 'error']);

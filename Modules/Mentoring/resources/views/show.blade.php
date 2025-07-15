@@ -24,7 +24,7 @@
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ $mentoring->title }}</h4>
                                 <div class="badge badge-{{ $mentoring->stat['color'] }}">{{ $mentoring->stat['label'] }}
-                                </div>
+                                 </div>
                             </div>
 
                             <div class="card-body">
@@ -33,7 +33,7 @@
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Main Issue') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $mentoring->description }}
+                                            <p class="mb-0" style="font-size: 1.1rem;">{!! $mentoring->description !!}
                                             </p>
                                         </div>
                                     </div>
@@ -41,22 +41,15 @@
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Purpose') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $mentoring->purpose }}</p>
+                                            <p class="mb-0" style="font-size: 1.1rem;">{!! $mentoring->purpose !!}</p>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Mentor') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $mentoring->mentor->name }}</p>
-                                        </div>
-                                    </div>
+
                                     <div class="col-lg-12 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 Pelaksanaan Pertemuan ({{ count($mentoring->mentoringSessions) }})
                                             </p>
-                                            <p class="mb-3" style="font-size: 1.1rem;">Lakukan sesi mentoring sesuai jadwal dan laporkan hasil penugasan.</p>
 
                                             <div class="accordion card mb-2" id="mentoringAccordion">
                                                 @foreach($mentoring->mentoringSessions as $index => $session)
@@ -72,9 +65,16 @@
                                                                     aria-controls="mentoring-collapse{{ $index }}"
                                                                     style="width: 100%;">
                                                                     <div class="text-start">
-                                                                        <p class="text-primary mb-1 text-left" style="font-size: 0.9rem; font-weight: 600;">
-                                                                            Pertemuan {{ $index + 1 }}
-                                                                        </p>
+                                                                        <div class="d-flex align-items-center mb-1">
+                                                                            <span class="fw-semibold text-dark" style="font-size: 0.95rem;">
+                                                                                Pertemuan {{ $index + 1 }}
+                                                                            </span>
+                                                                            @if (!empty($session->activity))
+                                                                                <span class="badge bg-info text-white ml-2 px-2 py-1" style="font-size: 0.7rem; font-weight: 700;">
+                                                                                    Terisi
+                                                                                </span>
+                                                                            @endif
+                                                                        </div>
                                                                         <div class="text-muted text-left" style="font-size: 0.85rem;">
                                                                             {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}
                                                                         </div>
@@ -85,10 +85,41 @@
                                                         <div id="mentoring-collapse{{ $index }}"
                                                             class="accordion-collapse collapse"
                                                             data-bs-parent="#mentoringAccordion">
-                                                            <div class="accordion-body">
-                                                                <strong>Aktivitas:</strong><br>
-                                                                {{ $session->activity ?? 'Belum ada aktivitas yang diinput.' }}
-                                                            </div>
+                                                            @if (!empty($session->activity))
+                                                                <div class="accordion-body">
+                                                                    <strong class="d-block">Deskripsi Kegiatan:</strong>
+                                                                    <div class="text-body">{!! $session->activity ?: '<em>Tidak ada deskripsi kegiatan.</em>' !!}</div>
+
+                                                                    <div class="mb-2">
+                                                                        <strong class="d-block">Hambatan:</strong>
+                                                                        <div class="text-body">{!! $session->description ?: '<em>Tidak ada hambatan dicatat.</em>' !!}</div>
+                                                                    </div>
+
+                                                                    <div class="mb-2">
+                                                                        <strong class="d-block">Dokumentasi:</strong>
+                                                                        @if ($session->image && Storage::disk('private')->exists($session->image))
+                                                                            <a href="{{ route('student.mentee.view.img', $session->id) }}" target="_blank">
+                                                                                <img src="{{ route('student.mentee.view.img', $session->id) }}"
+                                                                                    alt="img" class="img-thumbnail mt-2" style="max-width: 200px;">
+                                                                            </a>
+                                                                        @else
+                                                                            <p class="text-muted"><em>Belum ada dokumentasi gambar.</em></p>
+                                                                        @endif
+                                                                    </div>
+
+                                                                    <div class="mb-2">
+                                                                        @if ($session->status == 'reviewed')
+                                                                            @include('frontend.student-dashboard.mentoring.mentor.partials.session-done')
+                                                                        @else
+                                                                            @include('frontend.student-dashboard.mentoring.mentor.partials.session-submit')
+                                                                        @endif
+                                                                    </div>
+                                                                </div>
+                                                            @else
+                                                                <div class="text-center">
+                                                                    <h4 class="text-muted">Belum ada kegiatan</h4>
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 @endforeach
@@ -102,7 +133,18 @@
                                                 {{ __('Final Report Mentoring') }}</p>
                                             <p class="mb-3" style="font-size: 1.1rem;">Laporan akhir dari kegiatan mentoring yang telah
                                                 dilakukan.</p>
-
+                                                @if ($mentoring->final_report)
+                                                    <embed
+                                                        src="{{ $mentoring->final_report }}" target="_self"
+                                                        type="application/pdf"
+                                                        width="100%"
+                                                        height="600px"
+                                                    />
+                                                @else
+                                                    <div class="text-center">
+                                                        <h4 class="text-muted"><em>Belum ada laporan akhir<em></h4>
+                                                    </div>
+                                                @endif
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +154,29 @@
                     <div class="col-lg-4">
                         @php
                             $mentee = $mentoring->mentee;
+                            $mentor = $mentoring->mentor;
                         @endphp
+
+                        @if($mentor)
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h4>{{ __('List Mentor') }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="https://i.pinimg.com/736x/f9/8a/db/f98adb0622aa2341ba29aaeb46901b33.jpg"
+                                            alt="{{ $mentor->name }}"
+                                            class="rounded-circle"
+                                            width="50" height="50"
+                                            style="object-fit: cover;">
+                                        <div class=" ml-2">
+                                            <strong>{{ $mentor->name }}</strong><br>
+                                            <small class="text-muted">{{ $mentor->email }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
                         @if($mentee)
                             <div class="card">
@@ -140,12 +204,16 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group d-flex justify-content-center">
-                                    <a href="#" target="_blank"
-                                        class="btn btn-outline-danger d-flex align-items-center gap-2"
-                                        style="font-size: 1.5rem;">
-                                        <i class="fas fa-file-pdf fa-2x"></i> <!-- ikon PDF besar -->
-                                        <span>Download PDF</span>
-                                    </a>
+                                    @if ($mentoring->mentor_availability_letter)
+                                        <a href="{{ $mentoring->mentor_availability_letter }}" target="_blank"
+                                            class="btn btn-outline-danger d-flex align-items-center gap-2"
+                                            style="font-size: 1.5rem;">
+                                            <i class="fas fa-file-pdf fa-2x mr-1"></i>
+                                            <span>Lihat Surat</span>
+                                        </a>
+                                    @else
+                                        <p class="text-muted mb-0">Tidak ada file.</p>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -198,102 +266,18 @@
                         </div>
                         @endif
                     </div>
-                    {{-- <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Daftar Peserta') }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class=" max-h-400">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th style="width:1%">No</th>
-                                                <th style="width:35%">{{ __('Name') }}</th>
-                                                <th style="width:35%">{{ __('Jabatan') }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($users as $user)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td class="row">
-                                                        <div class="col-12">
-                                                            <strong>{{ $user->name }}</strong>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <span>Status ASN :</span>
-                                                            @if ($user->asn_status == 'PNS')
-                                                                <span class="badge badge-primary">PNS</span>
-                                                            @elseif ($user->asn_status == 'PPPK')
-                                                                <span class="badge badge-success">PPPK</span>
-                                                            @else
-                                                                <span class="badge badge-warning">Lainnya</span>
-                                                            @endif
-                                                        </div>
-                                                    </td>
-                                                    <td>{{ $user->jabatan }}</td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="4" class="text-center">{{ __('No data found') }}</td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="d-flex justify-content-end">
-                                    {{ $users->links() }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Daftar Materi Pelatihan') }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class=" max-h-400">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th style="width:1%">No</th>
-                                                <th style="width:35%">{{ __('Name') }}</th>
-                                                <th style="width:35%">{{ __('JP') }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($pelatihans as $pelatihan)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $pelatihan->name }}</td>
-                                                    <td>{{ $pelatihan->jp }}</td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="4" class="text-center">{{ __('No data found') }}</td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="d-flex justify-content-end">
-                                    {{ $pelatihans->links() }}
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
                 </div>
             </div>
         </section>
     </div>
 @endsection
-{{-- @push('styles')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-@endpush --}}
 
-@push('js')
+
+@push('styles')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@endpush
+
+@push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
     <script>

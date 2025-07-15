@@ -2715,6 +2715,520 @@
                 ]
             }
         },
+        "/mentoring/mentor": {
+            "get": {
+                "tags": [
+                    "Mentor"
+                ],
+                "summary": "Get mentor topics",
+                "description": "Get mentor topics",
+                "operationId": "183a5990c99cb82658811705a635b9c2",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentor/{id}": {
+            "get": {
+                "tags": [
+                    "Mentor"
+                ],
+                "summary": "Get mentor topic by id",
+                "description": "Get mentor topic by id",
+                "operationId": "6d7b47f2bb15fadad5b280daa93c98d5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Mentoring id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentor/{id}/reject": {
+            "post": {
+                "tags": [
+                    "Mentor"
+                ],
+                "summary": "Reject mentoring by id",
+                "description": "Reject mentoring by id",
+                "operationId": "fbe70d08f323cac96e5777da7a669bad",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Mentoring id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "Alasan penolakan"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mentoring rejected successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentor/{id}/approve": {
+            "put": {
+                "tags": [
+                    "Mentor"
+                ],
+                "summary": "Approve mentoring",
+                "description": "Approve mentoring",
+                "operationId": "5f34c93af97751ef2e70c48ba6864ce4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Mentoring id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mentoring approved successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Mentoring not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentor/{id}/review": {
+            "post": {
+                "tags": [
+                    "Mentor"
+                ],
+                "summary": "Memberikan ulasan mentoring",
+                "description": "Memberikan ulasan mentoring",
+                "operationId": "mentoringReview",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID Mentoring Session",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "ID user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "mentoring_date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2022-01-01 00:00:00"
+                                    },
+                                    "mentoring_note": {
+                                        "type": "string",
+                                        "example": "Catatan mentoring"
+                                    },
+                                    "mentoring_instructions": {
+                                        "type": "string",
+                                        "example": "Instruksi mentoring"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil memberikan ulasan"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Mentoring not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentor/{id}/store-evaluation": {
+            "post": {
+                "tags": [
+                    "Mentor"
+                ],
+                "summary": "Kirim evaluasi mentoring",
+                "description": "Kirim evaluasi mentoring",
+                "operationId": "3fa50cab4bd39cef0686d252e9e8b7f6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID mentoring",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "ID user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "description": "Evaluasi mentoring",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "target",
+                                    "target_description",
+                                    "tingkat_disiplin",
+                                    "disiplin_description",
+                                    "kerjasama",
+                                    "kerjasama_description",
+                                    "inisiatif",
+                                    "inisiatif_description",
+                                    "penguasaan_materi",
+                                    "penguasaan_materi_description"
+                                ],
+                                "properties": {
+                                    "target": {
+                                        "description": "Target",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "target_description": {
+                                        "description": "Deskripsi target",
+                                        "type": "string",
+                                        "example": "Target description"
+                                    },
+                                    "tingkat_disiplin": {
+                                        "description": "Tingkat disiplin",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "disiplin_description": {
+                                        "description": "Deskripsi disiplin",
+                                        "type": "string",
+                                        "example": "Deskripsi disiplin"
+                                    },
+                                    "kerjasama": {
+                                        "description": "Kerjasama",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "kerjasama_description": {
+                                        "description": "Deskripsi kerjasama",
+                                        "type": "string",
+                                        "example": "Deskripsi kerjasama"
+                                    },
+                                    "inisiatif": {
+                                        "description": "Inisiatif",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "inisiatif_description": {
+                                        "description": "Deskripsi inisiatif",
+                                        "type": "string",
+                                        "example": "Deskripsi inisiatif"
+                                    },
+                                    "penguasaan_materi": {
+                                        "description": "Penguasaan materi",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "penguasaan_materi_description": {
+                                        "description": "Deskripsi penguasaan materi",
+                                        "type": "string",
+                                        "example": "Deskripsi penguasaan materi"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Evaluasi berhasil dikirim"
+                    },
+                    "400": {
+                        "description": "Evaluasi gagal dikirim"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Mentoring not found"
+                    },
+                    "500": {
+                        "description": "Evaluasi gagal dikirim"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentor/{id}/evaluasi": {
+            "get": {
+                "tags": [
+                    "Mentor"
+                ],
+                "summary": "Menampilkan data mentoring untuk evaluasi",
+                "description": "Menampilkan data mentoring untuk evaluasi",
+                "operationId": "mentoringEvaluasi",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID mentoring",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "ID user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menampilkan data mentoring"
+                    },
+                    "400": {
+                        "description": "Mentoring tidak ditemukan atau status tidak valid"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Mentoring not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentor/update-session": {
+            "post": {
+                "tags": [
+                    "Mentor"
+                ],
+                "summary": "Update mentoring session",
+                "description": "Update mentoring session",
+                "operationId": "8c1c8353c66a7eeb3160d9a9965d4669",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "ID user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Session and new mentoring date",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "session_id",
+                                    "mentoring_date"
+                                ],
+                                "properties": {
+                                    "session_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "mentoring_date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2022-01-01 09:00:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Session updated successfully"
+                    },
+                    "500": {
+                        "description": "Error updating session"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/update-device-token": {
             "post": {
                 "tags": [
@@ -4325,6 +4839,10 @@
         {
             "name": "Mentee",
             "description": "Mentee"
+        },
+        {
+            "name": "Mentor",
+            "description": "Mentor"
         },
         {
             "name": "Notifications",

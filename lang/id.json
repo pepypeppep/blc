@@ -2114,9 +2114,16 @@
     "Session Name": "Nama Sesi",
     "Session": "Sesi",
     "Sessions": "Sesi",
+    "Total Sessions": "Jumlah Sesi",
     "Activity": "Kegiatan",
     "Mentoring Date": "Tanggal Mentoring",
-    "Coaching List": "Daftar Coaching",
-    "Learning Resources": "Sumber Belajar",
-    "Upload SPT": "Unggah SPT"
+    "Mentoring Detail": "Detail Mentoring",
+    "Submission" : "Pengajuan",
+    "Process" : "Proses",
+    "Evaluation" : "Penilaian",
+    "Final Report Mentoring" : "Laporan Akhir Mentoring",
+    "List Mentor" : "Daftar Mentor",
+    "List Mentee" : "Daftar Mentee",
+    "Mentor Availability Letter" : "Surat Kesediaan Mentor"
+
 }

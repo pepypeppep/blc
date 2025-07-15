@@ -14,6 +14,7 @@ class Mentoring extends Model
 
     protected $table = 'mentoring';
     protected $guarded = ['id'];
+    protected $appends = ['mentor_availability_letter_url'];
 
     public const STATUS_DRAFT = "Draft";
     public const STATUS_SUBMISSION = "Pengajuan";
@@ -100,5 +101,10 @@ class Mentoring extends Model
             return Storage::disk('private')->response($this->$column);
         }
         abort(404);
+    }
+
+    public function getMentorAvailabilityLetterUrlAttribute()
+    {
+        return route('api.mentoring.show.document', ['id' => $this->id, 'type' => 'mentor_availability_letter']);
     }
 }

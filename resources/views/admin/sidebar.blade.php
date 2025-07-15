@@ -58,6 +58,14 @@
                 @endif
             @endif
 
+            @if (checkAdminHasPermission('mentoring.view'))
+                <li class="menu-header">{{ __('Manage Mentoring') }}</li>
+
+                @if (Module::isEnabled('Mentoring') && checkAdminHasPermission('mentoring.view'))
+                    @include('mentoring::sidebar')
+                @endif
+            @endif
+
             @if (checkAdminHasPermission('knowledge.verification'))
                 <li class="menu-header">{{ __('Manage Knowledge') }}</li>
                 @if (Module::isEnabled('Article') && checkAdminHasPermission('knowledge.verification'))

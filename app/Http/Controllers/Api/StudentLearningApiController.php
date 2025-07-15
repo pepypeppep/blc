@@ -138,6 +138,8 @@ class StudentLearningApiController extends Controller
             if ($enrolled instanceof JsonResponse) return $enrolled;
             // Kalau sudah lolos, baru ambil data lengkap course
             $course = Course::active()->with([
+                'instructor:id,name,email',
+                'partnerInstructors',
                 'chapters',
                 'chapters.chapterItems',
                 'chapters.chapterItems.lesson',
@@ -145,7 +147,7 @@ class StudentLearningApiController extends Controller
                 'chapters.chapterItems.rtl',
             ])->withTrashed()
                 ->where('slug', $slug)
-                ->select('courses.id', 'courses.title', 'courses.slug', 'courses.thumbnail')
+                // ->select('courses.id', 'courses.title', 'courses.slug', 'courses.thumbnail')
                 ->first();
 
             $userId = $user->id;
@@ -233,11 +235,11 @@ class StudentLearningApiController extends Controller
             $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
 
-            $course = $this->getCourseById($request->courseId);
-            if ($course instanceof JsonResponse) return $course;
+            // $course = $this->getCourseById($request->courseId);
+            // if ($course instanceof JsonResponse) return $course;
 
-            $enrolled = $this->checkEnrollment($user, $course);
-            if ($enrolled instanceof JsonResponse) return $enrolled;
+            // $enrolled = $this->checkEnrollment($user, $course);
+            // if ($enrolled instanceof JsonResponse) return $enrolled;
 
             $progress = CourseProgress::where([
                 'lesson_id' => $request->lessonId,

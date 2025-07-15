@@ -20,16 +20,25 @@
                 <div class="dashboard__instructor-info">
                     <div class="dashboard__instructor-info-left">
                         <div class="thumb">
-                            <img src="{{ asset('frontend/img/frontend-avatar.png') }}" alt="img">
+                            {{-- <img src="{{ asset('frontend/img/frontend-avatar.png') }}" alt="img"> --}}
+                            <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ auth()->user()->nip }}.jpg" alt="img">
                         </div>
                         <div class="content">
                             <h4 class="title">{{ auth()->user()->name }}</h4>
                             <ul class="list-wrap">
                                 <li>
+                                    {{ auth()->user()->nip }}
+                                </li>
+                                {{-- <li>
+                                    {{ auth()->user()->nip }}
+                                </li> --}}
+                                {{-- @if (auth()->user()->email)
+                                <li>
                                     <img src="{{ asset('frontend/img/icons/envelope.svg') }}" alt="img"
                                         class="injectable">
                                     {{ auth()->user()->email }}
                                 </li>
+                                @endif --}}
                                 @if (auth()->user()->phone)
                                     <li>
                                         <img src="{{ asset('frontend/img/icons/phone.svg') }}" alt="img"
@@ -96,6 +105,50 @@
             border-radius: 5px;
         }
 
+        .dashboard__action a,
+        .dashboard__action button {
+            font-size: 14px;
+            height: 30px;
+            line-height: 1;
+            padding: 0 14px;
+            background: rgba(15, 36, 222, 0.25);
+            color: rgba(197, 165, 22, 0.13);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            transition: all 0.2s ease;
+            border: none;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .dashboard__action a:hover,
+        .dashboard__action button:hover{
+            background: rgba(15, 36, 222, 0.25);
+            color: var(--tg-common-color-white);
+        }
+
+        .dashboard__action .btn-action-warning {
+            background: rgba(239, 172, 47, 1);
+            color: var(--tg-common-color-white);
+        }
+
+        .dashboard__action .btn-action-warning:hover {
+            background: rgba(239, 172, 47, 0.20);
+            color: rgba(239, 172, 47, 1);
+        }
+
+        .dashboard__action .btn-action-primary {
+            background: rgba(47, 87, 239, 1);
+            color: var(--tg-common-color-white);
+        }
+
+        .dashboard__action .btn-action-primary:hover {
+            background: rgba(47, 87, 239, 0.20);
+            color: var(--tg-theme-primary);
+        }
+        
     </style>
 @endpush
 @push('scripts')

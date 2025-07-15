@@ -11,20 +11,10 @@ class ArticleReview extends Model
 {
     use HasFactory;
 
-
-    public const STATUS_PUBLISHED = "published";
-    public const STATUS_UNPUBLISHED = "unpublished";
-
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [
-        'description',
-        'author_id',
-        'article_id',
-        'stars',
-        'status',
-    ];
+    protected $guarded = ['id'];
 
     public function post(): ?BelongsTo
     {

@@ -199,7 +199,7 @@ class VacancyParticipantController extends Controller
             // if ($title == "Perjanjian Kinerja") {
             //     $status = 'final';
             // } else {
-            $status = 'draft';
+            $status = 'final';
             // }
 
             // Create Vacancy User Attachment
@@ -282,7 +282,6 @@ class VacancyParticipantController extends Controller
         } catch (\Throwable $th) {
             // Rollback transaction
             DB::rollBack();
-            dd($th->getMessage());
 
             return redirect()->back()->with('error', $th->getMessage());
         }
@@ -342,7 +341,6 @@ class VacancyParticipantController extends Controller
         } catch (\Throwable $th) {
             // Rollback transaction
             DB::rollBack();
-            dd($th->getMessage());
 
             return redirect()->back()->with('error', $th->getMessage());
         }

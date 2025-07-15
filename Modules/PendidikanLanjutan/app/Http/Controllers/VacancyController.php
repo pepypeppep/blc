@@ -97,7 +97,8 @@ class VacancyController extends Controller
             'employee_grade_id' => 'required|integer|exists:employee_grades,id',
             'formation' => 'required|integer',
             'description' => 'nullable|string',
-            'year' => 'required|digits:4|integer|between:1900,' . date('Y')
+            'year' => 'required|digits:4|integer|between:1900,' . date('Y'),
+            'education_requirements' => 'required|array',
         ], [
             'study_id.required' => 'Program studi wajib diisi.',
             'study_id.exists' => 'Program studi yang dipilih tidak valid.',
@@ -109,6 +110,7 @@ class VacancyController extends Controller
             'year.required' => 'Tahun wajib diisi.',
             'year.digits' => 'Tahun harus terdiri dari 4 digit.',
             'year.between' => 'Tahun harus antara 2024 hingga ' . date('Y') . '.',
+            'education_requirements.required' => 'Syarat pendidikan wajib diisi.',
         ]);
 
         $vacancy = null;
@@ -123,6 +125,7 @@ class VacancyController extends Controller
                 'formation',
                 'description',
                 'year',
+                'education_requirements',
             ]));
         });
 
@@ -170,6 +173,7 @@ class VacancyController extends Controller
             'formation' => 'required|integer',
             'description' => 'nullable|string',
             'year' => 'required|digits:4|integer|between:1900,' . date('Y'),
+            'education_requirements' => 'required|array',
 
             // 'start_at' => 'nullable|date|before:end_at',
             // 'end_at' => 'nullable|date|after:start_at',
@@ -184,6 +188,7 @@ class VacancyController extends Controller
             'year.required' => 'Tahun wajib diisi.',
             'year.digits' => 'Tahun harus terdiri dari 4 digit.',
             'year.between' => 'Tahun harus antara 2024 hingga ' . date('Y') . '.',
+            'education_requirements.required' => 'Syarat pendidikan wajib diisi.',
         ]);
 
 
@@ -199,9 +204,11 @@ class VacancyController extends Controller
                 'formation',
                 'description',
                 'year',
+                'education_requirements',
             ]));
         });
 
+        return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy updated successfully.');
         return redirect()->route('admin.vacancies.edit', $vacancy->id)->with('success', 'Vacancy created successfully.');
     }
 
@@ -356,6 +363,7 @@ class VacancyController extends Controller
             }
         });
 
+        return redirect()->route('admin.vacancies.index')->with('success', 'Vacancy updated successfully.');
         return redirect()->route('admin.vacancies.edit', $id)->with('success', 'Vacancy updated successfully.');
     }
 

@@ -82,6 +82,8 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
 
     /** Students */
     Route::get('courses/get-students', [CourseController::class, 'getStudents'])->name('courses.get-students');
+    Route::get('courses/get-instansi', [CourseController::class, 'getIntansi'])->name('courses.get-instansi');
+    Route::get('courses/get-unor', [CourseController::class, 'getUnor'])->name('courses.get-unor');
 
 
     /** Course content routes */

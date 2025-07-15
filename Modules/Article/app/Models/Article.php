@@ -22,7 +22,7 @@ class Article extends Model
 
     protected $appends = ['thumbnail_url', 'document_url', 'embed_link'];
 
-    
+
     public const STATUS_DRAFT = "draft";
     public const STATUS_PUBLISHED = "published";
     public const STATUS_REJECTED = "rejected";
@@ -77,7 +77,12 @@ class Article extends Model
      */
     public function reviews(): HasMany
     {
-        return $this->hasMany(ArticleReview::class, 'article_id');
+        return $this->hasMany(ArticleReview::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(ArticleComment::class);
     }
 
     public function enrollment()
@@ -130,13 +135,13 @@ class Article extends Model
                         $videoId = $query['v'] ?? null;
                         return $videoId ? "https://www.youtube.com/embed/{$videoId}" : $link;
 
-                    // Short link YouTube
+                        // Short link YouTube
                     case strpos($link, 'youtu.be/') !== false:
                         $path = parse_url($link, PHP_URL_PATH);
                         $videoId = trim($path, '/');
                         return !empty($videoId) ? "https://www.youtube.com/embed/{$videoId}" : $link;
 
-                    // Link Google Drive
+                        // Link Google Drive
                     case strpos($link, 'drive.google.com') !== false && strpos($link, '/file/d/') !== false:
                         preg_match('#/file/d/([^/]+)#', $link, $matches);
                         $fileId = $matches[1] ?? null;

@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::get('{id}/evaluasi', [MentorController::class, 'evaluasi'])->name('evaluasi');
         Route::post('{id}/evaluasi', [MentorController::class, 'evaluasiStore'])->name('evaluasi.store');
         Route::post('{id}/kirim-evaluasi', [MentorController::class, 'kirimEvaluasi'])->name('evaluasi.kirim');
+        Route::put('/session/update', [MentorController::class, 'updateSession'])->name('update.session');
     });
 });
 

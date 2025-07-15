@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\CourseApiController;
 use App\Http\Controllers\Api\ReviewApiController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\CertificateApiController;
+use App\Http\Controllers\Api\MenteeApiController;
+use App\Http\Controllers\Api\MentorApiController;
 use App\Http\Controllers\Api\PendidikanLanjutanController;
 use App\Http\Controllers\Api\StudentLearningApiController;
 use App\Http\Controllers\Auth\SSOController;
@@ -65,6 +67,7 @@ Route::name('api.')->group(function () {
 
         Route::prefix('pendidikan-lanjutan')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'index']);
+            Route::get('/riwayat', [PendidikanLanjutanController::class, 'history']);
             Route::get('/{id}', [PendidikanLanjutanController::class, 'show']);
             Route::get('/{id}/logs', [PendidikanLanjutanController::class, 'logs']);
         });
@@ -106,6 +109,38 @@ Route::name('api.')->group(function () {
 
             // GET: /api/student-learning/{slug}
             Route::get('/{slug}', [StudentLearningApiController::class, 'index'])->name('index');
+        });
+
+    // Mentoring
+    Route::prefix('mentoring')
+        ->name('mentoring.')
+        ->middleware('auth:sso-api')
+        ->group(function () {
+            Route::prefix('mentee')
+                ->name('mentee.')
+                ->group(function () {
+                    Route::get('/', [MenteeApiController::class, 'index'])->name('index');
+                    Route::get('/{id}', [MenteeApiController::class, 'show'])->name('show');
+                    Route::post('/', [MenteeApiController::class, 'store'])->name('store');
+                    Route::post('/update-session', [MenteeApiController::class, 'updateSession'])->name('update.session');
+                    Route::post('/{id}/submit-approval', [MenteeApiController::class, 'submitForApproval'])->name('submitForApproval');
+                    Route::post('/{id}/final-report', [MenteeApiController::class, 'updateFinalReport'])->name('update.final.report');
+                });
+            Route::prefix('mentor')
+                ->name('mentor.')
+                ->group(function () {
+                    Route::get('/', [MentorApiController::class, 'index'])->name('index');
+                    Route::get('/{id}', [MentorApiController::class, 'show'])->name('show');
+                    Route::post('/', [MentorApiController::class, 'store'])->name('store');
+                    Route::put('/{id}/approve', [MentorApiController::class, 'approve'])->name('approve');
+                    Route::post('/{id}/reject', [MentorApiController::class, 'reject'])->name('reject');
+                    Route::post('/{id}/review', [MentorApiController::class, 'review'])->name('review');
+                    Route::get('/{id}/evaluasi', [MentorApiController::class, 'evaluasi'])->name('evaluasi');
+                    Route::post('/{id}/store-evaluation', [MentorApiController::class, 'evaluasiStore'])->name('store-evaluation');
+                    Route::post('/update-session', [MentorApiController::class, 'updateSession'])->name('update.session');
+                });
+            Route::get('/{id}/{type}', [MenteeApiController::class, 'showDocument'])->name('show.document');
+            Route::get('/{id}/{type}/session', [MenteeApiController::class, 'showDocumentSession'])->name('show.document.session');
         });
 
 

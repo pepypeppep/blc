@@ -51,7 +51,7 @@ class HomeController extends Controller
                     'content' => array_merge((array)$section->content, $sections[str_replace('_section', '', $section->name)])
                 ];
             }
-            return $sections;
+
             $contactSection = ContactSection::first();
             $sections['contact_us'] = json_decode(json_encode([
                 'address' => $contactSection->address,

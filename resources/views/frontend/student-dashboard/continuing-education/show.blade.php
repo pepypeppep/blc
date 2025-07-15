@@ -44,6 +44,13 @@
                                     @endphp
                                     {{ $educationLevel ? $educationLevel : '-' }}
                                 </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>{{ __('Syarat Pendidikan') }}</td>
+                                <td>
+                                    {{ str_replace(', ',' / ',str_replace(['"','[',']'], '', $vacancy->education_requirements)) }}
+                                </td>
                                 <td class="text-center">
                                     @if ($passJenjangPendidikanTerakhir)
                                         <i class="fas fa-check bg-success-subtle text-success p-1 rounded-circle"></i>
@@ -285,11 +292,8 @@
 
                 batasUsiaPensiunId.innerHTML = html;
 
-
                 var yie = ``
                 if (passJenjangPendidikanTerakhir && passAgeLimit) {
-
-
                     if (!vacancyDetailId || vacancyDetailId == 0) {
                         yie = `<div style="background: #d3ffde;"
                                 class="d-flex align-items-center justify-content-center rounded-3 py-3 px-4 border border-success">
@@ -333,7 +337,6 @@
                 <td>${selectedData.employment_status}</td>
                 <td></td>
                 `
-
                 statusKepegawaanId.innerHTML = html;
             }
 
@@ -342,7 +345,6 @@
                 <td>{{ __('Pembiayaan') }}</td>
                 <td>${selectedData.cost_type}</td>
                 `
-
                 pembiayaanId.innerHTML = html;
             }
         }

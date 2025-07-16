@@ -53,6 +53,11 @@ use Illuminate\Routing\Controller as BaseController;
  *     name="Articles",
  *     description="Pengetahuan API Endpoints"
  * )
+ * 
+ * @OA\Tag(
+ *     name="Coaching",
+ *     description="Coaching API Endpoints"
+ * )
  *
  * */
 class Controller extends BaseController

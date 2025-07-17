@@ -165,7 +165,7 @@
                                 - Laporan akhir dapat diunggah ketika Sesi Pertemuan Coaching telah selesai dilakukan.
                             </div>
                             <form
-                                action="{{ route('student.coachee.submit-final-report', ['coachingUserId' => $coachingUser->id, 'coachingId' => $coachingUser->coaching_id]) }}"
+                                action="{{ route('student.coachee.submit-final-report', ['coachingId' => $coaching->id]) }}"
                                 method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')

@@ -60,7 +60,7 @@
                 <div class="mb-3 d-flex flex-wrap justify-content-between align-items-start border-top pt-3 mt-4 gap-3">
                     <div class="flex-grow-1 me-3" style="min-width: 250px; max-width: 100%;">
                         <h6 class="title">
-                            {{ __('List Coachee') }} 
+                            {{ __('List Coachee') }}
                             <span title="Jumlah coachee yang telah merespon">({{ $coaching->respondedCoachees()->count() }}/{{ $coaching->coachees()->count() }})</span>
                         </h6>
                         <span class="text-muted small d-block">
@@ -129,7 +129,7 @@
                                     @if ($coachee->pivot->is_joined && $coachee->pivot->joined_at)
                                         <small>Dibuat : {{ \Carbon\Carbon::parse($coachee->pivot->joined_at)->translatedFormat('d F Y H:i') }}</small>
                                     @else
-                                        {{ $coachee->pivot->notes ? truncate(strip_tags($coachee->pivot->notes)) : '-' }}<br/> 
+                                        {{ $coachee->pivot->notes ? truncate(strip_tags($coachee->pivot->notes)) : '-' }}<br/>
                                         <small>Dibuat : {{ \Carbon\Carbon::parse($coachee->pivot->updated_at)->translatedFormat('d F Y H:i') }}</small>
                                     @endif
                                 </td>
@@ -158,7 +158,7 @@
                                             <i class="fa fa-eye"></i> &nbsp;{{ __('Nilai') }}
                                         </a>
                                         @endif
-                                        
+
                                     </div>
                                 </td>
                             </tr>
@@ -250,7 +250,7 @@
                                                             $imageUrl = $detail->image && Storage::disk('private')->exists($detail->image)
                                                                         ? route('student.coach.view.img', $detail->id)
                                                                         : null;
-                                            
+
                                                             $modalData = [
                                                                 'coachee_name' => $coachee->name,
                                                                 'activity' => $detail->activity ?? '',
@@ -422,7 +422,7 @@ $(document).ready(function () {
 
     $('#modal-coachee-name').text(data.coachee_name || '-');
     $('#modal-activity').text(data.activity || '-');
-    $('#modal-obstacle').text(data.obstacle || '-');
+    $('#modal-obstacle').html(data.obstacle || '-');
     $('#modal-instructions').text(data.instructions || '-');
 
     const imgEl = document.getElementById('modal-image');

@@ -50,3 +50,4 @@ class CoachingUser extends Pivot
     {
         return route('api.coaching.show.document', ['id' => $this->id, 'module' => 'coaching_user', 'type' => 'final_report']);
     }
+}

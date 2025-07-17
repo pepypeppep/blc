@@ -750,6 +750,269 @@
                 ]
             }
         },
+        "/coaching/coachee": {
+            "get": {
+                "tags": [
+                    "Coachee"
+                ],
+                "summary": "List Coaching Sessions",
+                "description": "Retrieve a list of coaching sessions for the coachee",
+                "operationId": "listCoachingSessions",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "List of coaching sessions"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coaching/coachee/{id}": {
+            "get": {
+                "tags": [
+                    "Coachee"
+                ],
+                "summary": "Get Coaching Session Details",
+                "description": "Retrieve details of a specific coaching session",
+                "operationId": "getCoachingSessionDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Coaching session details"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coaching/coachee/{id}/approval": {
+            "post": {
+                "tags": [
+                    "Coachee"
+                ],
+                "summary": "Approve or Reject Coaching Session",
+                "description": "Approve or reject a coaching session",
+                "operationId": "approveCoachingSession",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "is_approved": {
+                                        "type": "boolean"
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "Not available at this time"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You have approved the coaching session"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coaching/coachee/update-session": {
+            "post": {
+                "tags": [
+                    "Coachee"
+                ],
+                "summary": "Update Coaching Session Report",
+                "description": "Update the report for a coaching session",
+                "operationId": "updateCoachingSessionReport",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "session_id",
+                                    "activity",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "session_id": {
+                                        "type": "integer"
+                                    },
+                                    "activity": {
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Report successfully saved"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coaching/coachee/submit-final-report/{coachingId}": {
+            "post": {
+                "tags": [
+                    "Coachee"
+                ],
+                "summary": "Submit Final Report for Coaching",
+                "description": "Submit the final report for a coaching session",
+                "operationId": "submitFinalReport",
+                "parameters": [
+                    {
+                        "name": "coachingId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "final_report"
+                                ],
+                                "properties": {
+                                    "final_report": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Laporan berhasil disimpan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/courses": {
             "get": {
                 "tags": [
@@ -4835,6 +5098,10 @@
         {
             "name": "Bantara",
             "description": "Bantara"
+        },
+        {
+            "name": "Coachee",
+            "description": "Coachee"
         },
         {
             "name": "Mentee",

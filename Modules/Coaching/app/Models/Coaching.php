@@ -13,6 +13,7 @@ class Coaching extends Model
 
     protected $table = 'coachings';
     protected $guarded = ['id'];
+    protected $appends = ['spt_url'];
 
     public const STATUS_DRAFT = "Draft";
     public const STATUS_CONSENSUS = "Konsensus";
@@ -102,5 +103,10 @@ class Coaching extends Model
     public function isEvaluationOrDone(): bool
     {
         return in_array($this->status, [self::STATUS_EVALUATION, self::STATUS_DONE]);
+    }
+
+    public function getSptUrlAttribute()
+    {
+        return route('api.coaching.show.document', ['id' => $this->id, 'module' => 'coaching', 'type' => 'spt']);
     }
 }

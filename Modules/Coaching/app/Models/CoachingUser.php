@@ -4,21 +4,15 @@ namespace Modules\Coaching\App\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use app\Models\User;
+use App\Models\User;
 use Modules\Coaching\app\Models\Coaching;
 
 class CoachingUser extends Pivot
 {
     protected $table = 'coaching_users';
+    protected $appends = ['final_report_url'];
 
-    protected $fillable = [
-        'coaching_id',
-        'user_id',
-        'status',
-        'joined_at',
-        'notes',
-        'final_report',
-    ];
+    protected $guarded = ['id'];
 
     public function coaching(): BelongsTo
     {
@@ -51,4 +45,8 @@ class CoachingUser extends Pivot
     {
         return $this->is_joined == 0 && $this->notes != null;
     }
-}
+
+    public function getFinalReportUrlAttribute()
+    {
+        return route('api.coaching.show.document', ['id' => $this->id, 'module' => 'coaching_user', 'type' => 'final_report']);
+    }

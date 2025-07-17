@@ -23,6 +23,9 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::post('/{id}/tolak-konsensus', [CoacheeController::class, 'tolakKonsensus'])->name('tolak-konsensus');
         Route::post('/{id}/join-konsensus', [CoacheeController::class, 'joinKonsensus'])->name('join-konsensus');
         Route::post('/submit-report', [CoacheeController::class, 'submitReport'])->name('submit-report');
+        Route::put('/submit-final-report/{coachingUserId}/{coachingId}', [CoacheeController::class, 'submitFinalReport'])->name('submit-final-report');
+        Route::get('/preview/{coachingId}/{coachingSessionId}', [CoacheeController::class, 'previewFileName'])->name('preview');
+        Route::get('/preview-final-report/{coachingUserId}/{coachingId}', [CoacheeController::class, 'previewFinalReport'])->name('preview-final-report');
     });
 
     Route::group(['prefix' => 'coach', 'as' => 'coach.'], function () {

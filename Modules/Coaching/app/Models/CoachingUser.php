@@ -4,7 +4,8 @@ namespace Modules\Coaching\App\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\User;
+use app\Models\User;
+use Modules\Coaching\app\Models\Coaching;
 
 class CoachingUser extends Pivot
 {
@@ -15,7 +16,8 @@ class CoachingUser extends Pivot
         'user_id',
         'status',
         'joined_at',
-        'notes'
+        'notes',
+        'final_report',
     ];
 
     public function coaching(): BelongsTo

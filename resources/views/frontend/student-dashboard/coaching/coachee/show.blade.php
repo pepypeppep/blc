@@ -1,5 +1,10 @@
 @extends('frontend.student-dashboard.layouts.master')
 
+@php
+    use Modules\Coaching\app\Models\Coaching;
+    use Modules\Coaching\app\Models\CoachingSessionDetail;
+@endphp
+
 @section('dashboard-contents')
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between align-items-center">
@@ -57,12 +62,12 @@
             @if ($coachingUser->is_joined == 1)
                 <div class="mb-3 d-flex justify-content-between align-items-center border-top pt-3 mt-4">
                     <div>
-                        <h6 class="title">{{ __('Session Datetime') }} <span title="Jumlah pertemuan">( 1 )</span></h6>
+                        <h6 class="title">{{ __('Session Datetime') }} <span title="Jumlah pertemuan"></span></h6>
                         <span class="text-muted small">
                             Lakukan sesi coaching sesuai jadwal dan laporkan hasil penugasan.
                         </span>
                     </div>
-                    @if (true)
+                    @if ($coachingUser->coaching->status == Coaching::STATUS_PROCESS && $coachingUser->final_report == null && !$userCanSubmitFinalReport)
                         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#editSessionModal">
                             <i class="fa fa-edit"></i> Isi Kegiatan
@@ -80,7 +85,15 @@
                                     <div class="d-block">
                                         <div>
                                             <strong>Pertemuan {{ $loop->iteration }}</strong>
-                                            <span class="badge bg-info">{{ $session->status }}</span>
+                                            @if ($session->details->count() > 0)
+                                                @if ($session->details->first()->coaching_note && $session->details->first()->coaching_instructions)
+                                                    <span class="badge bg-warning">Ditinjau</span>
+                                                @else
+                                                    <span class="badge bg-info">Terisi</span>
+                                                @endif
+                                            @else
+                                                <span class="badge bg-secondary">Kosong</span>
+                                            @endif
                                         </div>
                                         <div>
                                             <small class="text-muted">
@@ -99,8 +112,29 @@
                                         </div>
                                         <div class="mb-2">
                                             <strong class="d-block">Dokumentasi:</strong>
-                                            <p class="text-muted"><em>{{ $session->details->first()->image }}</em></p>
+                                            @if ($session->details->first()->image)
+                                                <a href="{{ route('student.coachee.preview', ['coachingId' => $session->coaching_id, 'coachingSessionId' => $session->id]) }}"
+                                                    target="_blank">
+                                                    <img src="{{ route('student.coachee.preview', ['coachingId' => $session->coaching_id, 'coachingSessionId' => $session->id]) }}"
+                                                        alt="Dokumentasi"
+                                                        style="max-width: 200px; max-height: 150px; display: block;">
+                                                </a>
+                                            @else
+                                                <p class="text-muted"><em>Tidak ada dokumentasi</em></p>
+                                            @endif
                                         </div>
+                                        @if ($session->details->first()->coaching_note)
+                                            <div class="mb-2">
+                                                <strong class="d-block">Catatan Coach:</strong>
+                                                <div class="text-body"><em>{!! $session->details->first()->coaching_note !!}</em></div>
+                                            </div>
+                                        @endif
+                                        @if ($session->details->first()->coaching_instructions)
+                                            <div class="mb-2">
+                                                <strong class="d-block">Instruksi Coach:</strong>
+                                                <div class="text-body"><em>{!! $session->details->first()->coaching_instructions !!}</em></div>
+                                            </div>
+                                        @endif
                                     @else
                                         <div class="text-center">
                                             <h4 class="text-muted">Belum ada kegiatan</h4>
@@ -121,36 +155,53 @@
                 </div>
                 <div class="mb-3">
                     @if (!$coachingUser->final_report)
-                        <div class="alert alert-info">
-                            <strong>Ketentuan :</strong><br>
-                            - Harap unggah laporan akhir yang telah <strong>ditandatangani oleh Coach</strong>.<br>
-                            - Format laporan akhir yang diunggah berupa file <strong>PDF</strong> dengan ukuran
-                            <strong>maksimal
-                                5MB</strong>.<br>
-                            - Laporan akhir dapat diunggah ketika Sesi Pertemuan Coaching telah selesai dilakukan.
-                        </div>
+                        @if ($userCanSubmitFinalReport)
+                            <div class="alert alert-info">
+                                <strong>Ketentuan :</strong><br>
+                                - Harap unggah laporan akhir yang telah <strong>ditandatangani oleh Coach</strong>.<br>
+                                - Format laporan akhir yang diunggah berupa file <strong>PDF</strong> dengan ukuran
+                                <strong>maksimal
+                                    5MB</strong>.<br>
+                                - Laporan akhir dapat diunggah ketika Sesi Pertemuan Coaching telah selesai dilakukan.
+                            </div>
+                            <form
+                                action="{{ route('student.coachee.submit-final-report', ['coachingUserId' => $coachingUser->id, 'coachingId' => $coachingUser->coaching_id]) }}"
+                                method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text text-dark" style="cursor: pointer;"
+                                        onclick="document.getElementById('final_report').click();">
+                                        <i class="fa fa-file-pdf"></i> &nbsp;{{ __('Choose') }}
+                                    </span>
+                                    <input id="file_name" readonly class="form-control" type="text"
+                                        placeholder="Belum ada file dipilih"
+                                        onclick="document.getElementById('final_report').click();">
+
+                                    <input id="final_report" name="final_report" class="d-none" type="file"
+                                        onchange="document.getElementById('file_name').value = this.files[0]?.name || '';"
+                                        accept=".pdf" required>
+
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-upload"></i> Unggah
+                                    </button>
+                                </div>
+                            </form>
+                        @else
+                            <div class="alert alert-warning">
+                                <strong>Catatan:</strong> Anda mungkin belum menyelesaikan sesi pertemuan. Silakan lengkapi
+                                laporan
+                                akhir setelah semua sesi selesai dan tunggu coach untuk meninjau.
+                            </div>
+                        @endif
+                    @else
+                        <embed
+                            src="{{ route('student.coachee.preview-final-report', ['coachingId' => $coachingUser->coaching_id, 'coachingUserId' => $coachingUser->id]) }}"
+                            type="application/pdf"
+                            style="border:1px solid #ccc; border-radius:4px; cursor:pointer; width:100%; height:500px;"
+                            onclick="window.open('{{ route('student.coachee.preview-final-report', ['coachingId' => $coachingUser->coaching_id, 'coachingUserId' => $coachingUser->id]) }}', '_blank')" />
                     @endif
-                    <form action="#" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="input-group mb-3">
-                            <span class="input-group-text text-dark" style="cursor: pointer;"
-                                onclick="document.getElementById('final_report').click();">
-                                <i class="fa fa-file-pdf"></i> &nbsp;{{ __('Choose') }}
-                            </span>
-                            <input id="file_name" readonly class="form-control" type="text"
-                                placeholder="Belum ada file dipilih"
-                                onclick="document.getElementById('final_report').click();">
 
-                            <input id="final_report" name="final_report" class="d-none" type="file"
-                                onchange="document.getElementById('file_name').value = this.files[0]?.name || '';"
-                                accept=".pdf" required>
-
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fa fa-upload"></i> Unggah
-                            </button>
-                        </div>
-                    </form>
                 </div>
             @endif
         </div>
@@ -193,9 +244,11 @@
                             <select class="form-select" name="session_id" id="modal-session-id" required>
                                 <option value="" disabled selected>Pilih Jadwal Pertemuan</option>
                                 @foreach ($sessions as $session)
-                                    <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} -
-                                        {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
-                                    </option>
+                                    @if ($session->details->count() == 0)
+                                        <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} -
+                                            {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -282,7 +335,6 @@
                             reason: notes
                         },
                         success: function(data) {
-                            console.log(data);
                             if (data.status === "success") {
                                 toastr.success(data.message);
                                 window.location.href = base_url + "/student/coachee";

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Modules\Coaching\app\Models\Coaching;
 use Modules\Coaching\app\Models\CoachingSession;
 use Modules\Coaching\app\Models\CoachingSessionDetail;
-use Modules\Coaching\App\Models\CoachingUser;
+use Modules\Coaching\app\Models\CoachingUser;
 
 class CoacheeController extends Controller
 {
@@ -18,25 +18,34 @@ class CoacheeController extends Controller
     public function index()
     {
         $user = userAuth();
-        $coachings = CoachingUser::with('coaching')->where('user_id', $user->id)->orderByDesc('id')->paginate(10);
+        $coachings = CoachingUser::whereHas('coaching', function ($q) {
+            $q->whereNot('status', Coaching::STATUS_DRAFT);
+        })
+            ->where('user_id', $user->id)
+            ->latest('id')
+            ->paginate(10);
         return view('frontend.student-dashboard.coaching.coachee.index', compact('coachings'));
     }
 
     public function show($id)
     {
         $user = userAuth();
-        $coachingUser = CoachingUser::with(['coaching.coach', 'coaching.coachingSessions.details' => function ($q) {
+        $coachingUser = CoachingUser::whereHas('coaching', function ($q) {
+            $q->whereNot('status', Coaching::STATUS_DRAFT);
+        })->with(['coaching.coach', 'coaching.coachingSessions.details' => function ($q) {
             return $q->where('coaching_user_id', userAuth()->id);
         }])->where('user_id', $user->id)->where('coaching_id', $id)->first();
-        // dd($coachingUser);
+
         if (!$coachingUser) {
             abort(403, 'Anda tidak memiliki izin untuk mengakses Coaching ini.');
         }
 
         $coaching = $coachingUser->coaching;
         $sessions = $coaching->coachingSessions;
+        $sessionsCount = $sessions->count();
+        $userCanSubmitFinalReport = CoachingSessionDetail::where('coaching_user_id', $coachingUser->id)->whereIn('coaching_session_id', $sessions->pluck('id'))->where('coaching_note', '!=', null)->where('coaching_instructions', '!=', null)->count() == $sessionsCount && $coachingUser->final_report == null;
 
-        return view('frontend.student-dashboard.coaching.coachee.show', compact('coachingUser', 'coaching', 'sessions'));
+        return view('frontend.student-dashboard.coaching.coachee.show', compact('coachingUser', 'coaching', 'sessions', 'sessionsCount', 'userCanSubmitFinalReport'));
     }
 
     public function joinKonsensus($id)
@@ -115,6 +124,11 @@ class CoacheeController extends Controller
 
         if (!$details) {
             $season = CoachingSession::with('coaching.coachingSessions')->where('id', $request->session_id)->first();
+
+            if ($season->coaching->status != Coaching::STATUS_PROCESS) {
+                return redirect()->route('student.coachee.show', ['id' => $season->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Pengisian laporan hanya dapat dilakukan pada sesi Coaching yang sedang berlangsung.')]);
+            }
+
             $coachingUser = CoachingUser::where('user_id', $user->id)->where('coaching_id', $season->coaching_id)->where('is_joined', 1)->first();
 
             if (!$coachingUser) {
@@ -129,7 +143,7 @@ class CoacheeController extends Controller
                 $file = $request->file('image');
                 $fileName = 'coaching/' . $season->coaching_id . '/' . now()->year . '/' . $season->id . '/coaching_session' . $season->coaching->coachingSessions->count() . '.' . $file->getClientOriginalExtension();
                 Storage::disk('private')->put($fileName, file_get_contents($file));
-                $request->merge(['image' => $fileName]);
+                $request->merge(['fileName' => $fileName]);
             }
 
             $result = CoachingSessionDetail::create([
@@ -137,7 +151,7 @@ class CoacheeController extends Controller
                 'coaching_user_id' => $coachingUser->id,
                 'activity' => "Pertemuan " . $season->coaching->coachingSessions->count(),
                 'description' => $request->activity,
-                'image' => $request->image,
+                'image' => $request->fileName,
             ]);
 
             if ($result) {
@@ -147,16 +161,20 @@ class CoacheeController extends Controller
             return redirect()->route('student.coachee.show', ['id' => $season->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Laporan gagal disimpan')]);
         }
 
+        if ($details->session->coaching->status != Coaching::STATUS_PROCESS) {
+            return redirect()->route('student.coachee.show', ['id' => $details->session->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Pengisian laporan hanya dapat dilakukan pada sesi Coaching yang sedang berlangsung.')]);
+        }
+
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $fileName = 'coaching/' . $details->session->coaching_id . '/' . now()->year . '/' . $details->session->id . '/coaching_session' . $details->session->coaching->coachingSessions->count() . '.' . $file->getClientOriginalExtension();
             Storage::disk('private')->put($fileName, file_get_contents($file));
-            $request->merge(['image' => $fileName]);
+            $request->merge(['fileName' => $fileName]);
         }
 
         $result = $details->update([
             'description' => $request->activity,
-            'image' => $request->image,
+            'image' => $request->fileName,
         ]);
 
         if ($result) {
@@ -164,5 +182,76 @@ class CoacheeController extends Controller
         }
 
         return redirect()->route('student.coachee.show', ['id' => $details->session->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Laporan gagal disimpan')]);
+    }
+
+    public function previewFileName($coachingId, $coachingSessionId)
+    {
+        $user = userAuth();
+        $details = CoachingSessionDetail::with(['session.coaching.coachingSessions' => function ($q) use ($coachingId) {
+            $q->where('coaching_id', $coachingId);
+        }])->where('coaching_session_id', $coachingSessionId)->where('coaching_user_id', $user->id)->first();
+
+        if (!$details) {
+            return response()->json(['error' => 'Laporan tidak ditemukan'], 404);
+        }
+
+        return response()->file(Storage::disk('private')->path($details->image));
+    }
+
+    public function previewFinalReport($coachingId, $coachingUserId)
+    {
+        $user = userAuth();
+        $coachingUser = CoachingUser::where('user_id', $user->id)->where('coaching_id', $coachingId)->where('id', $coachingUserId)->first();
+
+        if (!$coachingUser) {
+            return redirect()->route('student.coachee.show', ['id' => $coachingId])->with(['alert-type' => 'error', 'messege' => __('Anda belum bergabung Coaching ini.')]);
+        }
+
+        return response()->file(Storage::disk('private')->path($coachingUser->final_report));
+    }
+
+    public function submitFinalReport(Request $request, $coachingId)
+    {
+        $request->validate([
+            'final_report' => 'required|file|mimes:pdf|max:5120',
+        ]);
+
+        try {
+            $user = userAuth();
+            $coachingUser = CoachingUser::where('user_id', $user->id)->where('coaching_id', $coachingId)->first();
+
+            if (!$coachingUser) {
+                return redirect()->route('student.coachee.show', ['id' => $coachingId])->with(['alert-type' => 'error', 'messege' => __('Anda belum bergabung Coaching ini.')]);
+            }
+
+            $details = CoachingSessionDetail::with(['session.coaching.coachingSessions' => function ($q) use ($coachingId) {
+                $q->where('coaching_id', $coachingId);
+            }])->where('coaching_user_id', $coachingUser->id)->count();
+
+            $sessionsCount = CoachingSession::where('coaching_id', $coachingId)->count();
+
+            if ($details < $sessionsCount) {
+                return redirect()->route('student.coachee.show', ['id' => $coachingId])->with(['alert-type' => 'error', 'messege' => __('Anda belum menyelesaikan semua sesi Coaching. Pastikan Anda telah mengirimkan laporan untuk setiap sesi sebelum mengirimkan laporan akhir.')]);
+            }
+
+            if ($request->hasFile('final_report')) {
+                $file = $request->file('final_report');
+                $fileName = 'coaching/'  . $coachingUser->coaching_id . '/' . now()->year . '/' . 'final_report' . '/coaching_user' . $coachingUser->id . '.' . $file->getClientOriginalExtension();
+                Storage::disk('private')->put($fileName, file_get_contents($file));
+                $request->merge(['fileName' => $fileName]);
+            }
+
+            $result = $coachingUser->update([
+                'final_report' => $request->fileName,
+            ]);
+
+            if ($result) {
+                return redirect()->route('student.coachee.show', ['id' => $coachingId])->with(['alert-type' => 'success', 'messege' => __('Laporan berhasil disimpan')]);
+            }
+
+            return redirect()->route('student.coachee.show', ['id' => $coachingId])->with(['alert-type' => 'error', 'messege' => __('Laporan gagal disimpan')]);
+        } catch (\Exception $e) {
+            return redirect()->route('student.coachee.show', ['id' => $coachingId])->with(['alert-type' => 'error', 'messege' => __('Terjadi kesalahan: ') . $e->getMessage()]);
+        }
     }
 }

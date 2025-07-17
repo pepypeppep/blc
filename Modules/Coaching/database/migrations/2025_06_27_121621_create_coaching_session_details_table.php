@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->text('coaching_note')->nullable();
             $table->text('coaching_instructions')->nullable();
+            $table->string('status')->default('Pending');
             $table->timestamps();
         });
     }

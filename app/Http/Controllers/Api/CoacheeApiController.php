@@ -38,13 +38,9 @@ class CoacheeApiController extends Controller
     {
         // Logic to list coaching sessions for the coachee
         try {
-            $coachingSessions = CoachingUser::with(['coaching' => function ($q) {
-                $q->select('id', 'title', 'main_issue', 'purpose', 'status', 'coach_id', 'total_session');
-            }, 'coachee' => function ($q) {
-                $q->select('id', 'name', 'username', 'email');
-            }, 'coaching.coach' => function ($q) {
-                $q->select('id', 'name', 'username', 'email');
-            }])->where('user_id', $request->user()->id)->paginate(10);
+            $coachingSessions = Coaching::with(['coachees' => function ($q) use ($request) {
+                $q->select('users.id', 'name', 'email')->where('users.id', $request->user()->id);
+            }, 'coach:id,name,email'])->where('status', '!=', 'draft')->paginate(10);
 
             return $this->successResponse($coachingSessions, 'List of coaching sessions');
         } catch (\Exception $e) {
@@ -83,10 +79,9 @@ class CoacheeApiController extends Controller
         // Logic to show details of a specific coaching session
         try {
             $coaching = Coaching::with([
-                'coachees',
-                'joinedCoachees',
-                'coachingSessions.details.coachingUser.coachee'
-            ])->findOrFail($id);
+                'coachees:id,name,email',
+                'coachingSessions.details'
+            ])->where('status', '!=', 'draft')->findOrFail($id);
 
             return $this->successResponse($coaching, 'Coaching session details');
         } catch (\Exception $e) {
@@ -145,6 +140,10 @@ class CoacheeApiController extends Controller
         // Logic to approve consensus for a coaching session
         try {
             $coachingUser = CoachingUser::with('coaching')->where('user_id', $request->user()->id)->where('coaching_id', $id)->first();
+
+            if ($coachingUser->coaching->status == 'Draft') {
+                return $this->errorResponse('Coaching tidak tersedia.', [], 403);
+            }
 
             if (!$coachingUser) {
                 return $this->errorResponse('Anda tidak memiliki izin untuk mengakses Coaching ini.', [], 403);
@@ -375,12 +374,15 @@ class CoacheeApiController extends Controller
 
             $details = CoachingSessionDetail::with(['session.coaching.coachingSessions' => function ($q) use ($coachingId) {
                 $q->where('coaching_id', $coachingId);
-            }])->where('coaching_user_id', $coachingUser->id)->count();
+            }])
+                ->whereNotNull('coaching_note')
+                ->whereNotNull('coaching_instructions')
+                ->where('coaching_user_id', $coachingUser->id)->count();
 
             $sessionsCount = CoachingSession::where('coaching_id', $coachingId)->count();
 
             if ($details < $sessionsCount) {
-                return $this->errorResponse(__('Anda belum menyelesaikan semua sesi Coaching. Pastikan Anda telah mengirimkan laporan untuk setiap sesi sebelum mengirimkan laporan akhir.'), [], 400);
+                return $this->errorResponse(__('Pastikan Anda telah mengirimkan laporan dan telah ditinjau oleh Coach untuk setiap sesi sebelum mengirimkan laporan akhir.'), [], 400);
             }
 
             if ($request->hasFile('final_report')) {
@@ -401,6 +403,24 @@ class CoacheeApiController extends Controller
             return $this->errorResponse(__('Laporan gagal disimpan'), [], 500);
         } catch (\Exception $e) {
             return $this->errorResponse(__('Terjadi kesalahan: ') . $e->getMessage(), [], 500);
+        }
+    }
+
+    public function showDocument($id, $module, $type)
+    {
+        if ($module == 'coaching_session_detail') {
+            $data = CoachingSessionDetail::findOrFail($id);
+        }
+        if ($module == 'coaching') {
+            $data = Coaching::findOrFail($id);
+        }
+        if ($module == 'coaching_user') {
+            $data = CoachingUser::findOrFail($id);
+        }
+        if (Storage::disk('private')->exists($data->$type)) {
+            return response()->file(Storage::disk('private')->path($data->$type));
+        } else {
+            return null;
         }
     }
 }

@@ -160,6 +160,7 @@ Route::name('api.')->group(function () {
                     Route::post('/submit-report', [CoacheeApiController::class, 'submitReport'])->name('submit-report');
                     Route::post('/submit-final-report/{coachingId}', [CoacheeApiController::class, 'submitFinalReport'])->name('submit-final-report');
                 });
+            Route::get('/{id}/{module}/{type}', [CoacheeApiController::class, 'showDocument'])->name('show.document');
         });
 
 

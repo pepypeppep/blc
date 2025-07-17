@@ -10,14 +10,9 @@ use Modules\Coaching\app\Models\Coaching;
 class CoachingUser extends Pivot
 {
     protected $table = 'coaching_users';
+    protected $appends = ['final_report_url'];
 
-    protected $fillable = [
-        'coaching_id',
-        'user_id',
-        'status',
-        'joined_at',
-        'notes'
-    ];
+    protected $guarded = ['id'];
 
     public function coaching(): BelongsTo
     {
@@ -49,5 +44,10 @@ class CoachingUser extends Pivot
     public function isRejected()
     {
         return $this->is_joined == 0 && $this->notes != null;
+    }
+
+    public function getFinalReportUrlAttribute()
+    {
+        return route('api.coaching.show.document', ['id' => $this->id, 'module' => 'coaching_user', 'type' => 'final_report']);
     }
 }

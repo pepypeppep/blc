@@ -32,9 +32,7 @@ class CoacheeController extends Controller
         $user = userAuth();
         $coachingUser = CoachingUser::whereHas('coaching', function ($q) {
             $q->whereNot('status', Coaching::STATUS_DRAFT);
-        })->with(['coaching.coach', 'coaching.coachingSessions.details' => function ($q) {
-            return $q->where('coaching_user_id', userAuth()->id);
-        }])->where('user_id', $user->id)->where('coaching_id', $id)->first();
+        })->with(['coaching.coach', 'coaching.coachingSessions.details'])->where('user_id', $user->id)->where('coaching_id', $id)->first();
 
         if (!$coachingUser) {
             abort(403, 'Anda tidak memiliki izin untuk mengakses Coaching ini.');
@@ -189,7 +187,12 @@ class CoacheeController extends Controller
         $user = userAuth();
         $details = CoachingSessionDetail::with(['session.coaching.coachingSessions' => function ($q) use ($coachingId) {
             $q->where('coaching_id', $coachingId);
-        }])->where('coaching_session_id', $coachingSessionId)->where('coaching_user_id', $user->id)->first();
+        }])
+            ->where('coaching_session_id', $coachingSessionId)
+            ->whereHas('coachingUser', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })
+            ->first();
 
         if (!$details) {
             return response()->json(['error' => 'Laporan tidak ditemukan'], 404);

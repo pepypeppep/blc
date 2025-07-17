@@ -11,6 +11,7 @@ class CoachingSessionDetail extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $appends = ['image_url'];
 
     public function session()
     {
@@ -20,5 +21,10 @@ class CoachingSessionDetail extends Model
     public function coachingUser()
     {
         return $this->belongsTo(CoachingUser::class, 'coaching_user_id');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return route('api.coaching.show.document', ['id' => $this->id, 'module' => 'coaching_session_detail', 'type' => 'image']);
     }
 }

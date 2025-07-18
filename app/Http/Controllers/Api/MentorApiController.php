@@ -29,15 +29,6 @@ class MentorApiController extends Controller
      *             type="integer"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="query",
-     *         description="User id",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -47,7 +38,7 @@ class MentorApiController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('mentor_id', $request->user_id)->orderByDesc('id')->paginate(10);
+            $data = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('mentor_id', $request->user()->id)->orderByDesc('id')->paginate(10);
 
             return $this->successResponse($data, 'Mentor topics fetched successfully');
         } catch (\Exception $e) {
@@ -71,15 +62,6 @@ class MentorApiController extends Controller
      *             type="integer"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="query",
-     *         description="User id",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -89,7 +71,7 @@ class MentorApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions')->where('mentor_id', $request->user_id)->findOrFail($id);
+            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions')->where('mentor_id', $request->user()->id)->findOrFail($id);
             $hasIncompleteSessions = $mentoring->mentoringSessions->contains(function ($session) {
                 return empty($session->activity);
             });
@@ -120,11 +102,6 @@ class MentorApiController extends Controller
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
-     *                 property="user_id",
-     *                 type="integer",
-     *                 example=1
-     *             ),
-     *             @OA\Property(
      *                 property="reason",
      *                 type="string",
      *                 example="Alasan penolakan"
@@ -146,7 +123,7 @@ class MentorApiController extends Controller
                 'reason.required' => 'Alasan tidak boleh kosong',
             ]);
 
-            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user_id)->first();
+            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -195,17 +172,6 @@ class MentorApiController extends Controller
      *             example=1
      *         )
      *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="user_id",
-     *                 type="integer",
-     *                 example=1
-     *             )
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Mentoring approved successfully"
@@ -227,7 +193,7 @@ class MentorApiController extends Controller
     public function approve(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user_id)->first();
+            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -271,16 +237,6 @@ class MentorApiController extends Controller
      *         description="ID Mentoring Session",
      *         in="path",
      *         name="id",
-     *         required=true,
-     *         example="1",
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Parameter(
-     *         description="ID user",
-     *         in="query",
-     *         name="user_id",
      *         required=true,
      *         example="1",
      *         @OA\Schema(
@@ -350,7 +306,7 @@ class MentorApiController extends Controller
                 return $this->errorResponse('Sesi mentoring belum ada laporan', [], 404);
             }
 
-            $mentoring = Mentoring::where('id', $session->mentoring_id)->where('mentor_id', $request->user_id)->first();
+            $mentoring = Mentoring::where('id', $session->mentoring_id)->where('mentor_id', $request->user()->id)->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -405,18 +361,6 @@ class MentorApiController extends Controller
      *         name="id",
      *         required=true,
      *         @OA\Schema(type="integer", format="int64", example=1),
-     *     ),
-     *     @OA\Parameter(
-     *         description="ID user",
-     *         in="query",
-     *         name="user_id",
-     *         required=true,
-     *         example=1,
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64",
-     *             example=1
-     *         )
      *     ),
      *     @OA\RequestBody(
      *         required=true,
@@ -495,7 +439,7 @@ class MentorApiController extends Controller
                 'penguasaan_materi_description.required' => 'Deskripsi penguasaan materi tidak boleh kosong',
             ]);
 
-            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user_id)->first();
+            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -550,17 +494,6 @@ class MentorApiController extends Controller
      *             format="int64"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         description="ID user",
-     *         in="query",
-     *         name="user_id",
-     *         required=true,
-     *         example="1",
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Berhasil menampilkan data mentoring"
@@ -586,7 +519,7 @@ class MentorApiController extends Controller
     public function evaluasi(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('id', $id)->where('mentor_id', $request->user_id)->first();
+            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('id', $id)->where('mentor_id', $request->user()->id)->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -611,17 +544,6 @@ class MentorApiController extends Controller
      *     description="Update mentoring session",
      *     tags={"Mentor"},
      *     security={{"bearer":{}}},
-     *     @OA\Parameter(
-     *         description="ID user",
-     *         in="query",
-     *         name="user_id",
-     *         required=true,
-     *         example="1",
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
-     *         )
-     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         description="Session and new mentoring date",
@@ -654,7 +576,7 @@ class MentorApiController extends Controller
             ]);
 
             $session = MentoringSession::whereHas('Mentoring', function ($query) use ($request) {
-                $query->where('mentor_id', $request->user_id);
+                $query->where('mentor_id', $request->user()->id);
             })->where('id', $request->session_id)->first();
 
             if (!$session) {

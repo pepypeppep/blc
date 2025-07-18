@@ -30,15 +30,6 @@ class MenteeApiController extends Controller
      *             type="integer"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="query",
-     *         description="User id",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -48,7 +39,7 @@ class MenteeApiController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('mentee_id', $request->user_id)->orderByDesc('id')->paginate(10);
+            $data = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('mentee_id', $request->user()->id)->orderByDesc('id')->paginate(10);
 
             return $this->successResponse($data, 'Mentor topics fetched successfully');
         } catch (\Exception $e) {
@@ -72,15 +63,6 @@ class MenteeApiController extends Controller
      *             type="integer"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="query",
-     *         description="User id",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -90,7 +72,7 @@ class MenteeApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions')->where('mentee_id', $request->user_id)->findOrFail($id);
+            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions')->where('mentee_id', $request->user()->id)->findOrFail($id);
             $hasIncompleteSessions = $mentoring->mentoringSessions->contains(function ($session) {
                 return empty($session->activity);
             });
@@ -107,17 +89,6 @@ class MenteeApiController extends Controller
      *     description="Create mentoring topic",
      *     tags={"Mentee"},
      *     security={{"bearer": {}}},
-     *     @OA\Parameter(
-     *         description="User ID",
-     *         in="query",
-     *         name="user_id",
-     *         required=true,
-     *         example=1,
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
-     *         )
-     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
@@ -176,7 +147,7 @@ class MenteeApiController extends Controller
     public function store(Request $request)
     {
         try {
-            $user = User::findOrFail($request->user_id);
+            $user = User::findOrFail($request->user()->id);
             $request->merge([
                 'sessions' => explode(',', $request->input('sessions'))
             ]);
@@ -248,17 +219,6 @@ class MenteeApiController extends Controller
      *     description="Submit mentoring for approval",
      *     tags={"Mentee"},
      *     security={{"bearer":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="user_id",
-     *                 type="integer",
-     *                 example=1
-     *             ),
-     *         )
-     *     ),
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -282,7 +242,7 @@ class MenteeApiController extends Controller
     public function submitForApproval(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::where('mentee_id', $request->user_id)->findOrFail($id);
+            $mentoring = Mentoring::where('mentee_id', $request->user()->id)->findOrFail($id);
             if ($mentoring->status !== Mentoring::STATUS_DRAFT) {
                 return $this->errorResponse('Mentoring sudah diajukan.', [], 500);
             }
@@ -412,8 +372,7 @@ class MenteeApiController extends Controller
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 type="object",
-     *                 required={"final_report", "user_id"},
-     *                 @OA\Property(property="user_id", type="integer", format="int64"),
+     *                 required={"final_report"},
      *                 @OA\Property(property="final_report", type="string", format="binary"),
      *             )
      *         )
@@ -435,7 +394,7 @@ class MenteeApiController extends Controller
                 'final_report' => 'required|file|mimes:pdf|max:5120',
             ]);
 
-            $mentoring = Mentoring::with('mentoringSessions')->where('mentee_id', $request->user_id)->findOrFail($id);
+            $mentoring = Mentoring::with('mentoringSessions')->where('mentee_id', $request->user()->id)->findOrFail($id);
             if (count($mentoring->mentoringSessions) != count($mentoring->mentoringSessions->where('status', MentoringSession::STATUS_REVIEWED))) {
                 return $this->errorResponse('Mentor belum menanggapi semua pertemuan.', [], 500);
             }

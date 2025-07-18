@@ -41,6 +41,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::get('/{detailId}/img', [CoachController::class, 'viewImage'])->name('view.img');
         Route::get('/{id}/document', [CoachController::class, 'showDocumentSpt'])->name('view.spt');
         Route::get('/{id}/report', [CoachController::class, 'showReport'])->name('view.report');
-        Route::post('/review', [CoachController::class, 'reviewStore'])->name('review');
+        Route::put('/review', [CoachController::class, 'reviewStore'])->name('review');
     });
 });

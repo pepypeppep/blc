@@ -375,15 +375,22 @@ class CoachController extends Controller
         ->findOrFail($validated['coaching_user_id']);
 
         if (!$coachingUser) {
-            abort(403, 'Anda tidak memiliki izin untuk mengakses penilaian ini.');
+            abort(403, 'Anda tidak memiliki izin untuk mengakses ini.');
         }
 
         authorizeCoachAccess($coachingUser->coaching);
 
-        $detail = CoachingSessionDetail::firstOrNew([
+        $detail = CoachingSessionDetail::where([
             'coaching_session_id' => $validated['session_id'],
             'coaching_user_id' => $validated['coaching_user_id'],
-        ]);
+        ])->first();
+
+        if (!$detail || $detail->activity === null) {
+            return redirect()->back()->with([
+                'messege' => 'Gagal menyimpan review. Laporan dari coachee belum tersedia.',
+                'alert-type' => 'error',
+            ]);
+        }
 
         $detail->coaching_note = $validated['review_note'];
         $detail->coaching_instructions = $validated['review_instruction'];

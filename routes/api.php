@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CourseApiController;
 use App\Http\Controllers\Api\ReviewApiController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\CertificateApiController;
+use App\Http\Controllers\Api\CoachApiController;
 use App\Http\Controllers\Api\CoacheeApiController;
 use App\Http\Controllers\Api\MenteeApiController;
 use App\Http\Controllers\Api\MentorApiController;
@@ -145,7 +146,7 @@ Route::name('api.')->group(function () {
             Route::get('/{id}/{type}/session', [MenteeApiController::class, 'showDocumentSession'])->name('show.document.session');
         });
 
-    // Coachee
+    // Coaching
     Route::prefix('coaching')
         ->name('coaching.')
         ->middleware('auth:sso-api')
@@ -159,6 +160,18 @@ Route::name('api.')->group(function () {
                     Route::post('/update-session', [CoacheeApiController::class, 'update'])->name('update.session');
                     Route::post('/submit-report', [CoacheeApiController::class, 'submitReport'])->name('submit-report');
                     Route::post('/submit-final-report/{coachingId}', [CoacheeApiController::class, 'submitFinalReport'])->name('submit-final-report');
+                });
+            Route::prefix('coach')
+                ->name('coach.')
+                ->group(function () {
+                    Route::get('/', [CoachApiController::class, 'index'])->name('index');
+                    Route::get('/{id}', [CoachApiController::class, 'show'])->name('show');
+                    Route::post('/', [CoachApiController::class, 'store'])->name('store');
+                    Route::put('/{id}/initiate-consensus', [CoachApiController::class, 'initiateConsensus'])->name('initiate-consensus');
+                    Route::put('/{id}/process-coaching', [CoachApiController::class, 'processCoaching'])->name('process-coaching');
+                    Route::post('/review', [CoachApiController::class, 'reviewStore'])->name('review');
+                    Route::post('/{id}/assessment-store/{coacheeId}', [CoachApiController::class, 'assessmentStore'])->name('assessment-store');
+                    Route::post('/{id}/assessment-submit/{coacheeId}', [CoachApiController::class, 'assessmentSubmit'])->name('assessment-submit');
                 });
             Route::get('/{id}/{module}/{type}', [CoacheeApiController::class, 'showDocument'])->name('show.document');
         });

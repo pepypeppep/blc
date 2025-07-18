@@ -750,6 +750,452 @@
                 ]
             }
         },
+        "/coaching/coach": {
+            "get": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Get coaching topics",
+                "description": "Get coaching topics",
+                "operationId": "0d45855e3c052e2143ae6455888026f0",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Create coaching topic",
+                "description": "Create coaching topic",
+                "operationId": "b5ae20ebcce11ceac2b33284ef4e1aad",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "main_issue",
+                                    "purpose",
+                                    "total_session",
+                                    "sessions",
+                                    "coachee",
+                                    "file"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Judul coaching"
+                                    },
+                                    "main_issue": {
+                                        "type": "string",
+                                        "example": "Pokok permasalahan coaching"
+                                    },
+                                    "purpose": {
+                                        "type": "string",
+                                        "example": "Tujuan coaching"
+                                    },
+                                    "total_session": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "sessions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-07-01 08:00:00"
+                                        }
+                                    },
+                                    "learning_resources": {
+                                        "type": "string",
+                                        "example": "Sumber belajar coaching"
+                                    },
+                                    "coachee": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "422": {
+                        "description": "Validation failed. Conditions: same year, date sequence (earliest to latest), max 2 sessions/month."
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coaching/coach/{id}": {
+            "get": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Get coaching topic detail by id",
+                "description": "Get coaching topic detail by id",
+                "operationId": "9df3251e24b15eab4ad75bff87830e17",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Coaching id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coaching/coach/{id}/initiate-consensus": {
+            "put": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Submit coaching for coachee confirmation",
+                "description": "Allows coach to propose a coaching session and request confirmation from coachee",
+                "operationId": "cd59eba90c24d4632fda87796aea4b6a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Coaching id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Coaching request submitted successfully"
+                    },
+                    "422": {
+                        "description": "Validation failed. Coaching status must be in 'draft' state to proceed"
+                    },
+                    "500": {
+                        "description": "Failed to submit coaching request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coaching/coach/{id}/process-coaching": {
+            "put": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Initiate coaching process",
+                "description": "Allows scheduled coaching sessions to proceed. Session reports can be submitted by coachee, and coach is able to review coachee's reports",
+                "operationId": "e53273566d250bf746bcd005fd79a153",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Coaching id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Coaching process started successfully."
+                    },
+                    "422": {
+                        "description": "Validation failed. Possible reasons: no coachee has joined, or coaching status is not in 'consensus' stage."
+                    },
+                    "500": {
+                        "description": "Failed to start coaching request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coaching/coach/review": {
+            "put": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Submit Coaching Session Review",
+                "description": "Allows coach to submit a review or feedback for the completed coaching session.",
+                "operationId": "coachingReview",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "session_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "coaching_user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "review_note": {
+                                        "type": "string",
+                                        "example": "Catatan ulasan"
+                                    },
+                                    "review_instruction": {
+                                        "type": "string",
+                                        "example": "Instruksi untuk coachee"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coaching reviewed successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden – You do not have permission to access this resource"
+                    },
+                    "422": {
+                        "description": "Validation failed. Coachee report is not available for this session."
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coaching/coach/{id}/store-assessment/{coacheeId}": {
+            "post": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Save coaching assessment (draft)",
+                "description": "Allows coach to save assessment data as a draft before final submission.",
+                "operationId": "8da45d27ac4e4fc5db12996703b539e6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID coaching",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "coacheeId",
+                        "in": "path",
+                        "description": "ID coachee",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "ID user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/AssessmentRequestBody"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coaching assessment completed successfully"
+                    },
+                    "422": {
+                        "description": "Request cannot be processed due to invalid coaching status"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/coaching/coach/{id}/submit-assessment/{coacheeId}": {
+            "post": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Submit coaching assessment",
+                "description": "Allows coach to submit an assessment for the completed coaching session.",
+                "operationId": "c40f45d99e30c4b4072e10161972e22f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID coaching",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "coacheeId",
+                        "in": "path",
+                        "description": "ID coachee",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "ID user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/AssessmentRequestBody"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coaching assessment submited successfully"
+                    },
+                    "422": {
+                        "description": "Request cannot be processed due to invalid coaching status"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/coaching/coachee": {
             "get": {
                 "tags": [
@@ -4926,6 +5372,71 @@
         }
     },
     "components": {
+        "requestBodies": {
+            "AssessmentRequestBody": {
+                "description": "Coaching assessment",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "required": [
+                                "goal_achieved",
+                                "goal_description",
+                                "discipline_level",
+                                "discipline_description",
+                                "teamwork_level",
+                                "teamwork_description",
+                                "initiative_level",
+                                "initiative_description"
+                            ],
+                            "properties": {
+                                "goal_achieved": {
+                                    "description": "Target",
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "goal_description": {
+                                    "description": "Deskripsi target",
+                                    "type": "string",
+                                    "example": "Target description"
+                                },
+                                "discipline_level": {
+                                    "description": "Tingkat disiplin",
+                                    "type": "integer",
+                                    "example": 80
+                                },
+                                "discipline_description": {
+                                    "description": "Deskripsi disiplin",
+                                    "type": "string",
+                                    "example": "Deskripsi disiplin"
+                                },
+                                "teamwork_level": {
+                                    "description": "Kerjasama",
+                                    "type": "integer",
+                                    "example": 80
+                                },
+                                "teamwork_description": {
+                                    "description": "Deskripsi kerjasama",
+                                    "type": "string",
+                                    "example": "Deskripsi kerjasama"
+                                },
+                                "initiative_level": {
+                                    "description": "Inisiatif",
+                                    "type": "integer",
+                                    "example": 80
+                                },
+                                "initiative_description": {
+                                    "description": "Deskripsi inisiatif",
+                                    "type": "string",
+                                    "example": "Deskripsi inisiatif"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "securitySchemes": {
             "bearer": {
                 "type": "http",
@@ -4962,6 +5473,10 @@
         {
             "name": "Bantara",
             "description": "Bantara"
+        },
+        {
+            "name": "Coach",
+            "description": "Coach"
         },
         {
             "name": "Coachee",

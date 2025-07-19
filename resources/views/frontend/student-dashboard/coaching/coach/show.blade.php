@@ -135,7 +135,7 @@
                                 </td>
                                 <td class="border px-4 py-2">
                                     <div class="dashboard__action d-inline-flex align-items-center gap-2">
-                                        @if ($coachee->pivot->final_report && $coachee->pivot->is_joined && $coaching->isEvaluationOrDone())
+                                        @if ($coachee->pivot->final_report && $coachee->pivot->is_joined)
                                             <a href="{{ route('student.coach.view.report', $coachee->pivot->id) }}" class="btn-action-primary" title="Lihat Laporan Akhir" target="_blank">
                                                 <i class="fa fa-eye"></i> &nbsp;{{ __('Laporan Akhir') }}
                                             </a>
@@ -188,8 +188,12 @@
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-{{$loop->iteration}}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-{{$loop->iteration}}">
                             <div class="d-block">
                                 <div>
+                                    @php
+                                        $totalJoinedCoachees = $coaching->joinedCoachees()->count();
+                                        $filledReports = $session->details->pluck('coaching_user_id')->unique()->count();
+                                    @endphp
                                     <strong>Pertemuan {{ $loop->iteration }}</strong>
-                                    {!! !empty($session->activity) ? '<span class="badge bg-info">Terisi</span>' : '' !!}
+                                    (<span title="Jumlah coachee yang telah membuat laporan pertemuan">Terisi {{ $filledReports }}/{{ $totalJoinedCoachees }}</span>)
                                 </div>
                                 <div>
                                     <small class="text-muted">
@@ -201,7 +205,7 @@
                     </h2>
                     <div id="panelsStayOpen-collapse-{{$loop->iteration}}" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            @if ($coaching->isProcessOrEvaluationOrDone())
+                            @if ($coaching->isProcessOrDone())
                             @php
                                 $detailsByUserId = $session->details->keyBy('coaching_user_id');
                             @endphp
@@ -310,7 +314,7 @@
     <div class="modal-content">
       <form method="POST" action="{{ route('student.coach.review') }}" enctype="multipart/form-data">
         @csrf
-
+        @method('PUT')
         <input type="hidden" name="session_id" id="modal-session-id">
         <input type="hidden" name="coaching_user_id" id="modal-coaching-user-id">
 

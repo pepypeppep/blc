@@ -132,7 +132,7 @@ class CoachController extends Controller
     public function show($coachingId)
     {
         $coaching = Coaching::with([
-            'coachees', 'joinedCoachees', 'coachingSessions.details.coachingUser.coachee'
+            'coachees:id,name', 'joinedCoachees:id,name', 'coachingSessions.details.coachingUser.coachee'
         ])->findOrFail($coachingId);
 
         authorizeCoachAccess($coaching);
@@ -227,24 +227,24 @@ class CoachController extends Controller
         $validated = $request->validate([
             'goal_achieved' => 'required|in:0,1',
             'goal_description' => 'required|string',
-            'discipline_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'discipline_level' => 'required|integer|min:1|max:100',
             'discipline_description' => 'required|string',
-            'teamwork_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'teamwork_level' => 'required|integer|min:1|max:100',
             'teamwork_description' => 'required|string',
-            'initiative_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'initiative_level' => 'required|integer|min:1|max:100',
             'initiative_description' => 'required|string',
         ], [
             'goal_achieved.required' => 'Target tidak boleh kosong',
             'goal_achieved.in' => 'Target harus 0 (Tidak) atau 1 (Ya)',
             'goal_description.required' => 'Deskripsi target tidak boleh kosong',
             'discipline_level.required' => 'Tingkat disiplin tidak boleh kosong',
-            'discipline_level.in' => 'Tingkat disiplin harus antara 1 sampai 10',
+            'discipline_level.in' => 'Tingkat disiplin harus antara 1 sampai 100',
             'discipline_description.required' => 'Deskripsi disiplin tidak boleh kosong',
             'teamwork_level.required' => 'Kerjasama tidak boleh kosong',
-            'teamwork_level.in' => 'Kerjasama harus antara 1 sampai 10',
+            'teamwork_level.in' => 'Kerjasama harus antara 1 sampai 100',
             'teamwork_description.required' => 'Deskripsi kerjasama tidak boleh kosong',
             'initiative_level.required' => 'Inisiatif tidak boleh kosong',
-            'initiative_level.in' => 'Inisiatif harus antara 1 sampai 10',
+            'initiative_level.in' => 'Inisiatif harus antara 1 sampai 100',
             'initiative_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
         ]);
 
@@ -252,19 +252,19 @@ class CoachController extends Controller
         $coaching = Coaching::where('id', $coachingId)
                     ->where('coach_id', $user->id)
                     ->firstOrFail();
-
-        if ($coaching->status != Coaching::STATUS_EVALUATION) {
-            return redirect()->back()->with([
-                'messege' => 'Penilaian hanya bisa dilakukan jika coaching dalam status penilaian', 
-                'alert-type' => 'error'
-            ]);
-        }
         
         $coachingUser = CoachingUser::with('coaching')
             ->where('coaching_id', $coachingId)
             ->where('user_id', $coacheeId)
             ->whereHas('coaching', fn($q) => $q->where('coach_id', $user->id))
             ->firstOrFail();
+
+        if (empty($coachingUser->final_report)) {
+            return redirect()->back()->with([
+                'messege' => 'Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee', 
+                'alert-type' => 'error'
+            ]);
+        }
 
         CoachingAssessment::updateOrCreate(
             ['coaching_user_id' => $coachingUser->id],
@@ -291,11 +291,11 @@ class CoachController extends Controller
         $validated = $request->validate([
             'goal_achieved' => 'required|in:0,1',
             'goal_description' => 'required|string',
-            'discipline_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'discipline_level' => 'required|integer|min:1|max:100',
             'discipline_description' => 'required|string',
-            'teamwork_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'teamwork_level' => 'required|integer|min:1|max:100',
             'teamwork_description' => 'required|string',
-            'initiative_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'initiative_level' => 'required|integer|min:1|max:100',
             'initiative_description' => 'required|string',
         ], [
             '*.required' => 'Isian tidak boleh kosong',
@@ -307,18 +307,18 @@ class CoachController extends Controller
             ->where('coach_id', $user->id)
             ->firstOrFail();
 
-        if ($coaching->status != Coaching::STATUS_EVALUATION) {
-            return redirect()->back()->with([
-                'messege' => 'Penilaian hanya bisa dilakukan jika coaching dalam status penilaian', 
-                'alert-type' => 'error'
-            ]);
-        }
-
         $coachingUser = CoachingUser::with('coaching')
             ->where('coaching_id', $coachingId)
             ->where('user_id', $coacheeId)
             ->whereHas('coaching', fn($q) => $q->where('coach_id', $user->id))
             ->firstOrFail();
+
+        if (empty($coachingUser->final_report)) {
+            return redirect()->back()->with([
+                'messege' => 'Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee', 
+                'alert-type' => 'error'
+            ]);
+        }
 
         CoachingAssessment::updateOrCreate(
             ['coaching_user_id' => $coachingUser->id],

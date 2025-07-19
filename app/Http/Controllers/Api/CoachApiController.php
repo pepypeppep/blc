@@ -587,16 +587,16 @@ class CoachApiController extends Controller
         $coaching = Coaching::where('id', $coachingId)
                     ->where('coach_id', $user_id)
                     ->firstOrFail();
-
-        if ($coaching->status != Coaching::STATUS_EVALUATION) {
-            return $this->errorResponse('Penilaian hanya bisa dilakukan jika coaching dalam status penilaian', [], 422);
-        }
         
         $coachingUser = CoachingUser::with('coaching')
             ->where('coaching_id', $coachingId)
             ->where('user_id', $coacheeId)
             ->whereHas('coaching', fn($q) => $q->where('coach_id', $user_id))
             ->firstOrFail();
+
+        if (empty($coachingUser->final_report)) {
+            return $this->errorResponse('Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee', [], 422);
+        }
 
         CoachingAssessment::updateOrCreate(
             ['coaching_user_id' => $coachingUser->id],

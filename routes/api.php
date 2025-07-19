@@ -169,7 +169,7 @@ Route::name('api.')->group(function () {
                     Route::post('/', [CoachApiController::class, 'store'])->name('store');
                     Route::put('/{id}/initiate-consensus', [CoachApiController::class, 'initiateConsensus'])->name('initiate-consensus');
                     Route::put('/{id}/process-coaching', [CoachApiController::class, 'processCoaching'])->name('process-coaching');
-                    Route::post('/review', [CoachApiController::class, 'reviewStore'])->name('review');
+                    Route::put('/review', [CoachApiController::class, 'reviewStore'])->name('review');
                     Route::post('/{id}/assessment-store/{coacheeId}', [CoachApiController::class, 'assessmentStore'])->name('assessment-store');
                     Route::post('/{id}/assessment-submit/{coacheeId}', [CoachApiController::class, 'assessmentSubmit'])->name('assessment-submit');
                 });

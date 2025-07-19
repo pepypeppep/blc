@@ -562,11 +562,11 @@ class CoachApiController extends Controller
         $validated = $request->validate([
             'goal_achieved' => 'required|in:0,1',
             'goal_description' => 'required|string',
-            'discipline_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'discipline_level' => 'required|integer|min:1|max:100',
             'discipline_description' => 'required|string',
-            'teamwork_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'teamwork_level' => 'required|integer|min:1|max:100',
             'teamwork_description' => 'required|string',
-            'initiative_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'initiative_level' => 'required|integer|min:1|max:100',
             'initiative_description' => 'required|string',
         ], [
             'goal_achieved.required' => 'Target tidak boleh kosong',
@@ -595,7 +595,7 @@ class CoachApiController extends Controller
             ->firstOrFail();
 
         if (empty($coachingUser->final_report)) {
-            return $this->errorResponse('Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee', [], 422);
+            throw new \Exception('Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee', 422);
         }
 
         CoachingAssessment::updateOrCreate(
@@ -612,12 +612,12 @@ class CoachApiController extends Controller
             ]
         );
 
-        return $coachingUser;
+        return $coaching;
     }
 
     /**
      * @OA\Post(
-     *     path="/coaching/coach/{id}/store-assessment/{coacheeId}",
+     *     path="/coaching/coach/{id}/assessment-store/{coacheeId}",
      *     summary="Save coaching assessment (draft)",
      *     description="Allows coach to save assessment data as a draft before final submission.",
      *     tags={"Coach"},
@@ -676,7 +676,7 @@ class CoachApiController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/coaching/coach/{id}/submit-assessment/{coacheeId}",
+     *     path="/coaching/coach/{id}/assessment-submit/{coacheeId}",
      *     summary="Submit coaching assessment",
      *     description="Allows coach to submit an assessment for the completed coaching session.",
      *     tags={"Coach"},
@@ -725,7 +725,7 @@ class CoachApiController extends Controller
     public function assessmentSubmit(Request $request, $coachingId, $coacheeId)
     {
         try {
-            $this->processAssessment($request, $coachingId, $coacheeId);
+            $coaching = $this->processAssessment($request, $coachingId, $coacheeId);
 
             $coaching->update(['status' => Coaching::STATUS_DONE]);
 

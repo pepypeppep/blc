@@ -1066,14 +1066,14 @@
                 ]
             }
         },
-        "/coaching/coach/{id}/store-assessment/{coacheeId}": {
+        "/coaching/coach/{id}/assessment-store/{coacheeId}": {
             "post": {
                 "tags": [
                     "Coach"
                 ],
                 "summary": "Save coaching assessment (draft)",
                 "description": "Allows coach to save assessment data as a draft before final submission.",
-                "operationId": "8da45d27ac4e4fc5db12996703b539e6",
+                "operationId": "7b553e6c5d97c506798a9cd6019ce0a0",
                 "parameters": [
                     {
                         "name": "id",
@@ -1131,14 +1131,14 @@
                 ]
             }
         },
-        "/coaching/coach/{id}/submit-assessment/{coacheeId}": {
+        "/coaching/coach/{id}/assessment-submit/{coacheeId}": {
             "post": {
                 "tags": [
                     "Coach"
                 ],
                 "summary": "Submit coaching assessment",
                 "description": "Allows coach to submit an assessment for the completed coaching session.",
-                "operationId": "c40f45d99e30c4b4072e10161972e22f",
+                "operationId": "9f8de58fd72098c326090359eb5bdc74",
                 "parameters": [
                     {
                         "name": "id",

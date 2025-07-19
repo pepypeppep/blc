@@ -244,7 +244,7 @@
                             <select class="form-select" name="session_id" id="modal-session-id" required>
                                 <option value="" disabled selected>Pilih Jadwal Pertemuan</option>
                                 @foreach ($sessions as $session)
-                                    @if ($session->details->count() == 0)
+                                    @if ($session->details->count() == 0 && ($loop->first || $sessions[$loop->index - 1]->details->count() > 0))
                                         <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} -
                                             {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
                                         </option>

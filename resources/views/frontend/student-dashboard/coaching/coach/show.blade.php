@@ -172,12 +172,23 @@
                 </div>
             </div>
 
-            <div class="mb-3 d-flex justify-content-between align-items-center border-top pt-3 mt-4">
-                <div>
-                    <h6 class="title">{{ __('Session Datetime') }} <span title="Jumlah pertemuan">({{ $coaching->total_session }})</span></h6>
-                    <span class="text-muted small">
-                        Lakukan sesi coaching sesuai jadwal dan berikan catatan/arahan pada hasil penugasan.
-                    </span>
+            <div class="mb-3 border-top pt-3 mt-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h6 class="title">{{ __('Session Datetime') }} <span title="Jumlah pertemuan">({{ $coaching->total_session }})</span></h6>
+                        <span class="text-muted small">
+                            Lakukan sesi coaching sesuai jadwal dan berikan catatan/arahan pada hasil penugasan. <br />
+                            Tanggal sesi pertemuan dapat diubah selama laporan sesi pertemuan belum direviu/ditinjau.
+                        </span>
+                    </div>
+                    <div>
+                        @if ($coaching->status !== Coaching::STATUS_DONE)
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal"
+                            data-bs-target="#changeSessionDatetimeModal">
+                            <i class="fa fa-calendar-alt me-1"></i> Ubah Jadwal Sesi
+                        </button>
+                        @endif
+                    </div>
                 </div>
             </div>
 
@@ -374,16 +385,107 @@
     </div>
   </div>
 </div>
+
+<!-- Modal for changing session datetime -->
+<div class="modal fade" id="changeSessionDatetimeModal" tabindex="-1"
+    aria-labelledby="changeSessionDatetimeModalLabel" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="{{ route('student.coach.change-session') }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeSessionDatetimeModalLabel">Ubah Jadwal Sesi Coaching</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="session_number" class="form-label">Pilih Sesi<code>*</code></label>
+                        <select class="form-select" id="session_number" name="session_id" required>
+                            <option value="">Pilih Sesi Pertemuan</option>
+                            @foreach ($coaching->coachingSessions as $session)
+                                @php
+                                    $isReviewed = $session->details->contains(function ($detail) {
+                                        return !empty($detail->coaching_note);
+                                    });
+                                @endphp
+                                <option value="{{ $session->id }}" data-date="{{ $session->coaching_date }}" {{ $isReviewed ? 'disabled' : '' }}>
+                                    Pertemuan {{ $loop->iteration }} &mdash;
+                                    {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
+                                    {{ $isReviewed ? ' (sudah direview coach)' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_datetime" class="form-label">Tanggal &amp; Waktu Baru<code>*</code></label>
+                        <input type="text" class="form-control datetimepicker" id="new_datetime"
+                            name="coaching_date" placeholder="Pilih tanggal & waktu baru" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endpush
 
 
 @push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
 @endpush
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sessionSelect = document.getElementById("session_number");
+        const datetimeInput = document.querySelector(".datetimepicker");
+
+        // Inisialisasi flatpickr dengan konfigurasi dasar
+        const fp = flatpickr(datetimeInput, {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true,
+            altInput: true,
+            altFormat: "l, d F Y - H:i",
+            locale: "id"
+        });
+
+        // Simpan semua sesi coaching dari Blade
+        const sessions = @json($coaching->coachingSessions);
+
+        function updateFlatpickrLimits() {
+            const selectedSessionId = sessionSelect.value;
+            const currentIndex = sessions.findIndex(s => s.id == selectedSessionId);
+
+            let minDate = null;
+            let maxDate = null;
+
+            if (currentIndex > 0) {
+                minDate = sessions[currentIndex - 1].coaching_date;
+            }
+
+            if (currentIndex < sessions.length - 1) {
+                maxDate = sessions[currentIndex + 1].coaching_date;
+            }
+
+            fp.set("minDate", minDate);
+            fp.set("maxDate", maxDate);
+        }
+
+        // Jalankan update saat select diubah
+        sessionSelect.addEventListener("change", updateFlatpickrLimits);
+
+        // Jalankan saat halaman pertama kali load
+        updateFlatpickrLimits();
+    });
+    
     function handleInitConsensus(event) {
         event.preventDefault();
         swal.fire({

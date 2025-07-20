@@ -408,4 +408,44 @@ class CoachController extends Controller
         return redirect()->back()->with(['messege' => 'Review berhasil disimpan', 'alert-type' => 'success']);
 
     }
+
+    public function changeSessionDate(Request $request)
+    {
+        $request->validate([
+            'session_id' => 'required|string',
+            'coaching_date' => 'required|date',
+        ], [
+            'session_id.required' => 'Sesi pertemuan harus dipilih',
+            'coaching_date.required' => 'Tanggal coaching tidak boleh kosong',
+        ]);
+
+        $user = auth()->user();
+        $session = CoachingSession::whereHas('Coaching', function ($query) use ($user) {
+            $query->where('coach_id', $user->id);
+        })->where('id', $request->session_id)
+          ->with('details') 
+          ->first();
+
+        if (!$session) {
+            return back()->with(['messege' => 'Sesi tidak ditemukan.', 'alert-type' => 'error']);
+        }
+
+        if($session->coaching->coach_id != $user->id){
+            abort(403, 'Anda tidak memiliki izin untuk mengubah coaching ini.');
+        }
+
+        $hasReview = $session->details->contains(function ($detail) {
+            return !empty($detail->coaching_note);
+        });
+
+        if ($hasReview) {
+            return back()->with(['messege' => 'Tanggal coaching tidak dapat diubah karena laporan pertemuan telah ditanggapi oleh coach.', 'alert-type' => 'error']);
+        }
+
+        $session->coaching_date_changed = $session->coaching_date;
+        $session->coaching_date = $request->coaching_date;
+        $session->save();
+
+        return back()->with(['alert-type' => 'success', 'messege' => 'Tanggal coaching berhasil diperbarui.']);
+    }
 }

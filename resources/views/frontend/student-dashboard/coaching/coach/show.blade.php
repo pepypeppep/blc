@@ -140,7 +140,7 @@
                                                 <i class="fa fa-eye"></i> &nbsp;{{ __('Laporan Akhir') }}
                                             </a>
                                             <a class="btn-action-warning" href="{{ route('student.coach.penilaian', [$coaching->id, $coachee->id]) }}">
-                                                <i class="fa fa-check-circle"></i> &nbsp;{{ __('Nilai') }}
+                                                <i class="fa fa-check-circle"></i> &nbsp;{{ __('Penilaian') }}
                                             </a>
                                         @else
                                         <a href="javascript:void(0)"
@@ -155,7 +155,7 @@
                                             title="Laporan akhir belum tersedia"
                                             onclick="return false;"
                                             style="pointer-events: none; opacity: 0.5;">
-                                            <i class="fa fa-eye"></i> &nbsp;{{ __('Nilai') }}
+                                            <i class="fa fa-eye"></i> &nbsp;{{ __('Penilaian') }}
                                         </a>
                                         @endif
 

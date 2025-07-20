@@ -88,6 +88,13 @@ class Coaching extends Model
         ];
     }
 
+    public function isAllCoacheesAssessed(): bool
+    {
+        return CoachingUser::where('coaching_id', $this->id)
+            ->whereDoesntHave('assessment')
+            ->count() === 0;
+    }
+
     public function isProcessOrDone(): bool
     {
         return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_DONE]);

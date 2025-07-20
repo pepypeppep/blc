@@ -253,6 +253,10 @@ class CoachController extends Controller
                     ->where('coach_id', $user->id)
                     ->firstOrFail();
         
+        if ($coaching->status == Coaching::STATUS_DONE) {
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => 'Status coaching sudah selesai. Penilaian tidak dapat dilakukan lagi']);
+        }
+        
         $coachingUser = CoachingUser::with('coaching')
             ->where('coaching_id', $coachingId)
             ->where('user_id', $coacheeId)
@@ -280,10 +284,11 @@ class CoachController extends Controller
             ]
         );
 
-        return redirect()->route('student.coach.index')->with([
-            'messege' => 'Penilaian berhasil dilakukan', 
-            'alert-type' => 'success'
-        ]);
+        // return redirect()->route('student.coach.index')->with([
+        //     'messege' => 'Penilaian berhasil dilakukan', 
+        //     'alert-type' => 'success'
+        // ]);
+        return redirect()->back()->with(['alert-type' => 'success', 'messege' => 'Penilaian berhasil dilakukan']);
     }
 
     public function assessmentSubmit(Request $request, $coachingId, $coacheeId)
@@ -306,6 +311,10 @@ class CoachController extends Controller
         $coaching = Coaching::where('id', $coachingId)
             ->where('coach_id', $user->id)
             ->firstOrFail();
+
+        if ($coaching->status == Coaching::STATUS_DONE) {
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => 'Status coaching sudah selesai. Penilaian tidak dapat dilakukan lagi']);
+        }
 
         $coachingUser = CoachingUser::with('coaching')
             ->where('coaching_id', $coachingId)

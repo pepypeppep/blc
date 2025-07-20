@@ -587,6 +587,10 @@ class CoachApiController extends Controller
         $coaching = Coaching::where('id', $coachingId)
                     ->where('coach_id', $user_id)
                     ->firstOrFail();
+
+        if ($coaching->status == Coaching::STATUS_DONE) {
+            throw new \Exception('Status coaching sudah selesai. Penilaian tidak dapat dilakukan lagi', 422);
+        }
         
         $coachingUser = CoachingUser::with('coaching')
             ->where('coaching_id', $coachingId)

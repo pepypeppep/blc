@@ -108,7 +108,11 @@
                                     @if ($session->details->count() > 0)
                                         <div>
                                             <strong class="d-block">Deskripsi Kegiatan:</strong>
-                                            <div class="text-body"><em>{!! $session->details->first()->description !!}</em></div>
+                                            <div class="text-body">{!! $session->details->first()->activity ?: '<em>Tidak ada deskripsi kegiatan.</em>' !!}</div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong class="d-block">Hambatan:</strong>
+                                            <div class="text-body">{!! $session->details->first()->description ?: '<em>Tidak ada hambatan</em>' !!}</div>
                                         </div>
                                         <div class="mb-2">
                                             <strong class="d-block">Dokumentasi:</strong>
@@ -205,7 +209,7 @@
                 </div>
             @endif
         </div>
-        @if (!$coachingUser->isRejected() && !$coachingUser->is_joined == 1)
+        @if (!$coachingUser->isRejected() && !$coachingUser->is_joined == 1 && $coaching->status == Coaching::STATUS_CONSENSUS)
             <div class="row">
                 <div class="col-12 justify-content-between d-flex align-items-center">
                     <button type="button" onclick="handleTolakKonsesus(event, {{ $coaching->id }})"
@@ -257,6 +261,10 @@
                             <textarea class="form-control summernote" name="activity" id="modal-activity" style="height:150px;" required></textarea>
                         </div>
                         <div class="mb-3">
+                            <label for="modal-description" class="form-label">Hambatan<code>*</code></label>
+                            <textarea class="form-control summernote" name="description" id="modal-description" style="height:150px;" required></textarea>
+                        </div>
+                        <div class="mb-3">
                             <label for="image" class="form-label">Dokumentasi<code>*</code></label>
                             <input type="file" class="form-control" name="image" id="image"
                                 accept="image/jpeg,image/png" required>
@@ -288,15 +296,15 @@
                 if ($('#modal-activity').next('.note-editor').length) {
                     $('#modal-activity').summernote('destroy');
                 }
-                if ($('#modal-obstacle').next('.note-editor').length) {
-                    $('#modal-obstacle').summernote('destroy');
+                if ($('#modal-description').next('.note-editor').length) {
+                    $('#modal-description').summernote('destroy');
                 }
                 // Init Summernote
                 $('#modal-activity').summernote({
                     height: 120,
                     placeholder: 'Deskripsikan kegiatan...',
                 });
-                $('#modal-obstacle').summernote({
+                $('#modal-description').summernote({
                     height: 120,
                     placeholder: 'Tulis hambatan jika ada...',
                 });

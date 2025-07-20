@@ -448,7 +448,7 @@ class CoachApiController extends Controller
 
         return $this->successResponse([], 'Status coaching sudah menjadi proses!');
     }
-    
+
     /**
      * @OA\Put(
      *     path="/coaching/coach/review",
@@ -738,4 +738,79 @@ class CoachApiController extends Controller
             return $this->errorResponse($e->getMessage(), [], 500);
         }
     }
+
+    /**
+     * @OA\Post(
+     *     path="/coaching/coach/update-session",
+     *     summary="Update coaching session date",
+     *     description="Update coaching session date",
+     *     tags={"Coach"},
+     *     security={{"bearer":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Session and new coaching date",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"session_id", "coaching_date"},
+     *             @OA\Property(property="session_id", type="integer", example=1),
+     *             @OA\Property(property="coaching_date", type="string", example="2022-01-01 09:00:00", format="date-time"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Session updated successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden – You do not have permission to update"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed. Possible reasons: session not found, coaching report already reviewed by coach",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error updating session"
+     *     )
+     * )
+     */
+    public function changeSessionDate(Request $request)
+    {
+        $request->validate([
+            'session_id' => 'required|string',
+            'coaching_date' => 'required|date',
+        ], [
+            'session_id.required' => 'Sesi pertemuan harus dipilih',
+            'coaching_date.required' => 'Tanggal coaching tidak boleh kosong',
+        ]);
+
+        $session = CoachingSession::whereHas('Coaching', function ($query) use ($user) {
+            $query->where('coach_id', $request->user()->id);
+        })->where('id', $request->session_id)
+          ->with('details') 
+          ->first();
+
+        if (!$session) {
+            return $this->errorResponse('Sesi tidak ditemukan.', [], 422);
+        }
+
+        if($session->coaching->coach_id != $request->user()->id){
+            return $this->errorResponse('Anda tidak memiliki izin untuk mengubah coaching ini.', [], 403);
+        }
+
+        $hasReview = $session->details->contains(function ($detail) {
+            return !empty($detail->coaching_note);
+        });
+
+        if ($hasReview) {
+            return $this->errorResponse('Tanggal coaching tidak dapat diubah karena laporan pertemuan telah ditanggapi oleh coach.', [], 422);
+        }
+
+        $session->coaching_date_changed = $session->coaching_date;
+        $session->coaching_date = $request->coaching_date;
+        $session->save();
+
+        return $this->successResponse([], 'Tanggal coaching berhasil diperbarui.');
+    }
+    
 }

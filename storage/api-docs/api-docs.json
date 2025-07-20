@@ -1196,6 +1196,61 @@
                 ]
             }
         },
+        "/coaching/coach/update-session": {
+            "post": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Update coaching session date",
+                "description": "Update coaching session date",
+                "operationId": "a780cc75ed2965c76c8fdfbe6a207dcb",
+                "requestBody": {
+                    "description": "Session and new coaching date",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "session_id",
+                                    "coaching_date"
+                                ],
+                                "properties": {
+                                    "session_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "coaching_date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2022-01-01 09:00:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Session updated successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden – You do not have permission to update"
+                    },
+                    "422": {
+                        "description": "Validation failed. Possible reasons: session not found, coaching report already reviewed by coach"
+                    },
+                    "500": {
+                        "description": "Error updating session"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/coaching/coachee": {
             "get": {
                 "tags": [

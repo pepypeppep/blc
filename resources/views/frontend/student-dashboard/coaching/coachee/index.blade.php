@@ -16,6 +16,7 @@
                                 <th>{{ __('Main Issue') }}</th>
                                 <th>{{ __('Total Session') }}</th>
                                 <th class="text-center">{{ __('Status') }}</th>
+                                <th class="text-center">{{ __('Status Bergabung') }}</th>
                                 <th class="text-center">{{ __('Action') }}</th>
                             </tr>
                         </thead>
@@ -29,6 +30,15 @@
                                     <td class="text-center">
                                         <div class="badge bg-{{ $item->coaching->stat['color'] }}">
                                             {{ $item->coaching->stat['label'] }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        @if ($item->is_joined == 1)
+                                            <div class="badge bg-success">{{ __('Bergabung') }}</div>
+                                        @elseif($item->is_joined == 0 && $item->note != null)
+                                            <div class="badge bg-danger">{{ __('Menolak Bergabung') }}</div>
+                                        @else
+                                            <div class="badge bg-danger">{{ __('Belum Bergabung') }}</div>
+                                        @endif
                                     </td>
                                     <td class="text-nowrap">
                                         <div class="dashboard__action d-inline-flex align-items-center gap-2">

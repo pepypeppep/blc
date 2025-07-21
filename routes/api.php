@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CourseApiController;
 use App\Http\Controllers\Api\ReviewApiController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\CertificateApiController;
+use App\Http\Controllers\Api\CoacheeApiController;
 use App\Http\Controllers\Api\MenteeApiController;
 use App\Http\Controllers\Api\MentorApiController;
 use App\Http\Controllers\Api\PendidikanLanjutanController;
@@ -138,9 +139,28 @@ Route::name('api.')->group(function () {
                     Route::get('/{id}/evaluasi', [MentorApiController::class, 'evaluasi'])->name('evaluasi');
                     Route::post('/{id}/store-evaluation', [MentorApiController::class, 'evaluasiStore'])->name('store-evaluation');
                     Route::post('/update-session', [MentorApiController::class, 'updateSession'])->name('update.session');
+                    Route::post('/{id}/final-report', [MentorApiController::class, 'updateFinalReport'])->name('update.final.report');
                 });
             Route::get('/{id}/{type}', [MenteeApiController::class, 'showDocument'])->name('show.document');
             Route::get('/{id}/{type}/session', [MenteeApiController::class, 'showDocumentSession'])->name('show.document.session');
+        });
+
+    // Coachee
+    Route::prefix('coaching')
+        ->name('coaching.')
+        ->middleware('auth:sso-api')
+        ->group(function () {
+            Route::prefix('coachee')
+                ->name('coachee.')
+                ->group(function () {
+                    Route::get('/', [CoacheeApiController::class, 'index'])->name('index');
+                    Route::get('/{id}', [CoacheeApiController::class, 'show'])->name('show');
+                    Route::post('/{id}/approval', [CoacheeApiController::class, 'approval'])->name('approval');
+                    Route::post('/update-session', [CoacheeApiController::class, 'update'])->name('update.session');
+                    Route::post('/submit-report', [CoacheeApiController::class, 'submitReport'])->name('submit-report');
+                    Route::post('/submit-final-report/{coachingId}', [CoacheeApiController::class, 'submitFinalReport'])->name('submit-final-report');
+                });
+            Route::get('/{id}/{module}/{type}', [CoacheeApiController::class, 'showDocument'])->name('show.document');
         });
 
 

@@ -210,7 +210,7 @@
                         <div class="row">
                             <div class="col mt-4">
                                 <div class="partner_instructor_list {{ $course?->instructor_id == 0 ? 'd-none' : '' }}">
-                                    <label for="cpacity">TTE1</label>
+                                    <label for="cpacity">{{ __('TTE Depan') }}</label>
                                     <select class="tte_select" id="tte1">
                                         @foreach ($course->signers as $signer)
                                             @if ($signer->step == 1)
@@ -224,7 +224,7 @@
 
                             <div class="col mt-4">
                                 <div class="partner_instructor_list {{ $course?->instructor_id == 0 ? 'd-none' : '' }}">
-                                    <label for="cpacity">TTE2</label>
+                                    <label for="cpacity">{{ __('TTE Belakang') }}</label>
                                     <select class="tte_select" id="tte2">
                                         @foreach ($course->signers as $signer)
                                             @if ($signer->step == 2)

@@ -70,38 +70,6 @@
                                     </div>
 
 
-
-                                    {{-- Page 2 --}}
-                                    @if ($certificate->background2)
-                                        <div class="form-group">
-                                            <label for="">{{ __('Back Image') }} <code>( 794px * 1123px )
-                                                    *</code></label>
-                                            <div id="image-preview-background2" class="image-preview">
-                                                <label for="image-upload-background2"
-                                                    id="image-label-background2">{{ __('Image') }}</label>
-                                                <input type="file" name="background2" id="image-upload-background2">
-                                            </div>
-                                            @error('image')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="">{{ __('Back Title') }}</label>
-                                            <input type="text" class="form-control" name="title2"
-                                                value="{{ $certificate->title2 }}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="">{{ __('Back Sub Title') }}</label>
-                                            <input type="text" class="form-control" name="sub_title2"
-                                                value="{{ $certificate->sub_title2 }}">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="">{{ __('Back Description') }}</label>
-                                            <textarea id="" class="form-control hight-200" name="description2">{!! clean($certificate->description2) !!}</textarea>
-                                        </div>
-                                    @endif
                                     <button type="submit" class="btn btn-primary">{{ __('Update') }}</button>
                                 </form>
                             </div>
@@ -136,9 +104,17 @@
                                                 @endif
 
                                                 @if ($certificate->description)
-                                                    <div id="signature" class="draggable-element"><img
-                                                            style="width: 100px; height: 100px;"
-                                                            src="{{ asset('backend/img/QRCode.png') }}" alt="">
+                                                    <div id="signature" class="draggable-element">
+                                                        <div class="text-center">
+                                                            <div>[tanggal_sertifikat]</div>
+                                                            <div>[nama_jabatan]</div>
+                                                            <div>Kabupaten Bantul</div>
+                                                            <img style="width: 100px; height: 100px;"
+                                                                src="{{ asset('backend/img/QRCode.png') }}" alt="">
+                                                            <div>[nama_kepala_opd]</div>
+                                                            <div>[nama_golongan]</div>
+                                                            <div>[nip]</div>
+                                                        </div>
                                                     </div>
                                                 @endif
                                             </div>
@@ -147,49 +123,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if ($certificate->background2)
-                            <div class="card">
-                                <div class="card-body">
-                                    <p class="text-center text-danger">
-                                        <strong>{{ __('Back Image') }}</strong>
-                                        {{ __('Background size will be ( 794px * 1123px )') }}
-                                    </p>
-                                    <div class="certificate-outer">
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <div class="certificate-body2">
-                                                    <div class="grid-overlay"></div>
-                                                    @if ($certificate->title)
-                                                        <div id="title2" class="draggable-element2">
-                                                            {{ $certificate->title }}
-                                                        </div>
-                                                    @endif
-                                                    @if ($certificate->sub_title)
-                                                        <div id="sub_title2" class="draggable-element2">
-                                                            {{ $certificate->sub_title }}
-                                                        </div>
-                                                    @endif
 
-                                                    @if ($certificate->description)
-                                                        <div id="description2" class="draggable-element2">
-                                                            {!! nl2br(clean($certificate->description)) !!}
-                                                        </div>
-                                                    @endif
-
-                                                    @if ($certificate->description)
-                                                        <div id="signature2" class="draggable-element2"><img
-                                                                style="width: 100px; height: 100px;"
-                                                                src="{{ asset('backend/img/QRCode.png') }}"
-                                                                alt="">
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>

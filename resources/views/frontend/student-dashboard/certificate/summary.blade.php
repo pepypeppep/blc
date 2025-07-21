@@ -7,7 +7,10 @@
     <style>
         @page {
             size: A4 portrait;
-            margin: 0;
+            margin-top: 1cm;
+            margin-bottom: 1cm;
+            margin-left: 1cm;
+            margin-right: 1cm;
         }
 
         body {
@@ -26,8 +29,6 @@
         .page-break {
             page-break-after: always;
         }
-
-
 
         .container {
             text-align: center;
@@ -100,26 +101,34 @@
         .p-4 {
             padding: 20px;
         }
+
+        .table-header {
+            background-color: #C0C0C0;
+            color: #000;
+            font-weight: bold;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="certificate-number">No. 2621/STMP/SPBE/11/2024</div>
-        <h1 class="title">{{ $course->title }}</h1>
+        <h1 class="title">Kurikulum Pelatihan</h1>
 
         <div class="grade-section">
             <table class="margin-center" style="width: 600px; border-collapse: collapse; border: 1px solid black;">
                 <thead>
                     <tr>
-                        <th class="with-border table-column" scope="col" style=" ">Mata Pelatihan </th>
-                        <th class="with-border table-column" scope="col" style=" ">JPL</th>
+                        <th class="with-border table-column table-header" scope="col" style=" ">No</th>
+                        <th class="with-border table-column table-header" scope="col" style=" ">Mata Pelatihan
+                        </th>
+                        <th class="with-border table-column table-header" scope="col" style=" ">JPL</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($courseChapers as $chapter)
                         <tr>
-
+                            <td class="with-border table-column" style="text-align:center;  ">{{ $loop->iteration }}
+                            </td>
                             <td class="with-border table-column" style="text-align:left;  ">{{ $chapter->title }}
                             </td>
                             <td class="with-border table-column" style="text-align:right;  ">{{ $chapter->jp }}
@@ -133,9 +142,14 @@
 
         <div class="signature-section">
             <div class="right">
-                <img style="width: 100px; height: 100px;" src="{{ $qrcodeData2 }}" alt="">
-                <div class="signature-name">
-                    EMANUEL TEGAR WIBISONO, S.Kom.
+                <div class="text-center">
+                    <div>[tanggal_sertifikat]</div>
+                    <div>[nama_jabatan]</div>
+                    <div>Kabupaten Bantul</div>
+                    <img style="width: 100px; height: 100px;" src="{{ $qrcodeData2 }}" alt="">
+                    <div>[nama_kepala_opd]</div>
+                    <div>[nama_golongan]</div>
+                    <div>[nip]</div>
                 </div>
             </div>
 

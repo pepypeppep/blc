@@ -218,9 +218,7 @@ class StudentDashboardController extends Controller
 
             $qrcodeData = QrCode::format('png')->size(200)
                 ->merge('/public/backend/img/logobantul.png')
-                ->generate(
-                    $qrCodePublicURL
-                );
+                ->generate($qrCodePublicURL);
             $qrcodeData = 'data:image/png;base64,' . base64_encode($qrcodeData);
 
 
@@ -237,9 +235,19 @@ class StudentDashboardController extends Controller
             $page1Html = str_replace('[date]', formatDate($completed_date), $page1Html);
             $page1Html = str_replace('[instructor_name]', $course->instructor->name, $page1Html);
 
-            // $pdf1Data = Pdf::loadHTML($page1Html)
-            //     ->setPaper('A4', 'landscape')->setWarnings(false)->output();
-            // Log::info('render pdf 1 took ' . now()->diffInSeconds($now));
+            $signer1 = $course->signers()->where('step', 1)->first()->user;
+
+
+            $page1Html = str_replace('[tanggal_sertifikat]', sprintf('Bantul, %s %s %s', now()->day, now()->monthName, now()->year), $page1Html);
+            $page1Html = str_replace('[nama_jabatan]', $signer1->jabatan, $page1Html);
+            $page1Html = str_replace('[nama_kepala_opd]',  $signer1->name, $page1Html);
+            $page1Html = str_replace('[nama_golongan]', $signer1->golongan, $page1Html);
+            $page1Html = str_replace('[nip]',  $signer1->nip, $page1Html);
+
+            $now = now();
+            $pdf1Data = Pdf::loadHTML($page1Html)
+                ->setPaper('A4', 'landscape')->setWarnings(false)->output();
+            Log::info('render pdf 1 took ' . now()->diffInSeconds($now, true) . ' seconds');
 
             //=========
             // page2
@@ -255,9 +263,8 @@ class StudentDashboardController extends Controller
 
             $qrcodeData2 = QrCode::format('png')->size(200)
                 ->merge('/public/backend/img/logobantul.png')
-                ->generate(
-                    $qrCodePublicURL
-                );
+                ->generate($qrCodePublicURL);
+
             $qrcodeData2 = 'data:image/png;base64,' . base64_encode($qrcodeData2);
 
 
@@ -269,15 +276,29 @@ class StudentDashboardController extends Controller
                 'cover2Base64' => $cover2Base64,
                 'qrcodeData2' => $qrcodeData2
             ])->render();
+
+
+            $signer2 = $course->signers()->where('step', 2)->first()->user;
+
+            $page2Html = str_replace('[tanggal_sertifikat]', sprintf('Bantul, %s %s %s', now()->day, now()->monthName, now()->year), $page2Html);
+            $page2Html = str_replace('[nama_jabatan]', $signer2->jabatan, $page2Html);
+            $page2Html = str_replace('[nama_kepala_opd]',  $signer2->name, $page2Html);
+            $page2Html = str_replace('[nama_golongan]', $signer2->golongan, $page2Html);
+            $page2Html = str_replace('[nip]',  $signer2->nip, $page2Html);
+
             $pdf2Data = Pdf::loadHTML($page2Html)
                 ->setPaper('A4', 'portrait')->setWarnings(false)->output();
 
+            $now = now();
             $m = new Merger();
-            // $m->addRaw($pdf1Data);
+            $m->addRaw($pdf1Data);
             $m->addRaw($pdf2Data);
             $output = $m->merge();
 
-            // return output directly
+            Log::info('merge pdf took ' . now()->diffInSeconds($now));
+
+            // TODO: disable this on production
+            // return PDF directly
             // return response($output, 200)
             //     ->header('Content-Type', 'application/pdf');
 
@@ -323,6 +344,7 @@ class StudentDashboardController extends Controller
             return redirect()->back()->with(['messege' => 'Sertifikat berhasil dikirim ke Bantara', 'alert-type' => 'success']);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            dd($e);
             return redirect()->back()->with(['messege' => $e->getMessage(), 'alert-type' => 'error']);
         }
     }

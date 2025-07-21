@@ -170,7 +170,6 @@ class StudentDashboardController extends Controller
 
     {
         $enrollment = Enrollment::where('uuid', $enrollment)->firstOrFail();
-        dd($enrollment);
         try {
             $course = $enrollment->course;
 
@@ -197,9 +196,9 @@ class StudentDashboardController extends Controller
             $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
 
             // TODO: enable this on production
-            if ($courseCompletedPercent != 100) {
-                return abort(403, __('You have not completed the course yet'));
-            }
+            // if ($courseCompletedPercent != 100) {
+            //     return abort(403, __('You have not completed the course yet'));
+            // }
 
 
             $certificate = CertificateBuilder::findOrFail($course->certificate_id);
@@ -279,12 +278,21 @@ class StudentDashboardController extends Controller
             $output = $m->merge();
 
             // return output directly
-            return response($output, 200)
-                ->header('Content-Type', 'application/pdf');
+            // return response($output, 200)
+            //     ->header('Content-Type', 'application/pdf');
 
 
             // send to Bantara API endpoint
             $url = sprintf('%s/internal/v1/tte/documents', appConfig('bantara_url'));
+
+            $signers = [];
+            foreach ($course->signers()->orderBy('step')->get() as $signer) {
+                $signers[] =
+                    [
+                        'nik' => $signer->user->nik,
+                        'action' => 'SIGN'
+                    ];
+            }
 
             $response = Http::attach(
                 'file',
@@ -296,7 +304,7 @@ class StudentDashboardController extends Controller
                     'Authorization' => 'Bearer ' . appConfig('bantara_key'),
                 ])
                 ->post($url, [
-                    'signer_nik' => appConfig('bantara_nik'),
+                    'signers' => json_encode($signers),
                     'title' => sprintf("Sertifikat Pelatihan %s an %s", $course->title, $enrollment->user->name),
                     'description' => $enrollment->user->name,
                     'callback_url' => sprintf("%s", route('api.bantara-callback', $enrollment)),

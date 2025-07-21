@@ -200,8 +200,6 @@ class CertificateBuilderController extends Controller
             'description2' => $request->description2,
             'signature2' => $sg2Name,
             'background2' => $bg2Name,
-            'signer_nik' => $request->signer_nik,
-            'signer2_nik' => $request->signer2_nik
         ]);
 
         return redirect()->back()->with(['messege' => __('Updated successfully'), 'alert-type' => 'success']);

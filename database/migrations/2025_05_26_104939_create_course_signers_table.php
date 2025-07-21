@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('course_signers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('course_id');
-            $table->string('nik');
-            $table->string('name');
-            $table->string('jabatan');
+            $table->unsignedBigInteger('user_id');
+            $table->integer('step');
+            $table->string('type')->default('sign');
             $table->timestamps();
 
-            $table->foreign('course_id')->references('id')->on('courses')->onDelete('restrict');
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict')->onUpdate('restrict');
         });
     }
 

@@ -6,5 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class CourseSigner extends Model
 {
-    //
+    protected $fillable = [
+        'course_id',
+        'user_id',
+        'step',
+        'type',
+    ];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

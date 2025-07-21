@@ -306,6 +306,10 @@ class CertificateApiController extends Controller
 
         $file = $request->file('file');
 
+        if (!$file) {
+            return response(['success' => false, 'message' => 'File is required'], 400);
+        }
+
         // check if file is pdf
         if ($file->getClientOriginalExtension() !== 'pdf') {
             return response(['success' => false, 'message' => 'File must be pdf'], 400);

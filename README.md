@@ -16,7 +16,6 @@ php artisan user:sync {instansi_id}
 | bantara_url | https://bantara.inidev.my.id |
 | bantara_key | {bantara_api_key} |
 | bantara_callback_key | {bantara_callback_key} |
-| bantara_nik | {bantara_nik} |
 
 # Data User
 

@@ -17,8 +17,6 @@ class CertificateUpdateRequest extends FormRequest
             'sub_title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:600'],
             'signature' => ['nullable', 'image', 'max:3000', 'dimensions:max_width=500,min_height=10'],
-            'signer_nik' => ['nullable', 'numeric', 'digits:16'],
-            'signer2_nik' => ['nullable', 'numeric', 'digits:16'],
         ];
     }
 
@@ -30,10 +28,6 @@ class CertificateUpdateRequest extends FormRequest
             'title.string' => __('The title must be a string with a maximum of 255 characters.'),
             'sub_title.string' => __('The sub title must be a string with a maximum of 255 characters.'),
             'description.string' => __('The description must be a string with a maximum of 600 characters.'),
-            'signer_nik.numeric' => __('The NIK must be a number.'),
-            'signer_nik.digits' => __('The NIK must be 16 digits.'),
-            'signer2_nik.numeric' => __('The NIK must be a number.'),
-            'signer2_nik.digits' => __('The NIK must be 16 digits.'),
         ];
     }
 }

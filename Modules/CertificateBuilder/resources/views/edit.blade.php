@@ -62,18 +62,13 @@
                                             value="{{ $certificate->sub_title }}">
                                     </div>
 
-                                     {{-- penandatangan nik --}}
-                                     <div class="form-group">
-                                        <label for="">{{ __('Penandatangan NIK') }}</label>
-                                        <input type="number" class="form-control" name="signer_nik"
-                                            value="{{ $certificate->signer_nik }}">
-                                    </div>
+
 
                                     <div class="form-group">
                                         <label for="">{{ __('Front Description') }}</label>
                                         <textarea id="" class="form-control hight-200" name="description">{!! clean($certificate->description) !!}</textarea>
                                     </div>
-                                   
+
 
 
                                     {{-- Page 2 --}}
@@ -100,13 +95,6 @@
                                             <label for="">{{ __('Back Sub Title') }}</label>
                                             <input type="text" class="form-control" name="sub_title2"
                                                 value="{{ $certificate->sub_title2 }}">
-                                        </div>
-
-                                        {{-- penandatangan nik 2 --}}
-                                        <div class="form-group">
-                                            <label for="">{{ __('Penandatangan NIK') }}</label>
-                                            <input type="number" class="form-control" name="signer2_nik"
-                                                value="{{ $certificate->signer2_nik }}">
                                         </div>
 
                                         <div class="form-group">
@@ -142,7 +130,8 @@
                                                 @endif
 
                                                 @if ($certificate->description)
-                                                    <div id="description" class="draggable-element">{!! nl2br(clean($certificate->description)) !!}
+                                                    <div id="description" class="draggable-element">
+                                                        {!! nl2br(clean($certificate->description)) !!}
                                                     </div>
                                                 @endif
 
@@ -187,12 +176,13 @@
                                                         </div>
                                                     @endif
 
-                                                       @if ($certificate->description)
-                                                    <div id="signature2" class="draggable-element2"><img
-                                                            style="width: 100px; height: 100px;"
-                                                            src="{{ asset('backend/img/QRCode.png') }}" alt="">
-                                                    </div>
-                                                @endif
+                                                    @if ($certificate->description)
+                                                        <div id="signature2" class="draggable-element2"><img
+                                                                style="width: 100px; height: 100px;"
+                                                                src="{{ asset('backend/img/QRCode.png') }}"
+                                                                alt="">
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </table>
                                         </div>
@@ -211,7 +201,6 @@
     <script src="{{ asset('global/js/jquery-ui.min.js') }}"></script>
 
     <script>
-        
         // Make draggable items draggable
         // Front Side
         $('.draggable-element').draggable({

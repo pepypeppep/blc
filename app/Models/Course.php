@@ -228,6 +228,11 @@ class Course extends Model
         ];
     }
 
+    public function signers()
+    {
+        return $this->hasMany(CourseSigner::class);
+    }
+
     /**
      * Boot method to handle model events.
      */

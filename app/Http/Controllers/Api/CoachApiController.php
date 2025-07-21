@@ -812,5 +812,56 @@ class CoachApiController extends Controller
 
         return $this->successResponse([], 'Tanggal coaching berhasil diperbarui.');
     }
-    
+
+    /**
+     * @OA\Put(
+     *     path="/coaching/coach/{id}/finish-coaching",
+     *     summary="Mark coaching as completed",
+     *     description="Updates the status of the coaching to 'done' after ensuring all joined coachees have been assessed.",
+     *     tags={"Coach"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Coaching id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Coaching finished successfully."
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed. Possible reasons: unassessed coachees or incorrect coaching status."
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Failed to finish coaching"
+     *     )
+     * )
+     */
+    public function finishCoaching($coachingId)
+    {
+        $coaching = Coaching::with('joinedCoachees')->findOrFail($coachingId);
+
+        authorizeCoachAccess($coaching);
+
+        if (!$coaching->isAllCoacheesAssessed()) {
+            return $this->errorResponse('Masih ada coachee yang belum dinilai.', [], 422);
+        }
+
+        if ($coaching->status !== Coaching::STATUS_PROCESS) {
+            return $this->errorResponse('Status coaching harus dalam status proses untuk diselesaikan.', [], 422);
+        }
+
+        $coaching->status = Coaching::STATUS_DONE;
+        $coaching->updated_at = now();
+        $coaching->save();
+
+        return $this->successResponse([], 'Penilaian telah terkirim ke BKPSDM. Coaching berhasil diselesaikan!');
+    }
 }

@@ -90,9 +90,10 @@ class Coaching extends Model
 
     public function isAllCoacheesAssessed(): bool
     {
-        return CoachingUser::where('coaching_id', $this->id)
-            ->whereDoesntHave('assessment')
-            ->count() === 0;
+        return !CoachingUser::where('coaching_id', $this->id)
+        ->where('is_joined', true)
+        ->whereDoesntHave('assessment')
+        ->exists();
     }
 
     public function isProcessOrDone(): bool

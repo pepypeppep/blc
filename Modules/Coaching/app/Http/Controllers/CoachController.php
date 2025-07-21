@@ -204,6 +204,33 @@ class CoachController extends Controller
         return redirect()->route('student.coach.index')->with(['messege' => 'Status coaching sudah menjadi proses!', 'alert-type' => 'success']);
     }
 
+    public function finishCoaching($coachingId)
+    {
+        $coaching = Coaching::with('joinedCoachees')->findOrFail($coachingId);
+
+        authorizeCoachAccess($coaching);
+
+        if (!$coaching->isAllCoacheesAssessed()) {
+            return redirect()->back()->with([
+                'alert-type' => 'error',
+                'messege' => 'Masih ada coachee yang belum dinilai.'
+            ]);
+        }
+
+        if ($coaching->status !== Coaching::STATUS_PROCESS) {
+            return redirect()->back()->with([
+                'alert-type' => 'error',
+                'messege' => 'Status coaching harus dalam status proses untuk diselesaikan.'
+            ]);
+        }
+
+        $coaching->status = Coaching::STATUS_DONE;
+        $coaching->updated_at = now();
+        $coaching->save();
+
+        return redirect()->back()->with(['messege' => 'Penilaian telah terkirim ke BKPSDM. Coaching berhasil diselesaikan!', 'alert-type' => 'success']);
+    }
+
     public function assessment(Request $request, $coachingId, $coacheeId )
     {
         $user = auth()->user();
@@ -284,11 +311,10 @@ class CoachController extends Controller
             ]
         );
 
-        // return redirect()->route('student.coach.index')->with([
-        //     'messege' => 'Penilaian berhasil dilakukan', 
-        //     'alert-type' => 'success'
-        // ]);
-        return redirect()->back()->with(['alert-type' => 'success', 'messege' => 'Penilaian berhasil dilakukan']);
+        return redirect()->route('student.coach.show', $coachingId)->with([
+            'messege' => 'Penilaian berhasil dilakukan', 
+            'alert-type' => 'success'
+        ]);
     }
 
     public function assessmentSubmit(Request $request, $coachingId, $coacheeId)

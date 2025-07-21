@@ -8,7 +8,7 @@
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between align-items-center">
             <h4 class="title">{{ __('Assesment') }} "{{ $data->coaching->title }}" - {{ $data->coachee->name }}</h4>
-            <a href="{{ route('student.coach.index') }}" class="btn btn-secondary btn-sm">{{ __('Kembali') }}</a>
+            <a href="{{ route('student.coach.show', $data->coaching->id) }}" class="btn btn-secondary btn-sm">{{ __('Kembali') }}</a>
         </div>
         <div class="row">
             <div class="col-12">

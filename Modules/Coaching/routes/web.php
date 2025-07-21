@@ -35,6 +35,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::get('/{coachingId}', [CoachController::class, 'show'])->name('show');
         Route::put('/{coachingId}/set-consensus', [CoachController::class, 'initiateConsensus'])->name('set-consensus');
         Route::put('/{coachingId}/proses-coaching', [CoachController::class, 'processCoaching'])->name('process-coaching');
+        Route::put('/{coachingId}/send-assessment', [CoachController::class, 'finishCoaching'])->name('send-assessment');
         Route::get('{coachingId}/penilaian/{coacheeId}', [CoachController::class, 'assessment'])->name('penilaian');
         Route::post('{coachingId}/penilaian/{coacheeId}', [CoachController::class, 'assessmentStore'])->name('penilaian.store');
         Route::post('{coachingId}/kirim-penilaian/{coacheeId}', [CoachController::class, 'assessmentSubmit'])->name('penilaian.kirim');

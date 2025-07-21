@@ -58,7 +58,7 @@
 
             <div class="mb-3">
                 <div class="mb-3 d-flex flex-wrap justify-content-between align-items-start border-top pt-3 mt-4 gap-3">
-                    <div class="flex-grow-1 me-3" style="min-width: 250px; max-width: 100%;">
+                    <div class="flex-grow-1 me-3" style="min-width: 250px; max-width: 80%;">
                         <h6 class="title">
                             {{ __('List Coachee') }}
                             <span title="Jumlah coachee yang telah merespon">({{ $coaching->respondedCoachees()->count() }}/{{ $coaching->coachees()->count() }})</span>
@@ -76,7 +76,8 @@
                         </span>
                         @elseif ($coaching->status == Coaching::STATUS_PROCESS)
                         <span class="text-muted small d-block">
-                            Penilaian kepada coachee dapat dilakukan ketika coachee sudah menyelesaikan laporan penugasan dan unggah Laporan Akhir.
+                            Penilaian dapat dilakukan ketika coachee sudah menyelesaikan laporan pertemuan dan unggah Laporan Akhir. <br />
+                            Penilaian dapat dikirim ke BKPSDM ketika semua coachee yang bergabung telah dinilai.
                         </span>
                         @endif
                     </div>
@@ -96,6 +97,14 @@
                             @method('PUT')
                             <button type="button" class="btn btn-outline-success" onclick="handleStartCoaching(event)">
                                 {{ __('Mulai Proses Coaching') }} <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </form>
+                        @elseif ($coaching->status == Coaching::STATUS_PROCESS && $coaching->isAllCoacheesAssessed())
+                        <form action="{{ route('student.coach.send-assessment', $coaching->id) }}" method="POST" class="d-inline" id="send_assessment">
+                            @csrf
+                            @method('PUT')
+                            <button type="button" class="btn btn-outline-success" onclick="handleSendAssessment(event)">
+                                {{ __('Kirim Penilaian') }} <i class="fa fa-arrow-right"></i>
                             </button>
                         </form>
                         @endif
@@ -201,10 +210,12 @@
                                 <div>
                                     @php
                                         $totalJoinedCoachees = $coaching->joinedCoachees()->count();
-                                        $filledReports = $session->details->pluck('coaching_user_id')->unique()->count();
+                                        $filledReports = $session->details->whereNotNull('activity')->count();
+                                        $filledReviews = $session->details->whereNotNull('coaching_note')->count();
                                     @endphp
                                     <strong>Pertemuan {{ $loop->iteration }}</strong>
-                                    (<span title="Jumlah coachee yang telah membuat laporan pertemuan">Terisi {{ $filledReports }}/{{ $totalJoinedCoachees }}</span>)
+                                    <span class="badge bg-info" title="Jumlah coachee yang telah membuat laporan pertemuan">Terisi ({{ $filledReports }}/{{ $totalJoinedCoachees }})</span>
+                                    <span class="badge bg-warning" title="Jumlah laporan pertemuan yang telah ditinjau coach">Ditinjau ({{ $filledReviews }}/{{ $filledReports }})</span>
                                 </div>
                                 <div>
                                     <small class="text-muted">
@@ -256,7 +267,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="border px-4 py-2">
-                                                   {!! $detail?->coaching_note ? truncate(strip_tags($detail->coaching_note)) : '<em>Belum direview</em>' !!}
+                                                   {!! $detail?->coaching_note ? truncate(strip_tags($detail->coaching_note)) : '<em>Belum ditinjau</em>' !!}
                                                 </td>
                                                 <td class="border px-4 py-2">
                                                     <div class="dashboard__action d-inline-flex align-items-center gap-2">
@@ -516,6 +527,23 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $('#process_coaching').submit();
+            }
+        })
+    }
+
+    function handleSendAssessment(event) {
+        event.preventDefault();
+        swal.fire({
+            title: 'Perhatian',
+            text: 'Penilaian yang sudah dikirim ke BKPSDM tidak akan dapat diubah lagi. Apakah Anda yakin ingin mengirim penilaian ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Kirim!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#send_assessment').submit();
             }
         })
     }

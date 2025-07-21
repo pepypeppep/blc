@@ -1251,6 +1251,44 @@
                 ]
             }
         },
+        "/coaching/coach/{id}/finish-coaching": {
+            "put": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Mark coaching as completed",
+                "description": "Updates the status of the coaching to 'done' after ensuring all joined coachees have been assessed.",
+                "operationId": "d8207bb05e18e3bd9cc06258d6ea2597",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Coaching id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Coaching finished successfully."
+                    },
+                    "422": {
+                        "description": "Validation failed. Possible reasons: unassessed coachees or incorrect coaching status."
+                    },
+                    "500": {
+                        "description": "Failed to finish coaching"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/coaching/coachee": {
             "get": {
                 "tags": [

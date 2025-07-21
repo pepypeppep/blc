@@ -173,6 +173,7 @@ Route::name('api.')->group(function () {
                     Route::post('/{id}/assessment-store/{coacheeId}', [CoachApiController::class, 'assessmentStore'])->name('assessment-store');
                     Route::post('/{id}/assessment-submit/{coacheeId}', [CoachApiController::class, 'assessmentSubmit'])->name('assessment-submit');
                     Route::post('/update-session', [CoachApiController::class, 'changeSessionDate'])->name('update-session');
+                    Route::put('/{id}/finish-coaching', [CoachApiController::class, 'finishCoaching'])->name('finish-coaching');
                 });
             Route::get('/{id}/{module}/{type}', [CoacheeApiController::class, 'showDocument'])->name('show.document');
         });

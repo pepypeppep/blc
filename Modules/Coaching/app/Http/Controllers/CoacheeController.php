@@ -110,10 +110,12 @@ class CoacheeController extends Controller
         $request->validate([
             'session_id' => 'required',
             'activity' => 'required',
+            'description' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ], [
             'session_id.required' => 'Sesi harus dipilih.',
             'activity.required' => 'Kegiatan harus dipilih.',
+            'description.required' => 'Hambatan harus diisi.',
             'image.required' => 'Gambar harus dipilih.',
         ]);
 
@@ -147,8 +149,8 @@ class CoacheeController extends Controller
             $result = CoachingSessionDetail::create([
                 'coaching_session_id' => $season->id,
                 'coaching_user_id' => $coachingUser->id,
-                'activity' => "Pertemuan " . $season->coaching->coachingSessions->count(),
-                'description' => $request->activity,
+                'activity' => $request->activity,
+                'description' => $request->description,
                 'image' => $request->fileName,
             ]);
 

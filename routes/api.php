@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\MenteeApiController;
 use App\Http\Controllers\Api\MentorApiController;
 use App\Http\Controllers\Api\PendidikanLanjutanController;
 use App\Http\Controllers\Api\StudentLearningApiController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\SSOController;
 
 Route::middleware('auth:sso-api')->get('/hello', function (Request $request) {
@@ -22,6 +23,7 @@ Route::middleware('auth:sso-api')->get('/hello', function (Request $request) {
 });
 
 Route::middleware('auth:sso-api')->get('/whoami', [SSOController::class, 'whoami'])->name('whoami');
+Route::middleware('auth:sso-api')->get('/users', [UserController::class, 'index'])->name('users.index');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

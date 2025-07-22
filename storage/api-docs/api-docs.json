@@ -4871,6 +4871,40 @@
                 ]
             }
         },
+        "/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get list of users",
+                "operationId": "7208c29037df2b8bb02499ba39ed8a78",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Keyword to search",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "John Doe"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/whoami": {
             "get": {
                 "tags": [
@@ -4982,6 +5016,10 @@
         {
             "name": "Student Learning",
             "description": "Student Learning"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
         },
         {
             "name": "Auth",

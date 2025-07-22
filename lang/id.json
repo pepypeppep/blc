@@ -2115,12 +2115,14 @@
     "Activity": "Kegiatan",
     "Mentoring Date": "Tanggal Mentoring",
     "Mentoring Detail": "Detail Mentoring",
-    "Submission" : "Pengajuan",
-    "Process" : "Proses",
-    "Evaluation" : "Penilaian",
-    "Final Report Mentoring" : "Laporan Akhir Mentoring",
-    "List Mentor" : "Daftar Mentor",
-    "List Mentee" : "Daftar Mentee",
-    "Mentor Availability Letter" : "Surat Kesediaan Mentor"
-
+    "Submission": "Pengajuan",
+    "Process": "Proses",
+    "Evaluation": "Penilaian",
+    "Final Report Mentoring": "Laporan Akhir Mentoring",
+    "List Mentor": "Daftar Mentor",
+    "List Mentee": "Daftar Mentee",
+    "Mentor Availability Letter": "Surat Kesediaan Mentor",
+    "Change Role To Instructor": "Ubah Menjadi Instruktur",
+    "Change Role To Student": "Ubah Menjadi Peserta",
+    "Change Role": "Ubah Peran"
 }

@@ -148,6 +148,14 @@
             background: rgba(47, 87, 239, 0.20);
             color: var(--tg-theme-primary);
         }
+        .dashboard__action .btn-action-success {
+            background: rgba(40, 167, 69, 1);
+            color: var(--tg-common-color-white);
+        }
+        .dashboard__action .btn-action-success:hover {
+            background: rgba(40, 167, 69, 0.20);
+            color: rgba(40, 167, 69, 1);
+        }
         
     </style>
 @endpush

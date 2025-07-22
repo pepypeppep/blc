@@ -132,7 +132,7 @@ class CoachController extends Controller
     public function show($coachingId)
     {
         $coaching = Coaching::with([
-            'coachees', 'joinedCoachees', 'coachingSessions.details.coachingUser.coachee'
+            'coachees:id,name', 'joinedCoachees:id,name', 'coachingSessions.details.coachingUser.coachee'
         ])->findOrFail($coachingId);
 
         authorizeCoachAccess($coaching);
@@ -204,6 +204,33 @@ class CoachController extends Controller
         return redirect()->route('student.coach.index')->with(['messege' => 'Status coaching sudah menjadi proses!', 'alert-type' => 'success']);
     }
 
+    public function finishCoaching($coachingId)
+    {
+        $coaching = Coaching::with('joinedCoachees')->findOrFail($coachingId);
+
+        authorizeCoachAccess($coaching);
+
+        if (!$coaching->isAllCoacheesAssessed()) {
+            return redirect()->back()->with([
+                'alert-type' => 'error',
+                'messege' => 'Masih ada coachee yang belum dinilai.'
+            ]);
+        }
+
+        if ($coaching->status !== Coaching::STATUS_PROCESS) {
+            return redirect()->back()->with([
+                'alert-type' => 'error',
+                'messege' => 'Status coaching harus dalam status proses untuk diselesaikan.'
+            ]);
+        }
+
+        $coaching->status = Coaching::STATUS_DONE;
+        $coaching->updated_at = now();
+        $coaching->save();
+
+        return redirect()->back()->with(['messege' => 'Penilaian telah terkirim ke BKPSDM. Coaching berhasil diselesaikan!', 'alert-type' => 'success']);
+    }
+
     public function assessment(Request $request, $coachingId, $coacheeId )
     {
         $user = auth()->user();
@@ -227,24 +254,24 @@ class CoachController extends Controller
         $validated = $request->validate([
             'goal_achieved' => 'required|in:0,1',
             'goal_description' => 'required|string',
-            'discipline_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'discipline_level' => 'required|integer|min:1|max:100',
             'discipline_description' => 'required|string',
-            'teamwork_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'teamwork_level' => 'required|integer|min:1|max:100',
             'teamwork_description' => 'required|string',
-            'initiative_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'initiative_level' => 'required|integer|min:1|max:100',
             'initiative_description' => 'required|string',
         ], [
             'goal_achieved.required' => 'Target tidak boleh kosong',
             'goal_achieved.in' => 'Target harus 0 (Tidak) atau 1 (Ya)',
             'goal_description.required' => 'Deskripsi target tidak boleh kosong',
             'discipline_level.required' => 'Tingkat disiplin tidak boleh kosong',
-            'discipline_level.in' => 'Tingkat disiplin harus antara 1 sampai 10',
+            'discipline_level.in' => 'Tingkat disiplin harus antara 1 sampai 100',
             'discipline_description.required' => 'Deskripsi disiplin tidak boleh kosong',
             'teamwork_level.required' => 'Kerjasama tidak boleh kosong',
-            'teamwork_level.in' => 'Kerjasama harus antara 1 sampai 10',
+            'teamwork_level.in' => 'Kerjasama harus antara 1 sampai 100',
             'teamwork_description.required' => 'Deskripsi kerjasama tidak boleh kosong',
             'initiative_level.required' => 'Inisiatif tidak boleh kosong',
-            'initiative_level.in' => 'Inisiatif harus antara 1 sampai 10',
+            'initiative_level.in' => 'Inisiatif harus antara 1 sampai 100',
             'initiative_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
         ]);
 
@@ -252,12 +279,9 @@ class CoachController extends Controller
         $coaching = Coaching::where('id', $coachingId)
                     ->where('coach_id', $user->id)
                     ->firstOrFail();
-
-        if ($coaching->status != Coaching::STATUS_EVALUATION) {
-            return redirect()->back()->with([
-                'messege' => 'Penilaian hanya bisa dilakukan jika coaching dalam status penilaian', 
-                'alert-type' => 'error'
-            ]);
+        
+        if ($coaching->status == Coaching::STATUS_DONE) {
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => 'Status coaching sudah selesai. Penilaian tidak dapat dilakukan lagi']);
         }
         
         $coachingUser = CoachingUser::with('coaching')
@@ -265,6 +289,13 @@ class CoachController extends Controller
             ->where('user_id', $coacheeId)
             ->whereHas('coaching', fn($q) => $q->where('coach_id', $user->id))
             ->firstOrFail();
+
+        if (empty($coachingUser->final_report)) {
+            return redirect()->back()->with([
+                'messege' => 'Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee', 
+                'alert-type' => 'error'
+            ]);
+        }
 
         CoachingAssessment::updateOrCreate(
             ['coaching_user_id' => $coachingUser->id],
@@ -280,7 +311,7 @@ class CoachController extends Controller
             ]
         );
 
-        return redirect()->route('student.coach.index')->with([
+        return redirect()->route('student.coach.show', $coachingId)->with([
             'messege' => 'Penilaian berhasil dilakukan', 
             'alert-type' => 'success'
         ]);
@@ -291,11 +322,11 @@ class CoachController extends Controller
         $validated = $request->validate([
             'goal_achieved' => 'required|in:0,1',
             'goal_description' => 'required|string',
-            'discipline_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'discipline_level' => 'required|integer|min:1|max:100',
             'discipline_description' => 'required|string',
-            'teamwork_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'teamwork_level' => 'required|integer|min:1|max:100',
             'teamwork_description' => 'required|string',
-            'initiative_level' => 'required|in:1,2,3,4,5,6,7,8,9,10',
+            'initiative_level' => 'required|integer|min:1|max:100',
             'initiative_description' => 'required|string',
         ], [
             '*.required' => 'Isian tidak boleh kosong',
@@ -307,11 +338,8 @@ class CoachController extends Controller
             ->where('coach_id', $user->id)
             ->firstOrFail();
 
-        if ($coaching->status != Coaching::STATUS_EVALUATION) {
-            return redirect()->back()->with([
-                'messege' => 'Penilaian hanya bisa dilakukan jika coaching dalam status penilaian', 
-                'alert-type' => 'error'
-            ]);
+        if ($coaching->status == Coaching::STATUS_DONE) {
+            return redirect()->back()->with(['alert-type' => 'error', 'messege' => 'Status coaching sudah selesai. Penilaian tidak dapat dilakukan lagi']);
         }
 
         $coachingUser = CoachingUser::with('coaching')
@@ -319,6 +347,13 @@ class CoachController extends Controller
             ->where('user_id', $coacheeId)
             ->whereHas('coaching', fn($q) => $q->where('coach_id', $user->id))
             ->firstOrFail();
+
+        if (empty($coachingUser->final_report)) {
+            return redirect()->back()->with([
+                'messege' => 'Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee', 
+                'alert-type' => 'error'
+            ]);
+        }
 
         CoachingAssessment::updateOrCreate(
             ['coaching_user_id' => $coachingUser->id],
@@ -375,15 +410,22 @@ class CoachController extends Controller
         ->findOrFail($validated['coaching_user_id']);
 
         if (!$coachingUser) {
-            abort(403, 'Anda tidak memiliki izin untuk mengakses penilaian ini.');
+            abort(403, 'Anda tidak memiliki izin untuk mengakses ini.');
         }
 
         authorizeCoachAccess($coachingUser->coaching);
 
-        $detail = CoachingSessionDetail::firstOrNew([
+        $detail = CoachingSessionDetail::where([
             'coaching_session_id' => $validated['session_id'],
             'coaching_user_id' => $validated['coaching_user_id'],
-        ]);
+        ])->first();
+
+        if (!$detail || $detail->activity === null) {
+            return redirect()->back()->with([
+                'messege' => 'Gagal menyimpan review. Laporan dari coachee belum tersedia.',
+                'alert-type' => 'error',
+            ]);
+        }
 
         $detail->coaching_note = $validated['review_note'];
         $detail->coaching_instructions = $validated['review_instruction'];
@@ -391,5 +433,45 @@ class CoachController extends Controller
 
         return redirect()->back()->with(['messege' => 'Review berhasil disimpan', 'alert-type' => 'success']);
 
+    }
+
+    public function changeSessionDate(Request $request)
+    {
+        $request->validate([
+            'session_id' => 'required|string',
+            'coaching_date' => 'required|date',
+        ], [
+            'session_id.required' => 'Sesi pertemuan harus dipilih',
+            'coaching_date.required' => 'Tanggal coaching tidak boleh kosong',
+        ]);
+
+        $user = auth()->user();
+        $session = CoachingSession::whereHas('Coaching', function ($query) use ($user) {
+            $query->where('coach_id', $user->id);
+        })->where('id', $request->session_id)
+          ->with('details') 
+          ->first();
+
+        if (!$session) {
+            return back()->with(['messege' => 'Sesi tidak ditemukan.', 'alert-type' => 'error']);
+        }
+
+        if($session->coaching->coach_id != $user->id){
+            abort(403, 'Anda tidak memiliki izin untuk mengubah coaching ini.');
+        }
+
+        $hasReview = $session->details->contains(function ($detail) {
+            return !empty($detail->coaching_note);
+        });
+
+        if ($hasReview) {
+            return back()->with(['messege' => 'Tanggal coaching tidak dapat diubah karena laporan pertemuan telah ditanggapi oleh coach.', 'alert-type' => 'error']);
+        }
+
+        $session->coaching_date_changed = $session->coaching_date;
+        $session->coaching_date = $request->coaching_date;
+        $session->save();
+
+        return back()->with(['alert-type' => 'success', 'messege' => 'Tanggal coaching berhasil diperbarui.']);
     }
 }

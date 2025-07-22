@@ -60,7 +60,8 @@
         "files": [
             "app/Helpers/helper.php",
             "Modules/Menubuilder/app/Helpers/helper.php",
-            "Modules/Installer/app/Helpers/helper.php"
+            "Modules/Installer/app/Helpers/helper.php",
+            "Modules/InstructorEvaluation/app/helper.php"
         ]
     },
     "autoload-dev": {

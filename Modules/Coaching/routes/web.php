@@ -23,6 +23,9 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::post('/{id}/tolak-konsensus', [CoacheeController::class, 'tolakKonsensus'])->name('tolak-konsensus');
         Route::post('/{id}/join-konsensus', [CoacheeController::class, 'joinKonsensus'])->name('join-konsensus');
         Route::post('/submit-report', [CoacheeController::class, 'submitReport'])->name('submit-report');
+        Route::put('/submit-final-report/{coachingId}', [CoacheeController::class, 'submitFinalReport'])->name('submit-final-report');
+        Route::get('/preview/{coachingId}/{coachingSessionId}', [CoacheeController::class, 'previewFileName'])->name('preview');
+        Route::get('/preview-final-report/{coachingId}/{coachingUserId}', [CoacheeController::class, 'previewFinalReport'])->name('preview-final-report');
     });
 
     Route::group(['prefix' => 'coach', 'as' => 'coach.'], function () {
@@ -32,12 +35,14 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::get('/{coachingId}', [CoachController::class, 'show'])->name('show');
         Route::put('/{coachingId}/set-consensus', [CoachController::class, 'initiateConsensus'])->name('set-consensus');
         Route::put('/{coachingId}/proses-coaching', [CoachController::class, 'processCoaching'])->name('process-coaching');
+        Route::put('/{coachingId}/send-assessment', [CoachController::class, 'finishCoaching'])->name('send-assessment');
         Route::get('{coachingId}/penilaian/{coacheeId}', [CoachController::class, 'assessment'])->name('penilaian');
         Route::post('{coachingId}/penilaian/{coacheeId}', [CoachController::class, 'assessmentStore'])->name('penilaian.store');
         Route::post('{coachingId}/kirim-penilaian/{coacheeId}', [CoachController::class, 'assessmentSubmit'])->name('penilaian.kirim');
+        Route::put('/ubah-pertemuan', [CoachController::class, 'changeSessionDate'])->name('change-session');
         Route::get('/{detailId}/img', [CoachController::class, 'viewImage'])->name('view.img');
         Route::get('/{id}/document', [CoachController::class, 'showDocumentSpt'])->name('view.spt');
         Route::get('/{id}/report', [CoachController::class, 'showReport'])->name('view.report');
-        Route::post('/review', [CoachController::class, 'reviewStore'])->name('review');
+        Route::put('/review', [CoachController::class, 'reviewStore'])->name('review');
     });
 });

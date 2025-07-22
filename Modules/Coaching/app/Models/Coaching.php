@@ -13,11 +13,11 @@ class Coaching extends Model
 
     protected $table = 'coachings';
     protected $guarded = ['id'];
+    protected $appends = ['spt_url'];
 
     public const STATUS_DRAFT = "Draft";
     public const STATUS_CONSENSUS = "Konsensus";
     public const STATUS_PROCESS = "Proses";
-    public const STATUS_EVALUATION = "Penilaian";
     public const STATUS_DONE = "Selesai";
 
     public function coachees()
@@ -76,12 +76,6 @@ class Coaching extends Model
                 'color' => 'info'
             ];
         }
-        if ($this->status === $this::STATUS_EVALUATION) {
-            return [
-                'label' => 'Penilaian',
-                'color' => 'primary'
-            ];
-        }
         if ($this->status === $this::STATUS_DONE) {
             return [
                 'label' => 'Selesai',
@@ -94,13 +88,21 @@ class Coaching extends Model
         ];
     }
 
-    public function isProcessOrEvaluationOrDone(): bool
+    public function isAllCoacheesAssessed(): bool
     {
-        return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_EVALUATION, self::STATUS_DONE]);
+        return !CoachingUser::where('coaching_id', $this->id)
+        ->where('is_joined', true)
+        ->whereDoesntHave('assessment')
+        ->exists();
     }
 
-    public function isEvaluationOrDone(): bool
+    public function isProcessOrDone(): bool
     {
-        return in_array($this->status, [self::STATUS_EVALUATION, self::STATUS_DONE]);
+        return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_DONE]);
+    }
+
+    public function getSptUrlAttribute()
+    {
+        return route('api.coaching.show.document', ['id' => $this->id, 'module' => 'coaching', 'type' => 'spt']);
     }
 }

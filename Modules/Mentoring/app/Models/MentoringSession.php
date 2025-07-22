@@ -13,6 +13,7 @@ class MentoringSession extends Model
 
     protected $table = 'mentoring_sessions';
     protected $guarded = ['id'];
+    protected $appends = ['image_url'];
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_REPORTED = 'reported';
@@ -21,5 +22,10 @@ class MentoringSession extends Model
     public function Mentoring()
     {
         return $this->belongsTo(Mentoring::class);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        return route('api.mentoring.show.document.session', ['id' => $this->id, 'type' => 'image']);
     }
 }

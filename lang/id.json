@@ -1357,6 +1357,8 @@
     "Instructions for Instructor": "Petunjuk untuk Instruktur",
     "this will be displayed on the top of the become instructor page": "ini akan ditampilkan di bagian atas halaman menjadi instruktur",
     "Instructor Requests": "Permintaan Instruktur",
+    "Instructor Evaluation": "Penilaian Instruktur",
+    "Instructor Evaluation List": "Daftar Penilaian Instruktur",
     "Request List": "Daftar Permintaan",
     "Request Settings": "Pengaturan Permintaan",
     "Should Have At Least One Default Language!": "Harus Memiliki Setidaknya Satu Bahasa Default!",
@@ -2059,6 +2061,7 @@
     "Knowledges": "Pengetahuan",
     "Knowledge List": "Daftar Pengetahuan",
     "Knowledge Detail": "Detail Pengetahuan",
+    "Waiting for Article Approval": "Menunggu Persetujuan Artikel",
     "Explain the reason for rejection...": "Berikan alasan penolakan...",
     "Views": "Dilihat",
     "Visibility": "Visibilitas",
@@ -2124,5 +2127,8 @@
     "Mentor Availability Letter" : "Surat Kesediaan Mentor",
     "Coaching List": "Daftar Coaching",
     "Learning Resources": "Sumber Belajar",
-    "Upload SPT": "Unggah SPT"
+    "Upload SPT": "Unggah SPT",
+    "Change Role To Instructor": "Ubah Menjadi Instruktur",
+    "Change Role To Student": "Ubah Menjadi Peserta",
+    "Change Role": "Ubah Peran"
 }

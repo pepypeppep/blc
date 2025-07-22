@@ -98,11 +98,13 @@
                                                                     class="flaticon-mortarboard"></i>{{ $enroll->course->enrollments()->count() }}
                                                             </li>
                                                             @if ($courseCompletedPercent == 100)
+                                                                {{-- Pending to get signed --}}
                                                                 @if ($enroll->certificate_status == 'requested')
                                                                     <li class="ms-auto">
                                                                         {{-- certificate already requested --}}
                                                                         <div>{{ __('Certificate Requested') }}</div>
                                                                     </li>
+                                                                {{-- Certificate Already Signed --}}
                                                                 @elseif ($enroll->certificate_status == 'signed')
                                                                     <li class="ms-auto">
                                                                         <a class="success-button" target="_blank"
@@ -112,13 +114,44 @@
                                                                             {{ __('Download Certificate') }}</a>
                                                                     </li>
                                                                 @else
+
+                                                                @if (isAllInstructorEvaluated($enroll->course, userAuth()))
+                                                                    @if($enroll->article->first() !=null)
+                                                                        @if( $enroll->article->first()->status == 'published')
+                                                                        {{-- Show certificate request button --}}
+                                                                        <li class="ms-auto">
+                                                                            <a class="basic-button"
+                                                                                href="{{ route('student.request-sign-certificate', $enroll->uuid) }}"><i
+                                                                                    class="certificate fas fa-signature"
+                                                                                    style="color: #fafdff;"></i>
+                                                                                {{ __('Certificate Request') }}</a>
+                                                                        </li>
+                                                                        @else
+                                                                        <li class="ms-auto">
+                                                                            <div>{{ __('Waiting for Article Approval') }}</div>
+                                                                        </li>
+                                                                        @endif
+                                                                        @else
+                                                                        {{-- show create article button --}}
+                                                                        <li class="ms-auto">
+                                                                            <a class="basic-button"
+                                                                                href="{{ route('student.pengetahuan.create', ['course' => $enroll->course->id]) }}"><i
+                                                                                    class="certificate fas fa-signature"
+                                                                                    style="color: #fafdff;"></i>
+                                                                                {{ __('Buat Artikel Pengetahuan') }}</a>
+                                                                        </li>
+                                                                    @endif
+                                                                @else
+                                                                    {{-- Show instructor evaluation button --}}
                                                                     <li class="ms-auto">
                                                                         <a class="basic-button"
-                                                                            href="{{ route('student.request-sign-certificate', $enroll->id) }}"><i
+                                                                            href="{{ route('student.instructorevaluation.create', ['course' => $enroll->course->id]) }}"><i
                                                                                 class="certificate fas fa-signature"
                                                                                 style="color: #fafdff;"></i>
-                                                                            {{ __('Certificate Request') }}</a>
-                                                                    </li>
+                                                                            {{ __('Instructor Evaluation') }}</a>
+                                                                    </li>   
+
+                                                                @endif
                                                                 @endif
                                                             @endif
                                                         </ul>

@@ -58,9 +58,9 @@
 
             <div class="mb-3">
                 <div class="mb-3 d-flex flex-wrap justify-content-between align-items-start border-top pt-3 mt-4 gap-3">
-                    <div class="flex-grow-1 me-3" style="min-width: 250px; max-width: 100%;">
+                    <div class="flex-grow-1 me-3" style="min-width: 250px; max-width: 80%;">
                         <h6 class="title">
-                            {{ __('List Coachee') }} 
+                            {{ __('List Coachee') }}
                             <span title="Jumlah coachee yang telah merespon">({{ $coaching->respondedCoachees()->count() }}/{{ $coaching->coachees()->count() }})</span>
                         </h6>
                         <span class="text-muted small d-block">
@@ -76,7 +76,8 @@
                         </span>
                         @elseif ($coaching->status == Coaching::STATUS_PROCESS)
                         <span class="text-muted small d-block">
-                            Penilaian kepada coachee dapat dilakukan ketika coachee sudah menyelesaikan laporan penugasan dan unggah Laporan Akhir.
+                            Penilaian dapat dilakukan ketika coachee sudah menyelesaikan laporan pertemuan dan unggah Laporan Akhir. <br />
+                            Penilaian dapat dikirim ke BKPSDM ketika semua coachee yang bergabung telah dinilai.
                         </span>
                         @endif
                     </div>
@@ -96,6 +97,14 @@
                             @method('PUT')
                             <button type="button" class="btn btn-outline-success" onclick="handleStartCoaching(event)">
                                 {{ __('Mulai Proses Coaching') }} <i class="fa fa-arrow-right"></i>
+                            </button>
+                        </form>
+                        @elseif ($coaching->status == Coaching::STATUS_PROCESS && $coaching->isAllCoacheesAssessed())
+                        <form action="{{ route('student.coach.send-assessment', $coaching->id) }}" method="POST" class="d-inline" id="send_assessment">
+                            @csrf
+                            @method('PUT')
+                            <button type="button" class="btn btn-outline-success" onclick="handleSendAssessment(event)">
+                                {{ __('Kirim Penilaian') }} <i class="fa fa-arrow-right"></i>
                             </button>
                         </form>
                         @endif
@@ -129,18 +138,18 @@
                                     @if ($coachee->pivot->is_joined && $coachee->pivot->joined_at)
                                         <small>Dibuat : {{ \Carbon\Carbon::parse($coachee->pivot->joined_at)->translatedFormat('d F Y H:i') }}</small>
                                     @else
-                                        {{ $coachee->pivot->notes ? truncate(strip_tags($coachee->pivot->notes)) : '-' }}<br/> 
+                                        {{ $coachee->pivot->notes ? truncate(strip_tags($coachee->pivot->notes)) : '-' }}<br/>
                                         <small>Dibuat : {{ \Carbon\Carbon::parse($coachee->pivot->updated_at)->translatedFormat('d F Y H:i') }}</small>
                                     @endif
                                 </td>
                                 <td class="border px-4 py-2">
                                     <div class="dashboard__action d-inline-flex align-items-center gap-2">
-                                        @if ($coachee->pivot->final_report && $coachee->pivot->is_joined && $coaching->isEvaluationOrDone())
+                                        @if ($coachee->pivot->final_report && $coachee->pivot->is_joined)
                                             <a href="{{ route('student.coach.view.report', $coachee->pivot->id) }}" class="btn-action-primary" title="Lihat Laporan Akhir" target="_blank">
                                                 <i class="fa fa-eye"></i> &nbsp;{{ __('Laporan Akhir') }}
                                             </a>
                                             <a class="btn-action-warning" href="{{ route('student.coach.penilaian', [$coaching->id, $coachee->id]) }}">
-                                                <i class="fa fa-check-circle"></i> &nbsp;{{ __('Nilai') }}
+                                                <i class="fa fa-check-circle"></i> &nbsp;{{ __('Penilaian') }}
                                             </a>
                                         @else
                                         <a href="javascript:void(0)"
@@ -155,10 +164,10 @@
                                             title="Laporan akhir belum tersedia"
                                             onclick="return false;"
                                             style="pointer-events: none; opacity: 0.5;">
-                                            <i class="fa fa-eye"></i> &nbsp;{{ __('Nilai') }}
+                                            <i class="fa fa-eye"></i> &nbsp;{{ __('Penilaian') }}
                                         </a>
                                         @endif
-                                        
+
                                     </div>
                                 </td>
                             </tr>
@@ -172,12 +181,23 @@
                 </div>
             </div>
 
-            <div class="mb-3 d-flex justify-content-between align-items-center border-top pt-3 mt-4">
-                <div>
-                    <h6 class="title">{{ __('Session Datetime') }} <span title="Jumlah pertemuan">({{ $coaching->total_session }})</span></h6>
-                    <span class="text-muted small">
-                        Lakukan sesi coaching sesuai jadwal dan berikan catatan/arahan pada hasil penugasan.
-                    </span>
+            <div class="mb-3 border-top pt-3 mt-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h6 class="title">{{ __('Session Datetime') }} <span title="Jumlah pertemuan">({{ $coaching->total_session }})</span></h6>
+                        <span class="text-muted small">
+                            Lakukan sesi coaching sesuai jadwal dan berikan catatan/arahan pada hasil penugasan. <br />
+                            Tanggal sesi pertemuan dapat diubah selama laporan sesi pertemuan belum direviu/ditinjau.
+                        </span>
+                    </div>
+                    <div>
+                        @if ($coaching->status !== Coaching::STATUS_DONE)
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal"
+                            data-bs-target="#changeSessionDatetimeModal">
+                            <i class="fa fa-calendar-alt me-1"></i> Ubah Jadwal Sesi
+                        </button>
+                        @endif
+                    </div>
                 </div>
             </div>
 
@@ -188,8 +208,14 @@
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-{{$loop->iteration}}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-{{$loop->iteration}}">
                             <div class="d-block">
                                 <div>
+                                    @php
+                                        $totalJoinedCoachees = $coaching->joinedCoachees()->count();
+                                        $filledReports = $session->details->whereNotNull('activity')->count();
+                                        $filledReviews = $session->details->whereNotNull('coaching_note')->count();
+                                    @endphp
                                     <strong>Pertemuan {{ $loop->iteration }}</strong>
-                                    {!! !empty($session->activity) ? '<span class="badge bg-info">Terisi</span>' : '' !!}
+                                    <span class="badge bg-info" title="Jumlah coachee yang telah membuat laporan pertemuan">Terisi ({{ $filledReports }}/{{ $totalJoinedCoachees }})</span>
+                                    <span class="badge bg-warning" title="Jumlah laporan pertemuan yang telah ditinjau coach">Ditinjau ({{ $filledReviews }}/{{ $filledReports }})</span>
                                 </div>
                                 <div>
                                     <small class="text-muted">
@@ -201,7 +227,7 @@
                     </h2>
                     <div id="panelsStayOpen-collapse-{{$loop->iteration}}" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            @if ($coaching->isProcessOrEvaluationOrDone())
+                            @if ($coaching->isProcessOrDone())
                             @php
                                 $detailsByUserId = $session->details->keyBy('coaching_user_id');
                             @endphp
@@ -241,7 +267,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="border px-4 py-2">
-                                                   {!! $detail?->coaching_note ? truncate(strip_tags($detail->coaching_note)) : '<em>Belum direview</em>' !!}
+                                                   {!! $detail?->coaching_note ? truncate(strip_tags($detail->coaching_note)) : '<em>Belum ditinjau</em>' !!}
                                                 </td>
                                                 <td class="border px-4 py-2">
                                                     <div class="dashboard__action d-inline-flex align-items-center gap-2">
@@ -250,7 +276,7 @@
                                                             $imageUrl = $detail->image && Storage::disk('private')->exists($detail->image)
                                                                         ? route('student.coach.view.img', $detail->id)
                                                                         : null;
-                                            
+
                                                             $modalData = [
                                                                 'coachee_name' => $coachee->name,
                                                                 'activity' => $detail->activity ?? '',
@@ -310,7 +336,7 @@
     <div class="modal-content">
       <form method="POST" action="{{ route('student.coach.review') }}" enctype="multipart/form-data">
         @csrf
-
+        @method('PUT')
         <input type="hidden" name="session_id" id="modal-session-id">
         <input type="hidden" name="coaching_user_id" id="modal-coaching-user-id">
 
@@ -370,16 +396,107 @@
     </div>
   </div>
 </div>
+
+<!-- Modal for changing session datetime -->
+<div class="modal fade" id="changeSessionDatetimeModal" tabindex="-1"
+    aria-labelledby="changeSessionDatetimeModalLabel" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form action="{{ route('student.coach.change-session') }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changeSessionDatetimeModalLabel">Ubah Jadwal Sesi Coaching</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="session_number" class="form-label">Pilih Sesi<code>*</code></label>
+                        <select class="form-select" id="session_number" name="session_id" required>
+                            <option value="">Pilih Sesi Pertemuan</option>
+                            @foreach ($coaching->coachingSessions as $session)
+                                @php
+                                    $isReviewed = $session->details->contains(function ($detail) {
+                                        return !empty($detail->coaching_note);
+                                    });
+                                @endphp
+                                <option value="{{ $session->id }}" data-date="{{ $session->coaching_date }}" {{ $isReviewed ? 'disabled' : '' }}>
+                                    Pertemuan {{ $loop->iteration }} &mdash;
+                                    {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
+                                    {{ $isReviewed ? ' (sudah direview coach)' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_datetime" class="form-label">Tanggal &amp; Waktu Baru<code>*</code></label>
+                        <input type="text" class="form-control datetimepicker" id="new_datetime"
+                            name="coaching_date" placeholder="Pilih tanggal & waktu baru" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endpush
 
 
 @push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
 @endpush
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sessionSelect = document.getElementById("session_number");
+        const datetimeInput = document.querySelector(".datetimepicker");
+
+        // Inisialisasi flatpickr dengan konfigurasi dasar
+        const fp = flatpickr(datetimeInput, {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true,
+            altInput: true,
+            altFormat: "l, d F Y - H:i",
+            locale: "id"
+        });
+
+        // Simpan semua sesi coaching dari Blade
+        const sessions = @json($coaching->coachingSessions);
+
+        function updateFlatpickrLimits() {
+            const selectedSessionId = sessionSelect.value;
+            const currentIndex = sessions.findIndex(s => s.id == selectedSessionId);
+
+            let minDate = null;
+            let maxDate = null;
+
+            if (currentIndex > 0) {
+                minDate = sessions[currentIndex - 1].coaching_date;
+            }
+
+            if (currentIndex < sessions.length - 1) {
+                maxDate = sessions[currentIndex + 1].coaching_date;
+            }
+
+            fp.set("minDate", minDate);
+            fp.set("maxDate", maxDate);
+        }
+
+        // Jalankan update saat select diubah
+        sessionSelect.addEventListener("change", updateFlatpickrLimits);
+
+        // Jalankan saat halaman pertama kali load
+        updateFlatpickrLimits();
+    });
+    
     function handleInitConsensus(event) {
         event.preventDefault();
         swal.fire({
@@ -414,6 +531,23 @@
         })
     }
 
+    function handleSendAssessment(event) {
+        event.preventDefault();
+        swal.fire({
+            title: 'Perhatian',
+            text: 'Penilaian yang sudah dikirim ke BKPSDM tidak akan dapat diubah lagi. Apakah Anda yakin ingin mengirim penilaian ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Kirim!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#send_assessment').submit();
+            }
+        })
+    }
+
 $(document).ready(function () {
   const modal = document.getElementById('dynamicDetailModal');
 
@@ -422,7 +556,7 @@ $(document).ready(function () {
 
     $('#modal-coachee-name').text(data.coachee_name || '-');
     $('#modal-activity').text(data.activity || '-');
-    $('#modal-obstacle').text(data.obstacle || '-');
+    $('#modal-obstacle').html(data.obstacle || '-');
     $('#modal-instructions').text(data.instructions || '-');
 
     const imgEl = document.getElementById('modal-image');

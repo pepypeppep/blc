@@ -99,6 +99,12 @@
                     @include('instructorrequest::sidebar')
                 @endif --}}
 
+                @if (
+                    (Module::isEnabled('InstructorEvaluation')) 
+                      )
+                    @include('instructorevaluation::sidebar')
+                @endif
+
                 @if (Module::isEnabled('Customer') && checkAdminHasPermission('customer.view'))
                     @include('customer::sidebar')
                 @endif

@@ -30,6 +30,16 @@ class CourseChapter extends Model
     }
 
     /**
+     * Get Course that owns the CourseChapter
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    /**
      * Boot method to handle model events.
      */
     protected static function boot()

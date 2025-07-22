@@ -166,12 +166,6 @@
                         <button type="submit" class="btn btn-danger mt-4 mb-3" form="penilaian_form">
                             {{ __('Simpan Penilaian') }} <i class="fa fa-arrow-right"></i>
                         </button>
-                        @if ($data->coaching->isAllCoacheesAssessed())
-                        <button type="button" class="btn btn-primary mt-4 mb-3"
-                            onclick="handleKirimPenilaianDanKirimKeKepegawaian(event, {{ $data->coaching->id }}, {{$data->coachee->id}})">
-                            {{ __('Kirim Penilaian Ke BKPSDM') }} <i class="fa fa-arrow-right"></i>
-                        </button>
-                        @endif
                     </div>
                 </div>
                 @endif

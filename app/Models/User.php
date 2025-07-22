@@ -213,4 +213,9 @@ class User extends Authenticatable
     {
         return $this->asn_status == User::ASN_STATUS_PNS;
     }
+
+    public function isInstructor()
+    {
+        return $this->role === 'instructor';
+    }
 }

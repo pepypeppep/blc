@@ -21,9 +21,17 @@ use Modules\Course\app\Models\CourseCategory;
 use Modules\Course\app\Models\CourseLanguage;
 use Modules\Course\app\Http\Requests\CourseStoreRequest;
 use App\Events\UserBadgeUpdated;
+use App\Exceptions\AccessPermissionDeniedException;
+use App\Models\CourseSigner;
 use App\Models\Unor;
 use App\Models\UnorJenis;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
 
 class CourseController extends Controller
 {
@@ -241,7 +249,16 @@ class CourseController extends Controller
     }
 
 
-
+    /**
+     * Update the specified resource in storage.
+     * 
+     * @param Request $request 
+     * @return RedirectResponse|JsonResponse|void 
+     * @throws InvalidArgumentException 
+     * @throws ModelNotFoundException 
+     * @throws BindingResolutionException 
+     * @throws AccessPermissionDeniedException 
+     */
     function update(Request $request)
     {
         $query = Course::query();
@@ -266,6 +283,8 @@ class CourseController extends Controller
                     'start_date' => ['required', 'date', 'before:end_date'],
                     'end_date' => ['required', 'date', 'after:start_date'],
                     'output' => ['required'],
+                    'tte1' => ['required'],
+                    'tte2' => ['required'],
                     'certificate' => ['required', 'exists:certificate_builders,id'],
                     'levels' => ['required', 'min:1', function ($attribute, $value, $fail) {
                         $ids = CourseLevel::pluck('id')->toArray();
@@ -292,6 +311,8 @@ class CourseController extends Controller
                     'certificate.exists' => __('Certificate does not exist'),
                     'levels.required' => __('Levels is required'),
                     'levels.min' => __('Levels must have at least one level'),
+                    'tte1.required' => __('TTE 1 is required'),
+                    'tte2.required' => __('TTE 2 is required'),
                 ]);
                 $this->storeMoreInfo($request);
                 return response()->json([
@@ -347,6 +368,19 @@ class CourseController extends Controller
         $course->output = $request->output;
         $course->outcome = $request->output;
         $course->save();
+
+        // delete existing signers
+        $course->signers()->delete();
+
+        // insert signers
+        $course->signers()->create([
+            'user_id' => $request->tte1,
+            'step' => 1,
+        ]);
+        $course->signers()->create([
+            'user_id' => $request->tte2,
+            'step' => 2,
+        ]);
 
         // delete unselected partner instructor
         CoursePartnerInstructor::where('course_id', $course->id)
@@ -422,6 +456,38 @@ class CourseController extends Controller
             ->where('id', '!=', auth()->id())
             ->get();
         return response()->json($instructors);
+    }
+
+    /**
+     * Get signers
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    function getSigners(Request $request)
+    {
+        $signersQuery = User::whereNotNull('nik')
+            ->where('id', '!=', Auth::user()->id)
+            ->limit(20);
+
+        if (filled($request->q)) {
+            $signersQuery->where(function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->q . '%');
+            });
+        }
+
+        $signers = $signersQuery->get();
+
+        $response = [];
+        foreach ($signers as $signer) {
+            $response[] = [
+                'id' => $signer->id,
+                'name' => $signer->name,
+                'nik' => $signer->nik,
+                'jabatan' => $signer->jabatan
+            ];
+        }
+        return response()->json($response);
     }
 
     function statusUpdate(Request $request, string $id)

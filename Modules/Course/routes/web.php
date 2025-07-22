@@ -72,7 +72,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::get('courses/{id}/edit', [CourseController::class, 'editView'])->name('courses.edit-view');
 
     Route::get('courses/get-instructors', [CourseController::class, 'getInstructors'])->name('courses.get-instructors');
-
+    Route::get('courses/get-signers', [CourseController::class, 'getSigners'])->name('courses.get-signers');
     Route::post('courses/create', [CourseController::class, 'store'])->name('courses.store');
     Route::post('courses/update', [CourseController::class, 'update'])->name('courses.update');
     Route::get('courses/duplicate/{id}', [CourseController::class, 'duplicate'])->name('courses.duplicate');

@@ -1,44 +1,57 @@
 {
     "noto sans": {
-        "100_italic": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_100_italic_284a56b1eb7241b30edc94c66a688c38",
-        "200_italic": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_200_italic_43d1320e78dc153d71c2064157d2055f",
-        "300_italic": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_300_italic_aed2046597066212985ac081d094d4fa",
-        "italic": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_italic_e86afeb607b6a6a42fcda72913e587d0",
-        "500_italic": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_500_italic_6de75e45d6b4a3873c70bad8a35e2a1b",
-        "600_italic": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_600_italic_bb944e24e24a6763123233f04b9380e8",
-        "bold_italic": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_bold_italic_e89255d436c91478cd2fb0a32bb6e52a",
-        "800_italic": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_800_italic_f9f8b8a2bfb2095ed63062f14ed8f8c4",
-        "900_italic": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_900_italic_3e389c35a48a4c356e766e018b7987a0",
-        "100": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_100_e83a8c6418478337a00806273acd767e",
-        "200": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_200_b46c12922bcb63bbc75f1516789f50fd",
-        "300": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_300_dade5483f138cae71159077d2a74811e",
-        "normal": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_normal_e1392f115d5e43f2ce0d82bb405a7921",
-        "500": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_500_6eb8ad0e602c3d4f485d5ae5ca048f52",
-        "600": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_600_3a45f9ab1d611c5d1865b46be1cb1214",
-        "bold": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_bold_4e0074f026ba13a97cfa934f603e38f1",
-        "800": "noto_sans_800_b462d563bcc2fc238e5ca5728b63f352",
-        "900": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_900_83030a929225f39990513ea8ccb91255"
+        "100_italic": "\/var\/www\/html\/storage\/fonts\/noto_sans_100_italic_284a56b1eb7241b30edc94c66a688c38",
+        "200_italic": "\/var\/www\/html\/storage\/fonts\/noto_sans_200_italic_43d1320e78dc153d71c2064157d2055f",
+        "300_italic": "\/var\/www\/html\/storage\/fonts\/noto_sans_300_italic_aed2046597066212985ac081d094d4fa",
+        "italic": "\/var\/www\/html\/storage\/fonts\/noto_sans_italic_e86afeb607b6a6a42fcda72913e587d0",
+        "500_italic": "\/var\/www\/html\/storage\/fonts\/noto_sans_500_italic_6de75e45d6b4a3873c70bad8a35e2a1b",
+        "600_italic": "\/var\/www\/html\/storage\/fonts\/noto_sans_600_italic_bb944e24e24a6763123233f04b9380e8",
+        "bold_italic": "\/var\/www\/html\/storage\/fonts\/noto_sans_bold_italic_e89255d436c91478cd2fb0a32bb6e52a",
+        "800_italic": "\/var\/www\/html\/storage\/fonts\/noto_sans_800_italic_f9f8b8a2bfb2095ed63062f14ed8f8c4",
+        "900_italic": "\/var\/www\/html\/storage\/fonts\/noto_sans_900_italic_3e389c35a48a4c356e766e018b7987a0",
+        "100": "\/var\/www\/html\/storage\/fonts\/noto_sans_100_e83a8c6418478337a00806273acd767e",
+        "200": "\/var\/www\/html\/storage\/fonts\/noto_sans_200_b46c12922bcb63bbc75f1516789f50fd",
+        "300": "\/var\/www\/html\/storage\/fonts\/noto_sans_300_dade5483f138cae71159077d2a74811e",
+        "normal": "\/var\/www\/html\/storage\/fonts\/noto_sans_normal_e1392f115d5e43f2ce0d82bb405a7921",
+        "500": "\/var\/www\/html\/storage\/fonts\/noto_sans_500_6eb8ad0e602c3d4f485d5ae5ca048f52",
+        "600": "\/var\/www\/html\/storage\/fonts\/noto_sans_600_3a45f9ab1d611c5d1865b46be1cb1214",
+        "bold": "\/var\/www\/html\/storage\/fonts\/noto_sans_bold_4e0074f026ba13a97cfa934f603e38f1",
+        "800": "\/var\/www\/html\/storage\/fonts\/noto_sans_800_b462d563bcc2fc238e5ca5728b63f352",
+        "900": "noto_sans_900_83030a929225f39990513ea8ccb91255"
     },
     "noto sans arabic": {
-        "100": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_arabic_100_5c5b41d1cf2f0a738388345b883f8662",
-        "200": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_arabic_200_0369b016e5539b924440bd220ec99489",
-        "300": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_arabic_300_373ad120e3fec11a77421a543cf7dd4e",
-        "normal": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_arabic_normal_933e23d117a4ac5ef348d5e2aa3fe2c4",
-        "500": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_arabic_500_7ad7a2c813d84dc843e24802df5ac9a2",
-        "600": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_arabic_600_e5adcff27d43fb32dea54e37ba4f5ece",
-        "bold": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_arabic_bold_a529ca505f1f6931ca251443987e64a4",
-        "800": "noto_sans_arabic_800_b7fb8e616d70c382317451b849b7b090",
-        "900": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_arabic_900_8023b4069dd77d796270a3f038f2134b"
+        "100": "\/var\/www\/html\/storage\/fonts\/noto_sans_arabic_100_5c5b41d1cf2f0a738388345b883f8662",
+        "200": "\/var\/www\/html\/storage\/fonts\/noto_sans_arabic_200_0369b016e5539b924440bd220ec99489",
+        "300": "\/var\/www\/html\/storage\/fonts\/noto_sans_arabic_300_373ad120e3fec11a77421a543cf7dd4e",
+        "normal": "\/var\/www\/html\/storage\/fonts\/noto_sans_arabic_normal_933e23d117a4ac5ef348d5e2aa3fe2c4",
+        "500": "\/var\/www\/html\/storage\/fonts\/noto_sans_arabic_500_7ad7a2c813d84dc843e24802df5ac9a2",
+        "600": "\/var\/www\/html\/storage\/fonts\/noto_sans_arabic_600_e5adcff27d43fb32dea54e37ba4f5ece",
+        "bold": "\/var\/www\/html\/storage\/fonts\/noto_sans_arabic_bold_a529ca505f1f6931ca251443987e64a4",
+        "800": "\/var\/www\/html\/storage\/fonts\/noto_sans_arabic_800_b7fb8e616d70c382317451b849b7b090",
+        "900": "noto_sans_arabic_900_8023b4069dd77d796270a3f038f2134b"
     },
     "noto sans bengali": {
-        "100": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_bengali_100_5074531db567b6d261cf9f3d44813e78",
-        "200": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_bengali_200_931a020afeef7616020654e65b57e171",
-        "300": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_bengali_300_3a27ab961886c3e7fa122b0d1f5b2b44",
-        "normal": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_bengali_normal_ff500fa9c7ef55dc9f4b7613c590d4ae",
-        "500": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_bengali_500_477930f204b0fcc9313ddbf2d0ae9e78",
-        "600": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_bengali_600_67ded78ca64630801818dda9162ceb6b",
-        "bold": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_bengali_bold_a3196d6b6bddc3ae10700af0c952250a",
-        "800": "\/Users\/zasieun\/code\/lms\/storage\/fonts\/noto_sans_bengali_800_e893dc9244c7fbcca32a0a70d3dee515",
-        "900": "noto_sans_bengali_900_4b3c0ca99d8585f4a8ecdcc19caa2e7b"
+        "100": "\/var\/www\/html\/storage\/fonts\/noto_sans_bengali_100_5074531db567b6d261cf9f3d44813e78",
+        "200": "\/var\/www\/html\/storage\/fonts\/noto_sans_bengali_200_931a020afeef7616020654e65b57e171",
+        "300": "\/var\/www\/html\/storage\/fonts\/noto_sans_bengali_300_3a27ab961886c3e7fa122b0d1f5b2b44",
+        "normal": "\/var\/www\/html\/storage\/fonts\/noto_sans_bengali_normal_ff500fa9c7ef55dc9f4b7613c590d4ae",
+        "500": "\/var\/www\/html\/storage\/fonts\/noto_sans_bengali_500_477930f204b0fcc9313ddbf2d0ae9e78",
+        "600": "\/var\/www\/html\/storage\/fonts\/noto_sans_bengali_600_67ded78ca64630801818dda9162ceb6b",
+        "bold": "\/var\/www\/html\/storage\/fonts\/noto_sans_bengali_bold_a3196d6b6bddc3ae10700af0c952250a",
+        "800": "noto_sans_bengali_800_e893dc9244c7fbcca32a0a70d3dee515",
+        "900": "\/var\/www\/html\/storage\/fonts\/noto_sans_bengali_900_4b3c0ca99d8585f4a8ecdcc19caa2e7b"
+    },
+    "font awesome 5 brands": {
+        "normal": "font_awesome_5_brands_normal_fc460fb29080d9d340145f8731340c34"
+    },
+    "font awesome 5 free": {
+        "normal": "\/var\/www\/html\/storage\/fonts\/font_awesome_5_free_normal_6f76cee58746344c612079e1e5cda4a1",
+        "900": "font_awesome_5_free_900_d91b56f23e94352f6917f3f11f7f8ab7"
+    },
+    "nunito": {
+        "normal": "\/var\/www\/html\/storage\/fonts\/nunito_normal_a92b1dc360ac2109f97b307deadc0dfb",
+        "600": "\/var\/www\/html\/storage\/fonts\/nunito_600_e0610e1e7029c0d851b24f42b557cf94",
+        "bold": "\/var\/www\/html\/storage\/fonts\/nunito_bold_b86537260c09e68e0b23dc4c55c33f91",
+        "800": "nunito_800_d5f27bf271fc010f028a4b6c0d3fe813"
     }
 }

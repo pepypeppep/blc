@@ -24,6 +24,7 @@ use Modules\CertificateBuilder\database\seeders\CertificateBuilderItemSeeder;
 use Modules\Order\database\seeders\EnrollmentSeeder;
 use Modules\PendidikanLanjutan\database\seeders\PendidikanLanjutanDatabaseSeeder;
 use Modules\CertificateRecognition\database\seeders\CertificateRecognitionDatabaseSeeder;
+use Modules\InstructorEvaluation\database\seeders\InstructorEvaluationDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -71,6 +72,8 @@ class DatabaseSeeder extends Seeder
             ArticleDatabaseSeeder::class,
             TosSeeder::class,
             CertificateRecognitionDatabaseSeeder::class,
+            InstructorEvaluationDatabaseSeeder::class,
+            ConfigSeeder::class,
             MentoringDatabaseSeeder::class,
         ]);
     }

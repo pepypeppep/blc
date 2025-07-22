@@ -300,11 +300,15 @@ class CertificateApiController extends Controller
         $key = str_replace('Bearer ', '', $key);
 
         // validate key
-        if ($key !== env('BANTARA_CALLBACK_KEY') || $key = '' || $key === null) {
+        if ($key !== appConfig('bantara_callback_key') || $key = '' || $key === null) {
             return response(['success' => false, 'message' => 'Invalid api key'], 403);
         }
 
         $file = $request->file('file');
+
+        if (!$file) {
+            return response(['success' => false, 'message' => 'File is required'], 400);
+        }
 
         // check if file is pdf
         if ($file->getClientOriginalExtension() !== 'pdf') {

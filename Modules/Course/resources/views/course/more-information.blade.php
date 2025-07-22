@@ -77,8 +77,10 @@
                                                     <label for="course_access">{{ __('Course Access') }}
                                                         <code>*</code></label>
                                                     <select class="select2 form-group" name="course_access">
-                                                        <option @selected($course?->access === 'private') value="private">{{ __('Private') }}</option>
-                                                        <option @selected($course?->access === 'public') value="public">{{ __('Public') }}</option>
+                                                        <option @selected($course?->access === 'private') value="private">
+                                                            {{ __('Private') }}</option>
+                                                        <option @selected($course?->access === 'public') value="public">
+                                                            {{ __('Public') }}</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -121,6 +123,22 @@
                                                         <div id="certificateBg"></div>
                                                         <input type="hidden" name="certificate"
                                                             value="{{ $course?->certificate_id }}" class="form-control">
+
+
+                                                        @forelse ($course->signers as $signer)
+                                                            @if ($signer->step == 1)
+                                                                <input type="hidden" name="tte1"
+                                                                    value="{{ $signer->user_id }}">
+                                                            @endif
+                                                            @if ($signer->step == 2)
+                                                                <input type="hidden" name="tte2"
+                                                                    value="{{ $signer->user_id }}">
+                                                            @endif
+                                                        @empty
+                                                            <input type="hidden" name="tte1">
+                                                            <input type="hidden" name="tte2">
+                                                        @endforelse
+
                                                         <!-- Button trigger modal -->
                                                         <button type="button" class="btn btn-primary mt-3"
                                                             data-toggle="modal"
@@ -177,14 +195,59 @@
                     </button>
                 </div>
                 <div class="modal-body row">
-                    @foreach ($certificates as $certificate)
-                        <div class="col-md-3 d-flex flex-column">
-                            <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}" alt=""
-                                style="width: 100%; height: auto;">
-                            <button class="btn btn-primary mt-auto"
-                                onclick="chooseCertificate({{ $certificate->id }})">{{ __('Choose') }}</button>
+                    <div class="col">
+                        <div class="row">
+                            @foreach ($certificates as $certificate)
+                                <div class="col-md-3 d-flex flex-column">
+                                    <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}"
+                                        alt="" style="width: 100%; height: auto;">
+                                    <button class="btn btn-primary mt-auto"
+                                        onclick="chooseCertificate({{ $certificate->id }})">{{ __('Choose') }}</button>
+                                </div>
+                            @endforeach
                         </div>
-                    @endforeach
+
+                        <div class="row">
+                            <div class="col mt-4">
+                                <div class="partner_instructor_list {{ $course?->instructor_id == 0 ? 'd-none' : '' }}">
+                                    <label for="cpacity">{{ __('TTE Depan') }}</label>
+                                    <select class="tte_select" id="tte1">
+                                        @foreach ($course->signers as $signer)
+                                            @if ($signer->step == 1)
+                                                <option selected value="{{ $signer->user_id }}">{{ $signer->user->name }}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col mt-4">
+                                <div class="partner_instructor_list {{ $course?->instructor_id == 0 ? 'd-none' : '' }}">
+                                    <label for="cpacity">{{ __('TTE Belakang') }}</label>
+                                    <select class="tte_select" id="tte2">
+                                        @foreach ($course->signers as $signer)
+                                            @if ($signer->step == 2)
+                                                <option selected value="{{ $signer->user_id }}">{{ $signer->user->name }}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col mt-4">
+                                <button class="btn btn-primary mt-auto"
+                                    onclick="chooseCertificateSave()">{{ __('Save') }}</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
                 </div>
             </div>
         </div>
@@ -210,6 +273,62 @@
                     .replace(/\s+/g, "-") // Replace spaces with -
                     .replace(/-+/g, "-"); // Replace multiple - with single -
             }
+
+
+            $(".tte_select").select2({
+                ajax: {
+                    url: base_url + "/admin/courses/get-signers",
+                    dataType: "json",
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page,
+                        };
+                    },
+                    processResults: function(data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data,
+                            pagination: {
+                                more: false,
+                            },
+                        };
+                    },
+                    cache: true,
+                },
+                dropdownParent: $("#certificateModal"),
+                // minimumInputLength: 1,
+                templateResult: (param) => {
+                    if (param.loading) {
+                        return param.text;
+                    }
+
+                    var $container = $(
+                        "<div class='select2-result-repository clearfix'>" +
+                        // "<div class='select2-result-repository__avatar'><img src='" +
+                        // "/" +
+                        // param.image +
+                        // "' /></div>" +
+                        "<div class='select2-result-repository__meta'>" +
+                        "<div class='select2-result-repository__title'>" +
+                        param.name +
+                        "</div>" +
+                        "<div class='select2-result-repository__description'>" +
+                        param.jabatan +
+                        "</div>" +
+                        "</div>" +
+                        "</div>"
+                    );
+
+                    return $container;
+                },
+                templateSelection: (repo) => {
+                    return repo.name || repo.text;
+                },
+            });
+
         })
         $('.input-daterange').datepicker({
             todayBtn: "linked",
@@ -226,12 +345,22 @@
 
 
         function chooseCertificate(id) {
-            $('#certificateModal').modal('hide')
             $('input[name="certificate"]').val(id);
 
             $('#certificateBg').html(
                 '<img src="{{ route('admin.certificate-builder.getBg', ':id') }}" alt="" style="width: 100%; height: auto;" />'
                 .replace(':id', id));
+        }
+
+        function chooseCertificateSave(params) {
+
+            let tte1 = $('#tte1').val();
+            let tte2 = $('#tte2').val();
+
+            $('input[name="tte1"]').val(tte1);
+            $('input[name="tte2"]').val(tte2);
+
+            $('#certificateModal').modal('hide')
         }
     </script>
 @endpush

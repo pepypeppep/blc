@@ -13,6 +13,7 @@ use Modules\Mentoring\app\Models\MentoringSession;
 use Modules\CertificateBuilder\app\Http\Requests\CertificateUpdateRequest;
 use Modules\CertificateBuilder\app\Models\CertificateBuilder;
 use Modules\CertificateBuilder\app\Models\CertificateBuilderItem;
+use Illuminate\Support\Facades\Storage; 
 
 class MentoringController extends Controller
 {
@@ -26,7 +27,7 @@ class MentoringController extends Controller
                 return $query->where('status', $status);
             })
             // ->where('status', '!=', 'draft')
-            // ->orderByDesc('updated_at')
+            ->orderByDesc('id')
             ->paginate(10)
             ->appends($request->query());
 
@@ -73,10 +74,17 @@ class MentoringController extends Controller
             return empty($session->activity);
         });
 
+           // Cek apakah file surat tersedia secara fisik
+    $fileExists = false;
+    if ($mentoring->mentor_availability_letter) {
+        $filePath = 'public/' . $mentoring->mentor_availability_letter;
+        $fileExists = Storage::exists($filePath);
+    }
+
 
         $certificates = CertificateBuilder::paginate();
 
-        return view('mentoring::show', compact('mentoring', 'hasIncompleteSessions', 'certificates'));
+        return view('mentoring::show', compact('mentoring', 'hasIncompleteSessions', 'certificates', 'fileExists'));
     }
 
     /**

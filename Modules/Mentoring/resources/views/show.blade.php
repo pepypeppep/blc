@@ -5,7 +5,10 @@
 
 @php
     use Modules\Mentoring\app\Models\Mentoring;
+    $mentee = $mentoring->mentee;
+    $mentor = $mentoring->mentor;
 @endphp
+
 @section('admin-content')
     <div class="main-content">
         <section class="section">
@@ -130,21 +133,24 @@
                                     <div class="col-lg-12 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Final Report Mentoring') }}</p>
-                                            <p class="mb-3" style="font-size: 1.1rem;">Laporan akhir dari kegiatan mentoring yang telah
-                                                dilakukan.</p>
-                                                @if ($mentoring->final_report)
-                                                    <embed
-                                                        src="{{ $mentoring->final_report }}" target="_self"
-                                                        type="application/pdf"
-                                                        width="100%"
-                                                        height="600px"
-                                                    />
-                                                @else
-                                                    <div class="text-center">
-                                                        <h4 class="text-muted"><em>Belum ada laporan akhir<em></h4>
-                                                    </div>
-                                                @endif
+                                                {{ __('Final Report Mentoring') }}
+                                            </p>
+                                            <p class="mb-3" style="font-size: 1.1rem;">
+                                                Laporan akhir dari kegiatan mentoring yang telah dilakukan.
+                                            </p>
+
+                                            @if ($mentoring->final_report)
+                                                <embed
+                                                    src="{{ $mentoring->final_report }}" target="_self"
+                                                    type="application/pdf"
+                                                    width="100%"
+                                                    height="600px"
+                                                />
+                                            @else
+                                                <div class="text-center">
+                                                    <h4 class="text-muted"><em>Belum ada laporan akhir</em></h4>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -152,10 +158,7 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        @php
-                            $mentee = $mentoring->mentee;
-                            $mentor = $mentoring->mentor;
-                        @endphp
+
 
                         @if($mentor)
                             <div class="card">
@@ -204,66 +207,66 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group d-flex justify-content-center">
-                                    @if ($mentoring->mentor_availability_letter)
-                                        <a href="{{ $mentoring->mentor_availability_letter }}" target="_blank"
+                                    @if ($fileExists)
+                                        <a href="{{ asset('storage/' . $mentoring->mentor_availability_letter) }}" target="_blank"
                                             class="btn btn-outline-danger d-flex align-items-center gap-2"
                                             style="font-size: 1.5rem;">
                                             <i class="fas fa-file-pdf fa-2x mr-1"></i>
                                             <span>Lihat Surat</span>
                                         </a>
                                     @else
-                                        <p class="text-muted mb-0">Tidak ada file.</p>
+                                        <p class="text-muted mb-0">Berkas belum tersedia.</p>
                                     @endif
                                 </div>
                             </div>
                         </div>
                         {{-- jika status mentoring sudah selesai --}}
                         @if ($mentoring->status == 'done')
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h4 class="mb-0">{{ __('Certificate Status') }}</h4>
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h4 class="mb-0">{{ __('Certificate Status') }}</h4>
 
-                                <a href="#" class="btn btn-sm btn-primary" data-toggle="tooltip"
-                                    data-placement="left" title="Tambah Certificate">
-                                    <i class="fas fa-plus"></i>
-                                </a>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group d-flex justify-content-center">
-                                    <div id="certificateBg"></div>
-                                    <input type="hidden" name="certificate" value="" class="form-control">
-                                    <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
-                                        data-target="#certificateModal">{{ __('Choose Certificate') }}</button>
+                                    <a href="#" class="btn btn-sm btn-primary" data-toggle="tooltip"
+                                        data-placement="left" title="Tambah Certificate">
+                                        <i class="fas fa-plus"></i>
+                                    </a>
                                 </div>
-                                <div class="modal fade" id="certificateModal" data-backdrop="static"
-                                    data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog modal-xl" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header" style="padding: 25px 25px 0px 25px;">
-                                                <h5 class="modal-title" id="certificateModalLabel">
-                                                    {{ __('Choose Certificate') }}</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body row">
-                                                @foreach ($certificates as $certificate)
-                                                    <div class="col-md-3 d-flex flex-column">
-                                                        <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}"
-                                                            alt="" style="width: 100%; height: auto;">
-                                                        <button class="btn btn-primary mt-auto"
-                                                            onclick="chooseCertificate({{ $certificate->id }})">{{ __('Choose') }}</button>
-                                                    </div>
-                                                @endforeach
+                                <div class="card-body">
+                                    <div class="form-group d-flex justify-content-center">
+                                        <div id="certificateBg"></div>
+                                        <input type="hidden" name="certificate" value="" class="form-control">
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
+                                            data-target="#certificateModal">{{ __('Choose Certificate') }}</button>
+                                    </div>
+                                    <div class="modal fade" id="certificateModal" data-backdrop="static"
+                                        data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-xl" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header" style="padding: 25px 25px 0px 25px;">
+                                                    <h5 class="modal-title" id="certificateModalLabel">
+                                                        {{ __('Choose Certificate') }}</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body row">
+                                                    @foreach ($certificates as $certificate)
+                                                        <div class="col-md-3 d-flex flex-column">
+                                                            <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}"
+                                                                alt="" style="width: 100%; height: auto;">
+                                                            <button class="btn btn-primary mt-auto"
+                                                                onclick="chooseCertificate({{ $certificate->id }})">{{ __('Choose') }}</button>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         @endif
                     </div>
                 </div>

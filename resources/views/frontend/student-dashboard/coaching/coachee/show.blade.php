@@ -249,14 +249,21 @@
                                 @foreach ($sessions as $session)
                                     @if ($loop->index > 0)
                                         @if (
-                                            !(
-                                                $sessions[$loop->index - 1]->details->count() > 0 &&
-                                                $sessions[$loop->index - 1]->details->first()->coaching_note
-                                            ))
+                                            $sessions[$loop->index - 1]->details->count() > 0 &&
+                                                $sessions[$loop->index - 1]->details->first()->coaching_note == null)
                                             <option value="#" disabled>
                                                 Pertemuan {{ $loop->iteration }} -
                                                 {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
                                                 (Menunggu review mentor pada sesi sebelumnya)
+                                            </option>
+                                        @elseif(!$session->details->count() > 0 && !$sessions[$loop->index - 1]->details->count() > 0)
+                                            <option value="#" disabled>Pertemuan {{ $loop->iteration }} -
+                                                {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
+                                                (Pastikan sesi sebelumnya sudah terisi)
+                                            </option>
+                                        @elseif ($session->details->count() == 0 && $sessions[$loop->index - 1]->details->count() > 0)
+                                            <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} -
+                                                {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
                                             </option>
                                         @endif
                                     @else

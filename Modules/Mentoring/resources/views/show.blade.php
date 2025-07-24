@@ -77,6 +77,11 @@
                                                                                     Terisi
                                                                                 </span>
                                                                             @endif
+                                                                            @if (!empty($session->mentoring_note))
+                                                                                <span class="badge bg-primary text-white ml-2 px-2 py-1" style="font-size: 0.7rem; font-weight: 700;">
+                                                                                    Direviu
+                                                                                </span>
+                                                                            @endif
                                                                         </div>
                                                                         <div class="text-muted text-left" style="font-size: 0.85rem;">
                                                                             {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}
@@ -111,9 +116,21 @@
 
                                                                     <div class="mb-2">
                                                                         @if ($session->status == 'reviewed')
-                                                                            @include('frontend.student-dashboard.mentoring.mentor.partials.session-done')
-                                                                        @else
-                                                                            @include('frontend.student-dashboard.mentoring.mentor.partials.session-submit')
+                                                                            <form>
+                                                                                <div class="form-group mt-4">
+                                                                                    <label for="mentoring_date">{{ __('Mentoring Date') }}</label>
+                                                                                    <input type="text" name="mentoring_date" class="form-control datetimepicker"
+                                                                                        value="{{ $session->mentoring_date ?? '' }}" disabled>
+                                                                                </div>
+                                                                                <div class="form-group mt-4">
+                                                                                    <strong class="d-block">Catatan:</strong>
+                                                                                    <div class="text-body">{!! clean(@$session?->mentoring_note) !!}</div>
+                                                                                </div>
+                                                                                <div class="form-group mt-4">
+                                                                                    <strong class="d-block">Arahan:</strong>
+                                                                                    <div class="text-body">{!! clean(@$session?->mentoring_instructions) !!}</div>
+                                                                                </div>
+                                                                            </form>
                                                                         @endif
                                                                     </div>
                                                                 </div>

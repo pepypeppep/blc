@@ -13,7 +13,7 @@ use Modules\Mentoring\app\Models\MentoringSession;
 use Modules\CertificateBuilder\app\Http\Requests\CertificateUpdateRequest;
 use Modules\CertificateBuilder\app\Models\CertificateBuilder;
 use Modules\CertificateBuilder\app\Models\CertificateBuilderItem;
-use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Facades\Storage;
 
 class MentoringController extends Controller
 {
@@ -75,16 +75,30 @@ class MentoringController extends Controller
         });
 
            // Cek apakah file surat tersedia secara fisik
-    $fileExists = false;
-    if ($mentoring->mentor_availability_letter) {
-        $filePath = 'public/' . $mentoring->mentor_availability_letter;
-        $fileExists = Storage::exists($filePath);
-    }
-
+        $fileExists = false;
+        if ($mentoring->mentor_availability_letter) {
+            $filePath = 'public/' . $mentoring->mentor_availability_letter;
+            $fileExists = Storage::exists($filePath);
+        }
 
         $certificates = CertificateBuilder::paginate();
 
         return view('mentoring::show', compact('mentoring', 'hasIncompleteSessions', 'certificates', 'fileExists'));
+    }
+        public function viewImage($id)
+    {
+        $session = MentoringSession::findOrFail($id);
+        if (Storage::disk('private')->exists($session->image)) {
+            return Storage::disk('private')->response($session->image);
+        } else {
+            abort(404);
+        }
+    }
+
+        public function showDocument($id, $type)
+    {
+        $mentoring = Mentoring::findOrFail($id);
+        return $mentoring->getDocumentResponse($type);
     }
 
     /**

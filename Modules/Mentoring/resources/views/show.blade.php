@@ -101,9 +101,8 @@
                                                                     <div class="mb-2">
                                                                         <strong class="d-block">Dokumentasi:</strong>
                                                                         @if ($session->image && Storage::disk('private')->exists($session->image))
-                                                                            <a href="{{ route('student.mentee.view.img', $session->id) }}" target="_blank">
-                                                                                <img src="{{ route('student.mentee.view.img', $session->id) }}"
-                                                                                    alt="img" class="img-thumbnail mt-2" style="max-width: 200px;">
+                                                                            <a href="{{ route('admin.mentoring.view.img', $session->id) }}" target="_blank">
+                                                                                <img src="{{ route('admin.mentoring.view.img', $session->id) }}" alt="img" class="img-thumbnail mt-2" style="max-width: 200px;">
                                                                             </a>
                                                                         @else
                                                                             <p class="text-muted"><em>Belum ada dokumentasi gambar.</em></p>
@@ -207,17 +206,14 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group d-flex justify-content-center">
-                                    @if ($fileExists)
-                                        <a href="{{ asset('storage/' . $mentoring->mentor_availability_letter) }}" target="_blank"
-                                            class="btn btn-outline-danger d-flex align-items-center gap-2"
+                                     @if ($mentoring->mentor_availability_letter)
+                                        <a href="{{ route('admin.mentoring.view.document', ['id' => $mentoring->id, 'type' => 'mentor_availability_letter']) }}" target="_blank" class="btn btn-outline-danger d-flex align-items-center gap-2"
                                             style="font-size: 1.5rem;">
-                                            <i class="fas fa-file-pdf fa-2x mr-1"></i>
-                                            <span>Lihat Surat</span>
+                                            <i class="fas fa-file-pdf fa-2x mr-1"></i> Lihat Surat
                                         </a>
                                     @else
-                                        <p class="text-muted mb-0">Berkas belum tersedia.</p>
+                                        <p class="text-muted mb-0">Tidak ada file.</p>
                                     @endif
-                                </div>
                             </div>
                         </div>
                         {{-- jika status mentoring sudah selesai --}}

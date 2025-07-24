@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\MenteeApiController;
 use App\Http\Controllers\Api\MentorApiController;
 use App\Http\Controllers\Api\PendidikanLanjutanController;
 use App\Http\Controllers\Api\StudentLearningApiController;
+use App\Http\Controllers\Api\StudentQuizApiController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\SSOController;
 
@@ -95,11 +96,11 @@ Route::name('api.')->group(function () {
         ->middleware('auth:sso-api')
         ->group(function () {
             // GET: /api/student-learning/{courseId}/quiz/{quizId}/result
-            Route::get('/{courseId}/quiz/{quizId}/result', [StudentLearningApiController::class, 'quizResult'])->name('quiz.result');
-            // GET: /api/student-learning/{courseId}/quiz/{quizId}
-            Route::get('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizIndex'])->name('quiz.index');
-            // POST: /api/student-learning/{courseId}/quiz/{quizId}
-            Route::post('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizStore'])->name('quiz.store');
+            // Route::get('/{courseId}/quiz/{quizId}/result', [StudentLearningApiController::class, 'quizResult'])->name('quiz.result');
+            // // GET: /api/student-learning/{courseId}/quiz/{quizId}
+            // Route::get('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizIndex'])->name('quiz.index');
+            // // POST: /api/student-learning/{courseId}/quiz/{quizId}
+            // Route::post('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizStore'])->name('quiz.store');
 
             // GET: /api/student-learning/{courseId}/rtl/{rtlId}
             Route::get('/{courseId}/rtl/{rtlId}', [StudentLearningApiController::class, 'rtlIndex'])->name('rtl.index');
@@ -113,6 +114,17 @@ Route::name('api.')->group(function () {
 
             // GET: /api/student-learning/{slug}
             Route::get('/{slug}', [StudentLearningApiController::class, 'index'])->name('index');
+        });
+
+    Route::prefix('student-quiz')
+        ->name('student-quiz.')
+        ->middleware('auth:sso-api')
+        ->group(function () {
+            Route::get('quizzes/{quizId}/start', [StudentQuizApiController::class, 'start'])->name('start');        // mulai kuis
+            Route::post('quizzes/{quizId}/save-answer', [StudentQuizApiController::class, 'saveAnswer'])->name('answer'); // autosave
+            Route::post('quizzes/{quizId}/submit', [StudentQuizApiController::class, 'submit'])->name('submit');     // submit akhir
+            Route::get('my-quiz-results', [StudentQuizApiController::class, 'myResults'])->name('my.results');      // hasil kuis
+            Route::get('my-quiz-seasons', [StudentQuizApiController::class, 'myQuizSeasons'])->name('my.quiz.seasons');  // daftar kuis yg dirandom
         });
 
     // Mentoring

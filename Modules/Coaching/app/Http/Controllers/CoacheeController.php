@@ -110,10 +110,12 @@ class CoacheeController extends Controller
         $request->validate([
             'session_id' => 'required',
             'activity' => 'required',
+            'description' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ], [
             'session_id.required' => 'Sesi harus dipilih.',
             'activity.required' => 'Kegiatan harus dipilih.',
+            'description.required' => 'Hambatan harus diisi.',
             'image.required' => 'Gambar harus dipilih.',
         ]);
 
@@ -137,6 +139,14 @@ class CoacheeController extends Controller
                 return redirect()->route('student.coachee.show', ['id' => $season->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Anda belum bergabung Coaching ini.')]);
             }
 
+            $seasons = $season->coaching->coachingSessions;
+            $currentIndex = $seasons->search(function ($item) use ($season) {
+                return $item->id === $season->id;
+            });
+            if ($currentIndex > 0 && $seasons[$currentIndex - 1]->details->count() == 0) {
+                return redirect()->route('student.coachee.show', ['id' => $season->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Anda belum mengirimkan laporan untuk sesi sebelumnya.')]);
+            }
+
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
                 $fileName = 'coaching/' . $season->coaching_id . '/' . now()->year . '/' . $season->id . '/coaching_session' . $season->coaching->coachingSessions->count() . '.' . $file->getClientOriginalExtension();
@@ -147,8 +157,8 @@ class CoacheeController extends Controller
             $result = CoachingSessionDetail::create([
                 'coaching_session_id' => $season->id,
                 'coaching_user_id' => $coachingUser->id,
-                'activity' => "Pertemuan " . $season->coaching->coachingSessions->count(),
-                'description' => $request->activity,
+                'activity' => $request->activity,
+                'description' => $request->description,
                 'image' => $request->fileName,
             ]);
 
@@ -161,6 +171,10 @@ class CoacheeController extends Controller
 
         if ($details->session->coaching->status != Coaching::STATUS_PROCESS) {
             return redirect()->route('student.coachee.show', ['id' => $details->session->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Pengisian laporan hanya dapat dilakukan pada sesi Coaching yang sedang berlangsung.')]);
+        }
+
+        if ($details->coaching_note || $details->coaching_instructions) {
+            return redirect()->route('student.coachee.show', ['id' => $details->session->coaching_id])->with(['alert-type' => 'error', 'messege' => __('Laporan yang sudah ditinjau coach tidak dapat diubah.')]);
         }
 
         if ($request->hasFile('image')) {

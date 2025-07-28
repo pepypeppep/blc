@@ -1,6 +1,7 @@
 @extends('admin.master_layout')
 @section('title')
-    <title>{{ __('All Instructors') }}</title>
+    <title>
+        {{ __('All Instructors') }}</title>
 @endsection
 @section('admin-content')
     <div class="main-content">
@@ -90,6 +91,7 @@
                                                 <th>{{ __('SN') }}</th>
                                                 <th>{{ __('Name') }}</th>
                                                 <th>{{ __('Email') }}</th>
+                                                <th>{{ __('Rating') }}</th>
                                                 <th>{{ __('Joined at') }}</th>
                                                 <th>{{ __('Status') }}</th>
                                                 <th>{{ __('Action') }}</th>
@@ -101,6 +103,21 @@
                                                     <td>{{ ++$index }}</td>
                                                     <td>{{ html_decode($user->name) }}</td>
                                                     <td>{{ html_decode($user->email) }}</td>
+                                                    <td> @php
+                                                        $fullStars = floor($user->rating);
+                                                        $hasHalfStar = $user->rating - $fullStars >= 0.5;
+                                                    @endphp
+
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            @if ($i <= $fullStars)
+                                                                <i class="fa fa-star text-warning"></i>
+                                                            @elseif ($i == $fullStars + 1 && $hasHalfStar)
+                                                                <i class="fa fa-star-half text-warning"></i>
+                                                            @else
+                                                                <i class="far fa-star text-warning"></i>
+                                                            @endif
+                                                        @endfor
+                                                    </td>
                                                     <td>{{ $user->created_at->format('h:iA, d M Y') }}</td>
                                                     <td>
                                                         @if ($user->email_verified_at)

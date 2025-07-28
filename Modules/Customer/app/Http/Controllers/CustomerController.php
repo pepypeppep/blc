@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Modules\Customer\app\Jobs\SendBulkEmailToUser;
 use Modules\Customer\app\Jobs\SendUserBannedMailJob;
 use Modules\Customer\app\Models\BannedHistory;
+use Modules\InstructorEvaluation\app\Models\InstructorEvaluation;
 use Modules\Location\app\Models\City;
 use Modules\Location\app\Models\State;
 
@@ -118,6 +119,10 @@ class CustomerController extends Controller
         } else {
             $users = $query->orderBy('id', $orderBy)->paginate()->withQueryString();
         }
+
+        $users->each(function ($user) {
+            $user->rating = InstructorEvaluation::where('instructor_id', $user->id)->avg('rating');
+        });
 
         return view('customer::all_instructor')->with([
             'users' => $users,
@@ -227,7 +232,7 @@ class CustomerController extends Controller
     {
         checkAdminHasPermissionAndThrowException('customer.view');
         $user = User::findOrFail($id);
-
+        $user->rating = InstructorEvaluation::where('instructor_id', $user->id)->avg('rating');
         // limting access to the user on same instansi
         $this->authorize('view',  $user);
 

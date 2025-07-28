@@ -307,7 +307,7 @@ class StudentDashboardController extends Controller
             $url = sprintf('%s/internal/v1/tte/documents', appConfig('bantara_url'));
 
             $signers = [];
-            foreach ($course->signers()->orderBy('step')->get() as $signer) {
+            foreach ($course->signers()->orderBy('step', 'desc')->get() as $signer) {
                 $signers[] =
                     [
                         'nik' => $signer->user->nik,

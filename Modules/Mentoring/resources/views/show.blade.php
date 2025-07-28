@@ -27,7 +27,7 @@
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ $mentoring->title }}</h4>
                                 <div class="badge badge-{{ $mentoring->stat['color'] }}">{{ $mentoring->stat['label'] }}
-                                 </div>
+                                </div>
                             </div>
 
                             <div class="card-body">
@@ -55,35 +55,40 @@
                                             </p>
 
                                             <div class="accordion card mb-2" id="mentoringAccordion">
-                                                @foreach($mentoring->mentoringSessions as $index => $session)
+                                                @foreach ($mentoring->mentoringSessions as $index => $session)
                                                     <div class="accordion-item border border-secondary-subtle mb-2">
                                                         <h2 class="accordion-header">
-                                                            <div class="accordion_header_content d-flex justify-content-between align-items-center">
-                                                                <button
-                                                                    class="accordion-button course-quiz-btn collapsed"
-                                                                    type="button"
-                                                                    data-toggle="collapse"
+                                                            <div
+                                                                class="accordion_header_content d-flex justify-content-between align-items-center">
+                                                                <button class="accordion-button course-quiz-btn collapsed"
+                                                                    type="button" data-toggle="collapse"
                                                                     data-target="#mentoring-collapse{{ $index }}"
                                                                     aria-expanded="false"
                                                                     aria-controls="mentoring-collapse{{ $index }}"
                                                                     style="width: 100%;">
                                                                     <div class="text-start">
                                                                         <div class="d-flex align-items-center mb-1">
-                                                                            <span class="fw-semibold text-dark" style="font-size: 0.95rem;">
+                                                                            <span class="fw-semibold text-dark"
+                                                                                style="font-size: 0.95rem;">
                                                                                 Pertemuan {{ $index + 1 }}
                                                                             </span>
                                                                             @if (!empty($session->activity))
-                                                                                <span class="badge bg-info text-white ml-2 px-2 py-1" style="font-size: 0.7rem; font-weight: 700;">
+                                                                                <span
+                                                                                    class="badge bg-info text-white ml-2 px-2 py-1"
+                                                                                    style="font-size: 0.7rem; font-weight: 700;">
                                                                                     Terisi
                                                                                 </span>
                                                                             @endif
                                                                             @if (!empty($session->mentoring_note))
-                                                                                <span class="badge bg-primary text-white ml-2 px-2 py-1" style="font-size: 0.7rem; font-weight: 700;">
+                                                                                <span
+                                                                                    class="badge bg-primary text-white ml-2 px-2 py-1"
+                                                                                    style="font-size: 0.7rem; font-weight: 700;">
                                                                                     Direviu
                                                                                 </span>
                                                                             @endif
                                                                         </div>
-                                                                        <div class="text-muted text-left" style="font-size: 0.85rem;">
+                                                                        <div class="text-muted text-left"
+                                                                            style="font-size: 0.85rem;">
                                                                             {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}
                                                                         </div>
                                                                     </div>
@@ -106,11 +111,16 @@
                                                                     <div class="mb-2">
                                                                         <strong class="d-block">Dokumentasi:</strong>
                                                                         @if ($session->image && Storage::disk('private')->exists($session->image))
-                                                                            <a href="{{ route('admin.mentoring.view.img', $session->id) }}" target="_blank">
-                                                                                <img src="{{ route('admin.mentoring.view.img', $session->id) }}" alt="img" class="img-thumbnail mt-2" style="max-width: 200px;">
+                                                                            <a href="{{ route('admin.mentoring.view.img', $session->id) }}"
+                                                                                target="_blank">
+                                                                                <img src="{{ route('admin.mentoring.view.img', $session->id) }}"
+                                                                                    alt="img"
+                                                                                    class="img-thumbnail mt-2"
+                                                                                    style="max-width: 200px;">
                                                                             </a>
                                                                         @else
-                                                                            <p class="text-muted"><em>Belum ada dokumentasi gambar.</em></p>
+                                                                            <p class="text-muted"><em>Belum ada dokumentasi
+                                                                                    gambar.</em></p>
                                                                         @endif
                                                                     </div>
 
@@ -118,17 +128,24 @@
                                                                         @if ($session->status == 'reviewed')
                                                                             <form>
                                                                                 <div class="form-group mt-4">
-                                                                                    <label for="mentoring_date">{{ __('Mentoring Date') }}</label>
-                                                                                    <input type="text" name="mentoring_date" class="form-control datetimepicker"
-                                                                                        value="{{ $session->mentoring_date ?? '' }}" disabled>
+                                                                                    <label
+                                                                                        for="mentoring_date">{{ __('Mentoring Date') }}</label>
+                                                                                    <input type="text"
+                                                                                        name="mentoring_date"
+                                                                                        class="form-control datetimepicker"
+                                                                                        value="{{ $session->mentoring_date ?? '' }}"
+                                                                                        disabled>
                                                                                 </div>
                                                                                 <div class="form-group mt-4">
-                                                                                    <strong class="d-block">Catatan:</strong>
-                                                                                    <div class="text-body">{!! clean(@$session?->mentoring_note) !!}</div>
+                                                                                    <strong
+                                                                                        class="d-block">Catatan:</strong>
+                                                                                    <div class="text-body">
+                                                                                        {!! clean(@$session?->mentoring_note) !!}</div>
                                                                                 </div>
                                                                                 <div class="form-group mt-4">
                                                                                     <strong class="d-block">Arahan:</strong>
-                                                                                    <div class="text-body">{!! clean(@$session?->mentoring_instructions) !!}</div>
+                                                                                    <div class="text-body">
+                                                                                        {!! clean(@$session?->mentoring_instructions) !!}</div>
                                                                                 </div>
                                                                             </form>
                                                                         @endif
@@ -149,8 +166,8 @@
                                     <div class="col-lg-12 mb-4">
                                         <div>
                                             <p class="text-primary mb-0" style=" font-weight: 600;">
-                                                    {{ __('Final Report Mentoring') }}
-                                                </p>
+                                                {{ __('Final Report Mentoring') }}
+                                            </p>
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <p class="mb-3" style="font-size: 1.1rem;">
                                                     Laporan akhir dari kegiatan mentoring yang telah dilakukan.
@@ -166,7 +183,8 @@
                                             @if ($mentoring->final_report)
                                                 <embed
                                                     src="{{ route('admin.mentoring.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
-                                                    type="application/pdf" width="100%" height="500px" class="border rounded shadow-sm" />
+                                                    type="application/pdf" width="100%" height="500px"
+                                                    class="border rounded shadow-sm" />
                                             @else
                                                 <div class="text-center">
                                                     <h4 class="text-muted"><em>Belum ada laporan akhir</em></h4>
@@ -182,7 +200,7 @@
                     <div class="col-lg-4">
 
 
-                        @if($mentor)
+                        @if ($mentor)
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between">
                                     <h4>{{ __('List Mentor') }}</h4>
@@ -190,10 +208,8 @@
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
                                         <img src="https://i.pinimg.com/736x/f9/8a/db/f98adb0622aa2341ba29aaeb46901b33.jpg"
-                                            alt="{{ $mentor->name }}"
-                                            class="rounded-circle"
-                                            width="50" height="50"
-                                            style="object-fit: cover;">
+                                            alt="{{ $mentor->name }}" class="rounded-circle" width="50"
+                                            height="50" style="object-fit: cover;">
                                         <div class=" ml-2">
                                             <strong>{{ $mentor->name }}</strong><br>
                                             <small class="text-muted">{{ $mentor->email }}</small>
@@ -203,7 +219,7 @@
                             </div>
                         @endif
 
-                        @if($mentee)
+                        @if ($mentee)
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between">
                                     <h4>{{ __('List Mentee') }}</h4>
@@ -211,10 +227,8 @@
                                 <div class="card-body">
                                     <div class="d-flex align-items-center mb-3">
                                         <img src="https://i.pinimg.com/736x/f9/8a/db/f98adb0622aa2341ba29aaeb46901b33.jpg"
-                                            alt="{{ $mentee->name }}"
-                                            class="rounded-circle"
-                                            width="50" height="50"
-                                            style="object-fit: cover;">
+                                            alt="{{ $mentee->name }}" class="rounded-circle" width="50"
+                                            height="50" style="object-fit: cover;">
                                         <div class=" ml-2">
                                             <strong>{{ $mentee->name }}</strong><br>
                                             <small class="text-muted">{{ $mentee->email }}</small>
@@ -229,26 +243,23 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group d-flex justify-content-center">
-                                     @if ($mentoring->mentor_availability_letter)
-                                        <a href="{{ route('admin.mentoring.view.document', ['id' => $mentoring->id, 'type' => 'mentor_availability_letter']) }}" target="_blank" class="btn btn-outline-danger d-flex align-items-center gap-2"
+                                    @if ($mentoring->mentor_availability_letter)
+                                        <a href="{{ route('admin.mentoring.view.document', ['id' => $mentoring->id, 'type' => 'mentor_availability_letter']) }}"
+                                            target="_blank" class="btn btn-outline-danger d-flex align-items-center gap-2"
                                             style="font-size: 1.5rem;">
                                             <i class="fas fa-file-pdf fa-2x mr-1"></i> Lihat Surat
                                         </a>
                                     @else
                                         <p class="text-muted mb-0">Tidak ada file.</p>
                                     @endif
+                                </div>
                             </div>
                         </div>
-                        {{-- jika status mentoring sudah selesai --}}
-                        @if ($mentoring->status == 'done')
+                        {{-- jika status mentoring Verifikasi / Selesai --}}
+                        @if ($mentoring->status == 'Verifikasi' || $mentoring->status == 'Selesai')
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h4 class="mb-0">{{ __('Certificate Status') }}</h4>
-
-                                    <a href="#" class="btn btn-sm btn-primary" data-toggle="tooltip"
-                                        data-placement="left" title="Tambah Certificate">
-                                        <i class="fas fa-plus"></i>
-                                    </a>
                                 </div>
                                 <div class="card-body">
                                     <div class="form-group d-flex justify-content-center">
@@ -289,7 +300,6 @@
                         @endif
                     </div>
                 </div>
-            </div>
         </section>
     </div>
 @endsection

@@ -22,6 +22,7 @@ class MentorController extends Controller
                 $query->where('status', Mentoring::STATUS_SUBMISSION)
                     ->orWhere('status', Mentoring::STATUS_PROCESS)
                     ->orWhere('status', Mentoring::STATUS_EVALUATION)
+                    ->orWhere('status', Mentoring::STATUS_VERIFICATION)
                     ->orWhere('status', Mentoring::STATUS_DONE);
             })
             ->orderByDesc('id')
@@ -189,11 +190,11 @@ class MentorController extends Controller
             return redirect()->back()->with(['messege' => 'Mentoring not found', 'alert-type' => 'error']);
         }
 
-        if ($mentoring->status != Mentoring::STATUS_EVALUATION && $mentoring->status != Mentoring::STATUS_DONE) {
+        if ($mentoring->status != Mentoring::STATUS_EVALUATION && ($mentoring->status != Mentoring::STATUS_VERIFICATION || $mentoring->status != Mentoring::STATUS_DONE)) {
             return redirect()->back()->with(['messege' => 'Evaluasi hanya bisa dilakukan jika mentoring dalam status penilaian', 'alert-type' => 'error']);
         }
 
-        $review = MentoringReview::where('mentoring_id', $mentoring->id)->first();  
+        $review = MentoringReview::where('mentoring_id', $mentoring->id)->first();
 
         return view('frontend.student-dashboard.mentoring.mentor.evaluasi', compact('mentoring', 'review'));
     }
@@ -343,7 +344,7 @@ class MentorController extends Controller
             $review->save();
         }
 
-        $mentoring->status = Mentoring::STATUS_DONE;
+        $mentoring->status = Mentoring::STATUS_VERIFICATION;
         $mentoring->save();
 
         return redirect()->route('student.mentor.index')->with(['messege' => 'Evaluasi berhasil dikirim', 'alert-type' => 'success']);

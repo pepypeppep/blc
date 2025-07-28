@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
 
         Route::get('/', [ArticleController::class, 'index'])->name('index');
         Route::get('{id}', [ArticleController::class, 'show'])->name('detail');
+        Route::put('{id}', [ArticleController::class, 'update'])->name('update');
         Route::put('{id}/update-status', [ArticleController::class, 'updateStatus'])->name('update-status');
     });
 });

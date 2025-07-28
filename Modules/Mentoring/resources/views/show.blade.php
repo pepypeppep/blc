@@ -148,14 +148,23 @@
 
                                     <div class="col-lg-12 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Final Report Mentoring') }}
-                                            </p>
-                                            <p class="mb-3" style="font-size: 1.1rem;">
-                                                Laporan akhir dari kegiatan mentoring yang telah dilakukan.
-                                            </p>
+                                            <p class="text-primary mb-0" style=" font-weight: 600;">
+                                                    {{ __('Final Report Mentoring') }}
+                                                </p>
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <p class="mb-3" style="font-size: 1.1rem;">
+                                                    Laporan akhir dari kegiatan mentoring yang telah dilakukan.
+                                                </p>
+                                                @if ($mentoring->final_report)
+                                                    <a href="{{ route('admin.mentoring.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
+                                                        target="_blank" class="btn btn-primary">
+                                                        <i class="fa fa-file-pdf"></i> Buka di Tab Baru
+                                                    </a>
+                                                @endif
+                                            </div>
+
                                             @if ($mentoring->final_report)
-                                               <embed
+                                                <embed
                                                     src="{{ route('admin.mentoring.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
                                                     type="application/pdf" width="100%" height="500px" class="border rounded shadow-sm" />
                                             @else
@@ -164,6 +173,7 @@
                                                 </div>
                                             @endif
                                         </div>
+
                                     </div>
                                 </div>
                             </div>

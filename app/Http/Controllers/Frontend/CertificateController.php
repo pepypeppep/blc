@@ -2,14 +2,29 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\CertificateService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Modules\Order\app\Models\Enrollment;
 
 class CertificateController extends Controller
 {
+    public function index(Request $request, CertificateService $certificateService)
+    {
+        $user_id = Auth::user()->id;
+        $result = $certificateService->getCertificatesForUser($user_id);
+
+        if (!$result['success']) {
+            return redirect()->back()->with('error', $result['message']);
+        }
+
+        return view('frontend.student-dashboard.certificate.page', [
+            'certificates' => json_decode(json_encode($result['data']))
+        ]);
+    }
 
     function publicCertificate(Request $request, string $uuid)
     {

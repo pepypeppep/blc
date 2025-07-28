@@ -15,7 +15,8 @@
                     <div class="col-lg-3">
                         <div class="card shadow">
                             @if ($user->nip)
-                                <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $user->nip }}.jpg" class="profile_img w-100">
+                                <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $user->nip }}.jpg"
+                                    class="profile_img w-100">
                             @else
                                 <img src="{{ asset($setting->default_avatar) }}" class="w-100">
                             @endif
@@ -73,7 +74,28 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h5 class="service_card mb-0">{{ __('Profile Information') }}</h5>
-                                <div class="badge badge-pill badge-{{ $user->role == 'instructor' ? 'success' : 'primary' }} mr-2">{{ $user->role == 'instructor' ? 'Instruktur' : 'Pelajar' }}</div>
+                                <div
+                                    class="badge badge-pill badge-{{ $user->role == 'instructor' ? 'success' : 'primary' }} mr-2">
+                                    {{ $user->role == 'instructor' ? 'Instruktur' : 'Pelajar' }}</div>
+                                @if ($user->role == 'instructor')
+                                    <div class="d-flex align-items-center">
+                                        @php
+                                            $fullStars = floor($user->rating);
+                                            $hasHalfStar = $user->rating - $fullStars >= 0.5;
+                                        @endphp
+
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            @if ($i <= $fullStars)
+                                                <i class="fa fa-star text-warning"></i>
+                                            @elseif ($i == $fullStars + 1 && $hasHalfStar)
+                                                <i class="fa fa-star-half text-warning"></i>
+                                            @else
+                                                <i class="far fa-star text-warning"></i>
+                                            @endif
+                                        @endfor
+                                        <span class="ml-2">({{ $user->rating }})</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -93,19 +115,23 @@
                                         <p class="title">{{ __('Email') }} : <b>{{ $user->email }}</b></p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="title">{{ __('Place of Birth') }} : <b>{{ $user->place_of_birth }}</b></p>
+                                        <p class="title">{{ __('Place of Birth') }} : <b>{{ $user->place_of_birth }}</b>
+                                        </p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="title">{{ __('Date of Birth') }} : <b>{{ $user->date_of_birth }}</b></p>
+                                        <p class="title">{{ __('Date of Birth') }} : <b>{{ $user->date_of_birth }}</b>
+                                        </p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="title">{{ __('Jenis Kelamin') }} : <b>{{ $user->jenis_kelamin }}</b></p>
+                                        <p class="title">{{ __('Jenis Kelamin') }} : <b>{{ $user->jenis_kelamin }}</b>
+                                        </p>
                                     </div>
                                     <div class="col-md-6">
                                         <p class="title">{{ __('Tempat Lahir') }} : <b>{{ $user->tempat_lahir }}</b></p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="title">{{ __('Tanggal Lahir') }} : <b>{{ $user->tanggal_lahir }}</b></p>
+                                        <p class="title">{{ __('Tanggal Lahir') }} : <b>{{ $user->tanggal_lahir }}</b>
+                                        </p>
                                     </div>
                                     <div class="col-md-6">
                                         <p class="title">{{ __('Bup') }} : <b>{{ $user->bup }}</b></p>
@@ -126,7 +152,9 @@
                                         <p class="title">{{ __('Pendidikan') }} : <b>{{ $user->pendidikan }}</b></p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="title">{{ __('Tingkat Pendidikan') }} : <b>{{ $user->tingkat_pendidikan }}</b></p>
+                                        <p class="title">{{ __('Tingkat Pendidikan') }} :
+                                            <b>{{ $user->tingkat_pendidikan }}</b>
+                                        </p>
                                     </div>
                                     <div class="col-md-6">
                                         <p class="title">{{ __('TMT Golongan') }} : <b>{{ $user->tmt_golongan }}</b></p>
@@ -188,9 +216,9 @@
                             </div>
                         </div> --}}
 
-                        @if($user->role == 'instructor')
-                        {{-- change Education and experience card area --}}
-                        {{-- <div class="card">
+                        @if ($user->role == 'instructor')
+                            {{-- change Education and experience card area --}}
+                            {{-- <div class="card">
                             <div class="card-header">
                                 <h5 class="service_card">{{ __('Experience and Education') }}</h5>
                             </div>
@@ -612,8 +640,8 @@
     <!-- End Send Mail modal -->
 
     <!-- Change Role Modal -->
-    <div class="modal fade" id="changeRoleModal" tabindex="-1" role="dialog"
-        aria-labelledby="changeRoleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="changeRoleModal" tabindex="-1" role="dialog" aria-labelledby="changeRoleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header px-4">

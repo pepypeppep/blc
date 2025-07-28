@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Instructions for AI Agents
+
+When asked to write code, first create a `plan.md` file that outlines the steps to be taken. Do not write any code until the `plan.md` file has been approved by a human. The human will review `plan.md` first.
+
 ## Architecture
 
 This is a large, modular Laravel 11 application built using the `nwidart/laravel-modules` package. The application is divided into a core `app` directory and numerous feature-specific modules located in the `Modules/` directory. Each module is a self-contained unit with its own routes, controllers, models, and views, promoting a clean separation of concerns.
@@ -11,6 +15,7 @@ Key modules include:
 - **`CertificateRecognition`**: Handles certificate validation and recognition.
 - **`Course`**: Core module for managing courses, categories, and levels.
 - **`Coaching` & `Mentoring`**: Modules for managing coaching and mentoring functionalities.
+- **`InstructorEvaluation`**: Handles instructor evaluation and rating functionalities.
 - **`BasicPayment`**: Handles payment processing and integration with various gateways.
 - **`User` Management**: Core user management is in `app/`, with additional customer-related logic in the `Customer` module.
 

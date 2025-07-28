@@ -12,14 +12,15 @@ class InstructorEvaluation extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'course_id',
-        'student_id',
-        'course_chapter_id',
-        'instructor_id',
-        'rating',
-        'feedback',
-    ];
+    // protected $fillable = [
+    //     'course_id',
+    //     'student_id',
+    //     'course_chapter_id',
+    //     'instructor_id',
+    //     'rating',
+    //     'feedback',
+    // ];
+    protected $guarded = ['id'];
 
     public function student(): BelongsTo
     {

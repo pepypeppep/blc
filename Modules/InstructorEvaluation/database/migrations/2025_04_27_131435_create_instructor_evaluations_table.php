@@ -22,7 +22,11 @@ return new class extends Migration
             $table->foreignId('student_id')
                 ->references('id')->on('users')
                 ->onDelete('restrict')->onUpdate('restrict');
-            $table->integer('rating');
+            $table->boolean('rating');
+            $table->integer('material_mastery');
+            $table->integer('knowledge_transfer_ability');
+            $table->integer('communication_and_motivation');
+            $table->integer('discussion_and_exercise_process');
             $table->text('feedback');
             $table->timestamps();
 

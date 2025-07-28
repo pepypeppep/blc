@@ -154,14 +154,10 @@
                                             <p class="mb-3" style="font-size: 1.1rem;">
                                                 Laporan akhir dari kegiatan mentoring yang telah dilakukan.
                                             </p>
-
                                             @if ($mentoring->final_report)
-                                                <embed
-                                                    src="{{ $mentoring->final_report }}" target="_self"
-                                                    type="application/pdf"
-                                                    width="100%"
-                                                    height="600px"
-                                                />
+                                               <embed
+                                                    src="{{ route('admin.mentoring.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
+                                                    type="application/pdf" width="100%" height="500px" class="border rounded shadow-sm" />
                                             @else
                                                 <div class="text-center">
                                                     <h4 class="text-muted"><em>Belum ada laporan akhir</em></h4>

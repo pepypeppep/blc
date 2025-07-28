@@ -44,7 +44,7 @@
                     <label for="rating">Penguasaan Materi</label>
                     <div class="d-flex align-items-center justify-content-start">
                         <div class="rating-stars d-flex justify-content-start flex-row-reverse">
-                            @for ($i = 1; $i <= 5; $i++)
+                            @for ($i = 5; $i >= 1; $i--)
                                 <input type="radio" id="material_mastery{{ $i }}" name="material_mastery"
                                     value="{{ $i }}"
                                     {{ optional($selectedInstructorEvaluation)->material_mastery == $i ? 'checked' : '' }} />
@@ -57,7 +57,7 @@
                     <label for="rating">Kemampuan Melakukan Transfer Keilmuan</label>
                     <div class="d-flex align-items-center justify-content-start">
                         <div class="rating-stars d-flex justify-content-start flex-row-reverse">
-                            @for ($i = 1; $i <= 5; $i++)
+                            @for ($i = 5; $i >= 1; $i--)
                                 <input type="radio" id="knowledge_transfer_ability{{ $i }}"
                                     name="knowledge_transfer_ability" value="{{ $i }}"
                                     {{ optional($selectedInstructorEvaluation)->knowledge_transfer_ability == $i ? 'checked' : '' }} />
@@ -70,7 +70,7 @@
                     <label for="rating">Berkomunikasi dan Memotivasi Peserta</label>
                     <div class="d-flex align-items-center justify-content-start">
                         <div class="rating-stars d-flex justify-content-start flex-row-reverse">
-                            @for ($i = 1; $i <= 5; $i++)
+                            @for ($i = 5; $i >= 1; $i--)
                                 <input type="radio" id="communication_and_motivation{{ $i }}"
                                     name="communication_and_motivation" value="{{ $i }}"
                                     {{ optional($selectedInstructorEvaluation)->communication_and_motivation == $i ? 'checked' : '' }} />
@@ -83,7 +83,7 @@
                     <label for="rating">Proses Diskusi dan Latihan</label>
                     <div class="d-flex align-items-center justify-content-start">
                         <div class="rating-stars d-flex justify-content-start flex-row-reverse">
-                            @for ($i = 1; $i <= 5; $i++)
+                            @for ($i = 5; $i >= 1; $i--)
                                 <input type="radio" id="discussion_and_exercise_process{{ $i }}"
                                     name="discussion_and_exercise_process" value="{{ $i }}"
                                     {{ optional($selectedInstructorEvaluation)->discussion_and_exercise_process == $i ? 'checked' : '' }} />

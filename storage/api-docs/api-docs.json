@@ -248,6 +248,136 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Create a pengetahuan",
+                "description": "Create a pengetahuan",
+                "operationId": "9df6bd8bd202eed7afab4cf724e19398",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "category",
+                                    "title",
+                                    "description",
+                                    "visibility",
+                                    "allow_comments",
+                                    "thumbnail"
+                                ],
+                                "properties": {
+                                    "enrollment": {
+                                        "description": "Enrollment id",
+                                        "type": "integer"
+                                    },
+                                    "category": {
+                                        "description": "Pengetahuan category",
+                                        "type": "string",
+                                        "enum": [
+                                            "blog",
+                                            "video",
+                                            "document"
+                                        ]
+                                    },
+                                    "title": {
+                                        "description": "Pengetahuan title",
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "description": "Pengetahuan description",
+                                        "type": "string"
+                                    },
+                                    "visibility": {
+                                        "description": "Pengetahuan visibility",
+                                        "type": "string",
+                                        "enum": [
+                                            "public",
+                                            "private"
+                                        ]
+                                    },
+                                    "allow_comments": {
+                                        "description": "Allow comments",
+                                        "type": "string",
+                                        "enum": [
+                                            "0",
+                                            "1"
+                                        ]
+                                    },
+                                    "link": {
+                                        "description": "Pengetahuan link",
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "description": "Pengetahuan content",
+                                        "type": "string"
+                                    },
+                                    "tags": {
+                                        "description": "Pengetahuan tags",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "thumbnail": {
+                                        "description": "Pengetahuan thumbnail",
+                                        "type": "file"
+                                    },
+                                    "file": {
+                                        "description": "Pengetahuan file",
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pengetahuan created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pengetahuan created successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/articles/{id}": {
@@ -306,6 +436,158 @@
                         }
                     }
                 }
+            }
+        },
+        "/articles/{slug}/submit": {
+            "post": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Submit an article for verification",
+                "description": "Submit an article for verification",
+                "operationId": "2e24001ccf375f6b580b36984a5c0a2d",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Article slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article submitted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article submitted successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "My Article"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "This is my article"
+                                                },
+                                                "category": {
+                                                    "type": "string",
+                                                    "example": "blog"
+                                                },
+                                                "enrollment_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "link": {
+                                                    "type": "string",
+                                                    "example": "https://www.example.com"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "<p>This is my article</p>"
+                                                },
+                                                "visibility": {
+                                                    "type": "string",
+                                                    "example": "public"
+                                                },
+                                                "allow_comments": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "thumbnail": {
+                                                    "type": "string",
+                                                    "example": "path/to/thumbnail.jpg"
+                                                },
+                                                "file": {
+                                                    "type": "string",
+                                                    "example": "path/to/file.pdf"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "draft"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2022-01-01 00:00:00"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2022-01-01 00:00:00"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bad request"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "message": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Article not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/articles-reviews/{id}": {

@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('title')->nullable(false);
             $table->string('slug')->unique();
             $table->string('category')->nullable();
-            $table->longText('content');
-            $table->text('description');
+            $table->longText('content')->nullable();
+            $table->longText('description');
             $table->string('status')->default('draft');
             $table->text('note')->nullable();
             $table->string('link')->nullable();

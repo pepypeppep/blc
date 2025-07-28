@@ -19,8 +19,9 @@ class Mentoring extends Model
     public const STATUS_DRAFT = "Draft";
     public const STATUS_SUBMISSION = "Pengajuan";
     public const STATUS_PROCESS = "Proses";
-    public const STATUS_DONE = "Selesai";
     public const STATUS_EVALUATION = "Penilaian";
+    public const STATUS_VERIFICATION = "Verifikasi";
+    public const STATUS_DONE = "Selesai";
     public const STATUS_REJECT = "Tolak";
 
     public function mentor(): BelongsTo
@@ -64,6 +65,12 @@ class Mentoring extends Model
                 'color' => 'primary'
             ];
         }
+        if ($this->status === $this::STATUS_VERIFICATION) {
+            return [
+                'label' => 'Verifikasi',
+                'color' => 'warning'
+            ];
+        }
         if ($this->status === $this::STATUS_DONE) {
             return [
                 'label' => 'Selesai',
@@ -89,7 +96,7 @@ class Mentoring extends Model
 
     public function isProcessOrEvaluationOrDone(): bool
     {
-        return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_EVALUATION, self::STATUS_DONE]);
+        return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_EVALUATION, self::STATUS_VERIFICATION, self::STATUS_DONE]);
     }
 
     public function getDocumentResponse($column)

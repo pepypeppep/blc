@@ -3174,6 +3174,188 @@
                 }
             }
         },
+        "/courses/{course}/instructor-evaluations": {
+            "get": {
+                "tags": [
+                    "Instructor Evaluation"
+                ],
+                "summary": "Get instructor evaluation form",
+                "operationId": "d1d04a3eda2b411c8f0e63c8b8e15d03",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "description": "Course ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "instructor",
+                        "in": "path",
+                        "description": "Instructor ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Instructor Evaluation"
+                ],
+                "summary": "Store instructor evaluation form",
+                "operationId": "dc9b703a2a1a00e6932564ca22614745",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "description": "Course ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "description": "Instructor evaluation form",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "instructor_id",
+                                    "material_mastery",
+                                    "knowledge_transfer_ability",
+                                    "communication_and_motivation",
+                                    "discussion_and_exercise_process",
+                                    "feedback"
+                                ],
+                                "properties": {
+                                    "instructor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "material_mastery": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "knowledge_transfer_ability": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "communication_and_motivation": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "discussion_and_exercise_process": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "feedback": {
+                                        "type": "string",
+                                        "example": "Comment"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful response"
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/mentoring/mentee": {
             "get": {
                 "tags": [
@@ -5599,6 +5781,10 @@
         {
             "name": "Coachee",
             "description": "Coachee"
+        },
+        {
+            "name": "Instructor Evaluation",
+            "description": "Instructor Evaluation"
         },
         {
             "name": "Mentee",

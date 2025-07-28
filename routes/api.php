@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\CertificateApiController;
 use App\Http\Controllers\Api\CoachApiController;
 use App\Http\Controllers\Api\CoacheeApiController;
+use App\Http\Controllers\Api\InstructorEvaluationController;
 use App\Http\Controllers\Api\MenteeApiController;
 use App\Http\Controllers\Api\MentorApiController;
 use App\Http\Controllers\Api\PendidikanLanjutanController;
@@ -57,6 +58,15 @@ Route::name('api.')->group(function () {
     Route::post('/courses/{slug}/accept-tos', [CourseApiController::class, 'acceptTos'])->name('courses.accept-tos');
 
     Route::get('/courses/{type}/{id}/get-file', [StudentLearningApiController::class, 'getFilePathUrl'])->name('courses.get-file');
+
+    //student learning
+    Route::prefix('courses')
+        ->name('courses.')
+        ->middleware('auth:sso-api')
+        ->group(function () {
+            Route::get('/{course}/instructor-evaluations', [InstructorEvaluationController::class, 'index'])->name('instructorevaluation.index');
+            Route::post('/{course}/instructor-evaluations', [InstructorEvaluationController::class, 'store'])->name('instructorevaluation.store');
+        });
 
     // Lesson
     Route::name('lessons.')->group(function () {

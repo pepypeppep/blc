@@ -118,10 +118,10 @@ Route::name('api.')->group(function () {
     // Mentoring
     Route::prefix('mentoring')
         ->name('mentoring.')
-        ->middleware('auth:sso-api')
         ->group(function () {
             Route::prefix('mentee')
                 ->name('mentee.')
+                ->middleware('auth:sso-api')
                 ->group(function () {
                     Route::get('/', [MenteeApiController::class, 'index'])->name('index');
                     Route::get('/{id}', [MenteeApiController::class, 'show'])->name('show');
@@ -132,6 +132,7 @@ Route::name('api.')->group(function () {
                 });
             Route::prefix('mentor')
                 ->name('mentor.')
+                ->middleware('auth:sso-api')
                 ->group(function () {
                     Route::get('/', [MentorApiController::class, 'index'])->name('index');
                     Route::get('/{id}', [MentorApiController::class, 'show'])->name('show');
@@ -151,10 +152,10 @@ Route::name('api.')->group(function () {
     // Coaching
     Route::prefix('coaching')
         ->name('coaching.')
-        ->middleware('auth:sso-api')
         ->group(function () {
             Route::prefix('coachee')
                 ->name('coachee.')
+                ->middleware('auth:sso-api')
                 ->group(function () {
                     Route::get('/', [CoacheeApiController::class, 'index'])->name('index');
                     Route::get('/{id}', [CoacheeApiController::class, 'show'])->name('show');
@@ -165,6 +166,7 @@ Route::name('api.')->group(function () {
                 });
             Route::prefix('coach')
                 ->name('coach.')
+                ->middleware('auth:sso-api')
                 ->group(function () {
                     Route::get('/', [CoachApiController::class, 'index'])->name('index');
                     Route::get('/{id}', [CoachApiController::class, 'show'])->name('show');

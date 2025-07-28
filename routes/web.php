@@ -203,6 +203,9 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::resource('follow-up-action', StudentFollowUpActionController::class);
         // Route::get('follow-up-action/create', [StudentFollowUpActionController::class, 'create'])->name('follow-up-action.create');
 
+        /** certificates routes  */
+        Route::get('certificates', [CertificateController::class, 'index'])->name('certificates.index');
+
         /** learning routes */
         Route::post('accept-tos/{slug}', [LearningController::class, 'acceptTos'])->name('learning.accept-tos');
         Route::get('learning/{slug}', [LearningController::class, 'index'])->name('learning.index');

@@ -613,32 +613,23 @@
                                             "type": "array",
                                             "items": {
                                                 "properties": {
-                                                    "courses": {
-                                                        "properties": {
-                                                            "course": {
-                                                                "type": "string",
-                                                                "example": "Pelatihan 1"
-                                                            },
-                                                            "completed_date": {
-                                                                "type": "string",
-                                                                "format": "date-time",
-                                                                "example": "2022-01-01 00:00:00"
-                                                            },
-                                                            "certificate_url": {
-                                                                "type": "string",
-                                                                "format": "uri",
-                                                                "example": "https://example.com/certificates/1"
-                                                            }
-                                                        },
-                                                        "type": "object"
+                                                    "category": {
+                                                        "type": "string",
+                                                        "example": "course"
                                                     },
-                                                    "mentoring": {
-                                                        "type": "array",
-                                                        "items": []
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Pelatihan 1"
                                                     },
-                                                    "coaching": {
-                                                        "type": "array",
-                                                        "items": []
+                                                    "date": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2022-01-01 00:00:00"
+                                                    },
+                                                    "url": {
+                                                        "type": "string",
+                                                        "format": "uri",
+                                                        "example": "https://example.com/certificates/1"
                                                     }
                                                 },
                                                 "type": "object"

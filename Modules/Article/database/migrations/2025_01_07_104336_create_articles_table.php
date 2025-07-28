@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('author_id')->constrained('users')->onDelete('cascade')->nullable(false);
-            $table->foreignId('verificator_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('enrollment_id')->nullable()->constrained('enrollments')->onDelete('set null');
+            $table->foreignId('verificator_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->foreignId('editor_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('thumbnail')->nullable();
             $table->string('title')->nullable(false);
             $table->string('slug')->unique();
@@ -30,6 +31,7 @@ return new class extends Migration
             $table->bigInteger('views')->default(0);
             $table->string('visibility')->default('public');
             $table->boolean('allow_comments')->default(true);
+            $table->date('verified_at')->nullable();
             $table->date('published_at')->default(now());
             $table->timestamps();
         });

@@ -38,7 +38,10 @@ class MentorApiController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('mentor_id', $request->user()->id)->orderByDesc('id')->paginate(10);
+            $data = Mentoring::with('mentor:id,name', 'mentee:id,name')
+                ->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)
+                ->orderByDesc('id')->paginate(10);
 
             return $this->successResponse($data, 'Mentor topics fetched successfully');
         } catch (\Exception $e) {
@@ -71,7 +74,10 @@ class MentorApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions')->where('mentor_id', $request->user()->id)->findOrFail($id);
+            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions')
+                ->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)
+                ->findOrFail($id);
             $hasIncompleteSessions = $mentoring->mentoringSessions->contains(function ($session) {
                 return empty($session->activity);
             });
@@ -123,7 +129,10 @@ class MentorApiController extends Controller
                 'reason.required' => 'Alasan tidak boleh kosong',
             ]);
 
-            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)->first();
+            $mentoring = Mentoring::where('id', $id)
+                ->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)
+                ->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -193,7 +202,10 @@ class MentorApiController extends Controller
     public function approve(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)->first();
+            $mentoring = Mentoring::where('id', $id)
+                ->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)
+                ->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -223,7 +235,6 @@ class MentorApiController extends Controller
             return $this->errorResponse($e->getMessage(), [], 500);
         }
     }
-
 
     /**
      * @OA\Post(
@@ -439,7 +450,8 @@ class MentorApiController extends Controller
                 'penguasaan_materi_description.required' => 'Deskripsi penguasaan materi tidak boleh kosong',
             ]);
 
-            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)->first();
+            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -519,7 +531,9 @@ class MentorApiController extends Controller
     public function evaluasi(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('id', $id)->where('mentor_id', $request->user()->id)->first();
+            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('id', $id)
+                ->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);

@@ -16,8 +16,8 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">{{ $coaching->title }}</h5>
                 @if ($coachingUser->is_joined == 1)
-                    <span class="badge fs-6 bg-success text-white">
-                        {{ __('Bergabung') }}
+                    <span class="badge fs-6 bg-{{ $coaching->stat['color'] }} text-white">
+                        {{ $coaching->stat['label'] }}
                     </span>
                 @elseif ($coachingUser->isRejected())
                     <span class="badge fs-6 bg-danger text-white">
@@ -67,7 +67,10 @@
                             Lakukan sesi coaching sesuai jadwal dan laporkan hasil penugasan.
                         </span>
                     </div>
-                    @if ($coachingUser->coaching->status == Coaching::STATUS_PROCESS && $coachingUser->final_report == null && !$userCanSubmitFinalReport)
+                    @if (
+                        $coachingUser->coaching->status == Coaching::STATUS_PROCESS &&
+                            $coachingUser->final_report == null &&
+                            !$userCanSubmitFinalReport)
                         <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#editSessionModal">
                             <i class="fa fa-edit"></i> Isi Kegiatan
@@ -108,7 +111,11 @@
                                     @if ($session->details->count() > 0)
                                         <div>
                                             <strong class="d-block">Deskripsi Kegiatan:</strong>
-                                            <div class="text-body"><em>{!! $session->details->first()->description !!}</em></div>
+                                            <div class="text-body">{!! $session->details->first()->activity ?: '<em>Tidak ada deskripsi kegiatan.</em>' !!}</div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong class="d-block">Hambatan:</strong>
+                                            <div class="text-body">{!! $session->details->first()->description ?: '<em>Tidak ada hambatan</em>' !!}</div>
                                         </div>
                                         <div class="mb-2">
                                             <strong class="d-block">Dokumentasi:</strong>
@@ -205,7 +212,7 @@
                 </div>
             @endif
         </div>
-        @if (!$coachingUser->isRejected() && !$coachingUser->is_joined == 1)
+        @if (!$coachingUser->isRejected() && !$coachingUser->is_joined == 1 && $coaching->status == Coaching::STATUS_CONSENSUS)
             <div class="row">
                 <div class="col-12 justify-content-between d-flex align-items-center">
                     <button type="button" onclick="handleTolakKonsesus(event, {{ $coaching->id }})"
@@ -242,12 +249,33 @@
                         <div class="mb-3">
                             <label for="modal-session-id" class="form-label">Pilih Pertemuan<code>*</code></label>
                             <select class="form-select" name="session_id" id="modal-session-id" required>
-                                <option value="" disabled selected>Pilih Jadwal Pertemuan</option>
+                                <option value="" selected>Pilih Jadwal Pertemuan</option>cd
                                 @foreach ($sessions as $session)
-                                    @if ($session->details->count() == 0)
-                                        <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} -
-                                            {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
-                                        </option>
+                                    @if ($loop->index > 0)
+                                        @if (
+                                            $sessions[$loop->index - 1]->details->count() > 0 &&
+                                                $sessions[$loop->index - 1]->details->first()->coaching_note == null)
+                                            <option value="#" disabled>
+                                                Pertemuan {{ $loop->iteration }} -
+                                                {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
+                                                (Menunggu review mentor pada sesi sebelumnya)
+                                            </option>
+                                        @elseif(!$session->details->count() > 0 && !$sessions[$loop->index - 1]->details->count() > 0)
+                                            <option value="#" disabled>Pertemuan {{ $loop->iteration }} -
+                                                {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
+                                                (Pastikan sesi sebelumnya sudah terisi)
+                                            </option>
+                                        @elseif ($session->details->count() == 0 && $sessions[$loop->index - 1]->details->count() > 0)
+                                            <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} -
+                                                {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
+                                            </option>
+                                        @endif
+                                    @else
+                                        @if ($session->details->count() == 0)
+                                            <option value="{{ $session->id }}">Pertemuan {{ $loop->iteration }} -
+                                                {{ \Carbon\Carbon::parse($session->coaching_date)->translatedFormat('l, d F Y H:i') }}
+                                            </option>
+                                        @endif
                                     @endif
                                 @endforeach
                             </select>
@@ -255,6 +283,10 @@
                         <div class="mb-3">
                             <label for="modal-activity" class="form-label">Deskripsi Kegiatan<code>*</code></label>
                             <textarea class="form-control summernote" name="activity" id="modal-activity" style="height:150px;" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modal-description" class="form-label">Hambatan<code>*</code></label>
+                            <textarea class="form-control summernote" name="description" id="modal-description" style="height:150px;" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="image" class="form-label">Dokumentasi<code>*</code></label>
@@ -288,15 +320,15 @@
                 if ($('#modal-activity').next('.note-editor').length) {
                     $('#modal-activity').summernote('destroy');
                 }
-                if ($('#modal-obstacle').next('.note-editor').length) {
-                    $('#modal-obstacle').summernote('destroy');
+                if ($('#modal-description').next('.note-editor').length) {
+                    $('#modal-description').summernote('destroy');
                 }
                 // Init Summernote
                 $('#modal-activity').summernote({
                     height: 120,
                     placeholder: 'Deskripsikan kegiatan...',
                 });
-                $('#modal-obstacle').summernote({
+                $('#modal-description').summernote({
                     height: 120,
                     placeholder: 'Tulis hambatan jika ada...',
                 });

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\CourseProgress;
 use App\Models\CourseChapterItem;
 use App\Http\Controllers\Controller;
+use App\Services\CertificateService;
 use Illuminate\Support\Facades\Storage;
 use Modules\Order\app\Models\Enrollment;
 use Modules\CertificateRecognition\app\Models\CertificateRecognitionEnrollment;
@@ -48,35 +49,26 @@ class CertificateApiController extends Controller
      *                 @OA\Items(
      *                     type="object",
      *                     @OA\Property(
-     *                         property="courses",
-     *                         type="object",
-     *                         @OA\Property(
-     *                             property="course",
-     *                             type="string",
-     *                             example="Pelatihan 1"
-     *                         ),
-     *                         @OA\Property(
-     *                             property="completed_date",
-     *                             type="string",
-     *                             format="date-time",
-     *                             example="2022-01-01 00:00:00"
-     *                         ),
-     *                         @OA\Property(
-     *                             property="certificate_url",
-     *                             type="string",
-     *                             format="uri",
-     *                             example="https://example.com/certificates/1"
-     *                         )
+     *                         property="category",
+     *                         type="string",
+     *                         example="course"
      *                     ),
      *                     @OA\Property(
-     *                         property="mentoring",
-     *                         type="array",
-     *                         items={}
+     *                         property="name",
+     *                         type="string",
+     *                         example="Pelatihan 1"
      *                     ),
      *                     @OA\Property(
-     *                         property="coaching",
-     *                         type="array",
-     *                         items={}
+     *                         property="date",
+     *                         type="string",
+     *                         format="date-time",
+     *                         example="2022-01-01 00:00:00"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="url",
+     *                         type="string",
+     *                         format="uri",
+     *                         example="https://example.com/certificates/1"
      *                     )
      *                 )
      *             )
@@ -118,91 +110,108 @@ class CertificateApiController extends Controller
      *     )
      * )
      */
-    public function getCertificatesForStudent(Request $request)
+    public function getCertificatesForStudent(Request $request, CertificateService $certificateService)
     {
+        // $user_id = $request->input('user_id');
+        // try {
+        //     $enrollments = Enrollment::with([
+        //         'course' => function ($q) {
+        //             $q->withTrashed();
+        //         },
+        //         'user' => function ($q) {
+        //             $q->select('id', 'name');
+        //         }
+        //     ])
+        //         ->where('user_id', $user_id)
+        //         ->orderByDesc('id')
+        //         ->get();
+
+        //     if ($enrollments->isEmpty()) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'Tidak ada pelatihan yang terdaftar untuk user ID ' . $user_id,
+        //         ], 404);
+        //     }
+
+        //     $certificates = [];
+
+        //     foreach ($enrollments as $enrollment) {
+        //         $course = $enrollment->course;
+
+        //         if (!$course || $course->certificate != 1) {
+        //             continue;
+        //         }
+
+        //         $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
+        //             $q->where('course_id', $course->id);
+        //         })->count();
+
+        //         $courseLectureCompletedByUser = CourseProgress::where('user_id', $user_id)
+        //             ->where('course_id', $course->id)
+        //             ->where('watched', 1)
+        //             ->count();
+
+        //         $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
+
+        //         if ($courseCompletedPercent == 100) {
+        //             $completed_date = formatDate(CourseProgress::where('user_id', $user_id)
+        //                 ->where('course_id', $course->id)
+        //                 ->where('watched', 1)
+        //                 ->latest()
+        //                 ->first()->created_at);
+
+        //             // $certificate = CertificateBuilder::first();
+        //             // $certificateItems = CertificateBuilderItem::all();
+
+        //             // $html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate'))->render();
+
+        //             // $html = str_replace('[student_name]', $enrollment->user->name, $html);
+        //             // $html = str_replace('[platform_name]', Cache::get('setting')->app_name, $html);
+        //             // $html = str_replace('[course]', $course->title, $html);
+        //             // $html = str_replace('[date]', $completed_date, $html);
+        //             // $html = str_replace('[instructor_name]', $course->instructor->name, $html);
+
+        //             $certificates[] = [
+        //                 'courses' => [
+        //                     'course' => $course->title,
+        //                     'completed_date' => $completed_date,
+        //                     'certificate_url' => route('student.download-certificate', $course->id)
+        //                 ],
+        //                 'mentoring' => [],
+        //                 'coaching' => [],
+        //             ];
+        //         }
+        //     }
+
+        //     if (count($certificates) === 0) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'Sertifikat tidak ditemukan.',
+        //         ], 404);
+        //     }
+
+        //     return response()->json([
+        //         'success' => true,
+        //         'message' => 'Daftar sertifikat ditemukan.',
+        //         'data' => $certificates,
+        //     ], 200);
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+        //     ], 500);
+        // }
+
         $user_id = $request->input('user_id');
+
         try {
-            $enrollments = Enrollment::with([
-                'course' => function ($q) {
-                    $q->withTrashed();
-                },
-                'user' => function ($q) {
-                    $q->select('id', 'name');
-                }
-            ])
-                ->where('user_id', $user_id)
-                ->orderByDesc('id')
-                ->get();
-
-            if ($enrollments->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Tidak ada pelatihan yang terdaftar untuk user ID ' . $user_id,
-                ], 404);
-            }
-
-            $certificates = [];
-
-            foreach ($enrollments as $enrollment) {
-                $course = $enrollment->course;
-
-                if (!$course || $course->certificate != 1) {
-                    continue;
-                }
-
-                $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
-                    $q->where('course_id', $course->id);
-                })->count();
-
-                $courseLectureCompletedByUser = CourseProgress::where('user_id', $user_id)
-                    ->where('course_id', $course->id)
-                    ->where('watched', 1)
-                    ->count();
-
-                $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
-
-                if ($courseCompletedPercent == 100) {
-                    $completed_date = formatDate(CourseProgress::where('user_id', $user_id)
-                        ->where('course_id', $course->id)
-                        ->where('watched', 1)
-                        ->latest()
-                        ->first()->created_at);
-
-                    // $certificate = CertificateBuilder::first();
-                    // $certificateItems = CertificateBuilderItem::all();
-
-                    // $html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate'))->render();
-
-                    // $html = str_replace('[student_name]', $enrollment->user->name, $html);
-                    // $html = str_replace('[platform_name]', Cache::get('setting')->app_name, $html);
-                    // $html = str_replace('[course]', $course->title, $html);
-                    // $html = str_replace('[date]', $completed_date, $html);
-                    // $html = str_replace('[instructor_name]', $course->instructor->name, $html);
-
-                    $certificates[] = [
-                        'courses' => [
-                            'course' => $course->title,
-                            'completed_date' => $completed_date,
-                            'certificate_url' => route('student.download-certificate', $course->id)
-                        ],
-                        'mentoring' => [],
-                        'coaching' => [],
-                    ];
-                }
-            }
-
-            if (count($certificates) === 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Sertifikat tidak ditemukan.',
-                ], 404);
-            }
+            $result = $certificateService->getCertificatesForUser($user_id);
 
             return response()->json([
-                'success' => true,
-                'message' => 'Daftar sertifikat ditemukan.',
-                'data' => $certificates,
-            ], 200);
+                'success' => $result['success'],
+                'message' => $result['message'],
+                'data' => $result['data']
+            ], $result['code']);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

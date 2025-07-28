@@ -88,7 +88,7 @@
 
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Knowledge List') }}</h4>
+                                <h4>{{ __('Mentoring List') }}</h4>
                                 <div>
                                     <!-- <a href="" class="btn btn-primary"><i class="fa fa-plus"></i>{{ __('Add New') }}</a> -->
                                 </div>

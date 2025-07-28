@@ -48,5 +48,7 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         Route::get('/', [MentoringController::class, 'index'])->name('index');
         Route::get('{id}/show', [MentoringController::class, 'show'])->name('show');
 
+        Route::get('/{id}/img', [MentoringController::class, 'viewImage'])->name('view.img');
+        Route::get('/{id}/document/{type}', [MentoringController::class, 'showDocument'])->name('view.document');
     });
 });

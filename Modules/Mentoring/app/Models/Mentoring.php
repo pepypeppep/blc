@@ -99,6 +99,11 @@ class Mentoring extends Model
         return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_EVALUATION, self::STATUS_VERIFICATION, self::STATUS_DONE]);
     }
 
+    public function signers()
+    {
+        return $this->hasMany(MentoringSigner::class);
+    }
+
     public function getDocumentResponse($column)
     {
         if (!$this->$column) {

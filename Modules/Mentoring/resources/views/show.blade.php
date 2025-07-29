@@ -198,7 +198,44 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
+                        <!-- pilih sertifikat -->
 
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>{{ __('Sertifikat') }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <form action="{{ route('admin.mentoring.update-certificate', $mentoring->id) }}"
+                                    method="POST">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <div class="form-group">
+                                        <label for="certificate">{{ __('Pilih Sertifikat') }} <code>*</code></label>
+                                        <div>
+                                            <div id="certificateBg">
+                                                @if ($mentoring->certificate_id)
+                                                    <img src="{{ route('admin.certificate-builder.getBg', $mentoring->certificate_id) }}"
+                                                        alt="{{ __('Sertifikat') }}"
+                                                        style="width: 100%; height: auto; max-width: 300px;">
+                                                @endif
+                                            </div>
+                                            <input type="hidden" name="certificate_id"
+                                                value="{{ $mentoring->certificate_id }}" class="form-control">
+                                            <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
+                                                data-target="#certificateModal">
+                                                {{ __('Pilih Sertifikat') }}
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- /pilih sertifikat -->
 
                         @if ($mentor)
                             <div class="card">
@@ -304,9 +341,193 @@
     </div>
 @endsection
 
+<!-- Certificate Modal -->
+<div class="modal fade" id="certificateModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header pl-4">
+                <h5 class="modal-title" id="certificateModalLabel">
+                    {{ __('Pilih Sertifikat') }}
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body row">
+                <div class="col">
+                    <div class="row">
+                        @foreach ($certificates as $certificate)
+                            <div class="col-md-3 mb-3">
+                                <div class="card certificate-card" id="certificate-{{ $certificate->id }}">
+                                    <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}"
+                                        alt="{{ $certificate->name }}" class="card-img-top"
+                                        style="width: 100%; height: 200px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{ $certificate->name }}</h6>
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            onclick="chooseCertificate({{ $certificate->id }}, '{{ $certificate->name }}')">
+                                            {{ __('Pilih') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mt-4">
+                            <div class="form-group">
+                                <label for="tte1">{{ __('TTE Depan') }}</label>
+                                <select class="form-control tte_select" id="tte1" name="tte1">
+                                    @foreach ($mentoring->signers as $signer)
+                                        @if ($signer->step == 1)
+                                            <option selected value="{{ $signer->user_id }}">{{ $signer->user->name }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mt-4">
+                            <div class="form-group">
+                                <label for="tte2">{{ __('TTE Belakang') }}</label>
+                                <select class="form-control tte_select" id="tte2" name="tte2">
+                                    @foreach ($mentoring->signers as $signer)
+                                        @if ($signer->step == 2)
+                                            <option selected value="{{ $signer->user_id }}">{{ $signer->user->name }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    {{ __('Tutup') }}
+                </button>
+                <button type="button" class="btn btn-primary" onclick="saveCertificate()" id="saveCertificateBtn"
+                    disabled>
+                    {{ __('Simpan Sertifikat') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@endpush
+
+@push('css')
+    <style>
+        .certificate-card.border-danger {
+            border: 2px solid #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .certificate-card .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+    </style>
+@endpush
+
+@push('js')
+    <script>
+        // Certificate selection functions
+        let selectedCertificateId = null;
+
+        function chooseCertificate(id, name) {
+            selectedCertificateId = id;
+
+            // Remove previous highlights
+            $('.certificate-card').removeClass('border-danger shadow-danger');
+            $('.certificate-card .btn').removeClass('btn-danger').addClass('btn-primary');
+
+            // Highlight selected certificate
+            $('#certificate-' + id).addClass('border-danger shadow-danger');
+            $('#certificate-' + id + ' .btn').removeClass('btn-primary').addClass('btn-danger');
+
+            // Enable save button
+            $('#saveCertificateBtn').prop('disabled', false);
+
+            // Update preview
+            $('input[name="certificate_id"]').val(id);
+            $('#certificateBg').html(
+                '<img src="' + '{{ route('admin.certificate-builder.getBg', '') }}/' + id + '" alt="' + name +
+                '" style="width: 100%; height: auto; max-width: 300px;">'
+            );
+        }
+
+        function saveCertificate() {
+            if (!selectedCertificateId) return;
+
+            let tteDepan = $('#tte1').val();
+            let tteBelakang = $('#tte2').val();
+
+            $.ajax({
+                url: '{{ route('admin.mentoring.update-certificate', $mentoring->id) }}',
+                type: 'PUT',
+                data: {
+                    certificate_id: selectedCertificateId,
+                    tte_depan: tteDepan,
+                    tte_belakang: tteBelakang,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    $('#certificateModal').modal('hide');
+                    location.reload(); // Reload to show updated certificate
+                },
+                error: function(xhr) {
+                    alert('Error: ' + xhr.responseJSON.message);
+                }
+            });
+        }
+
+        // Initialize on page load
+        $(document).ready(function() {
+            // Initialize Select2 for TTE dropdowns with AJAX
+            $('.tte_select').select2({
+                placeholder: 'Pilih TTE',
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: '{{ route('admin.mentoring.get-users') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: data.map(function(user) {
+                                return {
+                                    id: user.id,
+                                    text: user.name + ' (' + user.jabatan + ')'
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 2,
+                dropdownParent: $("#certificateModal"),
+            });
+
+            @if ($mentoring->certificate_id)
+                $('#certificateBg').html(
+                    '<img src="{{ route('admin.certificate-builder.getBg', $mentoring->certificate_id) }}" alt="{{ __('Sertifikat') }}" style="width: 100%; height: auto; max-width: 300px;">'
+                );
+            @endif
+        });
+    </script>
 @endpush
 
 @push('scripts')

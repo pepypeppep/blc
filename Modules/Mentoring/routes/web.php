@@ -47,6 +47,8 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
     Route::group(['prefix' => 'mentoring', 'as' => 'mentoring.'], function () {
         Route::get('/', [MentoringController::class, 'index'])->name('index');
         Route::get('{id}/show', [MentoringController::class, 'show'])->name('show');
+        Route::put('{id}/update-certificate', [MentoringController::class, 'updateCertificate'])->name('update-certificate');
+        Route::get('get-users', [MentoringController::class, 'getUsers'])->name('get-users');
 
         Route::get('/{id}/img', [MentoringController::class, 'viewImage'])->name('view.img');
         Route::get('/{id}/document/{type}', [MentoringController::class, 'showDocument'])->name('view.document');

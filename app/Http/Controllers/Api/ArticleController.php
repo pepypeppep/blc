@@ -512,6 +512,338 @@ class ArticleController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/articles/{slug}/edit",
+     *     summary="Edit an article",
+     *     description="Edit an article",
+     *     tags={"Articles"},
+     *     security={{"bearer": {}}},
+     *     @OA\Parameter(
+     *         description="Article slug",
+     *         in="path",
+     *         name="slug",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Article fetched successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Article fetched successfully"),
+     *             @OA\Property(property="data", type="object"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Article not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Article not found"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="You are not the author of this pengetahuan"),
+     *         )
+     *     )
+     * )
+     */
+    public function edit($slug)
+    {
+        try {
+            $article = Article::where('slug', $slug)
+                ->where(function ($query) {
+                    $query->where('status', Article::STATUS_DRAFT)
+                        ->orWhere('status', Article::STATUS_REJECTED);
+                })->firstOrFail();
+            if (!$article) {
+                return $this->errorResponse('Pengetahuan not found', [], 404);
+            }
+
+            if ($article->author_id != request()->user()->id) {
+                return $this->errorResponse('You are not the author of this pengetahuan', [], 403);
+            }
+
+            return $this->successResponse($article, 'Pengetahuan fetched successfully');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/articles/{slug}/update",
+     *     summary="Update an article",
+     *     description="Update an article",
+     *     tags={"Articles"},
+     *     security={{"bearer": {}}},
+     *     @OA\Parameter(
+     *         description="Article slug",
+     *         in="path",
+     *         name="slug",
+     *         required=true,
+     *         example="pengetahuan-saya",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"category", "title", "description", "thumbnail", "visibility", "allow_comments"},
+     *                 @OA\Property(
+     *                     property="category",
+     *                     type="string",
+     *                     enum={"blog", "document", "video"},
+     *                     description="Category of the article",
+     *                     example="blog"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="enrollment",
+     *                     type="integer",
+     *                     description="Enrollment id",
+     *                     example=1
+     *                 ),
+     *                 @OA\Property(
+     *                     property="title",
+     *                     type="string",
+     *                     description="Title of the article",
+     *                     example="Pengetahuan Saya"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string",
+     *                     description="Description of the article",
+     *                     example="<p>Pengetahuan saya tentang teknologi</p>"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="thumbnail",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Thumbnail image of the article",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="visibility",
+     *                     type="string",
+     *                     enum={"public", "internal"},
+     *                     description="Visibility of the article",
+     *                     example="public"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="allow_comments",
+     *                     type="boolean",
+     *                     description="Allow comments on the article",
+     *                     example=true
+     *                 ),
+     *                 @OA\Property(
+     *                     property="link",
+     *                     type="string",
+     *                     description="Link of the article (only for video category)",
+     *                     example="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="File of the article (only for document category)",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="content",
+     *                     type="string",
+     *                     description="Content of the article (only for blog category)",
+     *                     example="<p>Pengetahuan saya tentang teknologi</p>"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="tags",
+     *                     type="string",
+     *                     description="Tags of the article",
+     *                     example="pengetahuan, teknologi"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="message", type="string", example="Pengetahuan updated successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="You are not the author of this pengetahuan")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Pengetahuan not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Conflict",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Pengetahuan already created for this enrollment")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation error"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Pengetahuan updated failed")
+     *         )
+     *     )
+     * )
+     */
+    public function update(Request $request, $slug)
+    {
+        $article = Article::where('slug', $slug)->first();
+        if (!$article) {
+            return $this->errorResponse('Pengetahuan not found', [], 404);
+        }
+
+        if ($article->author_id != $request->user()->id) {
+            return $this->errorResponse('You are not the author of this pengetahuan', [], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'category' => 'required|in:blog,document,video',
+            'enrollment' => 'nullable|exists:enrollments,id',
+            'title' => 'required',
+            'description' => 'required',
+            'thumbnail' => 'required|mimes:jpg,jpeg,png|max:2048',
+            'visibility' => 'required|in:public,internal',
+            'link' => 'required_if:category,video',
+            'file' => 'nullable|mimes:pdf|max:10240',
+            'content' => 'required_if:category,blog',
+            'tags' => 'nullable|string',
+        ], [
+            'category.required' => __('The category field is required'),
+            'title.required' => __('The title field is required'),
+            'description.required' => __('The description field is required'),
+            'thumbnail.required' => __('The thumbnail field is required'),
+            'visibility.required' => __('The visibility field is required'),
+            'file.required_if' => __('The file field is required when category is document'),
+            'content.required_if' => __('The content field is required when category is blog'),
+            'category.in' => __('The selected category is invalid'),
+            'enrollment.exists' => __('The selected enrollment id is invalid'),
+            'thumbnail.mimes' => __('The thumbnail must be a file of type: jpg, jpeg, png'),
+            'thumbnail.max' => __('The thumbnail may not be greater than 2048 kilobytes'),
+            'file.mimes' => __('The file must be a file of type: pdf'),
+            'file.max' => __('The file may not be greater than 10240 kilobytes'),
+            'visibility.in' => __('The selected visibility is invalid'),
+            'link.required_if' => __('The link field is required when category is video'),
+            'tags.string' => __('The tags must be a string'),
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse(__('Validation error'), $validator->errors()->toArray(), 422);
+        }
+
+        if ($request->enrollment != null) {
+            $enrollment = Enrollment::where('user_id', $request->user()->id)->where('id', $request->enrollment)->first();
+            if (!$enrollment) {
+                return $this->errorResponse('Enrollment not found', [], 404);
+            }
+
+            $article = Article::where('enrollment_id', $enrollment->id)->first();
+            if ($article) {
+                return $this->errorResponse('Pengetahuan already created for this enrollment', [], 409);
+            }
+        }
+
+        DB::beginTransaction();
+
+        $result = $article->update([
+            'category' => $request->category,
+            'enrollment_id' => $request->enrollment != null ? $enrollment->id : null,
+            'title' => $request->title,
+            'description' => $request->description,
+            'visibility' => $request->visibility,
+            'allow_comments' => $request->allow_comments == 'on' ? '1' : '0',
+            'link' => $request->link,
+            'content' => $request->content,
+        ]);
+
+        $path = 'pengetahuan/' . now()->year . '/' . now()->month . '/' . $article->id . '/';
+        if ($request->category == 'video') {
+            $request->validate([
+                'link' => 'required|url',
+            ]);
+        } elseif ($request->category == 'document') {
+            $request->validate([
+                'file' => 'required|mimes:pdf|max:10240',
+            ]);
+
+            $file = $request->file('file');
+            $fileName = $path . "document_" . str_replace([' ', '/'], '_', $request->title) . "_" . str_replace(' ', '_', $request->user()->name) . "." . $file->getClientOriginalExtension();
+            Storage::disk('private')->put($fileName, file_get_contents($file));
+        }
+        if ($request->category == 'blog') {
+            $request->validate([
+                'content' => 'required',
+            ]);
+        }
+
+        $thumbnail = $request->file('thumbnail');
+
+        $thumbnailName = $path . "thumbnail_" . str_replace([' ', '/'], '_', $request->title) . "_" . str_replace(' ', '_', $request->user()->name) . "." . $thumbnail->getClientOriginalExtension();
+        Storage::disk('private')->put($thumbnailName, file_get_contents($thumbnail));
+
+        $article->update([
+            'thumbnail' => $thumbnailName,
+            'file' => $fileName ?? null,
+        ]);
+
+        if (isset($request->tags)) {
+            $tags = [];
+            foreach (explode(',', $request->tags) as $tag) {
+                $res = Tag::firstOrCreate(['name' => $tag]);
+                array_push($tags, $res->id);
+            }
+            $pengetahuan = Article::where('slug', $article->slug)->first();
+            $pengetahuan->articleTags()->sync($tags);
+            $pengetahuan->save();
+        }
+
+        if ($result) {
+            DB::commit();
+            return $this->successResponse($article, 'Pengetahuan updated successfully');
+        } else {
+            DB::rollBack();
+            return $this->errorResponse('Pengetahuan updated failed', [], 500);
+        }
+    }
+
+    /**
      * @OA\Post(
      *     path="/articles/{slug}/submit",
      *     summary="Submit an article for verification",

@@ -438,6 +438,324 @@
                 }
             }
         },
+        "/articles/{slug}/edit": {
+            "get": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Edit an article",
+                "description": "Edit an article",
+                "operationId": "0e453912af4795b228b14b5de8097b00",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Article slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Article not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not the author of this pengetahuan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/articles/{slug}/update": {
+            "post": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Update an article",
+                "description": "Update an article",
+                "operationId": "a5e6265a21222fd8afdd8502ec92dd8a",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Article slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "pengetahuan-saya"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "category",
+                                    "title",
+                                    "description",
+                                    "thumbnail",
+                                    "visibility",
+                                    "allow_comments"
+                                ],
+                                "properties": {
+                                    "category": {
+                                        "description": "Category of the article",
+                                        "type": "string",
+                                        "enum": [
+                                            "blog",
+                                            "document",
+                                            "video"
+                                        ],
+                                        "example": "blog"
+                                    },
+                                    "enrollment": {
+                                        "description": "Enrollment id",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "title": {
+                                        "description": "Title of the article",
+                                        "type": "string",
+                                        "example": "Pengetahuan Saya"
+                                    },
+                                    "description": {
+                                        "description": "Description of the article",
+                                        "type": "string",
+                                        "example": "<p>Pengetahuan saya tentang teknologi</p>"
+                                    },
+                                    "thumbnail": {
+                                        "description": "Thumbnail image of the article",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "visibility": {
+                                        "description": "Visibility of the article",
+                                        "type": "string",
+                                        "enum": [
+                                            "public",
+                                            "internal"
+                                        ],
+                                        "example": "public"
+                                    },
+                                    "allow_comments": {
+                                        "description": "Allow comments on the article",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "link": {
+                                        "description": "Link of the article (only for video category)",
+                                        "type": "string",
+                                        "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                    },
+                                    "file": {
+                                        "description": "File of the article (only for document category)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "content": {
+                                        "description": "Content of the article (only for blog category)",
+                                        "type": "string",
+                                        "example": "<p>Pengetahuan saya tentang teknologi</p>"
+                                    },
+                                    "tags": {
+                                        "description": "Tags of the article",
+                                        "type": "string",
+                                        "example": "pengetahuan, teknologi"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pengetahuan updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not the author of this pengetahuan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pengetahuan not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pengetahuan already created for this enrollment"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pengetahuan updated failed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/articles/{slug}/submit": {
             "post": {
                 "tags": [

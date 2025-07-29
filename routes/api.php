@@ -97,6 +97,8 @@ Route::name('api.')->group(function () {
         Route::group(['middleware' => ['auth:sso-api']], function () {
             Route::post('/articles', [ArticleController::class, 'store'])->name('store');
             Route::post('/articles/{slug}/submit', [ArticleController::class, 'submit'])->name('submit');
+            Route::get('/articles/{slug}/edit', [ArticleController::class, 'edit'])->name('edit');
+            Route::post('/articles/{slug}/update', [ArticleController::class, 'update'])->name('update');
             Route::post('/articles-reviews/{id}', [ArticleController::class, 'storeReviews'])->name('reviews.store');
         });
     });

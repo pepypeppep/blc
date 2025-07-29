@@ -799,19 +799,6 @@
                 "summary": "Create coaching topic",
                 "description": "Create coaching topic",
                 "operationId": "b5ae20ebcce11ceac2b33284ef4e1aad",
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "query",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "example": 1
-                    }
-                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -819,8 +806,11 @@
                             "schema": {
                                 "required": [
                                     "title",
-                                    "main_issue",
-                                    "purpose",
+                                    "goal",
+                                    "reality",
+                                    "option",
+                                    "way_forward",
+                                    "success_indicator",
                                     "total_session",
                                     "sessions",
                                     "coachee",
@@ -831,13 +821,25 @@
                                         "type": "string",
                                         "example": "Judul coaching"
                                     },
-                                    "main_issue": {
+                                    "goal": {
                                         "type": "string",
                                         "example": "Pokok permasalahan coaching"
                                     },
-                                    "purpose": {
+                                    "reality": {
                                         "type": "string",
                                         "example": "Tujuan coaching"
+                                    },
+                                    "option": {
+                                        "type": "string",
+                                        "example": "Pilihan yang tersedia untuk mencapai tujuan"
+                                    },
+                                    "way_forward": {
+                                        "type": "string",
+                                        "example": "Langkah-langkah yang akan diambil untuk mencapai tujuan"
+                                    },
+                                    "success_indicator": {
+                                        "type": "string",
+                                        "example": "Indikator keberhasilan yang diharapkan"
                                     },
                                     "total_session": {
                                         "type": "integer",

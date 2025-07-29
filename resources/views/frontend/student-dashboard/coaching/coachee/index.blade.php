@@ -13,7 +13,7 @@
                             <tr>
                                 <th>{{ __('#') }}</th>
                                 <th>{{ __('Title') }}</th>
-                                <th>{{ __('Main Issue') }}</th>
+                                <th>{{ __('Goal') }}</th>
                                 <th>{{ __('Total Session') }}</th>
                                 <th class="text-center">{{ __('Status') }}</th>
                                 <th class="text-center">{{ __('Status Bergabung') }}</th>
@@ -25,7 +25,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->coaching->title }}</td>
-                                    <td>{!! truncate(strip_tags($item->coaching->main_issue)) !!}</td>
+                                    <td>{!! truncate(strip_tags($item->coaching->goal)) !!}</td>
                                     <td class="text-center">{{ $item->coaching->total_session }}</td>
                                     <td class="text-center">
                                         <div class="badge bg-{{ $item->coaching->stat['color'] }}">

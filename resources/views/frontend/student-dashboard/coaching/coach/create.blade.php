@@ -21,18 +21,52 @@
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
-                                    <label for="main_issue">{{ __('Main Issue') }}<code>*</code></label>
-                                    <textarea id="main_issue" name="main_issue" class="text-editor form-control summernote">{{ old('main_issue') }}</textarea>
+                                    <label for="goal">{{ __('Goal') }}<code>*</code></label>
+                                    <textarea id="goal" name="goal" class="text-editor form-control summernote">{{ old('goal') }}</textarea>
                                     <div class="form-text text-primary fst-italic mt-2">
                                         <i class="fa fa-info-circle me-1"></i>
-                                        Jelaskan secara singkat permasalahan utama untuk melengkapi metode <strong>GROW</strong> (Goal, Reality, Options, Way Forward).
+                                        Jelaskan secara singkat tujuan yang ingin dicapai dari coaching ini.
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
-                                    <label for="purpose">{{ __('Purpose') }}<code>*</code></label>
-                                    <textarea id="purpose" name="purpose" class="text-editor form-control summernote">{{ old('purpose') }}</textarea>
+                                    <label for="reality">{{ __('Reality') }}<code>*</code></label>
+                                    <textarea id="reality" name="reality" class="text-editor form-control summernote">{{ old('reality') }}</textarea>
+                                    <div class="form-text text-primary fst-italic mt-2">
+                                        <i class="fa fa-info-circle me-1"></i>
+                                        Jelaskan secara singkat kondisi saat ini yang dihadapi terkait dengan tujuan anda.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <div class="form-group">
+                                    <label for="option">{{ __('Option') }}<code>*</code></label>
+                                    <textarea id="option" name="option" class="text-editor form-control summernote">{{ old('option') }}</textarea>
+                                    <div class="form-text text-primary fst-italic mt-2">
+                                        <i class="fa fa-info-circle me-1"></i>
+                                        Jelaskan secara singkat pilihan yang dimiliki untuk mencapai tujuan.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <div class="form-group">
+                                    <label for="way_forward">{{ __('Way Forward') }}<code>*</code></label>
+                                    <textarea id="way_forward" name="way_forward" class="text-editor form-control summernote">{{ old('way_forward') }}</textarea>
+                                    <div class="form-text text-primary fst-italic mt-2">
+                                        <i class="fa fa-info-circle me-1"></i>
+                                        Jelaskan secara singkat langkah-langkah yang akan diambil untuk mencapai tujuan.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <div class="form-group">
+                                    <label for="success_indicator">{{ __('Success Indicator') }}<code>*</code></label>
+                                    <textarea id="success_indicator" name="success_indicator" class="text-editor form-control summernote">{{ old('success_indicator') }}</textarea>
+                                    <div class="form-text text-primary fst-italic mt-2">
+                                        <i class="fa fa-info-circle me-1"></i>
+                                        Jelaskan secara singkat indikator keberhasilan yang diharapkan.
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-4">

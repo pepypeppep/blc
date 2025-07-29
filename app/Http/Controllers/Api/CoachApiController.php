@@ -117,39 +117,43 @@ class CoachApiController extends Controller
      *     description="Create coaching topic",
      *     tags={"Coach"},
      *     security={{"bearer": {}}},
-     *     @OA\Parameter(
-     *         description="User ID",
-     *         in="query",
-     *         name="user_id",
-     *         required=true,
-     *         example=1,
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64"
-     *         )
-     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 type="object",
-     *                 required={"title", "main_issue", "purpose", "total_session", "sessions", "coachee", "file"},
+     *                 required={"title", "goal", "reality", "option", "way_forward", "success_indicator", "total_session", "sessions", "coachee", "file"},
      *                 @OA\Property(
      *                     property="title",
      *                     type="string",
      *                     example="Judul coaching"
      *                 ),
      *                 @OA\Property(
-     *                     property="main_issue",
+     *                     property="goal",
      *                     type="string",
      *                     example="Pokok permasalahan coaching"
      *                 ),
      *                 @OA\Property(
-     *                     property="purpose",
+     *                     property="reality",
      *                     type="string",
      *                     example="Tujuan coaching"
      *                 ),
+     *                @OA\Property(
+     *                    property="option",
+     *                    type="string",
+     *                   example="Pilihan yang tersedia untuk mencapai tujuan"
+     *                ),
+     *                @OA\Property(
+     *                    property="way_forward",
+     *                   type="string",
+     *                   example="Langkah-langkah yang akan diambil untuk mencapai tujuan"
+     *                ),
+     *                @OA\Property(
+     *                    property="success_indicator",
+     *                   type="string",
+     *                  example="Indikator keberhasilan yang diharapkan"
+     *                ),
      *                 @OA\Property(
      *                     property="total_session",
      *                     type="integer",
@@ -209,8 +213,11 @@ class CoachApiController extends Controller
             ]);
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
-                'main_issue' => 'required|string',
-                'purpose' => 'required|string',
+                'goal' => 'required|string',
+                'reality' => 'required|string',
+                'option' => 'required|string',
+                'way_forward' => 'required|string',
+                'success_indicator' => 'required|string',
                 'total_session' => 'required|integer|min:3|max:24',
                 'sessions' => 'required|array|min:3|max:24',
                 'sessions.*' => 'required|date',
@@ -223,11 +230,20 @@ class CoachApiController extends Controller
                 'title.string' => 'Judul harus berupa teks.',
                 'title.max' => 'Judul maksimal 255 karakter.',
 
-                'main_issue.required' => 'Pokok permasalahan wajib diisi.',
-                'main_issue.string' => 'Pokok permasalahan harus berupa teks.',
+                'goal.required' => 'Goal wajib diisi.',
+                'goal.string' => 'Goal harus berupa teks.',
 
-                'purpose.required' => 'Tujuan wajib diisi.',
-                'purpose.string' => 'Tujuan harus berupa teks.',
+                'reality.required' => 'Reality wajib diisi.',
+                'reality.string' => 'Reality harus berupa teks.',
+
+                'option.required' => 'Option wajib diisi.',
+                'option.string' => 'Option harus berupa teks.',
+
+                'way_forward.required' => 'Way Forward wajib diisi.',
+                'way_forward.string' => 'Way Forward harus berupa teks.',
+
+                'success_indicator.required' => 'Success Indicator wajib diisi.',
+                'success_indicator.string' => 'Success Indicator harus berupa teks.',
 
                 'total_session.required' => 'Jumlah sesi wajib diisi.',
                 'total_session.integer' => 'Jumlah sesi harus berupa angka.',
@@ -289,8 +305,11 @@ class CoachApiController extends Controller
 
             $coaching = Coaching::create([
                 'title' => $validated['title'],
-                'main_issue' => $validated['main_issue'],
-                'purpose' => $validated['purpose'],
+                'goal' => $validated['goal'],
+                'reality' => $validated['reality'],
+                'option' => $validated['option'],
+                'way_forward' => $validated['way_forward'],
+                'success_indicator' => $validated['success_indicator'],
                 'total_session' => $validated['total_session'],
                 'learning_resources' => $validated['learning_resources'],
                 'coach_id' => $user->id,
@@ -356,7 +375,7 @@ class CoachApiController extends Controller
      */
     public function initiateConsensus($coachingId)
     {
-        try{
+        try {
             $coaching = Coaching::with('coachees')->findOrFail($coachingId);
 
             authorizeCoachAccess($coaching);
@@ -503,7 +522,7 @@ class CoachApiController extends Controller
      */
     public function reviewStore(Request $request)
     {
-        try{
+        try {
             $validated = $request->validate([
                 'session_id' => 'required|exists:coaching_sessions,id',
                 'coaching_user_id' => 'required|exists:coaching_users,id',
@@ -585,13 +604,13 @@ class CoachApiController extends Controller
 
         $user_id = $request->user_id;
         $coaching = Coaching::where('id', $coachingId)
-                    ->where('coach_id', $user_id)
-                    ->firstOrFail();
+            ->where('coach_id', $user_id)
+            ->firstOrFail();
 
         if ($coaching->status == Coaching::STATUS_DONE) {
             throw new \Exception('Status coaching sudah selesai. Penilaian tidak dapat dilakukan lagi', 422);
         }
-        
+
         $coachingUser = CoachingUser::with('coaching')
             ->where('coaching_id', $coachingId)
             ->where('user_id', $coacheeId)
@@ -784,17 +803,17 @@ class CoachApiController extends Controller
             'coaching_date.required' => 'Tanggal coaching tidak boleh kosong',
         ]);
 
-        $session = CoachingSession::whereHas('Coaching', function ($query) use ($user) {
+        $session = CoachingSession::whereHas('Coaching', function ($query) use ($request) {
             $query->where('coach_id', $request->user()->id);
         })->where('id', $request->session_id)
-          ->with('details') 
-          ->first();
+            ->with('details')
+            ->first();
 
         if (!$session) {
             return $this->errorResponse('Sesi tidak ditemukan.', [], 422);
         }
 
-        if($session->coaching->coach_id != $request->user()->id){
+        if ($session->coaching->coach_id != $request->user()->id) {
             return $this->errorResponse('Anda tidak memiliki izin untuk mengubah coaching ini.', [], 403);
         }
 

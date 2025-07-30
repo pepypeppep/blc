@@ -44,8 +44,11 @@ class CoachController extends Controller
         $user = userAuth();
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'main_issue' => 'required|string',
-            'purpose' => 'required|string',
+            'goal' => 'required|string',
+            'reality' => 'required|string',
+            'option' => 'required|string',
+            'way_forward' => 'required|string',
+            'success_indicator' => 'required|string',
             'total_session' => 'required|integer|min:3|max:24',
             'sessions' => 'required|array|min:3',
             'sessions.*' => 'required|date',
@@ -95,8 +98,11 @@ class CoachController extends Controller
 
         $coaching = Coaching::create([
             'title' => $validated['title'],
-            'main_issue' => $validated['main_issue'],
-            'purpose' => $validated['purpose'],
+            'goal' => $validated['goal'],
+            'reality' => $validated['reality'],
+            'option' => $validated['option'],
+            'way_forward' => $validated['way_forward'],
+            'success_indicator' => $validated['success_indicator'],
             'total_session' => $validated['total_session'],
             'learning_resources' => $validated['learning_resources'],
             'coach_id' => $user->id,

@@ -17,7 +17,7 @@
                             <tr>
                                 <th>{{ __('#') }}</th>
                                 <th>{{ __('Title') }}</th>
-                                <th>{{ __('Main Issue') }}</th>
+                                <th>{{ __('Goal') }}</th>
                                 <th>{{ __('Total Session') }}</th>
                                 <th>{{ __('Total Coachee') }}
                                     <span class="text-muted small">(bergabung/total)</span>
@@ -31,7 +31,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $coaching->title }}</td>
-                                    <td>{!! truncate(strip_tags($coaching->main_issue)) !!}</td>
+                                    <td>{!! truncate(strip_tags($coaching->goal)) !!}</td>
                                     <td class="text-center">{{ $coaching->total_session }}</td>
                                     <td>
                                         <span class="badge bg-success">{{ $coaching->joinedCoachees()->count() }}</span> /

@@ -46,6 +46,11 @@
                                                     </button>
                                                 </form>
                                             @endif
+                                            @if (!empty($mentoring->final_report) && !$mentoring->feedback)
+                                            <a class="btn-action-warning" href="{{ route('student.mentee.feedback', $mentoring->id) }}">
+                                                <i class="fa fa-clipboard"></i> &nbsp;Nilai Mentor
+                                            </a>
+                                            @endif
                                             <a href="{{ route('student.mentee.show', $mentoring->id) }}" class="btn-action-primary" title="Lihat Detail">
                                                 <i class="fa fa-eye"></i> &nbsp;Lihat
                                             </a>

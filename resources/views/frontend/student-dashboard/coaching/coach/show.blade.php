@@ -31,7 +31,7 @@ $statusColors = [
             </div>
 
             <div class="mb-3 border-top pt-3 mt-4">
-                <h6 class="title">{{ __('Goal') }}</h6>
+                <h6 class="title">Goal</h6>
                 <div>{!! $coaching->goal !!}</div>
             </div>
 
@@ -39,7 +39,7 @@ $statusColors = [
                 <h6 class="title">{{ __('Reality') }}</h6>
                 <div>{!! $coaching->reality !!}</div>
             </div>
-            
+
             <div class="mb-3">
                 <h6 class="title">{{ __('Option') }}</h6>
                 <div>{!! $coaching->option !!}</div>
@@ -242,7 +242,8 @@ $statusColors = [
                                         <strong>Pertemuan {{ $loop->iteration }}</strong>
                                         <span class="badge bg-info"
                                             title="Jumlah coachee yang telah membuat laporan pertemuan">Terisi
-                                            ({{ $filledReports }}/{{ $totalJoinedCoachees }})</span>
+                                            ({{ $filledReports }}/{{ $totalJoinedCoachees }})
+                                        </span>
                                         <span class="badge bg-warning"
                                             title="Jumlah laporan pertemuan yang telah ditinjau coach">Ditinjau
                                             ({{ $filledReviews }}/{{ $filledReports }})</span>
@@ -416,7 +417,8 @@ $statusColors = [
                                     <img id="modal-image" src="" alt="Dokumentasi" class="img-fluid rounded"
                                         style="max-height:200px; display:none;">
                                     <p id="modal-image-placeholder" class="text-muted" style="display:none;">
-                                        <em>Dokumentasi belum tersedia</em></p>
+                                        <em>Dokumentasi belum tersedia</em>
+                                    </p>
                                 </div>
                             </div>
 

@@ -206,7 +206,7 @@ class CoachApiController extends Controller
     public function store(Request $request)
     {
         try {
-            $user = User::findOrFail($request->user_id);
+            $user = User::findOrFail($request->user()->id);
             $request->merge([
                 'sessions' => explode(',', $request->input('sessions')),
                 'coachee' => explode(',', $request->input('coachee')),

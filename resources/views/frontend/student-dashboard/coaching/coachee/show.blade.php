@@ -31,13 +31,33 @@
             </div>
 
             <div class="mb-3 border-top pt-3 mt-4">
-                <h6 class="title">{{ __('Main Issue') }}</h6>
-                <div>{!! $coaching->main_issue !!}</div>
+                <h6 class="title">Goal</h6>
+                <div>{!! $coaching->goal !!}</div>
             </div>
 
             <div class="mb-3">
-                <h6 class="title">{{ __('Purpose') }}</h6>
-                <div>{!! $coaching->purpose !!}</div>
+                <h6 class="title">{{ __('Reality') }}</h6>
+                <div>{!! $coaching->reality !!}</div>
+            </div>
+
+            <div class="mb-3">
+                <h6 class="title">{{ __('Option') }}</h6>
+                <div>{!! $coaching->option !!}</div>
+            </div>
+
+            <div class="mb-3">
+                <h6 class="title">{{ __('Way Forward') }}</h6>
+                <div>{!! $coaching->way_forward !!}</div>
+            </div>
+
+            <div class="mb-3">
+                <h6 class="title">{{ __('Success Indicator') }}</h6>
+                <div>{!! $coaching->success_indicator !!}</div>
+            </div>
+
+            <div class="mb-3">
+                <h6 class="title">{{ __('Learning Resources') }}</h6>
+                <div>{!! $coaching->learning_resources ?: '<em>Tidak ada sumber belajar.</em>' !!}</div>
             </div>
 
             <div class="mb-3 d-flex align-items-center gap-4 border-top pt-3 mt-4">

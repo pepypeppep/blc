@@ -352,7 +352,6 @@ class MentorController extends Controller
 
     public function updateSession(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'mentoring_date' => 'required|date',
             'session_id' => 'required|string',
@@ -362,9 +361,33 @@ class MentorController extends Controller
         ]);
 
         $user = auth()->user();
-        $session = MentoringSession::whereHas('Mentoring', function ($query) use ($user) {
+        $sessions = MentoringSession::with('mentoring.mentoringSessions')->whereHas('Mentoring', function ($query) use ($user) {
             $query->where('mentor_id', $user->id);
         })->where('id', $request->session_id)->first();
+
+        $monthlyCount = [];
+        foreach ($sessions->mentoring->mentoringSessions as $session) {
+            $monthKey = \Carbon\Carbon::parse($session->mentoring_date)->format('Y-m');
+            if (strval($session->id) === $request->session_id) {
+                $monthKey = \Carbon\Carbon::parse($request->mentoring_date)->format('Y-m');
+            }
+
+
+            if (!isset($monthlyCount[$monthKey])) {
+                $monthlyCount[$monthKey] = 0;
+            }
+
+            $monthlyCount[$monthKey]++;
+
+
+            if ($monthlyCount[$monthKey] > 2) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['mentoring_date' => 'Maaf Anda hanya diperbolehkan mengajukan maksimal 2 pertemuan dalam satu bulan. Permintaan Anda melebihi batas yang telah ditentukan.']);
+            }
+        }
+
+        $session = MentoringSession::where('id', $request->session_id)->first();
 
         if (!$session) {
             return redirect()->back()->with(['messege' => 'Sesi mentoring tidak ditemukan', 'alert-type' => 'error']);

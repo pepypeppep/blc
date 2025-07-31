@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Quiz;
 use App\Models\QuizResult;
-use App\Models\QuizSeason;
+use App\Models\QuizSession;
 use App\Traits\ApiResponse;
 use App\Traits\HandlesCourseAccess;
 use Illuminate\Http\Request;
@@ -52,37 +52,47 @@ class StudentQuizApiController extends Controller
     public function start(Request $request, $quizId)
     {
         try {
+            $quiz = Quiz::with('questions.answers')->find($quizId);
+            if (!$quiz) return $this->errorResponse('Quiz not found', [], 404);
 
-            $quiz = Quiz::find($quizId);
-
-            if (!$quiz) {
-                return $this->errorResponse('Quiz not found', [], 404);
-            }
             $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
 
-            $quiz = Quiz::with('questions.answers')->findOrFail($quizId);
-
-            $courseId = $quiz->course_id;
-
-            $course = $this->getCourseById($courseId);
-
+            $course = $this->getCourseById($quiz->course_id);
             if ($course instanceof JsonResponse) return $course;
 
             $enrolled = $this->checkEnrollment($user, $course);
             if ($enrolled instanceof JsonResponse) return $enrolled;
 
-            // Cek apakah season sudah ada
-            $season = QuizSeason::where('user_id', $user->id)->where('quiz_id', $quizId)->first();
+            // Cek due date
+            if ($quiz->due_date && now()->greaterThan($quiz->due_date)) {
+                return $this->errorResponse('Quiz has expired.', [], 403);
+            }
+
+            // Hitung jumlah percobaan
+            $attemptCount = QuizResult::where('user_id', $user->id)
+                ->where('quiz_id', $quizId)
+                ->count();
+
+            if ($quiz->attempt && $attemptCount >= $quiz->attempt) {
+                return $this->errorResponse('Maximum attempt reached.', [], 403);
+            }
+
+            // Cek jika sudah pernah mulai
+            $season = QuizSession::where('user_id', $user->id)
+                ->where('quiz_id', $quizId)
+                ->whereNull('ended_at')
+                ->first();
+
             if ($season) {
-                $data = [
+                return $this->successResponse([
                     'questions' => $season->questions,
                     'answers' => $season->answers,
                     'started_at' => $season->started_at,
                     'ended_at' => $season->ended_at,
-                ];
-
-                return $this->successResponse($data, 'Quiz already started', 200);
+                    'time_limit' => $quiz->time,
+                    'due_date' => $quiz->due_date,
+                ], 'Quiz already started', 200);
             }
 
             // Acak soal dan jawaban
@@ -99,26 +109,27 @@ class StudentQuizApiController extends Controller
                 ];
             });
 
-            // Simpan ke quiz_seasons
-            $season = QuizSeason::create([
+            // Simpan session baru
+            $season = QuizSession::create([
                 'user_id' => $user->id,
                 'quiz_id' => $quizId,
                 'questions' => $randomQuestions,
                 'started_at' => now(),
             ]);
 
-            $data = [
+            return $this->successResponse([
                 'questions' => $randomQuestions,
                 'answers' => [],
                 'started_at' => $season->started_at,
                 'ended_at' => null,
-            ];
-
-            return $this->successResponse($data, 'Quiz already started', 200);
+                'time_limit' => $quiz->time,
+                'due_date' => $quiz->due_date,
+            ], 'Quiz started', 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);
         }
     }
+
 
     /**
      * @OA\Post(
@@ -174,7 +185,7 @@ class StudentQuizApiController extends Controller
             $enrolled = $this->checkEnrollment($user, $course);
             if ($enrolled instanceof JsonResponse) return $enrolled;
 
-            $season = QuizSeason::where('user_id', $user->id)
+            $season = QuizSession::where('user_id', $user->id)
                 ->where('quiz_id', $quizId)
                 ->first();
             if (!$season) {
@@ -226,35 +237,33 @@ class StudentQuizApiController extends Controller
             if ($user instanceof JsonResponse) return $user;
 
             $quiz = Quiz::with('questions.answers')->find($quizId);
+            if (!$quiz) return $this->errorResponse('Quiz not found', [], 404);
 
-            if (!$quiz) {
-                return $this->errorResponse('Quiz not found', [], 404);
+            // Cek due date
+            if ($quiz->due_date && now()->greaterThan($quiz->due_date)) {
+                return $this->errorResponse('Quiz has expired.', [], 403);
             }
 
-            $courseId = $quiz->course_id;
-            $course = $this->getCourseById($courseId);
+            $course = $this->getCourseById($quiz->course_id);
             if ($course instanceof JsonResponse) return $course;
 
             $enrolled = $this->checkEnrollment($user, $course);
             if ($enrolled instanceof JsonResponse) return $enrolled;
 
-            $season = QuizSeason::where('user_id', $user->id)
+            $season = QuizSession::where('user_id', $user->id)
                 ->where('quiz_id', $quizId)
+                ->whereNull('ended_at')
                 ->first();
-            if (!$season) {
-                return $this->errorResponse('Season not found', [], 404);
-            }
 
-            // Validasi kuis sudah disubmit
+            if (!$season) return $this->errorResponse('Season not found', [], 404);
+
             if ($season->ended_at) {
                 return $this->errorResponse('Kuis sudah disubmit.', [], 400);
             }
 
-            // Validasi batas waktu
             $maxTime = $season->started_at->addMinutes((int) $quiz->time);
             $waktuHabis = now()->gt($maxTime);
 
-            // Ambil jawaban user
             $userAnswers = collect($season->answers ?? []);
             $questions = $quiz->questions;
 
@@ -272,7 +281,6 @@ class StudentQuizApiController extends Controller
                 $totalMark += $question->grade;
             }
 
-            // Simpan hasil
             QuizResult::updateOrCreate(
                 ['user_id' => $user->id, 'quiz_id' => $quiz->id],
                 [
@@ -282,21 +290,18 @@ class StudentQuizApiController extends Controller
                 ]
             );
 
-            // Update waktu akhir kuis
             $season->update(['ended_at' => now()]);
 
-            $data = [
+            return $this->successResponse([
                 'message' => 'Quiz berhasil disubmit' . ($waktuHabis ? ' (melebihi batas waktu)' : ''),
                 'score' => $totalGrade,
                 'status' => $totalGrade >= $quiz->pass_mark ? 'passed' : 'failed',
-            ];
-
-            return $this->successResponse($data, 'Quiz submitted successfully', 200);
+                'late' => $waktuHabis,
+            ], 'Quiz submitted successfully', 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);
         }
     }
-
 
     /**
      * @OA\Get(
@@ -345,12 +350,12 @@ class StudentQuizApiController extends Controller
      * )
      */
 
-    public function myQuizSeasons(Request $request)
+    public function myQuizSessions(Request $request)
     {
         try {
             $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
-            $seasons = QuizSeason::with('quiz')
+            $seasons = QuizSession::with('quiz')
                 ->where('user_id', $user->id)
                 ->latest()
                 ->get();

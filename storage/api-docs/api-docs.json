@@ -4240,6 +4240,108 @@
                 ]
             }
         },
+        "/mentoring/mentee/{id}/store-feedback": {
+            "post": {
+                "tags": [
+                    "Mentee"
+                ],
+                "summary": "Kirim penilaian mentor",
+                "description": "Kirim penilaian mentor",
+                "operationId": "120e8da8de3d41412fec66343f16305d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID mentoring",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Nilai Mentor (Feedback)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mentoring_ability",
+                                    "punctuality_attendance",
+                                    "method_media_usage",
+                                    "attitude_behavior",
+                                    "inspirational_ability",
+                                    "motivational_ability",
+                                    "feedback_description"
+                                ],
+                                "properties": {
+                                    "mentoring_ability": {
+                                        "description": "Kemampuan mentoring",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "punctuality_attendance": {
+                                        "description": "Ketepatan Waktu dan Kehadiran",
+                                        "type": "integer",
+                                        "example": "80"
+                                    },
+                                    "method_media_usage": {
+                                        "description": "Penggunaan Metode dan Media Pembimbing",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "attitude_behavior": {
+                                        "description": "Sikap dan Perilaku",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "inspirational_ability": {
+                                        "description": "Pemberian Inspirasi",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "motivational_ability": {
+                                        "description": "Pemberian Motivasi",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "feedback_description": {
+                                        "description": "Catatan/saran",
+                                        "type": "string",
+                                        "example": "Deskripsi penilaian, catatan, saran"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Penilaian berhasil dikirim"
+                    },
+                    "400": {
+                        "description": "Penilaian gagal dikirim"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Mentoring not found"
+                    },
+                    "500": {
+                        "description": "Penilaian gagal dikirim"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/mentoring/mentor": {
             "get": {
                 "tags": [

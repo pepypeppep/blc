@@ -5,6 +5,7 @@ namespace Modules\Mentoring\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Modules\Mentoring\app\Models\Mentoring;
 use Modules\Mentoring\app\Models\MentoringSession;
+use Modules\Mentoring\app\Models\MentoringFeedback;
 use app\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -213,5 +214,82 @@ class MenteeController extends Controller
         } else {
             abort(404);
         }
+    }
+
+    public function feedback(Request $request, $id)
+    {
+        $user = auth()->user();
+        $mentoring = Mentoring::where('id', $id)->where('mentee_id', $user->id)->first();
+
+        if (!$mentoring) {
+            return redirect()->back()->with(['messege' => 'Mentoring not found', 'alert-type' => 'error']);
+        }
+
+        if (empty($mentoring->final_report)) {
+            return redirect()->back()->with(['messege' => 'Penilaian untuk mentor hanya bisa dilakukan jika laporan akhir telah diunggah', 'alert-type' => 'error']);
+        }
+
+        $feedback = MentoringFeedback::where('mentoring_id', $mentoring->id)->first();  
+
+        return view('frontend.student-dashboard.mentoring.mentee.feedback', compact('mentoring', 'feedback'));
+    }
+
+    public function feedbackStore(Request $request, $id)
+    {
+        $request->validate([
+            'mentoring_ability' => 'required|integer|min:1|max:100',
+            'punctuality_attendance' => 'required|integer|min:1|max:100',
+            'method_media_usage' => 'required|integer|min:1|max:100',
+            'attitude_behavior' => 'required|integer|min:1|max:100',
+            'inspirational_ability' => 'required|integer|min:1|max:100',
+            'motivational_ability' => 'required|integer|min:1|max:100',
+            'feedback_description' => 'required|string',
+        ], [
+            'mentoring_ability.required' => 'Kemampuan mentoring tidak boleh kosong',
+            'mentoring_ability.min' => 'Kemampuan mentoring minimal 1',
+            'mentoring_ability.max' => 'Kemampuan mentoring maksimal 100',
+            'punctuality_attendance.required' => 'Ketepatan Waktu dan Kehadiran tidak boleh kosong',
+            'punctuality_attendance.min' => 'Ketepatan Waktu dan Kehadiran minimal 1',
+            'punctuality_attendance.max' => 'Ketepatan Waktu dan Kehadiran maksimal 100',
+            'method_media_usage.required' => 'Penggunaan Metode dan Media Pembimbing tidak boleh kosong',
+            'method_media_usage.min' => 'Penggunaan Metode dan Media Pembimbing minimal 1',
+            'method_media_usage.max' => 'Penggunaan Metode dan Media Pembimbing maksimal 100',
+            'attitude_behavior.required' => 'Sikap dan Perilaku tidak boleh kosong',
+            'attitude_behavior.min' => 'Sikap dan Perilaku minimal 1',
+            'attitude_behavior.max' => 'Sikap dan Perilaku maksimal 100',
+            'inspirational_ability.required' => 'Pemberian Inspirasi tidak boleh kosong',
+            'inspirational_ability.min' => 'Pemberian Inspirasi minimal 1',
+            'inspirational_ability.max' => 'Pemberian Inspirasi maksimal 100',
+            'motivational_ability.required' => 'Pemberian Motivasi tidak boleh kosong',
+            'motivational_ability.min' => 'Pemberian Motivasi minimal 1',
+            'motivational_ability.max' => 'Pemberian Motivasi maksimal 100',
+            'feedback_description.required' => 'Deskripsi penilaian tidak boleh kosong',
+        ]);
+
+        $user = auth()->user();
+        $mentoring = Mentoring::where('id', $id)->where('mentee_id', $user->id)->first();
+
+        if (!$mentoring) {
+            return redirect()->back()->with(['messege' => 'Mentoring not found', 'alert-type' => 'error']);
+        }
+
+        if (empty($mentoring->final_report)) {
+            return redirect()->back()->with(['messege' => 'Penilaian untuk mentor hanya bisa dilakukan jika laporan akhir telah diunggah', 'alert-type' => 'error']);
+        }
+
+        $feedback = MentoringFeedback::firstOrNew(['mentoring_id' => $mentoring->id]);
+        $feedback->fill([
+            'mentoring_ability'       => $request->mentoring_ability,
+            'punctuality_attendance'  => $request->punctuality_attendance,
+            'method_media_usage'      => $request->method_media_usage,
+            'attitude_behavior'       => $request->attitude_behavior,
+            'inspirational_ability'   => $request->inspirational_ability,
+            'motivational_ability'    => $request->motivational_ability,
+            'feedback_description'    => $request->feedback_description,
+            'mentor_id'               => $mentoring->mentor_id,
+        ]);
+        $feedback->save();
+
+        return redirect()->route('student.mentee.index')->with(['messege' => 'Penilaian untuk mentor berhasil dilakukan', 'alert-type' => 'success']);
     }
 }

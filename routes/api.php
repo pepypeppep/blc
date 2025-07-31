@@ -143,6 +143,7 @@ Route::name('api.')->group(function () {
                     Route::post('/update-session', [MenteeApiController::class, 'updateSession'])->name('update.session');
                     Route::post('/{id}/submit-approval', [MenteeApiController::class, 'submitForApproval'])->name('submitForApproval');
                     Route::post('/{id}/final-report', [MenteeApiController::class, 'updateFinalReport'])->name('update.final.report');
+                    Route::post('/{id}/store-feedback', [MenteeApiController::class, 'feedbackStore'])->name('store.feedback');
                 });
             Route::prefix('mentor')
                 ->name('mentor.')

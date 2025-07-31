@@ -17,7 +17,7 @@
                 <span
                     class="badge fs-6
                     @php
-                    $statusColors = [
+$statusColors = [
                             'Draft' => 'bg-secondary',
                             'Pengajuan' => 'bg-warning',
                             'Proses' => 'bg-info',
@@ -73,12 +73,12 @@
                         </span>
                     </div>
                     @if ($mentoring->status == Mentoring::STATUS_SUBMISSION)
-                    <div>
-                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal"
-                            data-bs-target="#changeSessionDatetimeModal">
-                            <i class="fa fa-calendar-alt me-1"></i> Ubah Jadwal Sesi
-                        </button>
-                    </div>
+                        <div>
+                            <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="modal"
+                                data-bs-target="#changeSessionDatetimeModal">
+                                <i class="fa fa-calendar-alt me-1"></i> Ubah Jadwal Sesi
+                            </button>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -164,6 +164,7 @@
                     @endif
                 @endif
             </div>
+
             <div class="mb-3">
                 @if ($mentoring->isProcessOrEvaluationOrDone() && !$hasIncompleteSessions)
                     @if ($mentoring->final_report)
@@ -173,14 +174,28 @@
                     @endif
                 @endif
             </div>
+
             <div class="mb-3">
-                @if ($mentoring->status == Mentoring::STATUS_EVALUATION || $mentoring->status == Mentoring::STATUS_DONE)
+                @if (
+                    $mentoring->status == Mentoring::STATUS_EVALUATION ||
+                        $mentoring->status == Mentoring::STATUS_VERIFICATION ||
+                        $mentoring->status == Mentoring::STATUS_DONE)
                     <div class="mt-3 border-top pt-3">
                         @if ($mentoring->status == Mentoring::STATUS_EVALUATION && $mentoring->final_report)
                             <div class="mt-2 alert alert-warning" role="alert">
-                                <strong>{{ __('Silahkan Menyelesaikan Evaluasi melalui tautan berikut') }}</strong>
-                                <br>
-                                <a href="{{ route('student.mentor.evaluasi', $mentoring->id) }}" class="btn btn-sm btn-primary"><span>{{ __('Evaluasi Sekarang') }}</span></a>
+                                <div class="d-flex justify-content-center">
+                                    <strong>{{ __('Silakan Menyelesaikan Evaluasi melalui tautan berikut') }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-center mt-3">
+                                    @if ($mentoring->feedback)
+                                        <a href="{{ route('student.mentor.evaluasi', $mentoring->id) }}"
+                                            class="btn btn-sm btn-primary"><span>{{ __('Mentee Evaluation') }}</span></a>
+                                    @else
+                                        <strong>Untuk dapat mengevaluasi mentee, harap menunggu Mentee menyelesaikan
+                                            Mentoring
+                                            terlebih dahulu</strong>
+                                    @endif
+                                </div>
                             </div>
                         @endif
                         @if ($mentoring->status == Mentoring::STATUS_DONE)

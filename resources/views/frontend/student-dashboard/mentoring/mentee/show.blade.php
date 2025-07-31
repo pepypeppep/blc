@@ -15,17 +15,17 @@
         <div class="mt-3 border-top pt-3">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">{{ $mentoring->title }}</h5>
-                <span class="badge fs-6
+                <span
+                    class="badge fs-6
                     @php
-                        $statusColors = [
+$statusColors = [
                             'Draft' => 'bg-secondary',
                             'Pengajuan' => 'bg-warning',
                             'Proses' => 'bg-info',
                             'Selesai' => 'bg-success',
                             'Tolak' => 'bg-danger',
                         ];
-                        echo $statusColors[$mentoring->status] ?? 'bg-light text-dark';
-                    @endphp
+                        echo $statusColors[$mentoring->status] ?? 'bg-light text-dark'; @endphp
                 ">
                     {{ $mentoring->status }}
                 </span>
@@ -50,7 +50,8 @@
                 <div class="text-end flex-grow-1">
                     <h6 class="mb-1 title">{{ __('Surat Kesediaan Mentor') }}</h6>
                     @if ($mentoring->mentor_availability_letter)
-                        <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'mentor_availability_letter']) }}" target="_blank" class="btn-outline-primary btn-sm">
+                        <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'mentor_availability_letter']) }}"
+                            target="_blank" class="btn-outline-primary btn-sm">
                             <i class="fa fa-file-pdf"></i> Lihat Surat
                         </a>
                     @else
@@ -61,14 +62,14 @@
 
             <div class="mb-3 d-flex justify-content-between align-items-center border-top pt-3 mt-4">
                 <div>
-                    <h6 class="title">{{ __('Session Datetime') }} <span title="Jumlah pertemuan">({{ $mentoring->total_session }})</span></h6>
+                    <h6 class="title">{{ __('Session Datetime') }} <span
+                            title="Jumlah pertemuan">({{ $mentoring->total_session }})</span></h6>
                     <span class="text-muted small">
                         Lakukan sesi mentoring sesuai jadwal dan laporkan hasil penugasan.
                     </span>
                 </div>
                 @if ($mentoring->isProcessOrDone() && $hasIncompleteSessions)
-                    <button class="btn btn-outline-primary btn-sm"
-                        data-bs-toggle="modal"
+                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
                         data-bs-target="#editSessionModal">
                         <i class="fa fa-edit"></i> Isi Kegiatan
                     </button>
@@ -76,58 +77,61 @@
             </div>
 
             <div class="accordion" id="accordionPanelsStayOpenExample">
-                @foreach($mentoring->mentoringSessions as $session)
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-{{$loop->iteration}}" aria-expanded="true" aria-controls="panelsStayOpen-collapse-{{$loop->iteration}}">
-                            <div class="d-block">
-                                <div>
-                                    <strong>Pertemuan {{ $loop->iteration }}</strong>
-                                    {!! !empty($session->activity) ? '<span class="badge bg-info">Terisi</span>' : '' !!}
-                                    {!! !empty($session->mentoring_note) ? '<span class="badge bg-primary">Direviu</span>' : '' !!}
+                @foreach ($mentoring->mentoringSessions as $session)
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapse-{{ $loop->iteration }}" aria-expanded="true"
+                                aria-controls="panelsStayOpen-collapse-{{ $loop->iteration }}">
+                                <div class="d-block">
+                                    <div>
+                                        <strong>Pertemuan {{ $loop->iteration }}</strong>
+                                        {!! !empty($session->activity) ? '<span class="badge bg-info">Terisi</span>' : '' !!}
+                                        {!! !empty($session->mentoring_note) ? '<span class="badge bg-primary">Direviu</span>' : '' !!}
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">
+                                            {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}
+                                        </small>
+                                    </div>
                                 </div>
-                                <div>
-                                    <small class="text-muted">
-                                        {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}
-                                    </small>
-                                </div>
-                            </div>
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapse-{{$loop->iteration}}" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            @if(!empty($session->activity))
-                                <div>
-                                    <strong class="d-block">Deskripsi Kegiatan:</strong>
-                                    <div class="text-body">{!! $session->activity ?: '<em>Tidak ada deskripsi kegiatan.</em>' !!}</div>
-                                </div>
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapse-{{ $loop->iteration }}" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+                                @if (!empty($session->activity))
+                                    <div>
+                                        <strong class="d-block">Deskripsi Kegiatan:</strong>
+                                        <div class="text-body">{!! $session->activity ?: '<em>Tidak ada deskripsi kegiatan.</em>' !!}</div>
+                                    </div>
 
-                                <div class="mb-2">
-                                    <strong class="d-block">Hambatan:</strong>
-                                    <div class="text-body">{!! $session->description ?: '<em>Tidak ada hambatan dicatat.</em>' !!}</div>
-                                </div>
+                                    <div class="mb-2">
+                                        <strong class="d-block">Hambatan:</strong>
+                                        <div class="text-body">{!! $session->description ?: '<em>Tidak ada hambatan dicatat.</em>' !!}</div>
+                                    </div>
 
-                                <div class="mb-2">
-                                    <strong class="d-block">Dokumentasi:</strong>
-                                    @if ($session->image && Storage::disk('private')->exists($session->image))
-                                        <a href="{{ route('student.mentee.view.img', $session->id) }}" target="_blank">
-                                            <img src="{{ route('student.mentee.view.img', $session->id) }}" alt="img" class="img-thumbnail mt-2" style="max-width: 200px;">
-                                        </a>
-                                    @else
-                                        <p class="text-muted"><em>Belum ada dokumentasi gambar.</em></p>
+                                    <div class="mb-2">
+                                        <strong class="d-block">Dokumentasi:</strong>
+                                        @if ($session->image && Storage::disk('private')->exists($session->image))
+                                            <a href="{{ route('student.mentee.view.img', $session->id) }}" target="_blank">
+                                                <img src="{{ route('student.mentee.view.img', $session->id) }}"
+                                                    alt="img" class="img-thumbnail mt-2" style="max-width: 200px;">
+                                            </a>
+                                        @else
+                                            <p class="text-muted"><em>Belum ada dokumentasi gambar.</em></p>
+                                        @endif
+                                    </div>
+                                    @if ($session->status == 'reviewed')
+                                        @include('frontend.student-dashboard.mentoring.mentor.partials.session-done')
                                     @endif
-                                </div>
-                                @if ($session->status == 'reviewed')
-                                    @include('frontend.student-dashboard.mentoring.mentor.partials.session-done')
+                                @else
+                                    <div class="text-center">
+                                        <h4 class="text-muted">Belum ada kegiatan</h4>
+                                    </div>
                                 @endif
-                            @else
-                                <div class="text-center">
-                                    <h4 class="text-muted">Belum ada kegiatan</h4>
-                                </div>
-                            @endif
+                            </div>
                         </div>
                     </div>
-                </div>
                 @endforeach
             </div>
 
@@ -142,64 +146,71 @@
                     @if ($mentoring->final_report)
                         <div class="mt-2">
                             <a href="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
-                            target="_blank"
-                            class="btn btn-outline-primary btn-sm">
+                                target="_blank" class="btn btn-outline-primary btn-sm">
                                 <i class="fa fa-file-pdf"></i> Buka di Tab Baru
                             </a>
                         </div>
                     @endif
                 @endif
             </div>
+
             <div class="mb-3">
                 @if (!$mentoring->final_report)
-                <div class="alert alert-info">
-                    <strong>Ketentuan :</strong><br>
-                    - Harap unggah laporan akhir yang telah <strong>ditandatangani oleh Mentor</strong>.<br>
-                    - Format laporan akhir yang diunggah berupa file <strong>PDF</strong> dengan ukuran <strong>maksimal 5MB</strong>.<br>
-                    - Laporan akhir dapat diunggah ketika Sesi Pertemuan Mentoring telah selesai dilakukan.
-                </div>
+                    <div class="alert alert-info">
+                        <strong>Ketentuan :</strong><br>
+                        - Harap unggah laporan akhir yang telah <strong>ditandatangani oleh Mentor</strong>.<br>
+                        - Format laporan akhir yang diunggah berupa file <strong>PDF</strong> dengan ukuran <strong>maksimal
+                            5MB</strong>.<br>
+                        - Laporan akhir dapat diunggah ketika Sesi Pertemuan Mentoring telah selesai dilakukan.
+                    </div>
                 @endif
                 @if ($mentoring->isProcessOrEvaluationOrDone() && !$hasIncompleteSessions)
                     @if ($mentoring->final_report)
-                        <embed src="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
-                            type="application/pdf"
-                            width="100%"
-                            height="500px"
-                            class="border rounded shadow-sm" />
+                        <embed
+                            src="{{ route('student.mentee.view.document', ['id' => $mentoring->id, 'type' => 'final_report']) }}"
+                            type="application/pdf" width="100%" height="500px" class="border rounded shadow-sm" />
                     @else
-                    <form action="{{ route('student.mentee.report', $mentoring->id) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="input-group mb-3">
-                            <span class="input-group-text text-dark" style="cursor: pointer;" onclick="document.getElementById('final_report').click();">
-                                <i class="fa fa-file-pdf"></i> &nbsp;{{ __('Choose') }}
-                            </span>
-                            <input id="file_name" readonly class="form-control" type="text"
-                                placeholder="Belum ada file dipilih" onclick="document.getElementById('final_report').click();">
+                        <form action="{{ route('student.mentee.report', $mentoring->id) }}" method="POST"
+                            enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            <div class="input-group mb-3">
+                                <span class="input-group-text text-dark" style="cursor: pointer;"
+                                    onclick="document.getElementById('final_report').click();">
+                                    <i class="fa fa-file-pdf"></i> &nbsp;{{ __('Choose') }}
+                                </span>
+                                <input id="file_name" readonly class="form-control" type="text"
+                                    placeholder="Belum ada file dipilih"
+                                    onclick="document.getElementById('final_report').click();">
 
-                            <input id="final_report" name="final_report" class="d-none" type="file"
-                                onchange="document.getElementById('file_name').value = this.files[0]?.name || '';"
-                                accept=".pdf" required>
+                                <input id="final_report" name="final_report" class="d-none" type="file"
+                                    onchange="document.getElementById('file_name').value = this.files[0]?.name || '';"
+                                    accept=".pdf" required>
 
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fa fa-upload"></i> Unggah
-                            </button>
-                        </div>
-                        <!-- <small class="form-text text-muted">
-                            Berkas harus berupa <strong>PDF</strong> dan sudah ditandatangani oleh mentor.
-                        </small> -->
-                    </form>
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fa fa-upload"></i> Unggah
+                                </button>
+                            </div>
+                        </form>
                     @endif
                 @endif
             </div>
+
             <div class="mb-3">
-                @if ($mentoring->status == Mentoring::STATUS_EVALUATION || $mentoring->status == Mentoring::STATUS_DONE)
+                @if (
+                    $mentoring->status == Mentoring::STATUS_EVALUATION ||
+                        $mentoring->status == Mentoring::STATUS_VERIFICATION ||
+                        $mentoring->status == Mentoring::STATUS_DONE)
                     <div class="mt-3 border-top pt-3">
                         @if ($mentoring->status == Mentoring::STATUS_EVALUATION && $mentoring->final_report && !$mentoring->feedback)
                             <div class="mt-2 alert alert-warning" role="alert">
-                                <strong>{{ __('Silahkan Menyelesaikan Mentoring dengan melakukan penilaian mentor melalui tautan berikut') }}</strong>
-                                <br>
-                                <a href="{{ route('student.mentee.feedback', $mentoring->id) }}" class="btn btn-sm btn-primary"><span>{{ __('Beri Nilai Mentor Sekarang') }}</span></a>
+                                <div class="d-flex justify-content-center">
+                                    <strong>{{ __('Silahkan Menyelesaikan Mentoring dengan melakukan penilaian mentor melalui tautan berikut') }}</strong>
+                                </div>
+                                <div class="d-flex justify-content-center mt-3">
+                                    <a href="{{ route('student.mentee.feedback', $mentoring->id) }}"
+                                        class="btn btn-sm btn-primary"><span>{{ __('Mentor Evaluation') }}</span></a>
+                                </div>
                             </div>
                         @endif
                         @if ($mentoring->feedback)
@@ -218,11 +229,13 @@
 @endsection
 
 @push('modals')
-<!-- Modal Edit Session -->
-    <div class="modal fade" id="editSessionModal" tabindex="-1" aria-labelledby="editSessionModalLabel" aria-hidden="true">
+    <!-- Modal Edit Session -->
+    <div class="modal fade" id="editSessionModal" tabindex="-1" aria-labelledby="editSessionModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form method="POST" action="{{ route('student.mentee.update.session') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('student.mentee.update.session') }}"
+                    enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
@@ -234,7 +247,7 @@
                             <label for="modal-session-id" class="form-label">Pilih Pertemuan<code>*</code></label>
                             <select class="form-select" name="session_id" id="modal-session-id" required>
                                 <option value="" disabled selected>Pilih Jadwal Pertemuan</option>
-                                @foreach($mentoring->mentoringSessions as $index => $session)
+                                @foreach ($mentoring->mentoringSessions as $index => $session)
                                     @php
                                         $isEnabled = true;
                                         $note = '';
@@ -247,8 +260,10 @@
                                             }
                                         }
                                     @endphp
-                                    @if(empty($session->activity))
-                                        <option value="{{ $session->id }}" {{ $isEnabled ? '' : 'disabled' }}>Pertemuan {{ $loop->iteration }} - {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}{{ $note }}
+                                    @if (empty($session->activity))
+                                        <option value="{{ $session->id }}" {{ $isEnabled ? '' : 'disabled' }}>Pertemuan
+                                            {{ $loop->iteration }} -
+                                            {{ \Carbon\Carbon::parse($session->mentoring_date)->translatedFormat('l, d F Y H:i') }}{{ $note }}
                                         </option>
                                     @endif
                                 @endforeach
@@ -264,7 +279,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="image" class="form-label">Dokumentasi<code>*</code></label>
-                            <input type="file" class="form-control" name="image" id="image"  accept="image/jpeg,image/png" required>
+                            <input type="file" class="form-control" name="image" id="image"
+                                accept="image/jpeg,image/png" required>
                             <small class="form-text text-danger">
                                 Berkas harus berupa <strong>JPG/PNG</strong> dengan ukuran maksimal 2MB.
                             </small>
@@ -278,35 +294,35 @@
             </div>
         </div>
     </div>
-<!-- End Modal Edit Session -->
+    <!-- End Modal Edit Session -->
 @endpush
 
 @push('styles')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
 @endpush
 
 @push('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
-<script>
-$(document).ready(function() {
-    $('#editSessionModal').on('shown.bs.modal', function () {
-        // console.log('Modal shown, initialize summernote');
-        if ($('#modal-activity').next('.note-editor').length) {
-            $('#modal-activity').summernote('destroy');
-        }
-        if ($('#modal-obstacle').next('.note-editor').length) {
-            $('#modal-obstacle').summernote('destroy');
-        }
-        // Init Summernote
-        $('#modal-activity').summernote({
-            height: 120,
-            placeholder: 'Deskripsikan kegiatan...',
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#editSessionModal').on('shown.bs.modal', function() {
+                // console.log('Modal shown, initialize summernote');
+                if ($('#modal-activity').next('.note-editor').length) {
+                    $('#modal-activity').summernote('destroy');
+                }
+                if ($('#modal-obstacle').next('.note-editor').length) {
+                    $('#modal-obstacle').summernote('destroy');
+                }
+                // Init Summernote
+                $('#modal-activity').summernote({
+                    height: 120,
+                    placeholder: 'Deskripsikan kegiatan...',
+                });
+                $('#modal-obstacle').summernote({
+                    height: 120,
+                    placeholder: 'Tulis hambatan jika ada...',
+                });
+            });
         });
-        $('#modal-obstacle').summernote({
-            height: 120,
-            placeholder: 'Tulis hambatan jika ada...',
-        });
-    });
-});
-</script>
+    </script>
 @endpush

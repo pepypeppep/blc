@@ -27,6 +27,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::get('/{id}/document/{type}', [MenteeController::class, 'showDocument'])->name('view.document');
         Route::get('/{id}/img', [MenteeController::class, 'viewImage'])->name('view.img');
         Route::put('/{id}/submit', [MenteeController::class, 'submitForApproval'])->name('submit');
+        Route::get('{id}/feedback', [MenteeController::class, 'feedback'])->name('feedback');
+        Route::post('{id}/feedback', [MenteeController::class, 'feedbackStore'])->name('feedback.store');
     });
 
     Route::group(['prefix' => 'mentor', 'as' => 'mentor.'], function () {

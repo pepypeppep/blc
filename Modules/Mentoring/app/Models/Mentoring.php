@@ -124,4 +124,9 @@ class Mentoring extends Model
     {
         return route('api.mentoring.show.document', ['id' => $this->id, 'type' => 'mentor_availability_letter']);
     }
+
+    public function feedback()
+    {
+        return $this->hasOne(MentoringFeedback::class);
+    }
 }

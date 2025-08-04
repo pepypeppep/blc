@@ -1390,19 +1390,6 @@
                 "summary": "Create coaching topic",
                 "description": "Create coaching topic",
                 "operationId": "b5ae20ebcce11ceac2b33284ef4e1aad",
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "query",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "example": 1
-                    }
-                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1410,8 +1397,11 @@
                             "schema": {
                                 "required": [
                                     "title",
-                                    "main_issue",
-                                    "purpose",
+                                    "goal",
+                                    "reality",
+                                    "option",
+                                    "way_forward",
+                                    "success_indicator",
                                     "total_session",
                                     "sessions",
                                     "coachee",
@@ -1422,13 +1412,25 @@
                                         "type": "string",
                                         "example": "Judul coaching"
                                     },
-                                    "main_issue": {
+                                    "goal": {
                                         "type": "string",
                                         "example": "Pokok permasalahan coaching"
                                     },
-                                    "purpose": {
+                                    "reality": {
                                         "type": "string",
                                         "example": "Tujuan coaching"
+                                    },
+                                    "option": {
+                                        "type": "string",
+                                        "example": "Pilihan yang tersedia untuk mencapai tujuan"
+                                    },
+                                    "way_forward": {
+                                        "type": "string",
+                                        "example": "Langkah-langkah yang akan diambil untuk mencapai tujuan"
+                                    },
+                                    "success_indicator": {
+                                        "type": "string",
+                                        "example": "Indikator keberhasilan yang diharapkan"
                                     },
                                     "total_session": {
                                         "type": "integer",
@@ -4238,6 +4240,108 @@
                 ]
             }
         },
+        "/mentoring/mentee/{id}/store-feedback": {
+            "post": {
+                "tags": [
+                    "Mentee"
+                ],
+                "summary": "Kirim penilaian mentor",
+                "description": "Kirim penilaian mentor",
+                "operationId": "120e8da8de3d41412fec66343f16305d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID mentoring",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Nilai Mentor (Feedback)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mentoring_ability",
+                                    "punctuality_attendance",
+                                    "method_media_usage",
+                                    "attitude_behavior",
+                                    "inspirational_ability",
+                                    "motivational_ability",
+                                    "feedback_description"
+                                ],
+                                "properties": {
+                                    "mentoring_ability": {
+                                        "description": "Kemampuan mentoring",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "punctuality_attendance": {
+                                        "description": "Ketepatan Waktu dan Kehadiran",
+                                        "type": "integer",
+                                        "example": "80"
+                                    },
+                                    "method_media_usage": {
+                                        "description": "Penggunaan Metode dan Media Pembimbing",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "attitude_behavior": {
+                                        "description": "Sikap dan Perilaku",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "inspirational_ability": {
+                                        "description": "Pemberian Inspirasi",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "motivational_ability": {
+                                        "description": "Pemberian Motivasi",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "feedback_description": {
+                                        "description": "Catatan/saran",
+                                        "type": "string",
+                                        "example": "Deskripsi penilaian, catatan, saran"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Penilaian berhasil dikirim"
+                    },
+                    "400": {
+                        "description": "Penilaian gagal dikirim"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Mentoring not found"
+                    },
+                    "500": {
+                        "description": "Penilaian gagal dikirim"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/mentoring/mentor": {
             "get": {
                 "tags": [
@@ -5332,558 +5436,6 @@
                 ]
             }
         },
-        "/student-learning/{courseId}/quiz/{quizId}": {
-            "get": {
-                "tags": [
-                    "Student Learning"
-                ],
-                "summary": "Get quiz questions",
-                "description": "Get quiz questions",
-                "operationId": "c619ca220d1da4011f1ba08e75e0b4c4",
-                "parameters": [
-                    {
-                        "name": "courseId",
-                        "in": "path",
-                        "description": "Course ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1
-                    },
-                    {
-                        "name": "quizId",
-                        "in": "path",
-                        "description": "Quiz ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Quiz questions retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "quiz_id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "title": {
-                                                "type": "string",
-                                                "example": "What is the capital of France?"
-                                            },
-                                            "answers": {
-                                                "type": "array",
-                                                "items": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "quiz_question_id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "title": {
-                                                            "type": "string",
-                                                            "example": "Paris"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Bad request"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthorized"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Quiz not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Error"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Student Learning"
-                ],
-                "summary": "Store quiz answers",
-                "description": "Store quiz answers",
-                "operationId": "e229762ac424d9df9e9049f1ce836248",
-                "parameters": [
-                    {
-                        "name": "courseId",
-                        "in": "path",
-                        "description": "Course ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1
-                    },
-                    {
-                        "name": "quizId",
-                        "in": "path",
-                        "description": "Quiz ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1
-                    }
-                ],
-                "requestBody": {
-                    "description": "Quiz answers submitted by the user",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "question": {
-                                        "type": "object",
-                                        "example": {
-                                            "1": 5,
-                                            "2": 8
-                                        },
-                                        "additionalProperties": [
-                                            {
-                                                "type": "integer",
-                                                "example": 5,
-                                                "property": null
-                                            }
-                                        ]
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Quiz submitted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "user_id": {
-                                                    "type": "integer",
-                                                    "example": 12
-                                                },
-                                                "quiz_id": {
-                                                    "type": "integer",
-                                                    "example": 3
-                                                },
-                                                "result": {
-                                                    "type": "object",
-                                                    "additionalProperties": [
-                                                        {
-                                                            "type": "integer",
-                                                            "example": 5,
-                                                            "property": "answer"
-                                                        },
-                                                        {
-                                                            "type": "boolean",
-                                                            "example": true,
-                                                            "property": "correct"
-                                                        }
-                                                    ]
-                                                },
-                                                "user_grade": {
-                                                    "type": "integer",
-                                                    "example": 85
-                                                },
-                                                "status": {
-                                                    "type": "string",
-                                                    "example": "pass"
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-04-22T10:00:00Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-04-22T10:00:00Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz submitted successfully"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Bad request"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthorized"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "You are not enrolled in this course"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "An unexpected error occurred"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/student-learning/{courseId}/quiz/{quizId}/result": {
-            "get": {
-                "tags": [
-                    "Student Learning"
-                ],
-                "summary": "Get quiz result",
-                "description": "Retrieve detailed result of a quiz attempt by a student",
-                "operationId": "29ae34b2a5cc9a4238d19c94ff82dc6d",
-                "parameters": [
-                    {
-                        "name": "courseId",
-                        "in": "path",
-                        "description": "course ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "example": 1
-                    },
-                    {
-                        "name": "quizId",
-                        "in": "path",
-                        "description": "Quiz ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "example": 1
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Data retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "properties": {
-                                                "quiz": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "course_id": {
-                                                            "type": "integer",
-                                                            "example": 3
-                                                        },
-                                                        "title": {
-                                                            "type": "string",
-                                                            "example": "Basic Math Quiz"
-                                                        },
-                                                        "description": {
-                                                            "type": "string",
-                                                            "example": "Test your basic math skills"
-                                                        },
-                                                        "pass_mark": {
-                                                            "type": "integer",
-                                                            "example": 70
-                                                        },
-                                                        "questions_count": {
-                                                            "type": "integer",
-                                                            "example": 3
-                                                        },
-                                                        "created_at": {
-                                                            "type": "string",
-                                                            "format": "date-time",
-                                                            "example": "2025-04-20T08:00:00Z"
-                                                        },
-                                                        "updated_at": {
-                                                            "type": "string",
-                                                            "format": "date-time",
-                                                            "example": "2025-04-21T10:00:00Z"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                },
-                                                "attempt": {
-                                                    "type": "integer",
-                                                    "example": 2
-                                                },
-                                                "quizResult": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "user_id": {
-                                                            "type": "integer",
-                                                            "example": 5
-                                                        },
-                                                        "quiz_id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "result": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "properties": {
-                                                                    "question_id": {
-                                                                        "type": "integer",
-                                                                        "example": 1
-                                                                    },
-                                                                    "answer": {
-                                                                        "type": "integer",
-                                                                        "example": 7
-                                                                    },
-                                                                    "correct": {
-                                                                        "type": "boolean",
-                                                                        "example": true
-                                                                    }
-                                                                },
-                                                                "type": "object"
-                                                            }
-                                                        },
-                                                        "user_grade": {
-                                                            "type": "integer",
-                                                            "example": 80
-                                                        },
-                                                        "status": {
-                                                            "type": "string",
-                                                            "example": "pass"
-                                                        },
-                                                        "created_at": {
-                                                            "type": "string",
-                                                            "format": "date-time",
-                                                            "example": "2025-04-22T09:00:00Z"
-                                                        },
-                                                        "updated_at": {
-                                                            "type": "string",
-                                                            "format": "date-time",
-                                                            "example": "2025-04-22T09:00:00Z"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Data retrieved successfully"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Quiz or result not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "An unexpected error occurred"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
         "/student-learning/{courseId}/rtl/{rtlId}": {
             "get": {
                 "tags": [
@@ -6183,6 +5735,261 @@
                 ]
             }
         },
+        "/student-quiz/quizzes/{quizId}/start": {
+            "get": {
+                "tags": [
+                    "Student Quiz"
+                ],
+                "summary": "Mulai kuis (acak pertanyaan & jawaban)",
+                "description": "Jika sudah dimulai sebelumnya, akan mengembalikan season yang sama.",
+                "operationId": "b22ca545a21a5106dccdf72b79203912",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID kuis",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kuis dimulai",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "questions": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "answers": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "started_at": {
+                                            "type": "string"
+                                        },
+                                        "ended_at": {
+                                            "type": "string",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quiz not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/student-quiz/quizzes/{quizId}/save-answer": {
+            "post": {
+                "tags": [
+                    "Student Quiz"
+                ],
+                "summary": "Simpan jawaban sementara",
+                "description": "Menyimpan jawaban sementara ke tabel quiz_seasons",
+                "operationId": "236b5d2bdc31913fb47fe870d3b5c932",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID kuis",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "answers": {
+                                        "type": "object",
+                                        "example": {
+                                            "1": [
+                                                2
+                                            ],
+                                            "2": [
+                                                5,
+                                                6
+                                            ]
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Jawaban disimpan"
+                    },
+                    "404": {
+                        "description": "Quiz/Season not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/student-quiz/quizzes/{quizId}/submit": {
+            "post": {
+                "tags": [
+                    "Student Quiz"
+                ],
+                "summary": "Submit hasil kuis",
+                "description": "Hitung nilai dan simpan hasil ke QuizResult. Validasi waktu juga dilakukan.",
+                "operationId": "5f02991c4dd078cf2e00bdb92c511766",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID kuis",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kuis disubmit dengan sukses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "score": {
+                                            "type": "integer"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "passed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Waktu kuis habis"
+                    },
+                    "400": {
+                        "description": "Kuis sudah disubmit"
+                    },
+                    "404": {
+                        "description": "Quiz not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/student-quiz/my-quiz-results": {
+            "get": {
+                "tags": [
+                    "Student Quiz"
+                ],
+                "summary": "Lihat hasil kuis peserta",
+                "operationId": "435e23531260dced68540ede1301d209",
+                "responses": {
+                    "200": {
+                        "description": "Daftar hasil kuis",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/student-quiz/my-quiz-seasons": {
+            "get": {
+                "tags": [
+                    "Student Quiz"
+                ],
+                "summary": "Daftar kuis yang sudah dimulai (quiz_seasons)",
+                "operationId": "34e4b6577610f1e13a3d28eba28e901c",
+                "responses": {
+                    "200": {
+                        "description": "Daftar seasons yang sudah dimulai",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/users": {
             "get": {
                 "tags": [
@@ -6346,6 +6153,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Student Quiz",
+            "description": "API untuk peserta mengikuti kuis"
+        },
         {
             "name": "Home",
             "description": "Home API Endpoints"

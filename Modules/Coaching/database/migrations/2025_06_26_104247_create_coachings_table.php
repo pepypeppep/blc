@@ -14,8 +14,11 @@ return new class extends Migration
         Schema::create('coachings', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('main_issue')->nullable();
-            $table->text('purpose')->nullable();
+            $table->text('goal');
+            $table->text('reality');
+            $table->text('option');
+            $table->text('way_forward');
+            $table->text('success_indicator')->nullable();
             $table->integer('total_session');
             $table->text('learning_resources')->nullable();
             $table->string('spt');

@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Modules\Mentoring\app\Models\Mentoring;
 use Modules\Mentoring\app\Models\MentoringSession;
+use Modules\Mentoring\app\Models\MentoringFeedback;
 
 class MenteeApiController extends Controller
 {
@@ -447,5 +448,114 @@ class MenteeApiController extends Controller
         } else {
             return null;
         }
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/mentoring/mentee/{id}/store-feedback",
+     *     summary="Kirim penilaian mentor",
+     *     description="Kirim penilaian mentor",
+     *     tags={"Mentee"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         description="ID mentoring",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(type="integer", format="int64", example=1),
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Nilai Mentor (Feedback)",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"mentoring_ability", "punctuality_attendance", "method_media_usage", "attitude_behavior", "inspirational_ability", "motivational_ability", "feedback_description"},
+     *             @OA\Property(property="mentoring_ability", type="integer", example=80, description="Kemampuan mentoring"),
+     *             @OA\Property(property="punctuality_attendance", type="integer", example="80", description="Ketepatan Waktu dan Kehadiran"),
+     *             @OA\Property(property="method_media_usage", type="integer", example=80, description="Penggunaan Metode dan Media Pembimbing"),
+     *             @OA\Property(property="attitude_behavior", type="integer", example=80, description="Sikap dan Perilaku"),
+     *             @OA\Property(property="inspirational_ability", type="integer", example=80, description="Pemberian Inspirasi"),
+     *             @OA\Property(property="motivational_ability", type="integer", example=80, description="Pemberian Motivasi"),
+     *             @OA\Property(property="feedback_description", type="string", example="Deskripsi penilaian, catatan, saran", description="Catatan/saran"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Penilaian berhasil dikirim",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Penilaian gagal dikirim",
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Mentoring not found",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Penilaian gagal dikirim",
+     *     ),
+     * )
+     */
+    public function feedbackStore(Request $request, $id)
+    {
+        $request->validate([
+            'mentoring_ability' => 'required|integer|min:1|max:100',
+            'punctuality_attendance' => 'required|integer|min:1|max:100',
+            'method_media_usage' => 'required|integer|min:1|max:100',
+            'attitude_behavior' => 'required|integer|min:1|max:100',
+            'inspirational_ability' => 'required|integer|min:1|max:100',
+            'motivational_ability' => 'required|integer|min:1|max:100',
+            'feedback_description' => 'required|string',
+        ], [
+            'mentoring_ability.required' => 'Kemampuan mentoring tidak boleh kosong',
+            'mentoring_ability.min' => 'Kemampuan mentoring minimal 1',
+            'mentoring_ability.max' => 'Kemampuan mentoring maksimal 100',
+            'punctuality_attendance.required' => 'Ketepatan Waktu dan Kehadiran tidak boleh kosong',
+            'punctuality_attendance.min' => 'Ketepatan Waktu dan Kehadiran minimal 1',
+            'punctuality_attendance.max' => 'Ketepatan Waktu dan Kehadiran maksimal 100',
+            'method_media_usage.required' => 'Penggunaan Metode dan Media Pembimbing tidak boleh kosong',
+            'method_media_usage.min' => 'Penggunaan Metode dan Media Pembimbing minimal 1',
+            'method_media_usage.max' => 'Penggunaan Metode dan Media Pembimbing maksimal 100',
+            'attitude_behavior.required' => 'Sikap dan Perilaku tidak boleh kosong',
+            'attitude_behavior.min' => 'Sikap dan Perilaku minimal 1',
+            'attitude_behavior.max' => 'Sikap dan Perilaku maksimal 100',
+            'inspirational_ability.required' => 'Pemberian Inspirasi tidak boleh kosong',
+            'inspirational_ability.min' => 'Pemberian Inspirasi minimal 1',
+            'inspirational_ability.max' => 'Pemberian Inspirasi maksimal 100',
+            'motivational_ability.required' => 'Pemberian Motivasi tidak boleh kosong',
+            'motivational_ability.min' => 'Pemberian Motivasi minimal 1',
+            'motivational_ability.max' => 'Pemberian Motivasi maksimal 100',
+            'feedback_description.required' => 'Deskripsi penilaian tidak boleh kosong',
+        ]);
+
+        $mentoring = Mentoring::where('id', $id)->where('mentee_id', $request->user()->id)->first();
+
+        if (!$mentoring) {
+            return $this->errorResponse('Mentoring not found.', [], 404);
+        }
+
+        if (empty($mentoring->final_report)) {
+            return $this->errorResponse('Penilaian untuk mentor hanya bisa dilakukan jika laporan akhir telah diunggah.', [], 500);
+        }
+
+        $feedback = MentoringFeedback::firstOrNew(['mentoring_id' => $mentoring->id]);
+        $feedback->fill([
+            'mentoring_ability'       => $request->mentoring_ability,
+            'punctuality_attendance'  => $request->punctuality_attendance,
+            'method_media_usage'      => $request->method_media_usage,
+            'attitude_behavior'       => $request->attitude_behavior,
+            'inspirational_ability'   => $request->inspirational_ability,
+            'motivational_ability'    => $request->motivational_ability,
+            'feedback_description'    => $request->feedback_description,
+            'mentor_id'               => $mentoring->mentor_id,
+        ]);
+        $feedback->save();
+
+        return $this->successResponse([], 'Penilaian untuk mentor berhasil dilakukan');
     }
 }

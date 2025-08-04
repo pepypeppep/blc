@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User;
 use Modules\Coaching\app\Models\Coaching;
+use Modules\Coaching\app\Models\CoachingAssessment;
 
 class CoachingUser extends Pivot
 {

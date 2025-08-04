@@ -291,16 +291,6 @@
             justify-content: center;
         }
 
-        .certificate-body2 {
-            width: 794px !important;
-            height: 1123px !important;
-            background: rgb(231, 231, 231);
-            position: relative;
-            background-image: url({{ route('admin.certificate-builder.getBg2', $certificate->id) }});
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
 
         .draggable-element2 {
             position: absolute;
@@ -353,24 +343,5 @@
             'background-position': 'center',
             'background-repeat': 'no-repeat'
         });
-
-        @if ($certificate->background2)
-            // Back Side
-            $.uploadPreview({
-                input_field: "#image-upload-background2",
-                preview_box: "#image-preview-background2",
-                label_field: "#image-label-background2",
-                label_default: "{{ __('Choose Image') }}",
-                label_selected: "{{ __('Change Image') }}",
-                no_label: false,
-                success_callback: null
-            })
-            $('#image-preview-background2').css({
-                'background-image': 'url({{ route('admin.certificate-builder.getBg2', $certificate->id) }})',
-                'background-size': 'contain',
-                'background-position': 'center',
-                'background-repeat': 'no-repeat'
-            });
-        @endif
     </script>
 @endpush

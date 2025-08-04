@@ -198,44 +198,61 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <!-- pilih sertifikat -->
+                        {{-- jika status mentoring Verifikasi / Selesai --}}
+                        @if ($mentoring->status == 'Verifikasi' || $mentoring->status == 'Selesai')
+                            <!-- pilih sertifikat -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>{{ __('Sertifikat') }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="{{ route('admin.mentoring.update-certificate', $mentoring->id) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('PUT')
 
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>{{ __('Sertifikat') }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <form action="{{ route('admin.mentoring.update-certificate', $mentoring->id) }}"
-                                    method="POST">
-                                    @csrf
-                                    @method('PUT')
-
-                                    <div class="form-group">
-                                        <label for="certificate">{{ __('Pilih Sertifikat') }} <code>*</code></label>
-                                        <div>
-                                            <div id="certificateBg">
-                                                @if ($mentoring->certificate_id)
-                                                    <img src="{{ route('admin.certificate-builder.getBg', $mentoring->certificate_id) }}"
-                                                        alt="{{ __('Sertifikat') }}"
-                                                        style="width: 100%; height: auto; max-width: 300px;">
-                                                @endif
+                                        <div class="form-group">
+                                            <label for="certificate">{{ __('Pilih Sertifikat') }} <code>*</code></label>
+                                            <div>
+                                                <div id="certificateBg">
+                                                    @if ($mentoring->certificate_id)
+                                                        <img src="{{ route('admin.certificate-builder.getBg', $mentoring->certificate_id) }}"
+                                                            alt="{{ __('Sertifikat') }}"
+                                                            style="width: 100%; height: auto; max-width: 300px;">
+                                                    @endif
+                                                </div>
+                                                <input type="hidden" name="certificate_id"
+                                                    value="{{ $mentoring->certificate_id }}" class="form-control">
+                                                <div class="d-flex justify-content-around">
+                                                    @if ($mentoring->status == 'Verifikasi')
+                                                        <button type="button" class="btn btn-primary mt-3"
+                                                            data-toggle="modal" data-target="#certificateModal">
+                                                            {{ __('Pilih Sertifikat') }}
+                                                        </button>
+                                                        <button type="button" class="btn btn-success mt-3"
+                                                            data-toggle="modal" data-target="#tteModal">
+                                                            {{ __('Ajukan TTE') }}
+                                                        </button>
+                                                    @endif
+                                                    {{-- jika status mentoring Selesai tampilkan label menunggu proses TTE --}}
+                                                    @if ($mentoring->status == 'Selesai' && $mentoring->signing_status == 'pending')
+                                                        <span class="badge badge-warning">Menunggu proses TTE</span>
+                                                    @endif
+                                                    @if ($mentoring->status == 'Selesai' && $mentoring->signing_status == 'signed')
+                                                        <a target="_blank"
+                                                            href="{{ route('public.mentoring', $mentoring->uuid) }}"
+                                                            class="btn btn-success">
+                                                            <i class="fa fa-download"></i> Download Sertifikat TTE
+                                                        </a>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <input type="hidden" name="certificate_id"
-                                                value="{{ $mentoring->certificate_id }}" class="form-control">
-                                            <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
-                                                data-target="#certificateModal">
-                                                {{ __('Pilih Sertifikat') }}
-                                            </button>
                                         </div>
-                                    </div>
 
-
-                                </form>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- /pilih sertifikat -->
+                        @endif
 
                         @if ($mentor)
                             <div class="card">
@@ -292,49 +309,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- jika status mentoring Verifikasi / Selesai --}}
-                        @if ($mentoring->status == 'Verifikasi' || $mentoring->status == 'Selesai')
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h4 class="mb-0">{{ __('Certificate Status') }}</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-group d-flex justify-content-center">
-                                        <div id="certificateBg"></div>
-                                        <input type="hidden" name="certificate" value="" class="form-control">
-                                        <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
-                                            data-target="#certificateModal">{{ __('Choose Certificate') }}</button>
-                                    </div>
-                                    <div class="modal fade" id="certificateModal" data-backdrop="static"
-                                        data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog modal-xl" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header" style="padding: 25px 25px 0px 25px;">
-                                                    <h5 class="modal-title" id="certificateModalLabel">
-                                                        {{ __('Choose Certificate') }}</h5>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body row">
-                                                    @foreach ($certificates as $certificate)
-                                                        <div class="col-md-3 d-flex flex-column">
-                                                            <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}"
-                                                                alt="" style="width: 100%; height: auto;">
-                                                            <button class="btn btn-primary mt-auto"
-                                                                onclick="chooseCertificate({{ $certificate->id }})">{{ __('Choose') }}</button>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
+
                     </div>
                 </div>
         </section>
@@ -418,6 +393,37 @@
         </div>
     </div>
 </div>
+
+<!-- TTE Confirmation Modal -->
+<div class="modal fade" id="tteModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="tteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header pl-4">
+                <h5 class="modal-title" id="tteModalLabel">{{ __('Konfirmasi Pengajuan TTE') }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ __('Apakah Anda yakin ingin mengajukan TTE untuk mentoring ini?') }}</p>
+                <p class="text-muted">{{ __('Mentoring:') }} <strong>{{ $mentoring->title }}</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Batal') }}</button>
+                <button type="button" class="btn btn-success" id="confirmTTE">{{ __('Ajukan TTE') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden form for TTE submission -->
+<form id="tteForm" method="POST" action="{{ route('admin.mentoring.request-sign-certificate', $mentoring->id) }}"
+    style="display: none;">
+    @csrf
+    <input type="hidden" name="mentoring_id" value="{{ $mentoring->id }}">
+    <input type="hidden" name="title" value="{{ $mentoring->title }}">
+</form>
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -526,6 +532,22 @@
                     '<img src="{{ route('admin.certificate-builder.getBg', $mentoring->certificate_id) }}" alt="{{ __('Sertifikat') }}" style="width: 100%; height: auto; max-width: 300px;">'
                 );
             @endif
+        });
+    </script>
+
+    <script>
+        // TTE Request functionality
+        $(document).ready(function() {
+            // Handle TTE button click to show modal
+            $('[data-target="#tteModal"]').click(function() {
+                $('#tteModal').modal('show');
+            });
+
+            // Handle confirmation in modal
+            $('#confirmTTE').click(function() {
+                $('#tteModal').modal('hide');
+                $('#tteForm').submit();
+            });
         });
     </script>
 @endpush

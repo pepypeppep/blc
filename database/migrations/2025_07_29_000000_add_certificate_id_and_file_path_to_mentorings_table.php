@@ -19,7 +19,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('certificate_builders')
                 ->onDelete('set null');
-            $table->string('file_path')->nullable();
+            $table->string('certificate_path')->nullable();
         });
     }
 
@@ -33,7 +33,7 @@ return new class extends Migration
         Schema::table('mentoring', function (Blueprint $table) {
             $table->dropForeign(['certificate_id']);
             $table->dropColumn('certificate_id');
-            $table->dropColumn('file_path');
+            $table->dropColumn('certificate_path');
         });
     }
 };

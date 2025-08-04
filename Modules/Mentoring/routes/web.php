@@ -51,6 +51,8 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         Route::get('{id}/show', [MentoringController::class, 'show'])->name('show');
         Route::put('{id}/update-certificate', [MentoringController::class, 'updateCertificate'])->name('update-certificate');
         Route::get('get-users', [MentoringController::class, 'getUsers'])->name('get-users');
+        Route::post('{id}/request-sign-certificate', [MentoringController::class, 'requestSignCertificate'])->name('request-sign-certificate');
+        Route::get('public-certificate/{uuid}', [MentoringController::class, 'publicCertificate'])->name('public-certificate');
 
         Route::get('/{id}/img', [MentoringController::class, 'viewImage'])->name('view.img');
         Route::get('/{id}/document/{type}', [MentoringController::class, 'showDocument'])->name('view.document');

@@ -1173,4 +1173,78 @@ class ArticleController extends Controller
             return $this->errorResponse($e->getMessage(), [], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/articles/course/enrolled",
+     *     summary="Get user enrollments",
+     *     description="Fetch the user's enrollments",
+     *     tags={"Articles"},
+     *     security={{"bearer":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Enrollments fetched successfully. Use the id as the key to post articles.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="code", type="integer", example=200),
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Enrollments fetched successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 example={
+     *                     "6": {
+     *                         "id": 24,
+     *                         "uuid": "01K1TEDV0JCH400ND75QZCQTWN",
+     *                         "user_id": 1,
+     *                         "course_id": 1,
+     *                         "has_access": 1,
+     *                         "tos_status": "accepted",
+     *                         "notes": null,
+     *                         "certificate_status": null,
+     *                         "certificate_path": null,
+     *                         "created_at": "2025-08-04T11:45:47.000000Z",
+     *                         "updated_at": "2025-08-04T11:47:10.000000Z"
+     *                     }
+     *                 }
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="An error occurred")
+     *         )
+     *     )
+     * )
+     */
+    public function getEnrollments(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $enrollments = Enrollment::where('user_id', $user->id)->with('course')->get();
+            $articles = Article::where('author_id', $user->id)->with('enrollment.course')->get();
+            $alreadyTakenCourses = $articles->pluck('enrollment.course')->unique()->pluck('id')->toArray();
+
+            $enrollments = $enrollments->filter(function ($enrollment) use ($alreadyTakenCourses) {
+                return !in_array($enrollment->course->id, $alreadyTakenCourses);
+            });
+            $completedCourses = $enrollments->filter(function ($enrollment) {
+                return $enrollment->course->courseUserProgress['is_completed'] === true;
+            });
+            $response = [
+                'code' => 200,
+                'status' => true,
+                'message' => 'Enrollments fetched successfully',
+                'data' => [],
+            ];
+            foreach ($completedCourses as $course) {
+                $response['data'][$course->id] = $course->toArray();
+            }
+            return $this->successResponse($response);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), [], 500);
+        }
+    }
 }

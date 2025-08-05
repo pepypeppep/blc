@@ -1176,6 +1176,81 @@
                 }
             }
         },
+        "/articles/course/enrolled": {
+            "get": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Get user enrollments",
+                "description": "Fetch the user's enrollments",
+                "operationId": "c881cfa66da0e8716d8bfa9027150faa",
+                "responses": {
+                    "200": {
+                        "description": "Enrollments fetched successfully. Use the id as the key to post articles.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Enrollments fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": {
+                                                "6": {
+                                                    "id": 24,
+                                                    "uuid": "01K1TEDV0JCH400ND75QZCQTWN",
+                                                    "user_id": 1,
+                                                    "course_id": 1,
+                                                    "has_access": 1,
+                                                    "tos_status": "accepted",
+                                                    "notes": null,
+                                                    "certificate_status": null,
+                                                    "certificate_path": null,
+                                                    "created_at": "2025-08-04T11:45:47.000000Z",
+                                                    "updated_at": "2025-08-04T11:47:10.000000Z"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/certificates": {
             "get": {
                 "tags": [
@@ -5964,7 +6039,7 @@
                     "Student Quiz"
                 ],
                 "summary": "Daftar kuis yang sudah dimulai (quiz_seasons)",
-                "operationId": "34e4b6577610f1e13a3d28eba28e901c",
+                "operationId": "fd2590fc97a57b0f29ca828c20d01cf4",
                 "responses": {
                     "200": {
                         "description": "Daftar seasons yang sudah dimulai",

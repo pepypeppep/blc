@@ -389,7 +389,7 @@ class MentoringController extends Controller
                 'signers' => json_encode($signers),
                 'title' => sprintf("Sertifikat Mentoring %s", $mentoring->title),
                 'description' => $mentoring->title,
-                'callback_url' => sprintf("%s", route('api.bantara-callback', $mentoring->id)),
+                'callback_url' => sprintf("%s", route('api.mentoring-callback', $mentoring->id)),
                 'callback_key' => appConfig('bantara_callback_key'),
             ]);
 

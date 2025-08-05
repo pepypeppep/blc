@@ -34,24 +34,37 @@
                                     <td>{{ $mentoring->title }}</td>
                                     <td>{{ $mentoring->mentor->name }}</td>
                                     <td class="text-center">{{ $mentoring->total_session }}</td>
-                                    <td class="text-center"><div class="badge bg-{{ $mentoring->stat['color'] }}">{{ $mentoring->stat['label'] }}</div></td>
+                                    <td class="text-center">
+                                        <div class="badge bg-{{ $mentoring->stat['color'] }}">
+                                            {{ $mentoring->stat['label'] }}</div>
+                                    </td>
                                     <td class="text-nowrap">
                                         <div class="dashboard__mentee-action d-inline-flex align-items-center gap-2">
                                             @if ($mentoring->status === Mentoring::STATUS_DRAFT)
-                                                <form action="{{ route('student.mentee.submit', $mentoring->id) }}" method="POST" class="form-submit d-inline">
+                                                <form action="{{ route('student.mentee.submit', $mentoring->id) }}"
+                                                    method="POST" class="form-submit d-inline">
                                                     @csrf
                                                     @method('PUT')
-                                                    <button type="submit" class="btn-action-warning" title="Ajukan Mentoring">
+                                                    <button type="submit" class="btn-action-warning"
+                                                        title="Ajukan Mentoring">
                                                         <i class="fa fa-paper-plane"></i> &nbsp;Ajukan
                                                     </button>
                                                 </form>
                                             @endif
                                             @if (!empty($mentoring->final_report) && !$mentoring->feedback)
-                                            <a class="btn-action-warning" href="{{ route('student.mentee.feedback', $mentoring->id) }}">
-                                                <i class="fa fa-clipboard"></i> &nbsp;Nilai Mentor
-                                            </a>
+                                                <a class="btn-action-warning"
+                                                    href="{{ route('student.mentee.feedback', $mentoring->id) }}">
+                                                    <i class="fa fa-clipboard"></i> &nbsp;Nilai Mentor
+                                                </a>
                                             @endif
-                                            <a href="{{ route('student.mentee.show', $mentoring->id) }}" class="btn-action-primary" title="Lihat Detail">
+                                            @if ($mentoring->certificate_path && $mentoring->signing_status === 'signed')
+                                                <a class="btn-action-warning" href="{{ $mentoring->certificate_url }}"
+                                                    download>
+                                                    <i class="fa fa-download"></i> &nbsp;Unduh Sertifikat
+                                                </a>
+                                            @endif
+                                            <a href="{{ route('student.mentee.show', $mentoring->id) }}"
+                                                class="btn-action-primary" title="Lihat Detail">
                                                 <i class="fa fa-eye"></i> &nbsp;Lihat
                                             </a>
                                         </div>
@@ -75,76 +88,76 @@
 @endsection
 
 @push('styles')
-<style>
-    .dashboard__mentee-action a,
-    .dashboard__mentee-action button {
-        font-size: 14px;
-        height: 30px;
-        line-height: 1;
-        padding: 0 14px;
-        background: rgba(15, 36, 222, 0.25);
-        color: rgba(197, 165, 22, 0.13);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 30px;
-        transition: all 0.2s ease;
-        border: none;
-        outline: none;
-        box-shadow: none;
-    }
+    <style>
+        .dashboard__mentee-action a,
+        .dashboard__mentee-action button {
+            font-size: 14px;
+            height: 30px;
+            line-height: 1;
+            padding: 0 14px;
+            background: rgba(15, 36, 222, 0.25);
+            color: rgba(197, 165, 22, 0.13);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            transition: all 0.2s ease;
+            border: none;
+            outline: none;
+            box-shadow: none;
+        }
 
-    .dashboard__mentee-action a:hover,
-    .dashboard__mentee-action button:hover{
-        background: rgba(15, 36, 222, 0.25);
-        color: var(--tg-common-color-white);
-    }
+        .dashboard__mentee-action a:hover,
+        .dashboard__mentee-action button:hover {
+            background: rgba(15, 36, 222, 0.25);
+            color: var(--tg-common-color-white);
+        }
 
-    .dashboard__mentee-action .btn-action-warning {
-        background: rgba(239, 172, 47, 1);
-        color: var(--tg-common-color-white);
-    }
+        .dashboard__mentee-action .btn-action-warning {
+            background: rgba(239, 172, 47, 1);
+            color: var(--tg-common-color-white);
+        }
 
-    .dashboard__mentee-action .btn-action-warning:hover {
-        background: rgba(239, 172, 47, 0.20);
-        color: rgba(239, 172, 47, 1);
-    }
+        .dashboard__mentee-action .btn-action-warning:hover {
+            background: rgba(239, 172, 47, 0.20);
+            color: rgba(239, 172, 47, 1);
+        }
 
-    .dashboard__mentee-action .btn-action-primary {
-        background: rgba(47, 87, 239, 1);
-        color: var(--tg-common-color-white);
-    }
+        .dashboard__mentee-action .btn-action-primary {
+            background: rgba(47, 87, 239, 1);
+            color: var(--tg-common-color-white);
+        }
 
-    .dashboard__mentee-action .btn-action-primary:hover {
-        background: rgba(47, 87, 239, 0.20);
-        color: var(--tg-theme-primary);
-    }
-</style>
+        .dashboard__mentee-action .btn-action-primary:hover {
+            background: rgba(47, 87, 239, 0.20);
+            color: var(--tg-theme-primary);
+        }
+    </style>
 @endpush
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const submitForms = document.querySelectorAll('.form-submit');
-        submitForms.forEach(form => {
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: 'Perhatian',
-                    text: "Apakah Anda yakin mengajukan mentoring ini?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#ffc107',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, ajukan',
-                    cancelButtonText: 'Batal',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitForms = document.querySelectorAll('.form-submit');
+            submitForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Perhatian',
+                        text: "Apakah Anda yakin mengajukan mentoring ini?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ffc107',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, ajukan',
+                        cancelButtonText: 'Batal',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
                 });
             });
         });
-    });
-</script>
+    </script>
 @endpush

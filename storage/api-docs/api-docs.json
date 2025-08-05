@@ -1201,16 +1201,17 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Enrollments fetched successfully"
+                                            "example": "Success"
                                         },
                                         "data": {
-                                            "type": "object",
-                                            "example": {
-                                                "6": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "example": {
                                                     "id": 24,
                                                     "uuid": "01K1TEDV0JCH400ND75QZCQTWN",
                                                     "user_id": 1,
-                                                    "course_id": 1,
+                                                    "course_id": 71,
                                                     "has_access": 1,
                                                     "tos_status": "accepted",
                                                     "notes": null,
@@ -4838,6 +4839,71 @@
                     },
                     "500": {
                         "description": "Error updating session"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/callback/mentoring/{mentoring}": {
+            "post": {
+                "tags": [
+                    "Bantara"
+                ],
+                "summary": "Bantara Callback",
+                "operationId": "34eddb3f438285e0af2ee72e0c3e2822",
+                "parameters": [
+                    {
+                        "name": "mentoring",
+                        "in": "path",
+                        "description": "Mentoring ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "description": "PDF file from Bantara",
+                                        "type": "file",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File uploaded successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [

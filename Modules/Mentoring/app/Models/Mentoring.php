@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Mentoring extends Model
 {
@@ -23,6 +24,16 @@ class Mentoring extends Model
     public const STATUS_VERIFICATION = "Verifikasi";
     public const STATUS_DONE = "Selesai";
     public const STATUS_REJECT = "Tolak";
+
+
+    protected static function booted(): void
+    {
+        static::creating(function (Mentoring $mentoring) {
+            usleep(1000);
+            $mentoring->uuid = Str::ulid();
+        });
+    }
+
 
     public function mentor(): BelongsTo
     {
@@ -97,6 +108,11 @@ class Mentoring extends Model
     public function isProcessOrEvaluationOrDone(): bool
     {
         return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_EVALUATION, self::STATUS_VERIFICATION, self::STATUS_DONE]);
+    }
+
+    public function signers()
+    {
+        return $this->hasMany(MentoringSigner::class);
     }
 
     public function getDocumentResponse($column)

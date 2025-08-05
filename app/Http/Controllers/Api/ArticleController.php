@@ -1188,25 +1188,26 @@ class ArticleController extends Controller
      *             type="object",
      *             @OA\Property(property="code", type="integer", example=200),
      *             @OA\Property(property="status", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Enrollments fetched successfully"),
+     *             @OA\Property(property="message", type="string", example="Success"),
      *             @OA\Property(
      *                 property="data",
-     *                 type="object",
-     *                 example={
-     *                     "6": {
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     example={
      *                         "id": 24,
      *                         "uuid": "01K1TEDV0JCH400ND75QZCQTWN",
      *                         "user_id": 1,
-     *                         "course_id": 1,
+     *                         "course_id": 71,
      *                         "has_access": 1,
      *                         "tos_status": "accepted",
      *                         "notes": null,
      *                         "certificate_status": null,
      *                         "certificate_path": null,
      *                         "created_at": "2025-08-04T11:45:47.000000Z",
-     *                         "updated_at": "2025-08-04T11:47:10.000000Z"
+     *                         "updated_at": "2025-08-04T11:47:10.000000Z",
      *                     }
-     *                 }
+     *                 )
      *             )
      *         )
      *     ),
@@ -1233,15 +1234,9 @@ class ArticleController extends Controller
             $completedCourses = $enrollments->filter(function ($enrollment) {
                 return $enrollment->course->courseUserProgress['is_completed'] === true;
             });
-            $response = [
-                'code' => 200,
-                'status' => true,
-                'message' => 'Enrollments fetched successfully',
-                'data' => [],
-            ];
-            foreach ($completedCourses as $course) {
-                $response['data'][$course->id] = $course->toArray();
-            }
+
+            $response = $completedCourses->values();
+
             return $this->successResponse($response);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);

@@ -611,13 +611,22 @@ class MentorApiController extends Controller
         }
     }
 
-
     /**
      * @OA\Post(
-     *     path="/api/bantara-callback/{enrollmentID}",
-     *     summary="Post PDF file from Bantara",
+     *     path="/callback/mentoring/{mentoring}",
+     *     summary="Bantara Callback",
      *     tags={"Bantara"},
      *     security={{"bearer": {}}},
+     *     @OA\Parameter(
+     *         description="Mentoring ID",
+     *         in="path",
+     *         name="mentoring",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
@@ -629,11 +638,6 @@ class MentorApiController extends Controller
      *                     type="file",
      *                     format="binary",
      *                     description="PDF file from Bantara",
-     *                 ),
-     *                 @OA\Property(
-     *                     property="id",
-     *                     type="string",
-     *                     description="Document ID",
      *                 ),
      *             ),
      *         ),

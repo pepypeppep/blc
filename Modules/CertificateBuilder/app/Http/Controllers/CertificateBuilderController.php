@@ -178,17 +178,6 @@ class CertificateBuilderController extends Controller
             Storage::disk('private')->put($sgName, file_get_contents($sgFile));
         }
 
-        if ($request->hasFile('background2')) {
-            $bgFile = $request->file('background2');
-            $bgName = 'certificates/' . now()->year . '/bg_2_' . $randName . '.png';
-            Storage::disk('private')->put($bgName, file_get_contents($bgFile));
-        }
-        if ($request->hasFile('signature2')) {
-            $sgFile = $request->file('signature2');
-            $sgName = 'certificates/' . now()->year . '/sg_2_' . $randName . '.png';
-            Storage::disk('private')->put($sgName, file_get_contents($sgFile));
-        }
-
         $certificate->update([
             'title' => $request->title,
             'sub_title' => $request->sub_title,
@@ -228,7 +217,6 @@ class CertificateBuilderController extends Controller
     public function getBg($id)
     {
         $certificate = CertificateBuilder::findOrFail($id);
-
         return response()->file(Storage::disk('private')->path($certificate->background));
     }
 
@@ -237,13 +225,6 @@ class CertificateBuilderController extends Controller
         $certificate = CertificateBuilder::findOrFail($id);
 
         return response()->file(Storage::disk('private')->path($certificate->signature));
-    }
-
-    public function getBg2($id)
-    {
-        $certificate = CertificateBuilder::findOrFail($id);
-
-        return response()->file(Storage::disk('private')->path($certificate->background2));
     }
 
     public function getSg2($id)

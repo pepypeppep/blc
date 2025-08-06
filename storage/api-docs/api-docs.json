@@ -248,6 +248,136 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Create a pengetahuan",
+                "description": "Create a pengetahuan",
+                "operationId": "9df6bd8bd202eed7afab4cf724e19398",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "category",
+                                    "title",
+                                    "description",
+                                    "visibility",
+                                    "allow_comments",
+                                    "thumbnail"
+                                ],
+                                "properties": {
+                                    "enrollment": {
+                                        "description": "Enrollment id",
+                                        "type": "integer"
+                                    },
+                                    "category": {
+                                        "description": "Pengetahuan category",
+                                        "type": "string",
+                                        "enum": [
+                                            "blog",
+                                            "video",
+                                            "document"
+                                        ]
+                                    },
+                                    "title": {
+                                        "description": "Pengetahuan title",
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "description": "Pengetahuan description",
+                                        "type": "string"
+                                    },
+                                    "visibility": {
+                                        "description": "Pengetahuan visibility",
+                                        "type": "string",
+                                        "enum": [
+                                            "public",
+                                            "private"
+                                        ]
+                                    },
+                                    "allow_comments": {
+                                        "description": "Allow comments",
+                                        "type": "string",
+                                        "enum": [
+                                            "0",
+                                            "1"
+                                        ]
+                                    },
+                                    "link": {
+                                        "description": "Pengetahuan link",
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "description": "Pengetahuan content",
+                                        "type": "string"
+                                    },
+                                    "tags": {
+                                        "description": "Pengetahuan tags",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "thumbnail": {
+                                        "description": "Pengetahuan thumbnail",
+                                        "type": "file"
+                                    },
+                                    "file": {
+                                        "description": "Pengetahuan file",
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pengetahuan created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pengetahuan created successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/articles/{id}": {
@@ -306,6 +436,476 @@
                         }
                     }
                 }
+            }
+        },
+        "/articles/{slug}/edit": {
+            "get": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Edit an article",
+                "description": "Edit an article",
+                "operationId": "0e453912af4795b228b14b5de8097b00",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Article slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Article not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not the author of this pengetahuan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/articles/{slug}/update": {
+            "post": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Update an article",
+                "description": "Update an article",
+                "operationId": "a5e6265a21222fd8afdd8502ec92dd8a",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Article slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "pengetahuan-saya"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "category",
+                                    "title",
+                                    "description",
+                                    "thumbnail",
+                                    "visibility",
+                                    "allow_comments"
+                                ],
+                                "properties": {
+                                    "category": {
+                                        "description": "Category of the article",
+                                        "type": "string",
+                                        "enum": [
+                                            "blog",
+                                            "document",
+                                            "video"
+                                        ],
+                                        "example": "blog"
+                                    },
+                                    "enrollment": {
+                                        "description": "Enrollment id",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "title": {
+                                        "description": "Title of the article",
+                                        "type": "string",
+                                        "example": "Pengetahuan Saya"
+                                    },
+                                    "description": {
+                                        "description": "Description of the article",
+                                        "type": "string",
+                                        "example": "<p>Pengetahuan saya tentang teknologi</p>"
+                                    },
+                                    "thumbnail": {
+                                        "description": "Thumbnail image of the article",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "visibility": {
+                                        "description": "Visibility of the article",
+                                        "type": "string",
+                                        "enum": [
+                                            "public",
+                                            "internal"
+                                        ],
+                                        "example": "public"
+                                    },
+                                    "allow_comments": {
+                                        "description": "Allow comments on the article",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "link": {
+                                        "description": "Link of the article (only for video category)",
+                                        "type": "string",
+                                        "example": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                                    },
+                                    "file": {
+                                        "description": "File of the article (only for document category)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "content": {
+                                        "description": "Content of the article (only for blog category)",
+                                        "type": "string",
+                                        "example": "<p>Pengetahuan saya tentang teknologi</p>"
+                                    },
+                                    "tags": {
+                                        "description": "Tags of the article",
+                                        "type": "string",
+                                        "example": "pengetahuan, teknologi"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pengetahuan updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not the author of this pengetahuan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pengetahuan not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pengetahuan already created for this enrollment"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pengetahuan updated failed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/articles/{slug}/submit": {
+            "post": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Submit an article for verification",
+                "description": "Submit an article for verification",
+                "operationId": "2e24001ccf375f6b580b36984a5c0a2d",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Article slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Article submitted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article submitted successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "My Article"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "This is my article"
+                                                },
+                                                "category": {
+                                                    "type": "string",
+                                                    "example": "blog"
+                                                },
+                                                "enrollment_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "link": {
+                                                    "type": "string",
+                                                    "example": "https://www.example.com"
+                                                },
+                                                "content": {
+                                                    "type": "string",
+                                                    "example": "<p>This is my article</p>"
+                                                },
+                                                "visibility": {
+                                                    "type": "string",
+                                                    "example": "public"
+                                                },
+                                                "allow_comments": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "thumbnail": {
+                                                    "type": "string",
+                                                    "example": "path/to/thumbnail.jpg"
+                                                },
+                                                "file": {
+                                                    "type": "string",
+                                                    "example": "path/to/file.pdf"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "draft"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2022-01-01 00:00:00"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2022-01-01 00:00:00"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bad request"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "message": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Article not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Article not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/articles-reviews/{id}": {
@@ -576,6 +1176,82 @@
                 }
             }
         },
+        "/articles/course/enrolled": {
+            "get": {
+                "tags": [
+                    "Articles"
+                ],
+                "summary": "Get user enrollments",
+                "description": "Fetch the user's enrollments",
+                "operationId": "c881cfa66da0e8716d8bfa9027150faa",
+                "responses": {
+                    "200": {
+                        "description": "Enrollments fetched successfully. Use the id as the key to post articles.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "example": {
+                                                    "id": 24,
+                                                    "uuid": "01K1TEDV0JCH400ND75QZCQTWN",
+                                                    "user_id": 1,
+                                                    "course_id": 71,
+                                                    "has_access": 1,
+                                                    "tos_status": "accepted",
+                                                    "notes": null,
+                                                    "certificate_status": null,
+                                                    "certificate_path": null,
+                                                    "created_at": "2025-08-04T11:45:47.000000Z",
+                                                    "updated_at": "2025-08-04T11:47:10.000000Z"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/certificates": {
             "get": {
                 "tags": [
@@ -790,19 +1466,6 @@
                 "summary": "Create coaching topic",
                 "description": "Create coaching topic",
                 "operationId": "b5ae20ebcce11ceac2b33284ef4e1aad",
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "query",
-                        "description": "User ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "example": 1
-                    }
-                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -810,8 +1473,11 @@
                             "schema": {
                                 "required": [
                                     "title",
-                                    "main_issue",
-                                    "purpose",
+                                    "goal",
+                                    "reality",
+                                    "option",
+                                    "way_forward",
+                                    "success_indicator",
                                     "total_session",
                                     "sessions",
                                     "coachee",
@@ -822,13 +1488,25 @@
                                         "type": "string",
                                         "example": "Judul coaching"
                                     },
-                                    "main_issue": {
+                                    "goal": {
                                         "type": "string",
                                         "example": "Pokok permasalahan coaching"
                                     },
-                                    "purpose": {
+                                    "reality": {
                                         "type": "string",
                                         "example": "Tujuan coaching"
+                                    },
+                                    "option": {
+                                        "type": "string",
+                                        "example": "Pilihan yang tersedia untuk mencapai tujuan"
+                                    },
+                                    "way_forward": {
+                                        "type": "string",
+                                        "example": "Langkah-langkah yang akan diambil untuk mencapai tujuan"
+                                    },
+                                    "success_indicator": {
+                                        "type": "string",
+                                        "example": "Indikator keberhasilan yang diharapkan"
                                     },
                                     "total_session": {
                                         "type": "integer",
@@ -3174,6 +3852,188 @@
                 }
             }
         },
+        "/courses/{course}/instructor-evaluations": {
+            "get": {
+                "tags": [
+                    "Instructor Evaluation"
+                ],
+                "summary": "Get instructor evaluation form",
+                "operationId": "d1d04a3eda2b411c8f0e63c8b8e15d03",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "description": "Course ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "instructor",
+                        "in": "path",
+                        "description": "Instructor ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Instructor Evaluation"
+                ],
+                "summary": "Store instructor evaluation form",
+                "operationId": "dc9b703a2a1a00e6932564ca22614745",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "description": "Course ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "description": "Instructor evaluation form",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "instructor_id",
+                                    "material_mastery",
+                                    "knowledge_transfer_ability",
+                                    "communication_and_motivation",
+                                    "discussion_and_exercise_process",
+                                    "feedback"
+                                ],
+                                "properties": {
+                                    "instructor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "material_mastery": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "knowledge_transfer_ability": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "communication_and_motivation": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "discussion_and_exercise_process": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "feedback": {
+                                        "type": "string",
+                                        "example": "Comment"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful response"
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Forbidden."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/mentoring/mentee": {
             "get": {
                 "tags": [
@@ -3447,6 +4307,108 @@
                     },
                     "500": {
                         "description": "Error updating final report"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/mentoring/mentee/{id}/store-feedback": {
+            "post": {
+                "tags": [
+                    "Mentee"
+                ],
+                "summary": "Kirim penilaian mentor",
+                "description": "Kirim penilaian mentor",
+                "operationId": "120e8da8de3d41412fec66343f16305d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID mentoring",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Nilai Mentor (Feedback)",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mentoring_ability",
+                                    "punctuality_attendance",
+                                    "method_media_usage",
+                                    "attitude_behavior",
+                                    "inspirational_ability",
+                                    "motivational_ability",
+                                    "feedback_description"
+                                ],
+                                "properties": {
+                                    "mentoring_ability": {
+                                        "description": "Kemampuan mentoring",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "punctuality_attendance": {
+                                        "description": "Ketepatan Waktu dan Kehadiran",
+                                        "type": "integer",
+                                        "example": "80"
+                                    },
+                                    "method_media_usage": {
+                                        "description": "Penggunaan Metode dan Media Pembimbing",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "attitude_behavior": {
+                                        "description": "Sikap dan Perilaku",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "inspirational_ability": {
+                                        "description": "Pemberian Inspirasi",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "motivational_ability": {
+                                        "description": "Pemberian Motivasi",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "feedback_description": {
+                                        "description": "Catatan/saran",
+                                        "type": "string",
+                                        "example": "Deskripsi penilaian, catatan, saran"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Penilaian berhasil dikirim"
+                    },
+                    "400": {
+                        "description": "Penilaian gagal dikirim"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Mentoring not found"
+                    },
+                    "500": {
+                        "description": "Penilaian gagal dikirim"
                     }
                 },
                 "security": [
@@ -3877,6 +4839,71 @@
                     },
                     "500": {
                         "description": "Error updating session"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/callback/mentoring/{mentoring}": {
+            "post": {
+                "tags": [
+                    "Bantara"
+                ],
+                "summary": "Bantara Callback",
+                "operationId": "34eddb3f438285e0af2ee72e0c3e2822",
+                "parameters": [
+                    {
+                        "name": "mentoring",
+                        "in": "path",
+                        "description": "Mentoring ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "description": "PDF file from Bantara",
+                                        "type": "file",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "File uploaded successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -4550,558 +5577,6 @@
                 ]
             }
         },
-        "/student-learning/{courseId}/quiz/{quizId}": {
-            "get": {
-                "tags": [
-                    "Student Learning"
-                ],
-                "summary": "Get quiz questions",
-                "description": "Get quiz questions",
-                "operationId": "c619ca220d1da4011f1ba08e75e0b4c4",
-                "parameters": [
-                    {
-                        "name": "courseId",
-                        "in": "path",
-                        "description": "Course ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1
-                    },
-                    {
-                        "name": "quizId",
-                        "in": "path",
-                        "description": "Quiz ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Quiz questions retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "quiz_id": {
-                                                "type": "integer",
-                                                "example": 1
-                                            },
-                                            "title": {
-                                                "type": "string",
-                                                "example": "What is the capital of France?"
-                                            },
-                                            "answers": {
-                                                "type": "array",
-                                                "items": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "quiz_question_id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "title": {
-                                                            "type": "string",
-                                                            "example": "Paris"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Bad request"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthorized"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Quiz not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Error"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Student Learning"
-                ],
-                "summary": "Store quiz answers",
-                "description": "Store quiz answers",
-                "operationId": "e229762ac424d9df9e9049f1ce836248",
-                "parameters": [
-                    {
-                        "name": "courseId",
-                        "in": "path",
-                        "description": "Course ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1
-                    },
-                    {
-                        "name": "quizId",
-                        "in": "path",
-                        "description": "Quiz ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 1
-                    }
-                ],
-                "requestBody": {
-                    "description": "Quiz answers submitted by the user",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "question": {
-                                        "type": "object",
-                                        "example": {
-                                            "1": 5,
-                                            "2": 8
-                                        },
-                                        "additionalProperties": [
-                                            {
-                                                "type": "integer",
-                                                "example": 5,
-                                                "property": null
-                                            }
-                                        ]
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Quiz submitted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "user_id": {
-                                                    "type": "integer",
-                                                    "example": 12
-                                                },
-                                                "quiz_id": {
-                                                    "type": "integer",
-                                                    "example": 3
-                                                },
-                                                "result": {
-                                                    "type": "object",
-                                                    "additionalProperties": [
-                                                        {
-                                                            "type": "integer",
-                                                            "example": 5,
-                                                            "property": "answer"
-                                                        },
-                                                        {
-                                                            "type": "boolean",
-                                                            "example": true,
-                                                            "property": "correct"
-                                                        }
-                                                    ]
-                                                },
-                                                "user_grade": {
-                                                    "type": "integer",
-                                                    "example": 85
-                                                },
-                                                "status": {
-                                                    "type": "string",
-                                                    "example": "pass"
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-04-22T10:00:00Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2025-04-22T10:00:00Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz submitted successfully"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Bad request"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Unauthorized"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "You are not enrolled in this course"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "An unexpected error occurred"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/student-learning/{courseId}/quiz/{quizId}/result": {
-            "get": {
-                "tags": [
-                    "Student Learning"
-                ],
-                "summary": "Get quiz result",
-                "description": "Retrieve detailed result of a quiz attempt by a student",
-                "operationId": "29ae34b2a5cc9a4238d19c94ff82dc6d",
-                "parameters": [
-                    {
-                        "name": "courseId",
-                        "in": "path",
-                        "description": "course ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "example": 1
-                    },
-                    {
-                        "name": "quizId",
-                        "in": "path",
-                        "description": "Quiz ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "example": 1
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Data retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "properties": {
-                                                "quiz": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "course_id": {
-                                                            "type": "integer",
-                                                            "example": 3
-                                                        },
-                                                        "title": {
-                                                            "type": "string",
-                                                            "example": "Basic Math Quiz"
-                                                        },
-                                                        "description": {
-                                                            "type": "string",
-                                                            "example": "Test your basic math skills"
-                                                        },
-                                                        "pass_mark": {
-                                                            "type": "integer",
-                                                            "example": 70
-                                                        },
-                                                        "questions_count": {
-                                                            "type": "integer",
-                                                            "example": 3
-                                                        },
-                                                        "created_at": {
-                                                            "type": "string",
-                                                            "format": "date-time",
-                                                            "example": "2025-04-20T08:00:00Z"
-                                                        },
-                                                        "updated_at": {
-                                                            "type": "string",
-                                                            "format": "date-time",
-                                                            "example": "2025-04-21T10:00:00Z"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                },
-                                                "attempt": {
-                                                    "type": "integer",
-                                                    "example": 2
-                                                },
-                                                "quizResult": {
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "user_id": {
-                                                            "type": "integer",
-                                                            "example": 5
-                                                        },
-                                                        "quiz_id": {
-                                                            "type": "integer",
-                                                            "example": 1
-                                                        },
-                                                        "result": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "properties": {
-                                                                    "question_id": {
-                                                                        "type": "integer",
-                                                                        "example": 1
-                                                                    },
-                                                                    "answer": {
-                                                                        "type": "integer",
-                                                                        "example": 7
-                                                                    },
-                                                                    "correct": {
-                                                                        "type": "boolean",
-                                                                        "example": true
-                                                                    }
-                                                                },
-                                                                "type": "object"
-                                                            }
-                                                        },
-                                                        "user_grade": {
-                                                            "type": "integer",
-                                                            "example": 80
-                                                        },
-                                                        "status": {
-                                                            "type": "string",
-                                                            "example": "pass"
-                                                        },
-                                                        "created_at": {
-                                                            "type": "string",
-                                                            "format": "date-time",
-                                                            "example": "2025-04-22T09:00:00Z"
-                                                        },
-                                                        "updated_at": {
-                                                            "type": "string",
-                                                            "format": "date-time",
-                                                            "example": "2025-04-22T09:00:00Z"
-                                                        }
-                                                    },
-                                                    "type": "object"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Data retrieved successfully"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Quiz or result not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "An unexpected error occurred"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
         "/student-learning/{courseId}/rtl/{rtlId}": {
             "get": {
                 "tags": [
@@ -5401,6 +5876,261 @@
                 ]
             }
         },
+        "/student-quiz/quizzes/{quizId}/start": {
+            "get": {
+                "tags": [
+                    "Student Quiz"
+                ],
+                "summary": "Mulai kuis (acak pertanyaan & jawaban)",
+                "description": "Jika sudah dimulai sebelumnya, akan mengembalikan season yang sama.",
+                "operationId": "b22ca545a21a5106dccdf72b79203912",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID kuis",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kuis dimulai",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "questions": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "answers": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "started_at": {
+                                            "type": "string"
+                                        },
+                                        "ended_at": {
+                                            "type": "string",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quiz not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/student-quiz/quizzes/{quizId}/save-answer": {
+            "post": {
+                "tags": [
+                    "Student Quiz"
+                ],
+                "summary": "Simpan jawaban sementara",
+                "description": "Menyimpan jawaban sementara ke tabel quiz_seasons",
+                "operationId": "236b5d2bdc31913fb47fe870d3b5c932",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID kuis",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "answers": {
+                                        "type": "object",
+                                        "example": {
+                                            "1": [
+                                                2
+                                            ],
+                                            "2": [
+                                                5,
+                                                6
+                                            ]
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Jawaban disimpan"
+                    },
+                    "404": {
+                        "description": "Quiz/Season not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/student-quiz/quizzes/{quizId}/submit": {
+            "post": {
+                "tags": [
+                    "Student Quiz"
+                ],
+                "summary": "Submit hasil kuis",
+                "description": "Hitung nilai dan simpan hasil ke QuizResult. Validasi waktu juga dilakukan.",
+                "operationId": "5f02991c4dd078cf2e00bdb92c511766",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID kuis",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kuis disubmit dengan sukses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "score": {
+                                            "type": "integer"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "passed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Waktu kuis habis"
+                    },
+                    "400": {
+                        "description": "Kuis sudah disubmit"
+                    },
+                    "404": {
+                        "description": "Quiz not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/student-quiz/my-quiz-results": {
+            "get": {
+                "tags": [
+                    "Student Quiz"
+                ],
+                "summary": "Lihat hasil kuis peserta",
+                "operationId": "435e23531260dced68540ede1301d209",
+                "responses": {
+                    "200": {
+                        "description": "Daftar hasil kuis",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/student-quiz/my-quiz-seasons": {
+            "get": {
+                "tags": [
+                    "Student Quiz"
+                ],
+                "summary": "Daftar kuis yang sudah dimulai (quiz_seasons)",
+                "operationId": "fd2590fc97a57b0f29ca828c20d01cf4",
+                "responses": {
+                    "200": {
+                        "description": "Daftar seasons yang sudah dimulai",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/users": {
             "get": {
                 "tags": [
@@ -5565,6 +6295,10 @@
     },
     "tags": [
         {
+            "name": "Student Quiz",
+            "description": "API untuk peserta mengikuti kuis"
+        },
+        {
             "name": "Home",
             "description": "Home API Endpoints"
         },
@@ -5599,6 +6333,10 @@
         {
             "name": "Coachee",
             "description": "Coachee"
+        },
+        {
+            "name": "Instructor Evaluation",
+            "description": "Instructor Evaluation"
         },
         {
             "name": "Mentee",

@@ -21,63 +21,80 @@
                                 <ul class="nav nav-tabs" id="statusTab" role="tablist">
                                     <li class="nav-item" role="presentation">
                                         <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == null ? 'active' : '' }}"
-                                        href="{{ route('admin.mentoring.index', ['status' => '']) }}">
+                                            href="{{ route('admin.mentoring.index', ['status' => '']) }}">
                                             {{ __('All') }} &nbsp;
-                                            <span class="badge {{ $status == null ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                            <span
+                                                class="badge {{ $status == null ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
                                                 {{ $totalMentors ?? 0 }}
                                             </span>
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Draft' ? 'active' : '' }}"
-                                        href="{{ route('admin.mentoring.index', ['status' => 'Draft']) }}">
+                                            href="{{ route('admin.mentoring.index', ['status' => 'Draft']) }}">
                                             {{ __('Draft') }} &nbsp;
-                                            <span class="badge {{ $status == 'Draft' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                            <span
+                                                class="badge {{ $status == 'Draft' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
                                                 {{ $statusCounts['Draft'] ?? 0 }}
                                             </span>
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Pengajuan' ? 'active' : '' }}"
-                                        href="{{ route('admin.mentoring.index', ['status' => 'Pengajuan']) }}">
+                                            href="{{ route('admin.mentoring.index', ['status' => 'Pengajuan']) }}">
                                             {{ __('Submission') }} &nbsp;
-                                            <span class="badge {{ $status == 'Pengajuan' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                            <span
+                                                class="badge {{ $status == 'Pengajuan' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
                                                 {{ $statusCounts['Pengajuan'] ?? 0 }}
                                             </span>
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Proses' ? 'active' : '' }}"
-                                        href="{{ route('admin.mentoring.index', ['status' => 'Proses']) }}">
+                                            href="{{ route('admin.mentoring.index', ['status' => 'Proses']) }}">
                                             {{ __('Process') }} &nbsp;
-                                            <span class="badge {{ $status == 'Proses' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                            <span
+                                                class="badge {{ $status == 'Proses' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
                                                 {{ $statusCounts['Proses'] ?? 0 }}
                                             </span>
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Penilaian' ? 'active' : '' }}"
-                                        href="{{ route('admin.mentoring.index', ['status' => 'Penilaian']) }}">
+                                            href="{{ route('admin.mentoring.index', ['status' => 'Penilaian']) }}">
                                             {{ __('Evaluation') }} &nbsp;
-                                            <span class="badge {{ $status == 'Penilaian' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                            <span
+                                                class="badge {{ $status == 'Penilaian' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
                                                 {{ $statusCounts['Penilaian'] ?? 0 }}
                                             </span>
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
+                                        <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Verifikasi' ? 'active' : '' }}"
+                                            href="{{ route('admin.mentoring.index', ['status' => 'Verifikasi']) }}">
+                                            {{ __('Verification') }} &nbsp;
+                                            <span
+                                                class="badge {{ $status == 'Verifikasi' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                                {{ $statusCounts['Verifikasi'] ?? 0 }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
                                         <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Selesai' ? 'active' : '' }}"
-                                        href="{{ route('admin.mentoring.index', ['status' => 'Selesai']) }}">
+                                            href="{{ route('admin.mentoring.index', ['status' => 'Selesai']) }}">
                                             {{ __('Done') }} &nbsp;
-                                            <span class="badge {{ $status == 'Selesai' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                            <span
+                                                class="badge {{ $status == 'Selesai' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
                                                 {{ $statusCounts['Selesai'] ?? 0 }}
                                             </span>
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Tolak' ? 'active' : '' }}"
-                                        href="{{ route('admin.mentoring.index', ['status' => 'Tolak']) }}">
+                                            href="{{ route('admin.mentoring.index', ['status' => 'Tolak']) }}">
                                             {{ __('Rejected') }} &nbsp;
-                                            <span class="badge {{ $status == 'Tolak' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                            <span
+                                                class="badge {{ $status == 'Tolak' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
                                                 {{ $statusCounts['Tolak'] ?? 0 }}
                                             </span>
                                         </a>
@@ -88,7 +105,7 @@
 
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Knowledge List') }}</h4>
+                                <h4>{{ __('Mentoring List') }}</h4>
                                 <div>
                                     <!-- <a href="" class="btn btn-primary"><i class="fa fa-plus"></i>{{ __('Add New') }}</a> -->
                                 </div>
@@ -108,30 +125,31 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        @forelse ($mentors as $index => $mentor)
-                                            <tr>
-                                                <td>{{ ++$index }}</td>
-                                                <td><a
-                                                        href="{{ route('admin.mentoring.show', $mentor->id) }}">{{ $mentor->title }}</a>
-                                                </td>
-                                                <td>{{ $mentor->mentor->name }}</td>
-                                                <td>{{ $mentor->mentee_count}}</td>
-                                                <td>
-                                                    {{ $mentor->total_session }}
-                                                </td>
-                                                <td>
-                                                    <div class="badge badge-{{ $mentor->stat['color'] }}">{{ $mentor->stat['label'] }}</div>
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('admin.mentoring.show', $mentor->id) }}"
-                                                        class="btn btn-primary btn-sm"><i class="fa fa-eye"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <x-empty-table :name="__('Knowledges')" route="" create="no" :message="__('No data found!')"
-                                                colspan="9"></x-empty-table>
-                                        @endforelse
+                                            @forelse ($mentors as $index => $mentor)
+                                                <tr>
+                                                    <td>{{ ++$index }}</td>
+                                                    <td><a
+                                                            href="{{ route('admin.mentoring.show', $mentor->id) }}">{{ $mentor->title }}</a>
+                                                    </td>
+                                                    <td>{{ $mentor->mentor->name }}</td>
+                                                    <td>{{ $mentor->mentee_count }}</td>
+                                                    <td>
+                                                        {{ $mentor->total_session }}
+                                                    </td>
+                                                    <td>
+                                                        <div class="badge badge-{{ $mentor->stat['color'] }}">
+                                                            {{ $mentor->stat['label'] }}</div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="{{ route('admin.mentoring.show', $mentor->id) }}"
+                                                            class="btn btn-primary btn-sm"><i class="fa fa-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <x-empty-table :name="__('Knowledges')" route="" create="no"
+                                                    :message="__('No data found!')" colspan="9"></x-empty-table>
+                                            @endforelse
                                         </tbody>
                                     </table>
                                 </div>

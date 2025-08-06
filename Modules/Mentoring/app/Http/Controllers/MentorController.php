@@ -22,6 +22,7 @@ class MentorController extends Controller
                 $query->where('status', Mentoring::STATUS_SUBMISSION)
                     ->orWhere('status', Mentoring::STATUS_PROCESS)
                     ->orWhere('status', Mentoring::STATUS_EVALUATION)
+                    ->orWhere('status', Mentoring::STATUS_VERIFICATION)
                     ->orWhere('status', Mentoring::STATUS_DONE);
             })
             ->orderByDesc('id')
@@ -189,11 +190,11 @@ class MentorController extends Controller
             return redirect()->back()->with(['messege' => 'Mentoring not found', 'alert-type' => 'error']);
         }
 
-        if ($mentoring->status != Mentoring::STATUS_EVALUATION && $mentoring->status != Mentoring::STATUS_DONE) {
+        if ($mentoring->status != Mentoring::STATUS_EVALUATION && ($mentoring->status != Mentoring::STATUS_VERIFICATION || $mentoring->status != Mentoring::STATUS_DONE)) {
             return redirect()->back()->with(['messege' => 'Evaluasi hanya bisa dilakukan jika mentoring dalam status penilaian', 'alert-type' => 'error']);
         }
 
-        $review = MentoringReview::where('mentoring_id', $mentoring->id)->first();  
+        $review = MentoringReview::where('mentoring_id', $mentoring->id)->first();
 
         return view('frontend.student-dashboard.mentoring.mentor.evaluasi', compact('mentoring', 'review'));
     }
@@ -343,7 +344,7 @@ class MentorController extends Controller
             $review->save();
         }
 
-        $mentoring->status = Mentoring::STATUS_DONE;
+        $mentoring->status = Mentoring::STATUS_VERIFICATION;
         $mentoring->save();
 
         return redirect()->route('student.mentor.index')->with(['messege' => 'Evaluasi berhasil dikirim', 'alert-type' => 'success']);
@@ -351,7 +352,6 @@ class MentorController extends Controller
 
     public function updateSession(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'mentoring_date' => 'required|date',
             'session_id' => 'required|string',
@@ -361,9 +361,33 @@ class MentorController extends Controller
         ]);
 
         $user = auth()->user();
-        $session = MentoringSession::whereHas('Mentoring', function ($query) use ($user) {
+        $sessions = MentoringSession::with('mentoring.mentoringSessions')->whereHas('Mentoring', function ($query) use ($user) {
             $query->where('mentor_id', $user->id);
         })->where('id', $request->session_id)->first();
+
+        $monthlyCount = [];
+        foreach ($sessions->mentoring->mentoringSessions as $session) {
+            $monthKey = \Carbon\Carbon::parse($session->mentoring_date)->format('Y-m');
+            if (strval($session->id) === $request->session_id) {
+                $monthKey = \Carbon\Carbon::parse($request->mentoring_date)->format('Y-m');
+            }
+
+
+            if (!isset($monthlyCount[$monthKey])) {
+                $monthlyCount[$monthKey] = 0;
+            }
+
+            $monthlyCount[$monthKey]++;
+
+
+            if ($monthlyCount[$monthKey] > 2) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['mentoring_date' => 'Maaf Anda hanya diperbolehkan mengajukan maksimal 2 pertemuan dalam satu bulan. Permintaan Anda melebihi batas yang telah ditentukan.']);
+            }
+        }
+
+        $session = MentoringSession::where('id', $request->session_id)->first();
 
         if (!$session) {
             return redirect()->back()->with(['messege' => 'Sesi mentoring tidak ditemukan', 'alert-type' => 'error']);

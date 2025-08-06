@@ -1,15 +1,35 @@
 volumes:
+  app_cache_windsurf:
+  app_cache_codeium:
+  app_cache_bun:
+  app_cache_home:
   lms_dev:
     external: true
 
 services:
+  init-perms:
+    image: busybox
+    volumes:
+      - app_cache_home:/data/home/dockeruser/.cache
+      - app_cache_windsurf:/data/home/dockeruser/.windsurf-server
+      - app_cache_codeium:/data/home/dockeruser/.codeium
+      - app_cache_bun:/data/home/dockeruser/.bun
+    command: ["chown", "-R", "1000:1000", "/data"]
   app:
-    image: wbso/php8.3-dev:latest
+    image: wbso/php8.3-ssh-dev:latest
     depends_on:
       - db
+      - init-perms
+    ports:
+      - "2222:2222"
     volumes:
       - ./:/var/www/html
       - ./docker/8.2/php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ~/.ssh/authorized_keys:/home/dockeruser/.ssh/authorized_keys:ro
+      - app_cache_windsurf:/home/dockeruser/.windsurf-server
+      - app_cache_codeium:/home/dockeruser/.codeium
+      - app_cache_bun:/home/dockeruser/.bun
+      - app_cache_home:/home/dockeruser/.cache
 
   webserver:
     image: nginx:1.27

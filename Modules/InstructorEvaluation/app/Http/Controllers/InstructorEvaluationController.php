@@ -67,12 +67,18 @@ class InstructorEvaluationController extends Controller
         $request->validate([
             'course_id' => ['required'],
             'instructor_id' => ['required'],
-            'rating' => ['required'],
+            'material_mastery' => ['required'],
+            'knowledge_transfer_ability' => ['required'],
+            'communication_and_motivation' => ['required'],
+            'discussion_and_exercise_process' => ['required'],
             'feedback' => ['required'],
         ], [
             'course_id.required' => 'Course is required',
             'instructor_id.required' => 'Instructor is required',
-            'rating.required' => 'Rating is required',
+            'material_mastery.required' => 'Rating is required',
+            'knowledge_transfer_ability.required' => 'Rating is required',
+            'communication_and_motivation.required' => 'Rating is required',
+            'discussion_and_exercise_process.required' => 'Rating is required',
             'feedback.required' => 'Comment is required',
         ]);
 
@@ -86,18 +92,15 @@ class InstructorEvaluationController extends Controller
                 'student_id' => $student->id
             ],
             [
-                'rating' => $request->input('rating'),
+                'material_mastery' => $request->input('material_mastery'),
+                'knowledge_transfer_ability' => $request->input('knowledge_transfer_ability'),
+                'communication_and_motivation' => $request->input('communication_and_motivation'),
+                'discussion_and_exercise_process' => $request->input('discussion_and_exercise_process'),
+                'rating' => ($request->input('material_mastery') + $request->input('knowledge_transfer_ability') + $request->input('communication_and_motivation') + $request->input('discussion_and_exercise_process')) / 4,
                 'feedback' => $request->input('feedback'),
             ]
         );
 
-        // $instructorEvaluation = new InstructorEvaluation();
-        // $instructorEvaluation->course_id = $course->id;
-        // $instructorEvaluation->instructor_id = $instructor->id;
-        // $instructorEvaluation->rating = $request->input('rating');
-        // $instructorEvaluation->comment = $request->input('comment');
-        // $instructorEvaluation->save();
-
-        return redirect()->route('student.instructorevaluation.create', [$course, $instructor]);
+        return redirect()->route('student.instructorevaluation.create', [$course, $instructor])->with(['messege' => __('Rating added successfully.'), 'alert-type' => 'success']);
     }
 }

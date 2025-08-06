@@ -10,10 +10,12 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\CertificateApiController;
 use App\Http\Controllers\Api\CoachApiController;
 use App\Http\Controllers\Api\CoacheeApiController;
+use App\Http\Controllers\Api\InstructorEvaluationController;
 use App\Http\Controllers\Api\MenteeApiController;
 use App\Http\Controllers\Api\MentorApiController;
 use App\Http\Controllers\Api\PendidikanLanjutanController;
 use App\Http\Controllers\Api\StudentLearningApiController;
+use App\Http\Controllers\Api\StudentQuizApiController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\SSOController;
 
@@ -58,6 +60,15 @@ Route::name('api.')->group(function () {
 
     Route::get('/courses/{type}/{id}/get-file', [StudentLearningApiController::class, 'getFilePathUrl'])->name('courses.get-file');
 
+    //student learning
+    Route::prefix('courses')
+        ->name('courses.')
+        ->middleware('auth:sso-api')
+        ->group(function () {
+            Route::get('/{course}/instructor-evaluations', [InstructorEvaluationController::class, 'index'])->name('instructorevaluation.index');
+            Route::post('/{course}/instructor-evaluations', [InstructorEvaluationController::class, 'store'])->name('instructorevaluation.store');
+        });
+
     // Lesson
     Route::name('lessons.')->group(function () {
         Route::get('/lessons/{slug}/questions', [CourseApiController::class, 'lessonQuestions'])->name('questions');
@@ -85,6 +96,11 @@ Route::name('api.')->group(function () {
         Route::get('/articles-tags', [ArticleController::class, 'articleTags'])->name('tags');
         Route::get('/articles-reviews/{id}', [ArticleController::class, 'articleReviews'])->name('reviews');
         Route::group(['middleware' => ['auth:sso-api']], function () {
+            Route::post('/articles', [ArticleController::class, 'store'])->name('store');
+            Route::post('/articles/{slug}/submit', [ArticleController::class, 'submit'])->name('submit');
+            Route::get('/articles/course/enrolled', [ArticleController::class, 'getEnrollments'])->name('getEnrollments');
+            Route::get('/articles/{slug}/edit', [ArticleController::class, 'edit'])->name('edit');
+            Route::post('/articles/{slug}/update', [ArticleController::class, 'update'])->name('update');
             Route::post('/articles-reviews/{id}', [ArticleController::class, 'storeReviews'])->name('reviews.store');
         });
     });
@@ -95,11 +111,11 @@ Route::name('api.')->group(function () {
         ->middleware('auth:sso-api')
         ->group(function () {
             // GET: /api/student-learning/{courseId}/quiz/{quizId}/result
-            Route::get('/{courseId}/quiz/{quizId}/result', [StudentLearningApiController::class, 'quizResult'])->name('quiz.result');
-            // GET: /api/student-learning/{courseId}/quiz/{quizId}
-            Route::get('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizIndex'])->name('quiz.index');
-            // POST: /api/student-learning/{courseId}/quiz/{quizId}
-            Route::post('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizStore'])->name('quiz.store');
+            // Route::get('/{courseId}/quiz/{quizId}/result', [StudentLearningApiController::class, 'quizResult'])->name('quiz.result');
+            // // GET: /api/student-learning/{courseId}/quiz/{quizId}
+            // Route::get('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizIndex'])->name('quiz.index');
+            // // POST: /api/student-learning/{courseId}/quiz/{quizId}
+            // Route::post('/{courseId}/quiz/{quizId}', [StudentLearningApiController::class, 'quizStore'])->name('quiz.store');
 
             // GET: /api/student-learning/{courseId}/rtl/{rtlId}
             Route::get('/{courseId}/rtl/{rtlId}', [StudentLearningApiController::class, 'rtlIndex'])->name('rtl.index');
@@ -113,6 +129,17 @@ Route::name('api.')->group(function () {
 
             // GET: /api/student-learning/{slug}
             Route::get('/{slug}', [StudentLearningApiController::class, 'index'])->name('index');
+        });
+
+    Route::prefix('student-quiz')
+        ->name('student-quiz.')
+        ->middleware('auth:sso-api')
+        ->group(function () {
+            Route::get('quizzes/{quizId}/start', [StudentQuizApiController::class, 'start'])->name('start');        // mulai kuis
+            Route::post('quizzes/{quizId}/save-answer', [StudentQuizApiController::class, 'saveAnswer'])->name('answer'); // autosave
+            Route::post('quizzes/{quizId}/submit', [StudentQuizApiController::class, 'submit'])->name('submit');     // submit akhir
+            Route::get('my-quiz-results', [StudentQuizApiController::class, 'myResults'])->name('my.results');      // hasil kuis
+            Route::get('my-quiz-seasons', [StudentQuizApiController::class, 'myQuizSeasons'])->name('my.quiz.seasons');  // daftar kuis yg dirandom
         });
 
     // Mentoring
@@ -129,6 +156,7 @@ Route::name('api.')->group(function () {
                     Route::post('/update-session', [MenteeApiController::class, 'updateSession'])->name('update.session');
                     Route::post('/{id}/submit-approval', [MenteeApiController::class, 'submitForApproval'])->name('submitForApproval');
                     Route::post('/{id}/final-report', [MenteeApiController::class, 'updateFinalReport'])->name('update.final.report');
+                    Route::post('/{id}/store-feedback', [MenteeApiController::class, 'feedbackStore'])->name('store.feedback');
                 });
             Route::prefix('mentor')
                 ->name('mentor.')
@@ -184,5 +212,6 @@ Route::name('api.')->group(function () {
 
 
     // Bantara Callback
-    Route::post('/bantara-callback/{enrollment}', [CertificateApiController::class, 'bantaraCallback'])->name('bantara-callback');
+    Route::post('/callback/course/{enrollment}', [CertificateApiController::class, 'bantaraCallback'])->name('bantara-callback');
+    Route::post('/callback/mentoring/{mentoring}', [MentorApiController::class, 'bantaraCallback'])->name('mentoring-callback');
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Modules\Mentoring\app\Models\Mentoring;
 use Modules\Mentoring\app\Models\MentoringReview;
 use Modules\Mentoring\app\Models\MentoringSession;
@@ -38,7 +39,10 @@ class MentorApiController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('mentor_id', $request->user()->id)->orderByDesc('id')->paginate(10);
+            $data = Mentoring::with('mentor:id,name', 'mentee:id,name')
+                ->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)
+                ->orderByDesc('id')->paginate(10);
 
             return $this->successResponse($data, 'Mentor topics fetched successfully');
         } catch (\Exception $e) {
@@ -71,7 +75,10 @@ class MentorApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions')->where('mentor_id', $request->user()->id)->findOrFail($id);
+            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions')
+                ->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)
+                ->findOrFail($id);
             $hasIncompleteSessions = $mentoring->mentoringSessions->contains(function ($session) {
                 return empty($session->activity);
             });
@@ -123,7 +130,10 @@ class MentorApiController extends Controller
                 'reason.required' => 'Alasan tidak boleh kosong',
             ]);
 
-            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)->first();
+            $mentoring = Mentoring::where('id', $id)
+                ->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)
+                ->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -193,7 +203,10 @@ class MentorApiController extends Controller
     public function approve(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)->first();
+            $mentoring = Mentoring::where('id', $id)
+                ->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)
+                ->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -223,7 +236,6 @@ class MentorApiController extends Controller
             return $this->errorResponse($e->getMessage(), [], 500);
         }
     }
-
 
     /**
      * @OA\Post(
@@ -439,7 +451,8 @@ class MentorApiController extends Controller
                 'penguasaan_materi_description.required' => 'Deskripsi penguasaan materi tidak boleh kosong',
             ]);
 
-            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)->first();
+            $mentoring = Mentoring::where('id', $id)->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -519,7 +532,9 @@ class MentorApiController extends Controller
     public function evaluasi(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('id', $id)->where('mentor_id', $request->user()->id)->first();
+            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('id', $id)
+                ->where('mentor_id', $request->user()->id)
+                ->whereNot('status', Mentoring::STATUS_DRAFT)->first();
 
             if (!$mentoring) {
                 return $this->errorResponse('Mentoring not found', [], 404);
@@ -594,5 +609,103 @@ class MentorApiController extends Controller
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);
         }
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/callback/mentoring/{mentoring}",
+     *     summary="Bantara Callback",
+     *     tags={"Bantara"},
+     *     security={{"bearer": {}}},
+     *     @OA\Parameter(
+     *         description="Mentoring ID",
+     *         in="path",
+     *         name="mentoring",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="file",
+     *                     format="binary",
+     *                     description="PDF file from Bantara",
+     *                 ),
+     *             ),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User information",
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="success",
+     *                 type="boolean",
+     *                 example="true"
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="File uploaded successfully"
+     *             ),
+     *         )
+     *     )
+     * )
+     */
+    public function bantaraCallback(Mentoring $mentoring, Request $request)
+    {
+        // validate request header key
+        $key = $request->header('Authorization');
+        if (!$key) {
+            return response(['success' => false, 'message' => 'Invalid request header key'], 403);
+        }
+
+        // trim bearer
+        $key = str_replace('Bearer ', '', $key);
+
+        // validate key
+        if ($key !== appConfig('bantara_callback_key') || $key = '' || $key === null) {
+            return response(['success' => false, 'message' => 'Invalid api key'], 403);
+        }
+
+        $file = $request->file('file');
+
+        if (!$file) {
+            return response(['success' => false, 'message' => 'File is required'], 400);
+        }
+
+        // check if file is pdf
+        if ($file->getClientOriginalExtension() !== 'pdf') {
+            return response(['success' => false, 'message' => 'File must be pdf'], 400);
+        }
+
+        // check if file size is less than 100mb
+        if ($file->getSize() > 100 * 1024 * 1024) {
+            return response(['success' => false, 'message' => 'File size must be less than 100mb'], 400);
+        }
+
+        $path = Storage::disk('private')->putFileAs(
+            sprintf('certificates/mentoring/%s', now()->year),
+            $file,
+            sprintf('%s-certificate.pdf', $mentoring->id),
+        );
+
+        if (!$path) {
+            return response(['success' => false, 'message' => 'File upload failed'], 500);
+        }
+
+        $mentoring->certificate_path = $path;
+        $mentoring->signing_status = 'signed';
+        $mentoring->save();
+
+        return response(['success' => true, 'message' => 'File uploaded successfully'], 200);
     }
 }

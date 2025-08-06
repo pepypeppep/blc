@@ -17,8 +17,8 @@ class MentoringSeeder extends Seeder
     public function run(): void
     {
         $users = User::all();
-        $statuses = [Mentoring::STATUS_REJECT, Mentoring::STATUS_PROCESS, Mentoring::STATUS_SUBMISSION, Mentoring::STATUS_DRAFT];
-        for ($i = 0; $i < 200; $i++){
+        $statuses = [Mentoring::STATUS_REJECT, Mentoring::STATUS_PROCESS, Mentoring::STATUS_SUBMISSION, Mentoring::STATUS_DRAFT, Mentoring::STATUS_VERIFICATION];
+        for ($i = 0; $i < 200; $i++) {
             $status = $statuses[array_rand($statuses)];
             Mentoring::create([
                 'title' => 'Mentoring ' . $i,

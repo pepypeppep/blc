@@ -33,7 +33,7 @@ use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
-
+use Modules\Mentoring\app\Http\Controllers\MentoringController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -110,6 +110,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
     // Public Certificate URL
     Route::get("/public/certificate/{uuid}", [CertificateController::class, 'publicCertificate'])->name('public.certificate');
+    Route::get("/public/mentoring/{uuid}", [MentoringController::class, 'publicCertificate'])->name('public.mentoring');
 
     Route::get("/get-section-asset/{id}/attr/{attr}", [HomePageController::class, 'getSectionAsset'])->name('get.section.asset');
 

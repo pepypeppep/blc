@@ -23,6 +23,7 @@ use Modules\CertificateBuilder\app\Models\CertificateBuilder;
 use Modules\CertificateBuilder\app\Models\CertificateBuilderItem;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Colors\Rgb\Channels\Red;
+use Modules\Mentoring\app\Models\MentoringFeedback;
 use Modules\Mentoring\app\Models\MentoringSigner;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -126,6 +127,34 @@ class MentoringController extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         //
+    }
+
+    public function menteeEvaluasi(Request $request, $id, $mentorId)
+    {
+        // Validate mentoring session
+        $mentoring = Mentoring::findOrFail($id);
+        if ($mentoring->mentor_id != $mentorId) {
+            return redirect()->back()->with(['messege' => 'Mentoring not found for this mentor', 'alert-type' => 'error']);
+        }
+
+        // Get review data
+        $review = MentoringReview::where('mentoring_id', $mentoring->id)->first();
+
+        return view('mentoring::mentee-evaluation', compact('mentoring', 'review'));
+    }
+
+    public function mentorEvaluasi(Request $request, $id, $mentorId)
+    {
+        // Validate mentoring session
+        $mentoring = Mentoring::findOrFail($id);
+        if ($mentoring->mentor_id != $mentorId) {
+            return redirect()->back()->with(['messege' => 'Mentoring not found for this mentor', 'alert-type' => 'error']);
+        }
+
+        // Get review data
+        $review = MentoringFeedback::where('mentoring_id', $mentoring->id)->first();
+
+        return view('mentoring::mentor-evaluation', compact('mentoring', 'review'));
     }
 
     /**

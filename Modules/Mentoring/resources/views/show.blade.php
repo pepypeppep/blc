@@ -125,30 +125,16 @@
                                                                     </div>
 
                                                                     <div class="mb-2">
-                                                                        @if ($session->status == 'reviewed')
-                                                                            <form>
-                                                                                <div class="form-group mt-4">
-                                                                                    <label
-                                                                                        for="mentoring_date">{{ __('Mentoring Date') }}</label>
-                                                                                    <input type="text"
-                                                                                        name="mentoring_date"
-                                                                                        class="form-control datetimepicker"
-                                                                                        value="{{ $session->mentoring_date ?? '' }}"
-                                                                                        disabled>
-                                                                                </div>
-                                                                                <div class="form-group mt-4">
-                                                                                    <strong
-                                                                                        class="d-block">Catatan:</strong>
-                                                                                    <div class="text-body">
-                                                                                        {!! clean(@$session?->mentoring_note) !!}</div>
-                                                                                </div>
-                                                                                <div class="form-group mt-4">
-                                                                                    <strong class="d-block">Arahan:</strong>
-                                                                                    <div class="text-body">
-                                                                                        {!! clean(@$session?->mentoring_instructions) !!}</div>
-                                                                                </div>
-                                                                            </form>
-                                                                        @endif
+                                                                        <div class="form-group mt-4">
+                                                                            <strong class="d-block">Catatan:</strong>
+                                                                            <div class="text-body">
+                                                                                {!! clean(@$session?->mentoring_note) !!}</div>
+                                                                        </div>
+                                                                        <div class="form-group mt-4">
+                                                                            <strong class="d-block">Arahan:</strong>
+                                                                            <div class="text-body">
+                                                                                {!! clean(@$session?->mentoring_instructions) !!}</div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             @else
@@ -260,13 +246,21 @@
                                     <h4>{{ __('List Mentor') }}</h4>
                                 </div>
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <img src="https://i.pinimg.com/736x/f9/8a/db/f98adb0622aa2341ba29aaeb46901b33.jpg"
-                                            alt="{{ $mentor->name }}" class="rounded-circle" width="50"
-                                            height="50" style="object-fit: cover;">
-                                        <div class=" ml-2">
-                                            <strong>{{ $mentor->name }}</strong><br>
-                                            <small class="text-muted">{{ $mentor->email }}</small>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <img src="https://i.pinimg.com/736x/f9/8a/db/f98adb0622aa2341ba29aaeb46901b33.jpg"
+                                                alt="{{ $mentor->name }}" class="rounded-circle" width="50"
+                                                height="50" style="object-fit: cover;">
+                                            <div class=" ml-2">
+                                                <strong>{{ $mentor->name }}</strong><br>
+                                                <small class="text-muted">{{ $mentor->email }}</small>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <a href="{{ route('admin.mentoring.mentor.evaluasi', [$mentoring, $mentor]) }}"
+                                                class="btn btn-primary" target="_blank">
+                                                <i class="fa fa-envelope-open-text"></i> Hasil Evaluasi
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -279,13 +273,21 @@
                                     <h4>{{ __('List Mentee') }}</h4>
                                 </div>
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <img src="https://i.pinimg.com/736x/f9/8a/db/f98adb0622aa2341ba29aaeb46901b33.jpg"
-                                            alt="{{ $mentee->name }}" class="rounded-circle" width="50"
-                                            height="50" style="object-fit: cover;">
-                                        <div class=" ml-2">
-                                            <strong>{{ $mentee->name }}</strong><br>
-                                            <small class="text-muted">{{ $mentee->email }}</small>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <img src="https://i.pinimg.com/736x/f9/8a/db/f98adb0622aa2341ba29aaeb46901b33.jpg"
+                                                alt="{{ $mentee->name }}" class="rounded-circle" width="50"
+                                                height="50" style="object-fit: cover;">
+                                            <div class=" ml-2">
+                                                <strong>{{ $mentee->name }}</strong><br>
+                                                <small class="text-muted">{{ $mentee->email }}</small>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <a href="{{ route('admin.mentoring.mentee.evaluasi', [$mentoring, $mentor]) }}"
+                                                class="btn btn-primary" target="_blank">
+                                                <i class="fa fa-envelope-open-text"></i> Hasil Evaluasi
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

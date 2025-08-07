@@ -254,8 +254,7 @@ class ArticleController extends Controller
                 ->with('author')
                 ->withCount(['reviews as total_review'])
                 ->withAvg('reviews as rating', 'stars')
-                ->with('enrollment.course')
-                ->where('status', Article::STATUS_PUBLISHED);
+                ->with('enrollment.course');
 
             if ($request->keyword) {
                 $articles = $articles->where(function ($query) use ($request) {
@@ -275,6 +274,8 @@ class ArticleController extends Controller
 
             if ($request->user_id) {
                 $articles = $articles->where('author_id', $request->user_id);
+            } else {
+                $articles = $articles->where('status', Article::STATUS_PUBLISHED);
             }
 
             if ($request->tags) {

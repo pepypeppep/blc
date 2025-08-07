@@ -33,15 +33,6 @@ class CoachApiController extends Controller
      *             type="integer"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="query",
-     *         description="User id",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -55,7 +46,7 @@ class CoachApiController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = Coaching::with('coach:id,name')->where('coach_id', $request->user_id)->orderByDesc('id')->paginate($request->per_page ?? 10);;
+            $data = Coaching::with('coach:id,name')->where('coach_id', $request->user()->id)->orderByDesc('id')->paginate($request->per_page ?? 10);;
 
             return $this->successResponse($data, 'Coaching topics fetched successfully');
         } catch (\Exception $e) {
@@ -79,15 +70,6 @@ class CoachApiController extends Controller
      *             type="integer"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="query",
-     *         description="User id",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -101,7 +83,7 @@ class CoachApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $coaching = Coaching::with('coach:id,name', 'coachees:id,name', 'joinedCoachees:id,name', 'coachingSessions.details.coachingUser.coachee:id,name')->where('coach_id', $request->user_id)->findOrFail($id);
+            $coaching = Coaching::with('coach:id,name', 'coachees:id,name', 'joinedCoachees:id,name', 'coachingSessions.details.coachingUser.coachee:id,name')->where('coach_id', $request->user()->id)->findOrFail($id);
             authorizeCoachAccess($coaching);
 
             return $this->successResponse(['coaching' => $coaching], 'Coaching topics fetched successfully');
@@ -602,7 +584,7 @@ class CoachApiController extends Controller
             'initiative_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
         ]);
 
-        $user_id = $request->user_id;
+        $user_id = $request->user()->id;
         $coaching = Coaching::where('id', $coachingId)
             ->where('coach_id', $user_id)
             ->firstOrFail();

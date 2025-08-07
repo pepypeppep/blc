@@ -139,8 +139,9 @@ class MentoringController extends Controller
 
         // Get review data
         $review = MentoringReview::where('mentoring_id', $mentoring->id)->first();
+        $total = $review->discipline + $review->teamwork + $review->initiative + $review->material_mastery;
 
-        return view('mentoring::mentee-evaluation', compact('mentoring', 'review'));
+        return view('mentoring::mentee-evaluation', compact('mentoring', 'review', 'total'));
     }
 
     public function mentorEvaluasi(Request $request, $id, $mentorId)
@@ -153,8 +154,9 @@ class MentoringController extends Controller
 
         // Get review data
         $review = MentoringFeedback::where('mentoring_id', $mentoring->id)->first();
+        $total = $review->mentoring_ability + $review->punctuality_attendance + $review->method_media_usage + $review->attitude_behavior + $review->inspirational_ability + $review->motivational_ability;
 
-        return view('mentoring::mentor-evaluation', compact('mentoring', 'review'));
+        return view('mentoring::mentor-evaluation', compact('mentoring', 'review', 'total'));
     }
 
     /**

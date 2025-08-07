@@ -1,17 +1,17 @@
 @extends('admin.master_layout')
 @section('title')
-    <title>{{ __('Mentee Evaluation') }}</title>
+    <title>{{ __('Mentor Evaluation') }}</title>
 @endsection
 
 @section('admin-content')
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>{{ __('Mentee Evaluation') }}: "{{ $mentoring->mentee->name }}"</h1>
+                <h1>{{ __('Mentor Evaluation') }}: "{{ $mentoring->mentor->name }}"</h1>
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
                     </div>
-                    <div class="breadcrumb-item">{{ __('Certificate Recognition') }}</div>
+                    <div class="breadcrumb-item">{{ __('Evaluation') }}</div>
                 </div>
             </div>
             <div class="section-body">
@@ -62,18 +62,18 @@
                                             <th scope="row"></th>
                                             <td>Total Nilai</td>
                                             <td class="text-center">
-                                                {{ $review->mentoring_ability + $review->punctuality_attendance + $review->method_media_usage + $review->attitude_behavior + $review->inspirational_ability + $review->motivational_ability }}
+                                                {{ $total }}
                                             </td>
                                         </tr>
                                         <tr>
                                             <th scope="row"></th>
                                             <td>Nilai Akhir
                                                 <strong class="badge badge-info">
-                                                    {{ getMentorScoreLabel(round(($review->mentoring_ability + $review->punctuality_attendance + $review->method_media_usage + $review->attitude_behavior + $review->inspirational_ability + $review->motivational_ability) / 6, 2)) }}
+                                                    {{ getMentorScoreLabel(round($total / 6, 2)) }}
                                                 </strong>
                                             </td>
                                             <td class="text-center">
-                                                {{ round(($review->mentoring_ability + $review->punctuality_attendance + $review->method_media_usage + $review->attitude_behavior + $review->inspirational_ability + $review->motivational_ability) / 6, 2) }}
+                                                {{ round($total / 6, 2) }}
                                             </td>
                                         </tr>
                                     </tbody>

@@ -11,7 +11,7 @@
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
                     </div>
-                    <div class="breadcrumb-item">{{ __('Certificate Recognition') }}</div>
+                    <div class="breadcrumb-item">{{ __('Evaluation') }}</div>
                 </div>
             </div>
             <div class="section-body">
@@ -19,115 +19,121 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">{{ __('Pernyataan') }}</th>
+                                            <th scope="col" class="text-center">{{ __('Nilai') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Target/Tujuan Tercapai</td>
+                                            <td class="text-center">{{ $review->is_target ? __('Yes') : __('Tidak') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">2</th>
+                                            <td>Tingkat kedisiplinan</td>
+                                            <td class="text-center">{{ $review->discipline }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>Tingkat kerjasama</td>
+                                            <td class="text-center">{{ $review->teamwork }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">4</th>
+                                            <td>Tingkat inisiatif</td>
+                                            <td class="text-center">{{ $review->initiative }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">5</th>
+                                            <td>Tingkat penguasaan materi</td>
+                                            <td class="text-center">{{ $review->material_mastery }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"></th>
+                                            <td>Total Nilai</td>
+                                            <td class="text-center">
+                                                {{ $total }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"></th>
+                                            <td>Nilai Akhir
+                                                <strong class="badge badge-info">
+                                                    {{ getMentorScoreLabel(round($total / 6, 2)) }}
+                                                </strong>
+                                            </td>
+                                            <td class="text-center">
+                                                {{ round($total / 6, 2) }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>{{ __('Target/Tujuan Tercapai') }}</strong>
+                                    <div class="col-md-12">
+                                        <strong>{{ __('Referensi Nilai') }}</strong>
                                     </div>
-                                    <div class="col-md-10">
-                                        <span>{{ @$review->is_target ? __('Yes') : __('Tidak') }}</span>
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" class="text-center">{{ __('Nilai') }}</th>
+                                                    <th scope="col">Kategori</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row" class="text-center">0 - 20.99</th>
+                                                    <td>Sangat Buruk</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row" class="text-center">21 - 40.99</th>
+                                                    <td>Buruk</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row" class="text-center">41 - 60.99</th>
+                                                    <td>Cukup</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row" class="text-center">61 - 80.99</th>
+                                                    <td>Baik</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row" class="text-center">81 - 100</th>
+                                                    <td>Sangat Baik</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="card">
+                            <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-2">
+                                    <div class="col-md-12">
                                         <strong>{{ __('Catatan') }}</strong>
                                     </div>
-                                    <div class="col-md-10">
+                                    <div class="col-md-12">
                                         {!! clean(@$review?->target_description) !!}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>{{ __('Tingkat Kedisiplinan') }}</strong>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <span>{{ @$review->discipline }}</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>{{ __('Catatan') }}</strong>
-                                    </div>
-                                    <div class="col-md-10">
-                                        {!! clean(@$review?->discipline_description) !!}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>{{ __('Tingkat Kerjasama') }}</strong>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <span>{{ @$review->teamwork }}</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>{{ __('Catatan') }}</strong>
-                                    </div>
-                                    <div class="col-md-10">
-                                        {!! clean(@$review?->teamwork_description) !!}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>{{ __('Tingkat Initiatif') }}</strong>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <span>{{ @$review->initiative }}</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>{{ __('Catatan') }}</strong>
-                                    </div>
-                                    <div class="col-md-10">
-                                        {!! clean(@$review?->initiative_description) !!}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>{{ __('Tingkat Penguasaan Materi') }}</strong>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <span>{{ @$review->material_mastery }}</span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <strong>{{ __('Catatan') }}</strong>
-                                    </div>
-                                    <div class="col-md-10">
-                                        {!! clean(@$review?->material_mastery_description) !!}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                {{-- <div class="row mt-3">
-                    <div class="col"><a href="{{ route('admin.mentoring.show', $mentoring->id) }}"
-                            class="btn btn-primary"><i class="fas fa-arrow-left"></i> {{ __('Kembali ke Mentoring') }}</a>
-                    </div>
-                </div> --}}
             </div>
         </section>
     </div>

@@ -205,13 +205,13 @@ class MentorController extends Controller
             'target' => 'required|in:0,1',
             'target_description' => 'required|string',
             'tingkat_disiplin' => 'required|integer|min:1|max:100',
-            'disiplin_description' => 'required|string',
+            // 'disiplin_description' => 'required|string',
             'kerjasama' => 'required|integer|min:1|max:100',
-            'kerjasama_description' => 'required|string',
+            // 'kerjasama_description' => 'required|string',
             'inisiatif' => 'required|integer|min:1|max:100',
-            'inisiatif_description' => 'required|string',
+            // 'inisiatif_description' => 'required|string',
             'penguasaan_materi' => 'required|integer|min:1|max:100',
-            'penguasaan_materi_description' => 'required|string',
+            // 'penguasaan_materi_description' => 'required|string',
         ], [
             'target.required' => 'Target tidak boleh kosong',
             'target.in' => 'Target harus 0 (Tidak) atau 1 (Ya)',
@@ -219,20 +219,20 @@ class MentorController extends Controller
             'tingkat_disiplin.required' => 'Tingkat disiplin tidak boleh kosong',
             'tingkat_disiplin.min' => 'Tingkat disiplin minimal 1',
             'tingkat_disiplin.max' => 'Tingkat disiplin maksimal 100',
-            'disiplin_description.required' => 'Deskripsi disiplin tidak boleh kosong',
+            // 'disiplin_description.required' => 'Deskripsi disiplin tidak boleh kosong',
             'kerjasama.required' => 'Kerjasama tidak boleh kosong',
             'kerjasama.min' => 'Kerjasama minimal 1',
             'kerjasama.max' => 'Kerjasama maksimal 100',
-            'kerjasama_description.required' => 'Deskripsi kerjasama tidak boleh kosong',
+            // 'kerjasama_description.required' => 'Deskripsi kerjasama tidak boleh kosong',
             'inisiatif.required' => 'Inisiatif tidak boleh kosong',
             'inisiatif.min' => 'Inisiatif minimal 1',
             'inisiatif.max' => 'Inisiatif maksimal 100',
-            'inisiatif_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
+            // 'inisiatif_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
             'penguasaan_materi.required' => 'Penguasaan materi tidak boleh kosong',
             'penguasaan_materi.integer' => 'Penguasaan materi harus berupa angka',
             'penguasaan_materi.min' => 'Penguasaan materi minimal 1',
             'penguasaan_materi.max' => 'Penguasaan materi maksimal 100',
-            'penguasaan_materi_description.required' => 'Deskripsi penguasaan materi tidak boleh kosong',
+            // 'penguasaan_materi_description.required' => 'Deskripsi penguasaan materi tidak boleh kosong',
         ]);
 
 
@@ -255,29 +255,37 @@ class MentorController extends Controller
             $review->is_target = $request->target;
             $review->target_description = $request->target_description;
             $review->discipline = $request->tingkat_disiplin;
-            $review->discipline_description = $request->disiplin_description;
+            // $review->discipline_description = $request->disiplin_description;
+            $review->discipline_description = '-';
             $review->teamwork = $request->kerjasama;
-            $review->teamwork_description = $request->kerjasama_description;
+            // $review->teamwork_description = $request->kerjasama_description;
+            $review->teamwork_description = '-';
             $review->initiative = $request->inisiatif;
-            $review->initiative_description = $request->inisiatif_description;
+            // $review->initiative_description = $request->inisiatif_description;
+            $review->initiative_description = '-';
             $review->material_mastery = $request->penguasaan_materi;
-            $review->material_mastery_description = $request->penguasaan_materi_description;
+            // $review->material_mastery_description = $request->penguasaan_materi_description;
+            $review->material_mastery_description = '-';
             $review->save();
         } else {
             $review->is_target = $request->target;
             $review->target_description = $request->target_description;
             $review->discipline = $request->tingkat_disiplin;
-            $review->discipline_description = $request->disiplin_description;
+            // $review->discipline_description = $request->disiplin_description;
+            $review->discipline_description = '-';
             $review->teamwork = $request->kerjasama;
-            $review->teamwork_description = $request->kerjasama_description;
+            // $review->teamwork_description = $request->kerjasama_description;
+            $review->teamwork_description = '-';
             $review->initiative = $request->inisiatif;
-            $review->initiative_description = $request->inisiatif_description;
+            // $review->initiative_description = $request->inisiatif_description;
+            $review->initiative_description = '-';
             $review->material_mastery = $request->penguasaan_materi;
-            $review->material_mastery_description = $request->penguasaan_materi_description;
+            // $review->material_mastery_description = $request->penguasaan_materi_description;
+            $review->material_mastery_description = '-';
             $review->save();
         }
 
-        return redirect()->route('student.mentor.index')->with(['messege' => 'Evaluasi berhasil', 'alert-type' => 'success']);
+        return redirect()->back()->with(['messege' => 'Evaluasi berhasil', 'alert-type' => 'success']);
     }
 
     public function kirimEvaluasi(Request $request, $id)
@@ -286,13 +294,13 @@ class MentorController extends Controller
             'target' => 'required|in:0,1',
             'target_description' => 'required|string',
             'tingkat_disiplin' => 'required|integer|min:1|max:100',
-            'disiplin_description' => 'required|string',
+            // 'disiplin_description' => 'required|string',
             'kerjasama' => 'required|integer|min:1|max:100',
-            'kerjasama_description' => 'required|string',
+            // 'kerjasama_description' => 'required|string',
             'inisiatif' => 'required|integer|min:1|max:100',
-            'inisiatif_description' => 'required|string',
+            // 'inisiatif_description' => 'required|string',
             'penguasaan_materi' => 'required|integer|min:1|max:100',
-            'penguasaan_materi_description' => 'required|string',
+            // 'penguasaan_materi_description' => 'required|string',
         ], [
             'target.required' => 'Target tidak boleh kosong',
             'target.in' => 'Target harus 0 (Tidak) atau 1 (Ya)',
@@ -300,20 +308,20 @@ class MentorController extends Controller
             'tingkat_disiplin.required' => 'Tingkat disiplin tidak boleh kosong',
             'tingkat_disiplin.min' => 'Tingkat disiplin minimal 1',
             'tingkat_disiplin.max' => 'Tingkat disiplin maksimal 100',
-            'disiplin_description.required' => 'Deskripsi disiplin tidak boleh kosong',
+            // 'disiplin_description.required' => 'Deskripsi disiplin tidak boleh kosong',
             'kerjasama.required' => 'Kerjasama tidak boleh kosong',
             'kerjasama.min' => 'Kerjasama minimal 1',
             'kerjasama.max' => 'Kerjasama maksimal 100',
-            'kerjasama_description.required' => 'Deskripsi kerjasama tidak boleh kosong',
+            // 'kerjasama_description.required' => 'Deskripsi kerjasama tidak boleh kosong',
             'inisiatif.required' => 'Inisiatif tidak boleh kosong',
             'inisiatif.min' => 'Inisiatif minimal 1',
             'inisiatif.max' => 'Inisiatif maksimal 100',
-            'inisiatif_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
+            // 'inisiatif_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
             'penguasaan_materi.required' => 'Penguasaan materi tidak boleh kosong',
             'penguasaan_materi.integer' => 'Penguasaan materi harus berupa angka',
             'penguasaan_materi.min' => 'Penguasaan materi minimal 1',
             'penguasaan_materi.max' => 'Penguasaan materi maksimal 100',
-            'penguasaan_materi_description.required' => 'Deskripsi penguasaan materi tidak boleh kosong',
+            // 'penguasaan_materi_description.required' => 'Deskripsi penguasaan materi tidak boleh kosong',
         ]);
 
         $user = auth()->user();
@@ -334,13 +342,17 @@ class MentorController extends Controller
             $review->is_target = $request->target;
             $review->target_description = $request->target_description;
             $review->discipline = $request->tingkat_disiplin;
-            $review->discipline_description = $request->disiplin_description;
+            // $review->discipline_description = $request->disiplin_description;
+            $review->discipline_description = '-';
             $review->teamwork = $request->kerjasama;
-            $review->teamwork_description = $request->kerjasama_description;
+            // $review->teamwork_description = $request->kerjasama_description;
+            $review->teamwork_description = '-';
             $review->initiative = $request->inisiatif;
-            $review->initiative_description = $request->inisiatif_description;
+            // $review->initiative_description = $request->inisiatif_description;
+            $review->initiative_description = '-';
             $review->material_mastery = $request->penguasaan_materi;
-            $review->material_mastery_description = $request->penguasaan_materi_description;
+            // $review->material_mastery_description = $request->penguasaan_materi_description;
+            $review->material_mastery_description = '-';
             $review->save();
         }
 

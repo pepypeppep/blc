@@ -1082,3 +1082,20 @@ if (!function_exists('authorizeCoachAccess')) {
         }
     }
 }
+
+if (!function_exists('getMentorScoreLabel')) {
+    function getMentorScoreLabel($score)
+    {
+        if ($score >= 0 && $score <= 20.99) {
+            return 'Sangat Buruk';
+        } else if ($score >= 21 && $score <= 40.99) {
+            return 'Buruk';
+        } else if ($score >= 41 && $score <= 60.99) {
+            return 'Cukup';
+        } else if ($score >= 61 && $score <= 80.99) {
+            return 'Baik';
+        } else if ($score >= 81 && $score <= 100) {
+            return 'Sangat Baik';
+        }
+    }
+}

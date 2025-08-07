@@ -4665,13 +4665,9 @@
                                     "target",
                                     "target_description",
                                     "tingkat_disiplin",
-                                    "disiplin_description",
                                     "kerjasama",
-                                    "kerjasama_description",
                                     "inisiatif",
-                                    "inisiatif_description",
-                                    "penguasaan_materi",
-                                    "penguasaan_materi_description"
+                                    "penguasaan_materi"
                                 ],
                                 "properties": {
                                     "target": {
@@ -4689,40 +4685,20 @@
                                         "type": "integer",
                                         "example": 80
                                     },
-                                    "disiplin_description": {
-                                        "description": "Deskripsi disiplin",
-                                        "type": "string",
-                                        "example": "Deskripsi disiplin"
-                                    },
                                     "kerjasama": {
                                         "description": "Kerjasama",
                                         "type": "integer",
                                         "example": 80
-                                    },
-                                    "kerjasama_description": {
-                                        "description": "Deskripsi kerjasama",
-                                        "type": "string",
-                                        "example": "Deskripsi kerjasama"
                                     },
                                     "inisiatif": {
                                         "description": "Inisiatif",
                                         "type": "integer",
                                         "example": 80
                                     },
-                                    "inisiatif_description": {
-                                        "description": "Deskripsi inisiatif",
-                                        "type": "string",
-                                        "example": "Deskripsi inisiatif"
-                                    },
                                     "penguasaan_materi": {
                                         "description": "Penguasaan materi",
                                         "type": "integer",
                                         "example": 80
-                                    },
-                                    "penguasaan_materi_description": {
-                                        "description": "Deskripsi penguasaan materi",
-                                        "type": "string",
-                                        "example": "Deskripsi penguasaan materi"
                                     }
                                 },
                                 "type": "object"

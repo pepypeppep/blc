@@ -66,6 +66,15 @@
                 @endif
             @endif
 
+            @if (checkAdminHasPermission('coaching.view'))
+                <li class="menu-header">{{ __('Manage Coaching') }}</li>
+
+                @if (Module::isEnabled('Coaching') && checkAdminHasPermission('coaching.view'))
+                    @include('coaching::sidebar')
+                @endif
+            @endif
+
+
             @if (checkAdminHasPermission('knowledge.verification'))
                 <li class="menu-header">{{ __('Manage Knowledge') }}</li>
                 @if (Module::isEnabled('Article') && checkAdminHasPermission('knowledge.verification'))
@@ -100,7 +109,7 @@
                 @endif --}}
 
                 @if (
-                    (Module::isEnabled('InstructorEvaluation')) 
+                    (Module::isEnabled('InstructorEvaluation'))
                       )
                     @include('instructorevaluation::sidebar')
                 @endif

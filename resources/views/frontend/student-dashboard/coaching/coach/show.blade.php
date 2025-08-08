@@ -17,7 +17,7 @@
                 <span
                     class="badge fs-6
                     @php
-$statusColors = [
+                        $statusColors = [
                             'Draft' => 'bg-secondary',
                             'Konsensus' => 'bg-warning',
                             'Proses' => 'bg-info',

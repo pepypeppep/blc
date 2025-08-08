@@ -392,6 +392,21 @@ trait PermissionsTrait
         ],
     ];
 
+
+
+    public static array $coachingPermissions = [
+        'group_name' => 'coaching',
+        'permissions' => [
+            'coaching.view',
+            'coaching.create',
+            'coaching.store',
+            'coaching.edit',
+            'coaching.update',
+            'coaching.destroy',
+            'coaching.verify',
+        ],
+    ];
+
     public static array $pengumumanPermissions = [
         'group_name' => 'pengumuman',
         'permissions' => [

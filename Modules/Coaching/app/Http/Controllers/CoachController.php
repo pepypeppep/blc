@@ -285,11 +285,11 @@ class CoachController extends Controller
         $coaching = Coaching::where('id', $coachingId)
                     ->where('coach_id', $user->id)
                     ->firstOrFail();
-        
+
         if ($coaching->status == Coaching::STATUS_DONE) {
             return redirect()->back()->with(['alert-type' => 'error', 'messege' => 'Status coaching sudah selesai. Penilaian tidak dapat dilakukan lagi']);
         }
-        
+
         $coachingUser = CoachingUser::with('coaching')
             ->where('coaching_id', $coachingId)
             ->where('user_id', $coacheeId)
@@ -298,7 +298,7 @@ class CoachController extends Controller
 
         if (empty($coachingUser->final_report)) {
             return redirect()->back()->with([
-                'messege' => 'Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee', 
+                'messege' => 'Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee',
                 'alert-type' => 'error'
             ]);
         }
@@ -318,7 +318,7 @@ class CoachController extends Controller
         );
 
         return redirect()->route('student.coach.show', $coachingId)->with([
-            'messege' => 'Penilaian berhasil dilakukan', 
+            'messege' => 'Penilaian berhasil dilakukan',
             'alert-type' => 'success'
         ]);
     }
@@ -338,7 +338,7 @@ class CoachController extends Controller
             '*.required' => 'Isian tidak boleh kosong',
             '*.in' => 'Nilai yang dimasukkan tidak valid',
         ]);
-        
+
         $user = auth()->user();
         $coaching = Coaching::where('id', $coachingId)
             ->where('coach_id', $user->id)
@@ -356,7 +356,7 @@ class CoachController extends Controller
 
         if (empty($coachingUser->final_report)) {
             return redirect()->back()->with([
-                'messege' => 'Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee', 
+                'messege' => 'Penilaian hanya bisa dilakukan jika laporan akhir telah diunggah coachee',
                 'alert-type' => 'error'
             ]);
         }
@@ -455,7 +455,7 @@ class CoachController extends Controller
         $session = CoachingSession::whereHas('Coaching', function ($query) use ($user) {
             $query->where('coach_id', $user->id);
         })->where('id', $request->session_id)
-          ->with('details') 
+          ->with('details')
           ->first();
 
         if (!$session) {

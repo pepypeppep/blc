@@ -69,88 +69,26 @@
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Sumber Belajar') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{!! $coaching->sumber_belajar !!}
+                                            <p class="mb-0" style="font-size: 1.1rem;">{!! $coaching->learning_resources !!}
                                             </p>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('SPT Coaching') }}</p>
-                                            @if ($coaching->spt)
-                                                <a href="{{ route('student.coach.view.spt', $coaching->id) }}" target="_blank"
-                                                    class="btn-outline-primary btn-sm">
-                                                    <i class="fa fa-file-pdf"></i> Lihat Surat
-                                                </a>
-                                            @else
-                                                <p class="text-muted mb-0"><em>Tidak ada file</em></p>
-                                            @endif
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <div class="mb-3 d-flex flex-wrap justify-content-between align-items-start border-top pt-3 mt-4 gap-3">
+                                    <div class="col-lg-12 mb-4">
+                                        <div
+                                            class="mb-3 d-flex flex-wrap justify-content-between align-items-start border-top pt-3 mt-4 gap-3">
                                             <div class="flex-grow-1 me-3" style="min-width: 250px; max-width: 80%;">
-                                                <h6 class="title">
+                                                <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                     {{ __('List Coachee') }}
                                                     <span
                                                         title="Jumlah coachee yang telah merespon">({{ $coaching->respondedCoachees()->count() }}/{{ $coaching->coachees()->count() }})</span>
-                                                </h6>
-                                                <span class="text-muted small d-block">
-                                                    Lakukan sesi coaching bersama dengan coachee yang telah dipilih dan bergabung.
-                                                </span>
-                                                @if ($coaching->status == Coaching::STATUS_DRAFT)
-                                                    <span class="text-muted small d-block">
-                                                        Klik <strong>Buat Konsensus</strong> agar coachee dapat melakukan konsensus
-                                                        (menyetujui/menolak).
-                                                    </span>
-                                                @elseif ($coaching->status == Coaching::STATUS_CONSENSUS)
-                                                    <span class="text-muted small d-block">
-                                                        Klik <strong>Mulai Proses Coaching</strong> agar sesi pertemuan bisa dilakukan.
-                                                    </span>
-                                                @elseif ($coaching->status == Coaching::STATUS_PROCESS)
-                                                    <span class="text-muted small d-block">
-                                                        Penilaian dapat dilakukan ketika coachee sudah menyelesaikan laporan pertemuan dan unggah
-                                                        Laporan Akhir. <br />
-                                                        Penilaian dapat dikirim ke BKPSDM ketika semua coachee yang bergabung telah dinilai.
-                                                    </span>
-                                                @endif
-                                            </div>
 
-                                            <div class="mt-2">
-                                                @if ($coaching->status == Coaching::STATUS_DRAFT)
-                                                    <form action="{{ route('student.coach.set-consensus', $coaching->id) }}" method="POST"
-                                                        class="d-inline" id="init_consensus">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button type="button" class="btn btn-outline-primary" onclick="handleInitConsensus(event)">
-                                                            {{ __('Buat Konsensus') }} <i class="fa fa-arrow-right"></i>
-                                                        </button>
-                                                    </form>
-                                                @elseif ($coaching->status == Coaching::STATUS_CONSENSUS)
-                                                    <form action="{{ route('student.coach.process-coaching', $coaching->id) }}" method="POST"
-                                                        class="d-inline" id="process_coaching">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button type="button" class="btn btn-outline-success" onclick="handleStartCoaching(event)">
-                                                            {{ __('Mulai Proses Coaching') }} <i class="fa fa-arrow-right"></i>
-                                                        </button>
-                                                    </form>
-                                                @elseif ($coaching->status == Coaching::STATUS_PROCESS && $coaching->isAllCoacheesAssessed())
-                                                    <form action="{{ route('student.coach.send-assessment', $coaching->id) }}" method="POST"
-                                                        class="d-inline" id="send_assessment">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button type="button" class="btn btn-outline-success"
-                                                            onclick="handleSendAssessment(event)">
-                                                            {{ __('Kirim Penilaian') }} <i class="fa fa-arrow-right"></i>
-                                                        </button>
-                                                    </form>
-                                                @endif
+                                                </p>
                                             </div>
                                         </div>
 
-                                        <div class="w-full table-responsive rounded-lg mb-8">
-                                            <table class="table-auto w-full border">
+                                        <div class="">
+                                            <table class="table">
                                                 <thead>
                                                     <tr>
                                                         <th class="border px-4 py-2">Nama</th>
@@ -165,11 +103,14 @@
                                                             <td class="border px-4 py-2">{{ $coachee->name }}</td>
                                                             <td class="border px-4 py-2">
                                                                 @if (is_null($coachee->pivot->is_joined))
-                                                                    <span class="badge bg-secondary">Belum merespons</span>
+                                                                    <span class="badge bg-secondary text-white  ">Belum
+                                                                        merespons</span>
                                                                 @elseif ($coachee->pivot->is_joined)
-                                                                    <span class="badge bg-success">Bergabung</span>
+                                                                    <span
+                                                                        class="badge bg-success text-white  ">Bergabung</span>
                                                                 @else
-                                                                    <span class="badge bg-danger">Menolak</span>
+                                                                    <span
+                                                                        class="badge bg-danger text-white  ">Menolak</span>
                                                                 @endif
                                                             </td>
                                                             <td class="border px-4 py-2">
@@ -183,27 +124,37 @@
                                                                 @endif
                                                             </td>
                                                             <td class="border px-4 py-2">
-                                                                <div class="dashboard__action d-inline-flex align-items-center gap-2">
+                                                                <div
+                                                                    class="dashboard__action d-inline-flex align-items-center gap-2">
                                                                     @if ($coachee->pivot->final_report && $coachee->pivot->is_joined)
-                                                                        <a href="{{ route('student.coach.view.report', $coachee->pivot->id) }}"
-                                                                            class="btn-action-primary" title="Lihat Laporan Akhir" target="_blank">
-                                                                            <i class="fa fa-eye"></i> &nbsp;{{ __('Laporan Akhir') }}
+                                                                        <a href="{{ route('admin.coaching.view.report', $coachee->pivot->id) }}"
+                                                                            class="btn btn-primary btn-sm mr-2"
+                                                                            title="Lihat Laporan Akhir" target="_blank">
+                                                                            <i class="fa fa-eye"></i>
+                                                                            &nbsp;{{ __('Laporan Akhir') }}
                                                                         </a>
-                                                                        <a class="btn-action-warning"
-                                                                            href="{{ route('student.coach.penilaian', [$coaching->id, $coachee->id]) }}">
-                                                                            <i class="fa fa-check-circle"></i> &nbsp;{{ __('Penilaian') }}
-                                                                        </a>
+                                                                        {{-- <a class="btn btn-warningbtn-sm "
+                                                                            href="{{ route('admin.coaching.penilaian', [$coaching->id, $coachee->id]) }}">
+                                                                            <i class="fa fa-check-circle"></i>
+                                                                            &nbsp;{{ __('Penilaian') }}
+                                                                        </a> --}}
                                                                     @else
-                                                                        <a href="javascript:void(0)" class="btn-action-primary disabled"
-                                                                            title="Laporan akhir belum tersedia" onclick="return false;"
+                                                                        <a href="javascript:void(0)"
+                                                                            class="btn btn-primary btn-sm disabled  mr-2"
+                                                                            title="Laporan akhir belum tersedia"
+                                                                            onclick="return false;"
                                                                             style="pointer-events: none; opacity: 0.5;">
-                                                                            <i class="fa fa-eye"></i> &nbsp;{{ __('Laporan Akhir') }}
+                                                                            <i class="fa fa-eye"></i>
+                                                                            &nbsp;{{ __('Laporan Akhir') }}
                                                                         </a>
-                                                                        <a href="javascript:void(0)" class="btn-action-warning disabled"
-                                                                            title="Laporan akhir belum tersedia" onclick="return false;"
+                                                                        {{-- <a href="javascript:void(0)"
+                                                                            class="btn btn-warning btn-sm disabled"
+                                                                            title="Laporan akhir belum tersedia"
+                                                                            onclick="return false;"
                                                                             style="pointer-events: none; opacity: 0.5;">
-                                                                            <i class="fa fa-eye"></i> &nbsp;{{ __('Penilaian') }}
-                                                                        </a>
+                                                                            <i class="fa fa-eye"></i>
+                                                                            &nbsp;{{ __('Penilaian') }}
+                                                                        </a> --}}
                                                                     @endif
 
                                                                 </div>
@@ -211,7 +162,8 @@
                                                         </tr>
                                                     @empty
                                                         <tr>
-                                                            <td colspan="3" class="border px-4 py-2 text-center">Belum ada coachee</td>
+                                                            <td colspan="3" class="border px-4 py-2 text-center">Belum
+                                                                ada coachee</td>
                                                         </tr>
                                                     @endforelse
                                                 </tbody>
@@ -227,6 +179,17 @@
 
                                             <div class="accordion card mb-2" id="coachingAccordion">
                                                 @foreach ($coaching->coachingSessions as $index => $session)
+                                                    @php
+                                                        $totalJoinedCoachees = $coaching->joinedCoachees()->count();
+                                                        $filledReports = $session->details
+                                                            ->whereNotNull('activity')
+                                                            ->count();
+                                                        $filledReviews = $session->details
+                                                            ->whereNotNull('coaching_note')
+                                                            ->count();
+                                                        $detailsByUserId = $session->details->keyBy('coaching_user_id');
+                                                    @endphp
+
                                                     <div class="accordion-item border border-secondary-subtle mb-2">
                                                         <h2 class="accordion-header">
                                                             <div
@@ -243,20 +206,18 @@
                                                                                 style="font-size: 0.95rem;">
                                                                                 Pertemuan {{ $index + 1 }}
                                                                             </span>
-                                                                            @if (!empty($session->activity))
-                                                                                <span
-                                                                                    class="badge bg-info text-white ml-2 px-2 py-1"
-                                                                                    style="font-size: 0.7rem; font-weight: 700;">
-                                                                                    Terisi
-                                                                                </span>
-                                                                            @endif
-                                                                            @if (!empty($session->coaching_note))
-                                                                                <span
-                                                                                    class="badge bg-primary text-white ml-2 px-2 py-1"
-                                                                                    style="font-size: 0.7rem; font-weight: 700;">
-                                                                                    Direviu
-                                                                                </span>
-                                                                            @endif
+                                                                            <span
+                                                                                class="badge bg-info text-white ml-2 px-2 py-1"
+                                                                                style="font-size: 0.7rem; font-weight: 700;">
+                                                                                Terisi
+                                                                                ({{ $filledReports }}/{{ $totalJoinedCoachees }})
+                                                                            </span>
+                                                                            <span
+                                                                                class="badge bg-primary text-white ml-2 px-2 py-1"
+                                                                                style="font-size: 0.7rem; font-weight: 700;">
+                                                                                Direviu
+                                                                                ({{ $filledReviews }}/{{ $filledReports }})
+                                                                            </span>
                                                                         </div>
                                                                         <div class="text-muted text-left"
                                                                             style="font-size: 0.85rem;">
@@ -266,17 +227,20 @@
                                                                 </button>
                                                             </div>
                                                         </h2>
+
                                                         <div id="coaching-collapse{{ $index }}"
                                                             class="accordion-collapse collapse"
                                                             data-bs-parent="#coachingAccordion">
-                                                            @if (!empty($session->activity))
-                                                                <div class="accordion-body">
+
+                                                            <div class="accordion-body">
+                                                                @if (!empty($session->activity))
                                                                     <strong class="d-block">Deskripsi Kegiatan:</strong>
                                                                     <div class="text-body">{!! $session->activity ?: '<em>Tidak ada deskripsi kegiatan.</em>' !!}</div>
 
                                                                     <div class="mb-2">
                                                                         <strong class="d-block">Hambatan:</strong>
-                                                                        <div class="text-body">{!! $session->description ?: '<em>Tidak ada hambatan dicatat.</em>' !!}</div>
+                                                                        <div class="text-body">{!! $session->description ?: '<em>Tidak ada hambatan dicatat.</em>' !!}
+                                                                        </div>
                                                                     </div>
 
                                                                     <div class="mb-2">
@@ -295,72 +259,206 @@
                                                                         @endif
                                                                     </div>
 
-                                                                    <div class="mb-2">
-                                                                        @if ($session->status == 'reviewed')
-                                                                            <form>
-                                                                                <div class="form-group mt-4">
-                                                                                    <label
-                                                                                        for="coaching_date">{{ __('Mentoring Date') }}</label>
-                                                                                    <input type="text"
-                                                                                        name="coaching_date"
-                                                                                        class="form-control datetimepicker"
-                                                                                        value="{{ $session->coaching_date ?? '' }}"
-                                                                                        disabled>
+                                                                    @if ($session->status == 'reviewed')
+                                                                        <form>
+                                                                            <div class="form-group mt-4">
+                                                                                <label
+                                                                                    for="coaching_date">{{ __('Coaching Date') }}</label>
+                                                                                <input type="text" name="coaching_date"
+                                                                                    class="form-control datetimepicker"
+                                                                                    value="{{ $session->coaching_date ?? '' }}"
+                                                                                    disabled>
+                                                                            </div>
+                                                                            <div class="form-group mt-4">
+                                                                                <strong class="d-block">Catatan:</strong>
+                                                                                <div class="text-body">
+                                                                                    {!! clean($session->coaching_note) !!}
                                                                                 </div>
-                                                                                <div class="form-group mt-4">
-                                                                                    <strong
-                                                                                        class="d-block">Catatan:</strong>
-                                                                                    <div class="text-body">
-                                                                                        {!! clean(@$session?->coaching_note) !!}</div>
+                                                                            </div>
+                                                                            <div class="form-group mt-4">
+                                                                                <strong class="d-block">Arahan:</strong>
+                                                                                <div class="text-body">
+                                                                                    {!! clean($session->coaching_instructions) !!}
                                                                                 </div>
-                                                                                <div class="form-group mt-4">
-                                                                                    <strong class="d-block">Arahan:</strong>
-                                                                                    <div class="text-body">
-                                                                                        {!! clean(@$session?->coaching_instructions) !!}</div>
-                                                                                </div>
-                                                                            </form>
-                                                                        @endif
+                                                                            </div>
+                                                                        </form>
+                                                                    @endif
+                                                                @endif
+
+                                                                @if ($coaching->isProcessOrDone())
+                                                                    <hr class="my-4">
+                                                                    <strong class="d-block mb-2">Laporan Coachee</strong>
+
+                                                                    <div class="table-responsive rounded">
+                                                                        <table class="table table-bordered mb-0">
+                                                                            <thead class="table-light">
+                                                                                <tr>
+                                                                                    <th>Nama Coachee</th>
+                                                                                    <th>Status</th>
+                                                                                    <th>Kegiatan</th>
+                                                                                    <th>Catatan Coach</th>
+                                                                                    <th>Aksi</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                @forelse ($coaching->joinedCoachees as $coachee)
+                                                                                    @php
+                                                                                        $coachingUserId =
+                                                                                            $coachee->pivot->id;
+                                                                                        $detail = $detailsByUserId->get(
+                                                                                            $coachingUserId,
+                                                                                        );
+                                                                                        $imageUrl =
+                                                                                            $detail &&
+                                                                                            $detail->image &&
+                                                                                            Storage::disk(
+                                                                                                'private',
+                                                                                            )->exists($detail->image)
+                                                                                                ? route(
+                                                                                                    'admin.coaching.view.img',
+                                                                                                    $detail->id,
+                                                                                                )
+                                                                                                : null;
+
+                                                                                        $modalData = [
+                                                                                            'coachee_name' =>
+                                                                                                $coachee->name,
+                                                                                            'activity' =>
+                                                                                                $detail->activity ?? '',
+                                                                                            'obstacle' =>
+                                                                                                $detail->description ??
+                                                                                                '',
+                                                                                            'image_url' => $imageUrl,
+                                                                                            'note' =>
+                                                                                                $detail->coaching_note ??
+                                                                                                '',
+                                                                                            'instructions' =>
+                                                                                                $detail->coaching_instructions ??
+                                                                                                '',
+                                                                                        ];
+                                                                                    @endphp
+
+                                                                                    <tr>
+                                                                                        <td>{{ $coachee->name }}</td>
+                                                                                        <td>
+                                                                                            @if ($detail)
+                                                                                                <span
+                                                                                                    class="badge bg-success text-white">Terisi</span>
+                                                                                            @else
+                                                                                                <span
+                                                                                                    class="badge bg-secondary text-white">Belum
+                                                                                                    Terisi</span>
+                                                                                            @endif
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            {!! $detail?->activity ? \Str::limit(strip_tags($detail->activity), 100) : '-' !!}
+                                                                                            @if ($detail?->created_at)
+                                                                                                <br>
+                                                                                                <small class="text-muted">
+                                                                                                    Dibuat:
+                                                                                                    {{ $detail->created_at->translatedFormat('d F Y H:i') }}
+                                                                                                </small>
+                                                                                            @endif
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            {!! $detail?->coaching_note ? \Str::limit(strip_tags($detail->coaching_note), 100) : '<em>Belum ditinjau</em>' !!}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            <button
+                                                                                                class="btn btn-sm btn-primary"
+                                                                                                type="button"
+                                                                                                data-toggle="collapse"
+                                                                                                data-target="#review-{{ $coachingUserId }}"
+                                                                                                aria-expanded="false"
+                                                                                                aria-controls="review-{{ $coachingUserId }}"
+                                                                                                title="Lihat Selengkapnya">
+                                                                                                <i class="fa fa-eye"></i>
+                                                                                            </button>
+                                                                                        </td>
+                                                                                    </tr>
+
+                                                                                    <tr class="collapse"
+                                                                                        id="review-{{ $coachingUserId }}"
+                                                                                        style="transition: height 0.5s ease; ">
+                                                                                        <td colspan="5">
+                                                                                            <div
+                                                                                                class="p-3 rounded mt-3 border">
+                                                                                                {{-- style="background-color: #f4f4f4;" --}}
+                                                                                                <div class="row mb-2">
+                                                                                                    <div class="col-md-3 fw-bold"
+                                                                                                        style="font-weight: 700 !important;">
+                                                                                                        Nama Coachee</div>
+                                                                                                    <div class="col-md-8">
+                                                                                                        {{ $modalData['coachee_name'] }}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="row mb-2">
+                                                                                                    <div class="col-md-3 fw-bold"
+                                                                                                        style="font-weight: 700 !important;">
+                                                                                                        Kegiatan</div>
+                                                                                                    <div class="col-md-9">
+                                                                                                        {!! $modalData['activity'] ?: '<em>-</em>' !!}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="row mb-2">
+                                                                                                    <div class="col-md-3 fw-bold"
+                                                                                                        style="font-weight: 700 !important;">
+                                                                                                        Hambatan</div>
+                                                                                                    <div class="col-md-9">
+                                                                                                        {!! $modalData['obstacle'] ?: '<em>-</em>' !!}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <hr>
+                                                                                                <div class="row mb-2">
+                                                                                                    <div class="col-md-3 fw-bold"
+                                                                                                        style="font-weight: 700 !important;">
+                                                                                                        Catatan Coach</div>
+                                                                                                    <div class="col-md-9">
+                                                                                                        {!! $modalData['note'] ?: '<em>-</em>' !!}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="row mb-2">
+                                                                                                    <div class="col-md-3 fw-bold"
+                                                                                                        style="font-weight: 700 !important;">
+                                                                                                        Arahan</div>
+                                                                                                    <div class="col-md-9">
+                                                                                                        {!! $modalData['instructions'] ?: '<em>-</em>' !!}
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                @if ($modalData['image_url'])
+                                                                                                    <div class="row">
+                                                                                                        <div class="col-md-3 fw-bold"
+                                                                                                            style="font-weight: 700 !important;">
+                                                                                                            Gambar</div>
+                                                                                                        <div
+                                                                                                            class="col-md-9">
+                                                                                                            <img src="{{ $modalData['image_url'] }}"
+                                                                                                                alt="Lampiran"
+                                                                                                                class="img-fluid rounded shadow-sm"
+                                                                                                                style="max-height: 200px;">
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                @endif
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                @empty
+                                                                                    <tr>
+                                                                                        <td colspan="5"
+                                                                                            class="text-center text-muted">
+                                                                                            Belum ada coachee yang bergabung
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                @endforelse
+                                                                            </tbody>
+                                                                        </table>
                                                                     </div>
-                                                                </div>
-                                                            @else
-                                                                <div class="text-center">
-                                                                    <h4 class="text-muted">Belum ada kegiatan</h4>
-                                                                </div>
-                                                            @endif
+                                                                @endif
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 @endforeach
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-12 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-0" style=" font-weight: 600;">
-                                                {{ __('Final Report Mentoring') }}
-                                            </p>
-                                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                                <p class="mb-3" style="font-size: 1.1rem;">
-                                                    Laporan akhir dari kegiatan coaching yang telah dilakukan.
-                                                </p>
-                                                @if ($coaching->final_report)
-                                                    <a href="{{ route('admin.coaching.view.document', ['id' => $coaching->id, 'type' => 'final_report']) }}"
-                                                        target="_blank" class="btn btn-primary">
-                                                        <i class="fa fa-file-pdf"></i> Buka di Tab Baru
-                                                    </a>
-                                                @endif
-                                            </div>
-
-                                            @if ($coaching->final_report)
-                                                <embed
-                                                    src="{{ route('admin.coaching.view.document', ['id' => $coaching->id, 'type' => 'final_report']) }}"
-                                                    type="application/pdf" width="100%" height="500px"
-                                                    class="border rounded shadow-sm" />
-                                            @else
-                                                <div class="text-center">
-                                                    <h4 class="text-muted"><em>Belum ada laporan akhir</em></h4>
-                                                </div>
-                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -370,18 +468,18 @@
                     <div class="col-lg-4">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Mentor Availability Letter') }}</h4>
+                                <h4>{{ __('SPT Coaching') }}</h4>
                             </div>
                             <div class="card-body">
                                 <div class="form-group d-flex justify-content-center">
-                                    @if ($coaching->mentor_availability_letter)
-                                        <a href="{{ route('admin.coaching.view.document', ['id' => $coaching->id, 'type' => 'mentor_availability_letter']) }}"
-                                            target="_blank" class="btn btn-outline-danger d-flex align-items-center gap-2"
-                                            style="font-size: 1.5rem;">
-                                            <i class="fas fa-file-pdf fa-2x mr-1"></i> Lihat Surat
+                                    @if ($coaching->spt)
+                                        <a href="{{ route('admin.coaching.view.spt', $coaching->id) }}" target="_blank"
+                                            class="btn btn-outline-primary d-flex align-items-center gap-2"
+                                            style="font-size: 1.1rem;">
+                                            <i class="fa fa-file-pdf fa-lg"></i> Lihat Surat
                                         </a>
                                     @else
-                                        <p class="text-muted mb-0">Tidak ada file.</p>
+                                        <p class="text-muted mb-0"><em>Tidak ada file</em></p>
                                     @endif
                                 </div>
                             </div>
@@ -395,122 +493,38 @@
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-@endpush
-
-@push('css')
-    <style>
-        .certificate-card.border-danger {
-            border: 2px solid #dc3545 !important;
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-        }
-
-        .certificate-card .btn-danger {
-            background-color: #dc3545;
-            border-color: #dc3545;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
 @endpush
 
 
 
 @push('scripts')
+    <script src="{{ asset('backend/js/default/courses.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            flatpickr(".datetimepicker", {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                time_24hr: true,
-                altInput: true,
-                altFormat: "l, d F Y - H:i",
-                locale: "id"
-            });
+        $('#certificateModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+
+            // Ambil string JSON dari attribute
+            var jsonString = button.attr('data-detail');
+
+            console.log("Raw JSON string:", jsonString); // debug
+
+            try {
+                var data = JSON.parse(jsonString);
+                console.log("Parsed data:", data);
+
+                $('#modal-coachee-name').html(data.coachee_name || '-');
+                $('#modal-activity').html(data.activity || '-');
+                $('#modal-obstacle').html(data.obstacle || '-');
+                $('#modal-note').html(data.note || '-');
+                $('#modal-instructions').html(data.instructions || '-');
+
+            } catch (e) {
+                console.error("Gagal parsing JSON:", e);
+            }
         });
-
-        function handleTolakMentoring(event, id) {
-            event.preventDefault();
-            swal.fire({
-                title: 'Apakah Anda yakin ingin menolak coaching ini?',
-                text: "Silakan berikan alasan penolakan",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Totak!',
-                input: 'textarea',
-                inputPlaceholder: 'Tulis alasan penolakan',
-                inputValidator: (value) => {
-                    if (!value || value.trim() === "") {
-                        return 'Alasan penolakan wajib diisi!';
-                    }
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const notes = result.value || '';
-                    $.ajax({
-                        method: "post",
-                        url: base_url + "/student/mentor/" + id + "/reject",
-                        data: {
-                            _token: csrf_token,
-                            reason: notes
-                        },
-                        success: function(data) {
-                            if (data.status === "success") {
-                                toastr.success(data.message);
-                                window.location.href = base_url + "/student/mentor";
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            const message = xhr.responseJSON?.message || '-';
-                            toastr.error(message);
-                        },
-                    });
-                } else {
-                    swal.fire('Penolakan dibatalkan', '', 'error');
-                }
-            })
-        };
-
-        function handleApproveMentoring(event) {
-            event.preventDefault();
-            swal.fire({
-                title: 'Apakah Anda yakin ingin memproses coaching ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Proses!',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $('#approve_coaching').submit();
-                }
-            })
-        }
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    @if (session('success'))
-        <script>
-            toastr.success("{{ session('success') }}", "Success", {
-                "positionClass": "toast-top-right",
-                "timeOut": "5000",
-            });
-        </script>
-    @endif
-
-    @if (session('error'))
-        <script>
-            toastr.error("{{ session('error') }}", "Error", {
-                "positionClass": "toast-top-right",
-                "timeOut": "5000",
-            });
-        </script>
-    @endif
-@endpush
-
-@push('css')
-    <style>
-    </style>
 @endpush

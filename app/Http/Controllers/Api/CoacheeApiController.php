@@ -79,12 +79,13 @@ class CoacheeApiController extends Controller
         // Logic to show details of a specific coaching session
         try {
             $coaching = Coaching::with([
+                'coach:id,name',
                 'coachees:id,name,email',
                 'coachingSessions.details'
             ])
                 ->where('status', '!=', 'draft')
                 ->whereHas('coachees', function ($q) use ($request) {
-                    $q->where('users.id', $request->auth()->id);
+                    $q->where('users.id', $request->user()->id);
                 })
                 ->findOrFail($id);
 

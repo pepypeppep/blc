@@ -40,7 +40,9 @@ class CoacheeApiController extends Controller
         try {
             $coachingSessions = Coaching::with(['coachees' => function ($q) use ($request) {
                 $q->select('users.id', 'name', 'email')->where('users.id', $request->user()->id);
-            }, 'coach:id,name,email'])->where('status', '!=', 'draft')->paginate(10);
+            }, 'coach:id,name,email'])->whereHas('coachees', function ($q) use ($request) {
+                $q->where('users.id', $request->user()->id);
+            })->where('status', '!=', 'draft')->paginate(10);
 
             return $this->successResponse($coachingSessions, 'List of coaching sessions');
         } catch (\Exception $e) {

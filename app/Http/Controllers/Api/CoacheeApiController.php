@@ -83,7 +83,13 @@ class CoacheeApiController extends Controller
             $coaching = Coaching::with([
                 'coach:id,name',
                 'coachees:id,name,email',
-                'coachingSessions.details'
+                'coachingSessions.details' => function ($q) use ($request) {
+                    $q->whereHas('coachingUser', function ($q) use ($request) {
+                        $q->where('user_id', $request->user()->id);
+                    })->with(['coachingUser' => function ($q) use ($request) {
+                        $q->where('user_id', $request->user()->id);
+                    }]);
+                }
             ])
                 ->where('status', '!=', 'draft')
                 ->whereHas('coachees', function ($q) use ($request) {

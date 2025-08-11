@@ -546,15 +546,12 @@ class CoachApiController extends Controller
      *      description="Coaching assessment",
      *      @OA\JsonContent(
      *          type="object",
-     *          required={"goal_achieved", "goal_description", "discipline_level", "discipline_description", "teamwork_level", "teamwork_description", "initiative_level", "initiative_description"},
+     *          required={"goal_achieved", "goal_description", "discipline_level", "teamwork_level", "initiative_level"},
      *          @OA\Property(property="goal_achieved", type="integer", example=1, description="Target"),
      *          @OA\Property(property="goal_description", type="string", example="Target description", description="Deskripsi target"),
      *          @OA\Property(property="discipline_level", type="integer", example=80, description="Tingkat disiplin"),
-     *          @OA\Property(property="discipline_description", type="string", example="Deskripsi disiplin", description="Deskripsi disiplin"),
      *          @OA\Property(property="teamwork_level", type="integer", example=80, description="Kerjasama"),
-     *          @OA\Property(property="teamwork_description", type="string", example="Deskripsi kerjasama", description="Deskripsi kerjasama"),
      *          @OA\Property(property="initiative_level", type="integer", example=80, description="Inisiatif"),
-     *          @OA\Property(property="initiative_description", type="string", example="Deskripsi inisiatif", description="Deskripsi inisiatif"),
      *      ),
      *  ),
      */
@@ -564,24 +561,24 @@ class CoachApiController extends Controller
             'goal_achieved' => 'required|in:0,1',
             'goal_description' => 'required|string',
             'discipline_level' => 'required|integer|min:1|max:100',
-            'discipline_description' => 'required|string',
+            // 'discipline_description' => 'required|string',
             'teamwork_level' => 'required|integer|min:1|max:100',
-            'teamwork_description' => 'required|string',
+            // 'teamwork_description' => 'required|string',
             'initiative_level' => 'required|integer|min:1|max:100',
-            'initiative_description' => 'required|string',
+            // 'initiative_description' => 'required|string',
         ], [
             'goal_achieved.required' => 'Target tidak boleh kosong',
             'goal_achieved.in' => 'Target harus 0 (Tidak) atau 1 (Ya)',
             'goal_description.required' => 'Deskripsi target tidak boleh kosong',
             'discipline_level.required' => 'Tingkat disiplin tidak boleh kosong',
             'discipline_level.in' => 'Tingkat disiplin harus antara 1 sampai 10',
-            'discipline_description.required' => 'Deskripsi disiplin tidak boleh kosong',
+            // 'discipline_description.required' => 'Deskripsi disiplin tidak boleh kosong',
             'teamwork_level.required' => 'Kerjasama tidak boleh kosong',
             'teamwork_level.in' => 'Kerjasama harus antara 1 sampai 10',
-            'teamwork_description.required' => 'Deskripsi kerjasama tidak boleh kosong',
+            // 'teamwork_description.required' => 'Deskripsi kerjasama tidak boleh kosong',
             'initiative_level.required' => 'Inisiatif tidak boleh kosong',
             'initiative_level.in' => 'Inisiatif harus antara 1 sampai 10',
-            'initiative_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
+            // 'initiative_description.required' => 'Deskripsi inisiatif tidak boleh kosong',
         ]);
 
         $user_id = $request->user()->id;
@@ -609,11 +606,14 @@ class CoachApiController extends Controller
                 'goal_achieved' => $validated['goal_achieved'],
                 'goal_description' => $validated['goal_description'],
                 'discipline_level' => $validated['discipline_level'],
-                'discipline_description' => $validated['discipline_description'],
+                // 'discipline_description' => $validated['discipline_description'],
+                'discipline_description' => '-',
                 'teamwork_level' => $validated['teamwork_level'],
-                'teamwork_description' => $validated['teamwork_description'],
+                // 'teamwork_description' => $validated['teamwork_description'],
+                'teamwork_description' => '-',
                 'initiative_level' => $validated['initiative_level'],
-                'initiative_description' => $validated['initiative_description'],
+                // 'initiative_description' => $validated['initiative_description'],
+                'initiative_description' => '-',
             ]
         );
 
@@ -641,19 +641,19 @@ class CoachApiController extends Controller
      *         required=true,
      *         @OA\Schema(type="integer", format="int64", example=1),
      *     ),
-     *     @OA\Parameter(
-     *         description="ID user",
-     *         in="query",
-     *         name="user_id",
+     *     @OA\RequestBody(
+     *         description="Assessment data",
      *         required=true,
-     *         example=1,
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64",
-     *             example=1
-     *         )
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"goal_achieved", "discipline_level", "teamwork_level", "initiative_level", "goal_description"},
+     *             @OA\Property(property="goal_achieved", type="integer", example=1, description="Target"),
+     *             @OA\Property(property="discipline_level", type="integer", example=80, description="Tingkat disiplin"),
+     *             @OA\Property(property="teamwork_level", type="integer", example=80, description="Kerjasama"),
+     *             @OA\Property(property="initiative_level", type="integer", example=80, description="Inisiatif"),
+     *             @OA\Property(property="goal_description", type="string", example="Target description", description="Deskripsi target"),
+     *         ),
      *     ),
-     *     @OA\RequestBody(ref="#/components/requestBodies/AssessmentRequestBody"),
      *     @OA\Response(
      *         response=200,
      *         description="Coaching assessment completed successfully",
@@ -679,66 +679,66 @@ class CoachApiController extends Controller
         }
     }
 
-    /**
-     * @OA\Post(
-     *     path="/coaching/coach/{id}/assessment-submit/{coacheeId}",
-     *     summary="Submit coaching assessment",
-     *     description="Allows coach to submit an assessment for the completed coaching session.",
-     *     tags={"Coach"},
-     *     security={{"bearer":{}}},
-     *     @OA\Parameter(
-     *         description="ID coaching",
-     *         in="path",
-     *         name="id",
-     *         required=true,
-     *         @OA\Schema(type="integer", format="int64", example=1),
-     *     ),
-     *     @OA\Parameter(
-     *         description="ID coachee",
-     *         in="path",
-     *         name="coacheeId",
-     *         required=true,
-     *         @OA\Schema(type="integer", format="int64", example=1),
-     *     ),
-     *     @OA\Parameter(
-     *         description="ID user",
-     *         in="query",
-     *         name="user_id",
-     *         required=true,
-     *         example=1,
-     *         @OA\Schema(
-     *             type="integer",
-     *             format="int64",
-     *             example=1
-     *         )
-     *     ),
-     *     @OA\RequestBody(ref="#/components/requestBodies/AssessmentRequestBody"),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Coaching assessment submited successfully",
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Request cannot be processed due to invalid coaching status",
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error",
-     *     ),
-     * )
-     */
-    public function assessmentSubmit(Request $request, $coachingId, $coacheeId)
-    {
-        try {
-            $coaching = $this->processAssessment($request, $coachingId, $coacheeId);
+    // /**
+    //  * @OA\Post(
+    //  *     path="/coaching/coach/{id}/assessment-submit/{coacheeId}",
+    //  *     summary="Submit coaching assessment",
+    //  *     description="Allows coach to submit an assessment for the completed coaching session.",
+    //  *     tags={"Coach"},
+    //  *     security={{"bearer":{}}},
+    //  *     @OA\Parameter(
+    //  *         description="ID coaching",
+    //  *         in="path",
+    //  *         name="id",
+    //  *         required=true,
+    //  *         @OA\Schema(type="integer", format="int64", example=1),
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         description="ID coachee",
+    //  *         in="path",
+    //  *         name="coacheeId",
+    //  *         required=true,
+    //  *         @OA\Schema(type="integer", format="int64", example=1),
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         description="ID user",
+    //  *         in="query",
+    //  *         name="user_id",
+    //  *         required=true,
+    //  *         example=1,
+    //  *         @OA\Schema(
+    //  *             type="integer",
+    //  *             format="int64",
+    //  *             example=1
+    //  *         )
+    //  *     ),
+    //  *     @OA\RequestBody(ref="#/components/requestBodies/AssessmentRequestBody"),
+    //  *     @OA\Response(
+    //  *         response=200,
+    //  *         description="Coaching assessment submited successfully",
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=422,
+    //  *         description="Request cannot be processed due to invalid coaching status",
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=500,
+    //  *         description="Internal server error",
+    //  *     ),
+    //  * )
+    //  */
+    // public function assessmentSubmit(Request $request, $coachingId, $coacheeId)
+    // {
+    //     try {
+    //         $coaching = $this->processAssessment($request, $coachingId, $coacheeId);
 
-            $coaching->update(['status' => Coaching::STATUS_DONE]);
+    //         $coaching->update(['status' => Coaching::STATUS_DONE]);
 
-            return $this->successResponse([], 'Penilaian berhasil dikirim');
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), [], 500);
-        }
-    }
+    //         return $this->successResponse([], 'Penilaian berhasil dikirim');
+    //     } catch (\Exception $e) {
+    //         return $this->errorResponse($e->getMessage(), [], 500);
+    //     }
+    // }
 
     /**
      * @OA\Post(

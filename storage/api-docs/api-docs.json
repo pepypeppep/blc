@@ -1747,91 +1747,56 @@
                             "format": "int64",
                             "example": 1
                         }
-                    },
-                    {
-                        "name": "user_id",
-                        "in": "query",
-                        "description": "ID user",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "example": 1
-                        },
-                        "example": 1
                     }
                 ],
                 "requestBody": {
-                    "$ref": "#/components/requestBodies/AssessmentRequestBody"
+                    "description": "Assessment data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "goal_achieved",
+                                    "discipline_level",
+                                    "teamwork_level",
+                                    "initiative_level",
+                                    "goal_description"
+                                ],
+                                "properties": {
+                                    "goal_achieved": {
+                                        "description": "Target",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "discipline_level": {
+                                        "description": "Tingkat disiplin",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "teamwork_level": {
+                                        "description": "Kerjasama",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "initiative_level": {
+                                        "description": "Inisiatif",
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "goal_description": {
+                                        "description": "Deskripsi target",
+                                        "type": "string",
+                                        "example": "Target description"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
                 },
                 "responses": {
                     "200": {
                         "description": "Coaching assessment completed successfully"
-                    },
-                    "422": {
-                        "description": "Request cannot be processed due to invalid coaching status"
-                    },
-                    "500": {
-                        "description": "Internal server error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/coaching/coach/{id}/assessment-submit/{coacheeId}": {
-            "post": {
-                "tags": [
-                    "Coach"
-                ],
-                "summary": "Submit coaching assessment",
-                "description": "Allows coach to submit an assessment for the completed coaching session.",
-                "operationId": "9f8de58fd72098c326090359eb5bdc74",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID coaching",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "example": 1
-                        }
-                    },
-                    {
-                        "name": "coacheeId",
-                        "in": "path",
-                        "description": "ID coachee",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "example": 1
-                        }
-                    },
-                    {
-                        "name": "user_id",
-                        "in": "query",
-                        "description": "ID user",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64",
-                            "example": 1
-                        },
-                        "example": 1
-                    }
-                ],
-                "requestBody": {
-                    "$ref": "#/components/requestBodies/AssessmentRequestBody"
-                },
-                "responses": {
-                    "200": {
-                        "description": "Coaching assessment submited successfully"
                     },
                     "422": {
                         "description": "Request cannot be processed due to invalid coaching status"
@@ -6189,11 +6154,8 @@
                                 "goal_achieved",
                                 "goal_description",
                                 "discipline_level",
-                                "discipline_description",
                                 "teamwork_level",
-                                "teamwork_description",
-                                "initiative_level",
-                                "initiative_description"
+                                "initiative_level"
                             ],
                             "properties": {
                                 "goal_achieved": {
@@ -6211,30 +6173,15 @@
                                     "type": "integer",
                                     "example": 80
                                 },
-                                "discipline_description": {
-                                    "description": "Deskripsi disiplin",
-                                    "type": "string",
-                                    "example": "Deskripsi disiplin"
-                                },
                                 "teamwork_level": {
                                     "description": "Kerjasama",
                                     "type": "integer",
                                     "example": 80
                                 },
-                                "teamwork_description": {
-                                    "description": "Deskripsi kerjasama",
-                                    "type": "string",
-                                    "example": "Deskripsi kerjasama"
-                                },
                                 "initiative_level": {
                                     "description": "Inisiatif",
                                     "type": "integer",
                                     "example": 80
-                                },
-                                "initiative_description": {
-                                    "description": "Deskripsi inisiatif",
-                                    "type": "string",
-                                    "example": "Deskripsi inisiatif"
                                 }
                             },
                             "type": "object"

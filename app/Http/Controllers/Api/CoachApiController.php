@@ -621,9 +621,84 @@ class CoachApiController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/coaching/coach/{id}/assessment/{coacheeId}",
+     *     summary="Get coaching assessment",
+     *     description="Allows coach to get assessment data.",
+     *     tags={"Coach"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         description="ID coaching",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(type="integer", format="int64", example=1),
+     *     ),
+     *     @OA\Parameter(
+     *         description="ID coachee",
+     *         in="path",
+     *         name="coacheeId",
+     *         required=true,
+     *         @OA\Schema(type="integer", format="int64", example=1),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Coaching assessment completed successfully",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "code": 200,
+     *                 "status": true,
+     *                 "message": "Penilaian berhasil diambil",
+     *                 "data": {
+     *                     "id": 1,
+     *                     "goal_achieved": 1,
+     *                     "goal_description": "Target description",
+     *                     "discipline_level": 80,
+     *                     "discipline_description": "-",
+     *                     "teamwork_level": 80,
+     *                     "teamwork_description": "-",
+     *                     "initiative_level": 80,
+     *                     "initiative_description": "-",
+     *                     "coaching_user_id": 1,
+     *                     "created_at": "2025-08-11T00:49:20.000000Z",
+     *                     "updated_at": "2025-08-11T07:09:05.000000Z"
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Request cannot be processed due to invalid coaching status",
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *     ),
+     * )
+     */
+    public function assessment(Request $request, $coachingId, $coacheeId)
+    {
+        try {
+            $user_id = $request->user()->id;
+
+            $coachingUser = CoachingUser::with('coaching')
+                ->where('coaching_id', $coachingId)
+                ->where('user_id', $coacheeId)
+                ->whereHas('coaching', fn($q) => $q->where('coach_id', $user_id))
+                ->firstOrFail();
+
+            $data = CoachingAssessment::where('coaching_user_id', $coachingUser->id)->firstOrFail();
+
+            return $this->successResponse($data, 'Penilaian berhasil diambil');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), [], 500);
+        }
+    }
+
+    /**
      * @OA\Post(
      *     path="/coaching/coach/{id}/assessment-store/{coacheeId}",
-     *     summary="Save coaching assessment (draft)",
+     *     summary="Save coaching assessment",
      *     description="Allows coach to save assessment data as a draft before final submission.",
      *     tags={"Coach"},
      *     security={{"bearer":{}}},

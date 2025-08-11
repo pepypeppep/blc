@@ -1717,12 +1717,86 @@
                 ]
             }
         },
+        "/coaching/coach/{id}/assessment/{coacheeId}": {
+            "get": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Get coaching assessment",
+                "description": "Allows coach to get assessment data.",
+                "operationId": "9772ec05833954a4c955b043b352976a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID coaching",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "coacheeId",
+                        "in": "path",
+                        "description": "ID coachee",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Coaching assessment completed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "code": 200,
+                                    "status": true,
+                                    "message": "Penilaian berhasil diambil",
+                                    "data": {
+                                        "id": 1,
+                                        "goal_achieved": 1,
+                                        "goal_description": "Target description",
+                                        "discipline_level": 80,
+                                        "discipline_description": "-",
+                                        "teamwork_level": 80,
+                                        "teamwork_description": "-",
+                                        "initiative_level": 80,
+                                        "initiative_description": "-",
+                                        "coaching_user_id": 1,
+                                        "created_at": "2025-08-11T00:49:20.000000Z",
+                                        "updated_at": "2025-08-11T07:09:05.000000Z"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Request cannot be processed due to invalid coaching status"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/coaching/coach/{id}/assessment-store/{coacheeId}": {
             "post": {
                 "tags": [
                     "Coach"
                 ],
-                "summary": "Save coaching assessment (draft)",
+                "summary": "Save coaching assessment",
                 "description": "Allows coach to save assessment data as a draft before final submission.",
                 "operationId": "7b553e6c5d97c506798a9cd6019ce0a0",
                 "parameters": [

@@ -17,7 +17,7 @@
                 <span
                     class="badge fs-6
                     @php
-                        $statusColors = [
+$statusColors = [
                             'Draft' => 'bg-secondary',
                             'Konsensus' => 'bg-warning',
                             'Proses' => 'bg-info',
@@ -609,7 +609,7 @@
                 const data = JSON.parse(this.getAttribute('data-detail'));
 
                 $('#modal-coachee-name').text(data.coachee_name || '-');
-                $('#modal-activity').text(data.activity || '-');
+                $('#modal-activity').html(data.activity || '-');
                 $('#modal-obstacle').html(data.obstacle || '-');
                 $('#modal-instructions').text(data.instructions || '-');
 

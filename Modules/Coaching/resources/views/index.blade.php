@@ -60,6 +60,16 @@
                                         </a>
                                     </li>
                                     <li class="nav-item" role="presentation">
+                                        <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Verifikasi' ? 'active' : '' }}"
+                                            href="{{ route('admin.coaching.index', ['status' => 'Verifikasi']) }}">
+                                            {{ __('Verification') }} &nbsp;
+                                            <span
+                                                class="badge {{ $status == 'Verifikasi' ? 'bg-white text-dark border border-secondary' : 'bg-light text-primary' }}">
+                                                {{ $statusCounts['Verifikasi'] ?? 0 }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
                                         <a class="nav-link navigation-btn d-inline-flex align-items-center {{ $status == 'Selesai' ? 'active' : '' }}"
                                             href="{{ route('admin.coaching.index', ['status' => 'Selesai']) }}">
                                             {{ __('Done') }} &nbsp;
@@ -110,8 +120,11 @@
                                                         {{ $coach->total_session }}
                                                     </td>
                                                     <td>
-                                                        <span class="badge bg-primary text-white">{{ $coach->joinedCoachees()->count() }}</span> /
-                                                        <span class="badge bg-secondary text-white">{{ $coach->coachees()->count() }}</span>
+                                                        <span
+                                                            class="badge bg-primary text-white">{{ $coach->joinedCoachees()->count() }}</span>
+                                                        /
+                                                        <span
+                                                            class="badge bg-secondary text-white">{{ $coach->coachees()->count() }}</span>
                                                     </td>
                                                     <td>
                                                         <div class="badge badge-{{ $coach->stat['color'] }}">
@@ -168,4 +181,3 @@
     <style>
     </style>
 @endpush
-

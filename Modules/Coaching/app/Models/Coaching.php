@@ -18,6 +18,7 @@ class Coaching extends Model
     public const STATUS_DRAFT = "Draft";
     public const STATUS_CONSENSUS = "Konsensus";
     public const STATUS_PROCESS = "Proses";
+    public const STATUS_VERIFICATION = "Verifikasi";
     public const STATUS_DONE = "Selesai";
 
     public function coachees()
@@ -82,6 +83,12 @@ class Coaching extends Model
                 'color' => 'success'
             ];
         }
+        if ($this->status === $this::STATUS_VERIFICATION) {
+            return [
+                'label' => 'Verifikasi',
+                'color' => 'warning'
+            ];
+        }
         return [
             'label' => 'Unknown',
             'color' => 'secondary'
@@ -91,14 +98,15 @@ class Coaching extends Model
     public function isAllCoacheesAssessed(): bool
     {
         return !CoachingUser::where('coaching_id', $this->id)
-        ->where('is_joined', true)
-        ->whereDoesntHave('assessment')
-        ->exists();
+            ->where('is_joined', true)
+            ->whereDoesntHave('assessment')
+            ->exists();
     }
 
     public function isProcessOrDone(): bool
     {
-        return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_DONE]);
+        // return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_DONE]);
+        return in_array($this->status, [self::STATUS_PROCESS, self::STATUS_VERIFICATION, self::STATUS_DONE]);
     }
 
     public function getSptUrlAttribute()

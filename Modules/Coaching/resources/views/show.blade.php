@@ -466,6 +466,24 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
+                        @if ($coaching->coach)
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h4>Coach</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $coaching->coach->nip }}.jpg"
+                                            alt="{{ $coaching->coach->name }}" class="rounded-circle" width="50"
+                                            height="50" style="object-fit: cover;">
+                                        <div class=" ml-2">
+                                            <strong>{{ $coaching->coach->name }}</strong><br>
+                                            <small class="text-muted">{{ $coaching->coach->email }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('SPT Coaching') }}</h4>

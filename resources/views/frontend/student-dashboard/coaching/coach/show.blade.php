@@ -609,7 +609,7 @@ $statusColors = [
                 const data = JSON.parse(this.getAttribute('data-detail'));
 
                 $('#modal-coachee-name').text(data.coachee_name || '-');
-                $('#modal-activity').text(data.activity || '-');
+                $('#modal-activity').html(data.activity || '-');
                 $('#modal-obstacle').html(data.obstacle || '-');
                 $('#modal-instructions').text(data.instructions || '-');
 

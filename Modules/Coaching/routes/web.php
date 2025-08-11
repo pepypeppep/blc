@@ -46,3 +46,20 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::put('/review', [CoachController::class, 'reviewStore'])->name('review');
     });
 });
+
+Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admin', 'translation']], function () {
+    Route::group(['prefix' => 'coaching', 'as' => 'coaching.'], function () {
+        Route::get('/', [CoachingController::class, 'index'])->name('index');
+        Route::get('{id}/show', [CoachingController::class, 'show'])->name('show');
+
+        // Route::get('{coachingId}/penilaian/{coacheeId}', [CoachingController::class, 'assessment'])->name('penilaian');
+        Route::put('{id}/update-certificate', [CoachingController::class, 'updateCertificate'])->name('update-certificate');
+        Route::get('get-users', [CoachingController::class, 'getUsers'])->name('get-users');
+        Route::post('{id}/request-sign-certificate', [CoachingController::class, 'requestSignCertificate'])->name('request-sign-certificate');
+        Route::get('public-certificate/{uuid}', [CoachingController::class, 'publicCertificate'])->name('public-certificate');
+        Route::get('/{id}/img', [CoachingController::class, 'viewImage'])->name('view.img');
+        Route::get('/{id}/document', [CoachingController::class, 'showDocumentSpt'])->name('view.spt');
+        Route::get('/{id}/report', [CoachingController::class, 'showReport'])->name('view.report');
+        Route::get('/{id}/document/{type}', [CoachingController::class, 'showDocument'])->name('view.document');
+    });
+});

@@ -40,7 +40,7 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 mb-4">
+                                    <div class="col-lg-12 mb-4">
                                         <div>
                                             <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
                                                 {{ __('Purpose') }}</p>

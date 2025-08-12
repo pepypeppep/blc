@@ -83,7 +83,14 @@ class CoachApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $coaching = Coaching::with('coach:id,name', 'coachees:id,name', 'joinedCoachees:id,name', 'coachingSessions.details.coachingUser.coachee:id,name')->where('coach_id', $request->user()->id)->findOrFail($id);
+            $coaching = Coaching::with(
+                'coach:id,name',
+                'coachees:id,name',
+                'joinedCoachees:id,name',
+                'coachingSessions.details.coachingUser.coachee:id,name',
+                'coachingSessions.details.coachingUser.assessment'
+            )->where('coach_id', $request->user()->id)->findOrFail($id);
+
             authorizeCoachAccess($coaching);
 
             return $this->successResponse(['coaching' => $coaching], 'Coaching topics fetched successfully');

@@ -3,11 +3,12 @@
 namespace Modules\Mentoring\app\Models;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Mentoring extends Model
 {
@@ -144,5 +145,15 @@ class Mentoring extends Model
     public function feedback()
     {
         return $this->hasOne(MentoringFeedback::class);
+    }
+
+    /**
+     * Get the review associated with the Mentoring
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function review(): HasOne
+    {
+        return $this->hasOne(MentoringReview::class);
     }
 }

@@ -93,6 +93,9 @@ class CoachApiController extends Controller
             $coaching->joinedCoachees->each(function ($coachee) {
                 $coachee->pivot->load('assessment');
             });
+            $coaching->coachees->each(function ($coachee) {
+                $coachee->pivot->load('assessment');
+            });
 
             authorizeCoachAccess($coaching);
 

@@ -87,6 +87,7 @@ class CoachApiController extends Controller
                 'coach:id,name',
                 'coachees:id,name',
                 'joinedCoachees:id,name',
+                'joinedCoachees.assessment',
                 'coachingSessions.details.coachingUser.coachee:id,name',
                 'coachingSessions.details.coachingUser.assessment'
             )->where('coach_id', $request->user()->id)->findOrFail($id);

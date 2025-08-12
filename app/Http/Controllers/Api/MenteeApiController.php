@@ -73,7 +73,7 @@ class MenteeApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions')->where('mentee_id', $request->user()->id)->findOrFail($id);
+            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions', 'feedback', 'review')->where('mentee_id', $request->user()->id)->findOrFail($id);
             $hasIncompleteSessions = $mentoring->mentoringSessions->contains(function ($session) {
                 return empty($session->activity);
             });

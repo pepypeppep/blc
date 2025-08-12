@@ -75,7 +75,7 @@ class MentorApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions')
+            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions', 'feedback', 'review')
                 ->where('mentor_id', $request->user()->id)
                 ->whereNot('status', Mentoring::STATUS_DRAFT)
                 ->findOrFail($id);

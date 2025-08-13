@@ -2,17 +2,18 @@
 
 namespace Modules\Coaching\app\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use app\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Modules\Coaching\app\Models\Coaching;
-use Modules\Coaching\app\Models\CoachingAssessment;
-use Modules\Coaching\app\Models\CoachingSession;
-use Modules\Coaching\app\Models\CoachingSessionDetail;
-use Modules\Coaching\app\Models\CoachingUser;
-use app\Models\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Modules\Coaching\app\Models\Coaching;
+use Modules\Coaching\app\Models\CoachingUser;
+use Modules\Coaching\app\Models\CoachingSession;
+use App\Services\CoachingMentoringSessionChecker;
+use Modules\Coaching\app\Models\CoachingAssessment;
+use Modules\Coaching\app\Models\CoachingSessionDetail;
 
 class CoachController extends Controller
 {
@@ -94,6 +95,27 @@ class CoachController extends Controller
                     ->withInput()
                     ->withErrors(['sessions' => 'Maaf Anda hanya diperbolehkan mengajukan maksimal 2 pertemuan dalam satu bulan. Permintaan Anda melebihi batas yang telah ditentukan.']);
             }
+        }
+
+        $checkCoaching = (new CoachingMentoringSessionChecker())->canAddCoachingSessionsForMultipleUsers($request->coachee, $validated['sessions']);
+        if (!$checkCoaching['is_valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkCoaching['errors']]);
+        }
+
+        $checkCoaching2 = (new CoachingMentoringSessionChecker())->canAddCoaching2SessionsForMultipleUsers($request->coachee, $validated['sessions']);
+        if (!$checkCoaching2['is_valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkCoaching2['errors']]);
+        }
+
+        $checkMentoring = (new CoachingMentoringSessionChecker())->canAddMentoringSessionsForMultipleUsers($request->coachee, $validated['sessions']);
+        if (!$checkMentoring['is_valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkMentoring['errors']]);
         }
 
         $coaching = Coaching::create([

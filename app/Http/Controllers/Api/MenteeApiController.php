@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Modules\Mentoring\app\Models\Mentoring;
+use App\Services\CoachingMentoringSessionChecker;
 use Modules\Mentoring\app\Models\MentoringSession;
 use Modules\Mentoring\app\Models\MentoringFeedback;
 
@@ -177,6 +178,21 @@ class MenteeApiController extends Controller
                 if ($monthlyCount[$monthKey] > 2) {
                     return $this->errorResponse('Maaf Anda hanya diperbolehkan mengajukan maksimal 2 pertemuan dalam satu bulan. Permintaan Anda melebihi batas yang telah ditentukan.', [], 500);
                 }
+            }
+
+            $checkCoaching = (new CoachingMentoringSessionChecker())->canAddCoachingSessions($user, $validated['sessions']);
+            if (!$checkCoaching['can_proceed']) {
+                return $this->errorResponse($checkCoaching['reason'], [], 500);
+            }
+
+            $checkCoaching2 = (new CoachingMentoringSessionChecker())->canAddCoaching2Sessions($user, $validated['sessions']);
+            if (!$checkCoaching2['can_proceed']) {
+                return $this->errorResponse($checkCoaching2['reason'], [], 500);
+            }
+
+            $checkMentoring = (new CoachingMentoringSessionChecker())->canAddMentoringSessions($user, $validated['sessions']);
+            if (!$checkMentoring['can_proceed']) {
+                return $this->errorResponse($checkMentoring['reason'], [], 500);
             }
 
             $mentoring = Mentoring::create([

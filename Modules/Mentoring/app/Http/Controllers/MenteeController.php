@@ -2,13 +2,14 @@
 
 namespace Modules\Mentoring\app\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Modules\Mentoring\app\Models\Mentoring;
-use Modules\Mentoring\app\Models\MentoringSession;
-use Modules\Mentoring\app\Models\MentoringFeedback;
 use app\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Modules\Mentoring\app\Models\Mentoring;
+use App\Services\CoachingMentoringSessionChecker;
+use Modules\Mentoring\app\Models\MentoringSession;
+use Modules\Mentoring\app\Models\MentoringFeedback;
 
 class MenteeController extends Controller
 {
@@ -60,6 +61,27 @@ class MenteeController extends Controller
                     ->withInput()
                     ->withErrors(['sessions' => 'Maaf Anda hanya diperbolehkan mengajukan maksimal 2 pertemuan dalam satu bulan. Permintaan Anda melebihi batas yang telah ditentukan.']);
             }
+        }
+
+        $checkCoaching = (new CoachingMentoringSessionChecker())->canAddCoachingSessions($user, $validated['sessions']);
+        if (!$checkCoaching['can_proceed']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkCoaching['reason']]);
+        }
+
+        $checkCoaching2 = (new CoachingMentoringSessionChecker())->canAddCoaching2Sessions($user, $validated['sessions']);
+        if (!$checkCoaching2['can_proceed']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkCoaching2['reason']]);
+        }
+
+        $checkMentoring = (new CoachingMentoringSessionChecker())->canAddMentoringSessions($user, $validated['sessions']);
+        if (!$checkMentoring['can_proceed']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkMentoring['reason']]);
         }
 
         $mentoring = Mentoring::create([
@@ -229,7 +251,7 @@ class MenteeController extends Controller
             return redirect()->back()->with(['messege' => 'Penilaian untuk mentor hanya bisa dilakukan jika laporan akhir telah diunggah', 'alert-type' => 'error']);
         }
 
-        $feedback = MentoringFeedback::where('mentoring_id', $mentoring->id)->first();  
+        $feedback = MentoringFeedback::where('mentoring_id', $mentoring->id)->first();
 
         return view('frontend.student-dashboard.mentoring.mentee.feedback', compact('mentoring', 'feedback'));
     }

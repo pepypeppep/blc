@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Traits\ApiResponse;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Modules\Coaching\app\Models\Coaching;
-use Modules\Coaching\app\Models\CoachingAssessment;
-use Modules\Coaching\app\Models\CoachingSession;
-use Modules\Coaching\app\Models\CoachingSessionDetail;
-use Modules\Coaching\app\Models\CoachingUser;
 use App\Models\User;
+use App\Traits\ApiResponse;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Modules\Coaching\app\Models\Coaching;
+use Modules\Coaching\app\Models\CoachingUser;
+use Modules\Coaching\app\Models\CoachingSession;
+use App\Services\CoachingMentoringSessionChecker;
+use Modules\Coaching\app\Models\CoachingAssessment;
+use Modules\Coaching\app\Models\CoachingSessionDetail;
 
 class CoachApiController extends Controller
 {
@@ -296,6 +297,21 @@ class CoachApiController extends Controller
                 if ($monthlyCount[$monthKey] > 2) {
                     return $this->errorResponse('Maaf Anda hanya diperbolehkan mengajukan maksimal 2 pertemuan dalam satu bulan. Permintaan Anda melebihi batas yang telah ditentukan.', [], 422);
                 }
+            }
+
+            $checkCoaching = (new CoachingMentoringSessionChecker())->canAddCoachingSessionsForMultipleUsers($request->coachee, $validated['sessions']);
+            if (!$checkCoaching['is_valid']) {
+                return $this->errorResponse(implode(', ', $checkCoaching['errors']), [], 422);
+            }
+
+            $checkCoaching2 = (new CoachingMentoringSessionChecker())->canAddCoaching2SessionsForMultipleUsers($request->coachee, $validated['sessions']);
+            if (!$checkCoaching2['is_valid']) {
+                return $this->errorResponse(implode(', ', $checkCoaching2['errors']), [], 422);
+            }
+
+            $checkMentoring = (new CoachingMentoringSessionChecker())->canAddMentoringSessionsForMultipleUsers($request->coachee, $validated['sessions']);
+            if (!$checkMentoring['is_valid']) {
+                return $this->errorResponse(implode(', ', $checkMentoring['errors']), [], 422);
             }
 
             $coaching = Coaching::create([

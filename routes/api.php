@@ -92,6 +92,7 @@ Route::name('api.')->group(function () {
     Route::name('article.')->group(function () {
         Route::get('/articles', [ArticleController::class, 'index'])->name('index');
         Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('show');
+        Route::delete('/articles/{id}', [ArticleController::class, 'destroy'])->name('delete');
         Route::get('/articles-popular', [ArticleController::class, 'popularArticles'])->name('popular');
         Route::get('/articles-tags', [ArticleController::class, 'articleTags'])->name('tags');
         Route::get('/articles-reviews/{id}', [ArticleController::class, 'articleReviews'])->name('reviews');

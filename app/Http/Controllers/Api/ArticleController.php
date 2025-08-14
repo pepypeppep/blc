@@ -1243,4 +1243,71 @@ class ArticleController extends Controller
             return $this->errorResponse($e->getMessage(), [], 500);
         }
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/articles/{id}",
+     *     summary="Delete an article",
+     *     description="Delete an article",
+     *     tags={"Articles"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         description="Article id",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Article deleted successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Article deleted successfully"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Article not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Article not found"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="You are not allowed to delete this article"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="An error occurred")
+     *         )
+     *     )
+     * )
+     */
+    public function destroy($id)
+    {
+        try {
+            $article = Article::where('id', $id)
+                ->where('status', '!=', Article::STATUS_PUBLISHED)
+                ->first();
+
+            if ($article) {
+                $article->delete();
+                return $this->successResponse([], 'Article deleted successfully');
+            }
+
+            return $this->errorResponse('Article not found', [], 404);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), [], 500);
+        }
+    }
 }

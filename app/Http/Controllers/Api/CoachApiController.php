@@ -911,6 +911,36 @@ class CoachApiController extends Controller
             return $this->errorResponse('Tanggal coaching tidak dapat diubah karena laporan pertemuan telah ditanggapi oleh coach.', [], 422);
         }
 
+        $coacheeIds = $session->coaching->coachees->pluck('id')->toArray();
+
+        $checkCoaching = (new CoachingMentoringSessionChecker())->canAddCoachingUpdateSessionsForMultipleUsers($coacheeIds, [$request->coaching_date]);
+        if (!$checkCoaching['is_valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkCoaching['errors']]);
+        }
+
+        $checkCoaching = (new CoachingMentoringSessionChecker())->canAddCoachingSessionsForMultipleUsers($coacheeIds, [$request->coaching_date]);
+        if (!$checkCoaching['is_valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkCoaching['errors']]);
+        }
+
+        $checkCoaching2 = (new CoachingMentoringSessionChecker())->canAddCoaching2SessionsForMultipleUsers($coacheeIds, [$request->coaching_date]);
+        if (!$checkCoaching2['is_valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkCoaching2['errors']]);
+        }
+
+        $checkMentoring = (new CoachingMentoringSessionChecker())->canAddMentoringSessionsForMultipleUsers($coacheeIds, [$request->coaching_date]);
+        if (!$checkMentoring['is_valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkMentoring['errors']]);
+        }
+
         $session->coaching_date_changed = $session->coaching_date;
         $session->coaching_date = $request->coaching_date;
         $session->save();

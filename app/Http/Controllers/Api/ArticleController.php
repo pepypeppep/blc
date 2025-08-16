@@ -985,6 +985,8 @@ class ArticleController extends Controller
         try {
             $article = Article::with(['reviews' => function ($query) {
                 $query->with('user:id,name,created_at');
+            }, 'comments' => function ($query) {
+                $query->where('status', 'published')->with('user:id,name,created_at');
             }])
                 ->where('id', $id)
                 ->where('status', Article::STATUS_PUBLISHED)->first();

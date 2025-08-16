@@ -102,7 +102,8 @@ Route::name('api.')->group(function () {
             Route::get('/articles/course/enrolled', [ArticleController::class, 'getEnrollments'])->name('getEnrollments');
             Route::get('/articles/{slug}/edit', [ArticleController::class, 'edit'])->name('edit');
             Route::post('/articles/{slug}/update', [ArticleController::class, 'update'])->name('update');
-            Route::post('/articles-reviews/{id}', [ArticleController::class, 'storeReviews'])->name('reviews.store');
+            Route::post('/articles-rating/{id}', [ArticleController::class, 'storeRating'])->name('reviews.store.rating');
+            Route::post('/articles-reviews/{id}', [ArticleController::class, 'storeReviews'])->name('reviews.store.review');
         });
     });
 

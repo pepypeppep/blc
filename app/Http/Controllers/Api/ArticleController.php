@@ -13,6 +13,7 @@ use Modules\Order\app\Models\Enrollment;
 use Illuminate\Support\Facades\Validator;
 use Modules\Article\app\Models\ArticleReview;
 use App\Http\Requests\Frontend\StudentPelatihanStoreRequest;
+use Modules\Article\app\Models\ArticleComment;
 
 class ArticleController extends Controller
 {
@@ -983,8 +984,10 @@ class ArticleController extends Controller
     {
         try {
             $article = Article::with(['reviews' => function ($query) {
-                $query->where('status', ArticleReview::STATUS_PUBLISHED)->with('user:id,name,created_at');
-            }])->where('id', $id)->where('status', Article::STATUS_PUBLISHED)->first();
+                $query->with('user:id,name,created_at');
+            }])
+                ->where('id', $id)
+                ->where('status', Article::STATUS_PUBLISHED)->first();
 
             if (!$article) {
                 return $this->errorResponse('Article not found', [], 404);
@@ -998,10 +1001,11 @@ class ArticleController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/articles-reviews/{id}",
+     *     path="/articles-rating/{id}",
      *     summary="Add a review to an article",
      *     description="Add a review to an article",
      *     tags={"Articles"},
+     *     security={{"bearer": {}}},
      *     @OA\Parameter(
      *         description="Article ID",
      *         in="path",
@@ -1011,33 +1015,11 @@ class ArticleController extends Controller
      *             type="integer"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         description="User ID",
-     *         in="query",
-     *         name="user_id",
+     *     @OA\RequestBody(
      *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Parameter(
-     *         description="Comment",
-     *         in="query",
-     *         name="comment",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
-     *     ),
-     *     @OA\Parameter(
-     *         description="Rating",
-     *         in="query",
-     *         name="rating",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer",
-     *             minimum=1,
-     *             maximum=5
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="rating", type="integer", example=5)
      *         )
      *     ),
      *     @OA\Response(
@@ -1049,7 +1031,6 @@ class ArticleController extends Controller
      *                 property="data",
      *                 type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="description", type="string", example="This is a review"),
      *                 @OA\Property(property="stars", type="integer", example=5),
      *                 @OA\Property(property="created_at", type="string", example="2023-10-01T12:00:00Z"),
      *                 @OA\Property(property="updated_at", type="string", example="2023-10-01T12:00:00Z"),
@@ -1065,38 +1046,94 @@ class ArticleController extends Controller
      *     )
      * )
      */
-    public function storeReviews(Request $request, $id)
+    public function storeRating(Request $request, $id)
     {
         $request->validate([
-            'comment' => ['required', 'max:1000'],
             'rating' => ['required', 'numeric', 'min:1', 'max:5'],
-            'user_id' => ['required', 'exists:users,id'],
         ], [
-            'comment.required' => __('The comment field is required'),
-            'comment.max' => __('The comment must not be greater than 1000 characters'),
             'rating.required' => __('The rating field is required'),
             'rating.numeric' => __('The rating must be a number'),
             'rating.min' => __('The rating must be greater than or equal to 1'),
             'rating.max' => __('The rating must be less than or equal to 5'),
-            'user_id.required' => __('The user id field is required'),
-            'user_id.exists' => __('The user id does not exist'),
         ]);
 
         try {
             $articleReview = ArticleReview::where('article_id', $id)->where('author_id', $request->user()->id);
 
             if ($articleReview->exists()) {
-                return $this->errorResponse('You have already reviewed this article', [], 400);
+                return $this->errorResponse('Anda sudah memberikan rating pada artikel ini', [], 400);
             }
 
             $articleReview = ArticleReview::create([
                 'article_id' => $id,
-                'author_id' => $request->user_id,
+                'author_id' => $request->user()->id,
                 'comment' => $request->comment,
                 'stars' => $request->rating,
             ]);
 
-            return $this->successResponse([], 'Review added successfully', 201);
+            return $this->successResponse($articleReview, 'Ulasan ditambahkan dengan sukses', 201);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), [], 500);
+        }
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/articles-reviews/{id}",
+     *     summary="Add article comment",
+     *     description="Add article comment",
+     *     tags={"Articles"},
+     *     security={{"bearer": {}}},
+     *     @OA\Parameter(
+     *         description="Article ID",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         example="1"
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="comment",
+     *                 type="string",
+     *                 example="This article is awesome!"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Comment added successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Article not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     * */
+    public function storeReviews(Request $request, $id)
+    {
+        $request->validate([
+            'comment' => ['required', 'max:1000'],
+        ], [
+            'comment.required' => __('The comment field is required'),
+            'comment.max' => __('The comment must not be greater than 1000 characters'),
+        ]);
+
+        try {
+            $articleComment = ArticleComment::create([
+                'article_id' => $id,
+                'author_id' => $request->user()->id,
+                'description' => $request->comment,
+            ]);
+
+            return $this->successResponse($articleComment, 'Komentar berhasil ditambahkan', 201);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);
         }

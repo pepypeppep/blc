@@ -268,6 +268,77 @@ class CoachingMentoringSessionChecker
         ];
     }
 
+    public function canAddCoachingUpdateSessionsForMultipleUsers($userIds, $requestSessions)
+    {
+        $results = [];
+        $users = User::whereIn('id', $userIds)->get()->keyBy('id');
+
+        // Get existing counts for all users at once
+        $existingCounts = CoachingSession::whereHas('coaching', function ($query) {
+            $query->where('status', Coaching::STATUS_DRAFT);
+        })
+            ->whereHas('coaching.coachees', function ($query) use ($userIds) {
+                $query->whereIn('user_id', $userIds);
+            })
+            ->join('coachings', 'coaching_sessions.coaching_id', '=', 'coachings.id')
+            ->join('coaching_users', 'coachings.id', '=', 'coaching_users.coaching_id')
+            ->select(
+                DB::raw("DATE_FORMAT(coaching_sessions.coaching_date, '%Y-%m') as month"),
+                'coaching_users.user_id',
+                DB::raw('COUNT(*) as count')
+            )
+            ->groupBy('month', 'coaching_users.user_id')
+            ->get()
+            ->groupBy('user_id');
+
+        // Count new sessions per month
+        $newCounts = [];
+        foreach ($requestSessions as $session) {
+            $month = Carbon::parse($session)->format('Y-m');
+            $newCounts[$month] = ($newCounts[$month] ?? 0) + 1;
+        }
+
+        // Check each user
+        foreach ($users as $user) {
+            $userExistingCounts = $existingCounts[$user->id] ?? collect();
+            $userMonthlyCounts = [];
+
+            foreach ($userExistingCounts as $record) {
+                $userMonthlyCounts[$record->month] = $record->count;
+            }
+
+            foreach ($newCounts as $month => $newCount) {
+                $existingCount = $userMonthlyCounts[$month] ?? 0;
+                if (($existingCount + $newCount) > 2) {
+                    $monthName = Carbon::createFromFormat('Y-m', $month)->format('F Y');
+                    $results[$user->id] = [
+                        'can_proceed' => false,
+                        'reason' => "{$user->name} sudah memiliki {$existingCount} sesi di {$monthName} dan mencoba menambahkan {$newCount} lagi. Maksimal 2 sesi per bulan diperbolehkan."
+                    ];
+                    continue 2;
+                }
+            }
+
+            $results[$user->id] = [
+                'can_proceed' => true,
+                'reason' => null
+            ];
+        }
+
+        $errors = [];
+        foreach ($results as $userId => $result) {
+            if (!$result['can_proceed']) {
+                $errors["user_$userId"] = $result['reason'];
+            }
+        }
+
+        return [
+            'is_valid' => empty($errors),
+            'errors' => $errors,
+            'detailed_results' => $results
+        ];
+    }
+
     public function canAddMentoringSessionsForMultipleUsers($userIds, $requestSessions)
     {
         $results = [];

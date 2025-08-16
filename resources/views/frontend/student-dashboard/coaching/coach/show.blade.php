@@ -223,6 +223,16 @@ $statusColors = [
                         @endif
                     </div>
                 </div>
+
+                @if ($errors->has('sessions'))
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->get('sessions') as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
             </div>
 
             <div class="accordion" id="accordionPanelsStayOpenExample">

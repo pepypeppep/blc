@@ -332,7 +332,7 @@ class ArticleController extends Controller
     {
         try {
             $article = Article::with('articleTags')
-                ->with('author')
+                ->with('author', 'comments')
                 ->withCount(['reviews as total_review'])
                 ->withAvg('reviews as rating', 'stars')
                 ->with('enrollment.course')
@@ -957,16 +957,30 @@ class ArticleController extends Controller
      *         response=200,
      *         description="Reviews fetched successfully",
      *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="code", type="integer", example=200),
+     *             @OA\Property(property="status", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example="Reviews fetched successfully"),
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
      *                 @OA\Items(
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="description", type="string", example="This is a review"),
-     *                     @OA\Property(property="stars", type="integer", example=5),
-     *                     @OA\Property(property="created_at", type="string", example="2023-10-01T12:00:00Z"),
-     *                     @OA\Property(property="updated_at", type="string", example="2023-10-01T12:00:00Z"),
+     *                     @OA\Property(property="id", type="integer", example=35),
+     *                     @OA\Property(property="article_id", type="integer", example=6),
+     *                     @OA\Property(property="author_id", type="integer", example=1),
+     *                     @OA\Property(property="stars", type="integer", example=3),
+     *                     @OA\Property(property="description", type="string", example="Aut voluptas et quidem ut. Qui at cum recusandae dolor nulla. Cumque ea reiciendis quia suscipit consequatur."),
+     *                     @OA\Property(property="status", type="string", example="published"),
+     *                     @OA\Property(property="notes", type="string", example=null),
+     *                     @OA\Property(property="created_at", type="string", example="2025-08-13T11:49:11.000000Z"),
+     *                     @OA\Property(property="updated_at", type="string", example="2025-08-13T11:49:11.000000Z"),
+     *                     @OA\Property(
+     *                         property="user",
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="name", type="string", example="LMS Student"),
+     *                         @OA\Property(property="created_at", type="string", example="2025-08-13T11:49:07.000000Z")
+     *                     )
      *                 )
      *             )
      *         )
@@ -983,19 +997,16 @@ class ArticleController extends Controller
     public function articleReviews($id)
     {
         try {
-            $article = Article::with(['reviews' => function ($query) {
-                $query->with('user:id,name,created_at');
-            }, 'comments' => function ($query) {
-                $query->where('status', 'published')->with('user:id,name,created_at');
-            }])
-                ->where('id', $id)
-                ->where('status', Article::STATUS_PUBLISHED)->first();
+            $article = ArticleComment::where('article_id', $id)
+                ->where('status', ArticleComment::STATUS_PUBLISHED)
+                ->with('user:id,name,created_at')
+                ->get();
 
             if (!$article) {
                 return $this->errorResponse('Article not found', [], 404);
             }
 
-            return $this->successResponse($article->reviews, 'Reviews fetched successfully');
+            return $this->successResponse($article, 'Reviews fetched successfully');
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);
         }

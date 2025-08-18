@@ -1024,6 +1024,14 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
                                         "message": {
                                             "type": "string",
                                             "example": "Reviews fetched successfully"
@@ -1034,23 +1042,56 @@
                                                 "properties": {
                                                     "id": {
                                                         "type": "integer",
-                                                        "example": 1
+                                                        "example": 35
                                                     },
-                                                    "description": {
-                                                        "type": "string",
-                                                        "example": "This is a review"
+                                                    "article_id": {
+                                                        "type": "integer",
+                                                        "example": 6
+                                                    },
+                                                    "author_id": {
+                                                        "type": "integer",
+                                                        "example": 1
                                                     },
                                                     "stars": {
                                                         "type": "integer",
-                                                        "example": 5
+                                                        "example": 3
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Aut voluptas et quidem ut. Qui at cum recusandae dolor nulla. Cumque ea reiciendis quia suscipit consequatur."
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "published"
+                                                    },
+                                                    "notes": {
+                                                        "type": "string",
+                                                        "example": null
                                                     },
                                                     "created_at": {
                                                         "type": "string",
-                                                        "example": "2023-10-01T12:00:00Z"
+                                                        "example": "2025-08-13T11:49:11.000000Z"
                                                     },
                                                     "updated_at": {
                                                         "type": "string",
-                                                        "example": "2023-10-01T12:00:00Z"
+                                                        "example": "2025-08-13T11:49:11.000000Z"
+                                                    },
+                                                    "user": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "LMS Student"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "example": "2025-08-13T11:49:07.000000Z"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     }
                                                 },
                                                 "type": "object"

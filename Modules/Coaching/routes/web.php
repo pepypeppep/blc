@@ -33,6 +33,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'student', 'as' 
         Route::get('/create', [CoachController::class, 'create'])->name('create');
         Route::post('/', [CoachController::class, 'store'])->name('store');
         Route::get('/{coachingId}', [CoachController::class, 'show'])->name('show');
+        Route::get('/{coachingId}/edit', [CoachController::class, 'edit'])->name('edit');
+        Route::put('/{coachingId}/update', [CoachController::class, 'update'])->name('update');
         Route::put('/{coachingId}/set-consensus', [CoachController::class, 'initiateConsensus'])->name('set-consensus');
         Route::put('/{coachingId}/proses-coaching', [CoachController::class, 'processCoaching'])->name('process-coaching');
         Route::put('/{coachingId}/send-assessment', [CoachController::class, 'finishCoaching'])->name('send-assessment');

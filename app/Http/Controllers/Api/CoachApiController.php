@@ -999,4 +999,224 @@ class CoachApiController extends Controller
 
         return $this->successResponse([], 'Penilaian telah terkirim ke BKPSDM. Coaching berhasil diselesaikan!');
     }
+
+    /**
+     * @OA\Put(
+     *     path="/coaching/coach/{id}",
+     *     summary="Update coaching topic",
+     *     description="Update coaching topic",
+     *     tags={"Coach"},
+     *     security={{"bearer": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Coaching id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=1
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"title", "goal", "reality", "option", "way_forward", "success_indicator", "total_session", "sessions", "coachee"},
+     *                 @OA\Property(
+     *                     property="title",
+     *                     type="string",
+     *                     example="Judul coaching"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="goal",
+     *                     type="string",
+     *                     example="Pokok permasalahan coaching"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="reality",
+     *                     type="string",
+     *                     example="Tujuan coaching"
+     *                 ),
+     *                @OA\Property(
+     *                    property="option",
+     *                    type="string",
+     *                   example="Pilihan yang tersedia untuk mencapai tujuan"
+     *                ),
+     *                @OA\Property(
+     *                    property="way_forward",
+     *                   type="string",
+     *                   example="Langkah-langkah yang akan diambil untuk mencapai tujuan"
+     *                ),
+     *                @OA\Property(
+     *                    property="success_indicator",
+     *                   type="string",
+     *                  example="Indikator keberhasilan yang diharapkan"
+     *                ),
+     *                 @OA\Property(
+     *                     property="total_session",
+     *                     type="integer",
+     *                     example=3
+     *                 ),
+     *                 @OA\Property(
+     *                     property="sessions",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="string",
+     *                         format="date-time",
+     *                         example="2025-07-01 08:00:00"
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="learning_resources",
+     *                     type="string",
+     *                     example="Sumber belajar coaching"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="coachee",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="integer",
+     *                         example=1
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="(Optional) Upload new PDF file to replace existing"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden: user not authorized or coaching not in draft status"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed. Conditions: same year, date sequence (earliest to latest), max 2 sessions/month."
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error"
+     *     )
+     * )
+     */
+    public function update(Request $request, $coachingId)
+    {
+        try {
+            $user = userAuth();
+            $coaching = Coaching::findOrFail($coachingId);
+
+            if ($coaching->status !== Coaching::STATUS_DRAFT) {
+                return $this->errorResponse('Coaching hanya dapat diubah jika status masih Draft.', [], 422);
+            }
+
+            if ($coaching->coach_id !== $user->id) {
+                return $this->errorResponse('Anda tidak memiliki izin untuk mengubah coaching ini.', [], 403);
+            }
+
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'goal' => 'required|string',
+                'reality' => 'required|string',
+                'option' => 'required|string',
+                'way_forward' => 'required|string',
+                'success_indicator' => 'required|string',
+                'total_session' => 'required|integer|min:3|max:24',
+                'sessions' => 'required|array|min:3',
+                'sessions.*' => 'required|date',
+                'learning_resources' => 'nullable|string',
+                'coachee' => 'required|array|min:1|max:10',
+                'coachee.*' => 'exists:users,id',
+                'file' => 'nullable|file|mimes:pdf|max:5120',
+            ]);
+
+            $monthlyCount = [];
+            $sessions = collect($validated['sessions'])->map(fn($s) => \Carbon\Carbon::parse($s))->sort()->values();
+
+            $firstYear = $sessions->first()->year;
+            if (!$sessions->every(fn($date) => $date->year === $firstYear)) {
+                return $this->errorResponse('Semua tanggal sesi harus berada dalam tahun yang sama.', [], 422);
+            }
+
+            for ($i = 1; $i < $sessions->count(); $i++) {
+                if ($sessions[$i]->lt($sessions[$i - 1])) {
+                    return $this->errorResponse('Tanggal sesi harus berurutan dari yang paling awal ke paling akhir.', [], 422);
+                }
+            }
+
+            foreach ($sessions as $session) {
+                $monthKey = $session->format('Y-m');
+                if (!isset($monthlyCount[$monthKey])) {
+                    $monthlyCount[$monthKey] = 0;
+                }
+                $monthlyCount[$monthKey]++;
+                if ($monthlyCount[$monthKey] > 2) {
+                    return $this->errorResponse('Maaf Anda hanya diperbolehkan mengajukan maksimal 2 pertemuan dalam satu bulan. Permintaan Anda melebihi batas yang telah ditentukan.', [], 422);
+                }
+            }
+
+            $checkCoaching = (new CoachingMentoringSessionChecker())->canAddCoachingSessionsForMultipleUsers($request->coachee, $validated['sessions']);
+            if (!$checkCoaching['is_valid']) {
+                return $this->errorResponse(implode(', ', $checkCoaching['errors']), [], 422);
+            }
+
+            $checkCoaching2 = (new CoachingMentoringSessionChecker())->canAddCoaching2SessionsForMultipleUsers($request->coachee, $validated['sessions']);
+            if (!$checkCoaching2['is_valid']) {
+                return $this->errorResponse(implode(', ', $checkCoaching2['errors']), [], 422);
+            }
+
+            $checkMentoring = (new CoachingMentoringSessionChecker())->canAddMentoringSessionsForMultipleUsers($request->coachee, $validated['sessions']);
+            if (!$checkMentoring['is_valid']) {
+                return $this->errorResponse(implode(', ', $checkMentoring['errors']), [], 422);
+            }
+
+            $coaching->update([
+                'title' => $validated['title'],
+                'goal' => $validated['goal'],
+                'reality' => $validated['reality'],
+                'option' => $validated['option'],
+                'way_forward' => $validated['way_forward'],
+                'success_indicator' => $validated['success_indicator'],
+                'total_session' => $validated['total_session'],
+                'learning_resources' => $validated['learning_resources'],
+            ]);
+
+            $coaching->coachees()->sync($request->coachee);
+
+            if ($request->hasFile('file')) {
+                $path = 'coaching/' . now()->year . '/' . $coaching->id . '/';
+                $file = $request->file('file');
+                $fileName = $path . 'spt.' . $file->getClientOriginalExtension();
+
+                if ($coaching->spt && Storage::disk('private')->exists($coaching->spt)) {
+                    Storage::disk('private')->delete($coaching->spt);
+                }
+
+                Storage::disk('private')->put($fileName, file_get_contents($file));
+                $coaching->update(['spt' => $fileName]);
+            }
+
+            $coaching->coachingSessions()->delete();
+
+            foreach ($validated['sessions'] as $dateTime) {
+                CoachingSession::create([
+                    'coaching_id' => $coaching->id,
+                    'coaching_date' => $dateTime,
+                ]);
+            }
+
+            return $this->successResponse([], 'Tema coaching berhasil diperbarui!');
+        } catch (\Exception $e) {
+
+            return $this->errorResponse($e->getMessage(), [], 500);
+        }
+    }
 }

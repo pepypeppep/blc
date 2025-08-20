@@ -232,7 +232,7 @@ class Course extends Model
                 $averageScore = $totalReviews > 0 ? number_format($totalScore / $totalReviews, 1) : 0;
 
                 return [
-                    'average_score' => $averageScore,
+                    'average_score' => (string) $averageScore,
                     'total_reviews' => $totalReviews
                 ];
             }

@@ -134,7 +134,9 @@ class VacancyParticipantController extends Controller
                     'link' => route('student.continuing-education.registration.show', $vacancyUser->id),
                     'path' => [
                         'module' => 'pendidikan-lanjutan',
-                        'id' => $vacancyUser->id
+                        'submodule' => null,
+                        'id' => $vacancyUser->id,
+                        'slug' => null
                     ]
                 ]);
             }
@@ -271,7 +273,9 @@ class VacancyParticipantController extends Controller
                 'link' => route('student.continuing-education.registration.show', $vacancyReport->vacancy_user_id),
                 'path' => [
                     'module' => 'pendidikan-lanjutan',
-                    'id' => $vacancyReport->vacancy_user_id
+                    'submodule' => null,
+                    'id' => $vacancyReport->vacancy_user_id,
+                    'slug' => null
                 ]
             ]);
 
@@ -330,7 +334,9 @@ class VacancyParticipantController extends Controller
                 'link' => route('student.continuing-education.registration.show', $activation->vacancy_user_id),
                 'path' => [
                     'module' => 'pendidikan-lanjutan',
-                    'id' => $activation->vacancy_user_id
+                    'submodule' => null,
+                    'id' => $activation->vacancy_user_id,
+                    'slug' => null
                 ]
             ]);
 

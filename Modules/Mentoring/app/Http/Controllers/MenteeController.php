@@ -143,7 +143,9 @@ class MenteeController extends Controller
             'link' => route('student.mentor.show', $mentoring->id),
             'path' => [
                 'module' => 'mentoring',
+                'submodule' => 'mentee',
                 'id' => $mentoring->id,
+                'slug' => null
             ]
         ]);
 
@@ -182,7 +184,9 @@ class MenteeController extends Controller
             'link' => route('student.mentor.show', $session->mentoring->id),
             'path' => [
                 'module' => 'mentoring',
+                'submodule' => 'mentee',
                 'id' => $session->mentoring->id,
+                'slug' => null
             ]
         ]);
 
@@ -215,7 +219,9 @@ class MenteeController extends Controller
             'link' => route('student.mentor.show', $mentoring->id),
             'path' => [
                 'module' => 'mentoring',
+                'submodule' => 'mentee',
                 'id' => $mentoring->id,
+                'slug' => null
             ]
         ]);
 

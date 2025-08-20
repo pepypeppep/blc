@@ -11,6 +11,7 @@ class CoachingSession extends Model
 
     protected $table = 'coaching_sessions';
     protected $guarded = ['id'];
+    protected $appends = ['session_status_count'];
 
     public const STATUS_PENDING = "Pending";
     public const STATUS_PROCESS = "Process";
@@ -24,5 +25,18 @@ class CoachingSession extends Model
     public function details()
     {
         return $this->hasMany(CoachingSessionDetail::class);
+    }
+
+    public function getSessionStatusCountAttribute()
+    {
+        $total = $this->coaching->joinedCoachees->count();
+        $progress = $this->details->count();
+        $reviewed = $this->details->whereNotNull('coaching_note')->whereNotNull('coaching_instructions')->count();
+
+        return [
+            'total' => $total,
+            'progress' => $progress,
+            'reviewed' => $reviewed
+        ];
     }
 }

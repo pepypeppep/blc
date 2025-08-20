@@ -406,7 +406,12 @@ class CoachApiController extends Controller
                     'title' => 'Lanjutkan Proses Coaching – Konsensus Telah Dibuka',
                     'body' => "Seorang coach telah menginisiasi konsensus untuk sesi coaching ini. Silakan tinjau dan berikan keputusan Anda: setujui untuk bergabung, atau tolak dengan menyertakan alasan.",
                     'link' => route('student.coachee.index'),
-                    'path' => null,
+                    'path' => [
+                        'module' => 'coaching',
+                        'submodule' => 'coach',
+                        'id' => $coaching->id,
+                        'slug' => null
+                    ]
                 ]);
             }
 
@@ -472,7 +477,12 @@ class CoachApiController extends Controller
                 'title' => 'Ikuti Sesi Pertemuan – Coaching Telah Dimulai',
                 'body' => "Coach telah memulai proses coaching. Ikuti sesi pertemuan sesuai jadwal dan laporkan hasil penugasan",
                 'link' => route('student.coachee.index'),
-                'path' => null,
+                'path' => [
+                    'module' => 'coaching',
+                    'submodule' => 'coach',
+                    'id' => $coaching->id,
+                    'slug' => null
+                ]
             ]);
         }
 

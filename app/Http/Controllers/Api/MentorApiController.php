@@ -155,7 +155,9 @@ class MentorApiController extends Controller
                 'link' => route('student.mentee.show', $mentoring->id),
                 'path' => [
                     'module' => 'mentoring',
+                    'submodule' => 'mentor',
                     'id' => $mentoring->id,
+                    'slug' => null
                 ]
             ]);
 
@@ -227,7 +229,9 @@ class MentorApiController extends Controller
                 'link' => route('student.mentee.show', $mentoring->id),
                 'path' => [
                     'module' => 'mentoring',
+                    'submodule' => 'mentor',
                     'id' => $mentoring->id,
+                    'slug' => null
                 ]
             ]);
 
@@ -341,7 +345,9 @@ class MentorApiController extends Controller
                 'link' => route('student.mentee.show', $mentoring->id),
                 'path' => [
                     'module' => 'mentoring',
+                    'submodule' => 'mentor',
                     'id' => $mentoring->id,
+                    'slug' => null
                 ]
             ]);
 

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\InstructorEvaluation\app\Models\InstructorEvaluation;
 
 /**
  *
@@ -26,7 +27,7 @@ class Course extends Model
      *
      * @var array
      */
-    protected $appends = ['thumbnail_url', 'all_instructors', 'course_user_progress'];
+    protected $appends = ['thumbnail_url', 'all_instructors', 'course_user_progress', 'course_review_score', 'evaluate_instructors'];
 
 
     public const CLASS_KLASIKAL_DARING = 'klasikal_daring';
@@ -108,6 +109,16 @@ class Course extends Model
         return $this->hasMany(Enrollment::class, 'course_id', 'id');
     }
 
+    /**
+     * Get all of the instructorsEvaluation for the Course
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function instructorsEvaluation(): HasMany
+    {
+        return $this->hasMany(InstructorEvaluation::class);
+    }
+
     public function progress()
     {
         return $this->hasMany(CourseProgress::class);
@@ -132,7 +143,18 @@ class Course extends Model
         $primary = $this->instructor;
         $partners = $this->partnerInstructors->pluck('instructor');
         return Attribute::make(
-            get: fn() => collect([$primary])->merge($partners)->filter()
+            get: fn() => collect([$primary])->merge($partners)->unique('id')->filter()
+        );
+    }
+
+    protected function evaluateInstructors(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => [
+                'total_all_instructors' => $this->allInstructors->count(),
+                'total_instructor_evaluations' => $this->instructorsEvaluation->count(),
+                'is_completed' => $this->instructorsEvaluation->count() === $this->allInstructors->count()
+            ]
         );
     }
 
@@ -190,6 +212,28 @@ class Course extends Model
                     'completed_lectures' => $courseLectureCompletedByUser,
                     'percentage' => number_format($courseCompletedPercent, 1),
                     'is_completed' => $courseCompletedPercent == 100,
+                ];
+            }
+        );
+    }
+
+    /**
+     * Get the course reviews score percentage for the authenticated user.
+     */
+    protected function courseReviewScore(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $reviews = $this->reviews;
+
+                $totalScore = $reviews->sum('rating');
+                $totalReviews = $reviews->count();
+
+                $averageScore = $totalReviews > 0 ? number_format($totalScore / $totalReviews, 1) : 0;
+
+                return [
+                    'average_score' => $averageScore,
+                    'total_reviews' => $totalReviews
                 ];
             }
         );

@@ -26,7 +26,7 @@ class Course extends Model
      *
      * @var array
      */
-    protected $appends = ['thumbnail_url', 'all_instructors', 'course_user_progress'];
+    protected $appends = ['thumbnail_url', 'all_instructors', 'course_user_progress', 'course_review_score'];
 
 
     public const CLASS_KLASIKAL_DARING = 'klasikal_daring';
@@ -190,6 +190,28 @@ class Course extends Model
                     'completed_lectures' => $courseLectureCompletedByUser,
                     'percentage' => number_format($courseCompletedPercent, 1),
                     'is_completed' => $courseCompletedPercent == 100,
+                ];
+            }
+        );
+    }
+
+    /**
+     * Get the course reviews score percentage for the authenticated user.
+     */
+    protected function courseReviewScore(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $reviews = $this->reviews;
+
+                $totalScore = $reviews->sum('rating');
+                $totalReviews = $reviews->count();
+
+                $averageScore = $totalReviews > 0 ? number_format($totalScore / $totalReviews, 1) : 0;
+
+                return [
+                    'average_score' => $averageScore,
+                    'total_reviews' => $totalReviews
                 ];
             }
         );

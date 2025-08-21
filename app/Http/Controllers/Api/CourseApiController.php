@@ -169,21 +169,34 @@ class CourseApiController extends Controller
                 });
             });
 
-            $query->with([
-                'instructor:id,name',
-                'enrollments',
-                'category.translation',
-                'category' => function ($query) {
-                    $query->withCount('courses');
-                }
-            ]);
-
             if ($request->has('user_id')) {
                 $authorId = $request->user_id;
+
+                $query->with([
+                    'instructor:id,name',
+                    'enrollments' => function ($q) use ($authorId) {
+                        $q->where('user_id', $authorId)
+                            ->with('article');
+                    },
+                    'category.translation',
+                    'category' => function ($query) {
+                        $query->withCount('courses');
+                    }
+                ]);
+
                 $query->whereHas('enrollments', function ($q) use ($authorId) {
                     $q->where('user_id', $authorId);
                     $q->where('has_access', 1);
                 });
+            } else {
+                $query->with([
+                    'instructor:id,name',
+                    'enrollments',
+                    'category.translation',
+                    'category' => function ($query) {
+                        $query->withCount('courses');
+                    }
+                ]);
             }
 
             $query->orderBy('id', $request->order && $request->filled('order') ? $request->order : 'desc');

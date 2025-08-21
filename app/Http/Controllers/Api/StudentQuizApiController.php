@@ -52,7 +52,10 @@ class StudentQuizApiController extends Controller
     public function start(Request $request, $quizId)
     {
         try {
-            $quiz = Quiz::with('questions.answers')->find($quizId);
+            $quiz = Quiz::query()
+            // ->with('questions.answers')
+            ->find($quizId);
+            // dd($quiz);
             if (!$quiz) return $this->errorResponse('Quiz not found', [], 404);
 
             $user = $request->user();
@@ -281,22 +284,42 @@ class StudentQuizApiController extends Controller
                 $totalMark += $question->grade;
             }
 
+            // QuizResult::updateOrCreate(
+            //     ['user_id' => $user->id, 'quiz_id' => $quiz->id],
+            //     [
+            //         'user_grade' => $totalGrade,
+            //         'result' => $userAnswers,
+            //         'status' => $totalGrade >= $quiz->pass_mark ? 'passed' : 'failed',
+            //     ]
+            // );
+
+            // $season->update(['ended_at' => now()]);
+
+            // Simpan ended_at dan hitung durasi
+            $endedAt = now();
+            $season->update(['ended_at' => $endedAt]);
+
+            $durationInSeconds = $endedAt->diffInSeconds($season->started_at);
+
+            // Simpan hasil quiz
             QuizResult::updateOrCreate(
                 ['user_id' => $user->id, 'quiz_id' => $quiz->id],
                 [
                     'user_grade' => $totalGrade,
                     'result' => $userAnswers,
                     'status' => $totalGrade >= $quiz->pass_mark ? 'passed' : 'failed',
+                    'duration' => $durationInSeconds,
                 ]
             );
 
-            $season->update(['ended_at' => now()]);
 
             return $this->successResponse([
                 'message' => 'Quiz berhasil disubmit' . ($waktuHabis ? ' (melebihi batas waktu)' : ''),
                 'score' => $totalGrade,
                 'status' => $totalGrade >= $quiz->pass_mark ? 'passed' : 'failed',
                 'late' => $waktuHabis,
+                'duration' => $durationInSeconds,
+                'duration_formatted' => gmdate('H:i:s', $durationInSeconds),
             ], 'Quiz submitted successfully', 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);

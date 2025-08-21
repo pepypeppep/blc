@@ -542,4 +542,147 @@ class CoachController extends Controller
 
         return back()->with(['alert-type' => 'success', 'messege' => 'Tanggal coaching berhasil diperbarui.']);
     }
+
+    public function edit($coachingId)
+    {
+        $coachees = User::all();
+
+        $coaching = Coaching::with([
+            'coachees:id,name',
+            'coachingSessions'
+        ])->findOrFail($coachingId);
+
+        $coaching->sessions = $coaching->coachingSessions
+            ->sortBy('id')
+            ->pluck('coaching_date')
+            ->map(fn($dt) => \Carbon\Carbon::parse($dt)->format('Y-m-d H:i'))
+            ->toArray();
+
+        return view('frontend.student-dashboard.coaching.coach.edit', compact('coachees', 'coaching'));
+    }
+
+    public function update(Request $request, $coachingId)
+    {
+        $user = userAuth();
+        $coaching = Coaching::findOrFail($coachingId);
+
+        if ($coaching->status !== Coaching::STATUS_DRAFT) {
+            return redirect()->back()
+                ->with('error', 'Coaching hanya dapat diubah jika status masih Draft.');
+        }
+
+        if ($coaching->coach_id !== $user->id) {
+            return redirect()->back()
+                ->with('error', 'Anda tidak memiliki izin untuk mengubah coaching ini.');
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'goal' => 'required|string',
+            'reality' => 'required|string',
+            'option' => 'required|string',
+            'way_forward' => 'required|string',
+            'success_indicator' => 'required|string',
+            'total_session' => 'required|integer|min:3|max:24',
+            'sessions' => 'required|array|min:3',
+            'sessions.*' => 'required|date',
+            'learning_resources' => 'nullable|string',
+            'coachee' => 'required|array|min:1|max:10',
+            'coachee.*' => 'exists:users,id',
+            'file' => 'nullable|file|mimes:pdf|max:5120',
+        ]);
+
+        $monthlyCount = [];
+        $sessions = collect($validated['sessions'])->map(fn($s) => \Carbon\Carbon::parse($s))->sort()->values();
+
+        $firstYear = $sessions->first()->year;
+        if (!$sessions->every(fn($date) => $date->year === $firstYear)) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => 'Semua tanggal sesi harus berada dalam tahun yang sama.']);
+        }
+
+        for ($i = 1; $i < $sessions->count(); $i++) {
+            if ($sessions[$i]->lt($sessions[$i - 1])) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['sessions' => 'Tanggal sesi harus berurutan dari yang paling awal ke paling akhir.']);
+            }
+        }
+
+        foreach ($sessions as $session) {
+            $monthKey = $session->format('Y-m');
+            if (!isset($monthlyCount[$monthKey])) {
+                $monthlyCount[$monthKey] = 0;
+            }
+            $monthlyCount[$monthKey]++;
+            if ($monthlyCount[$monthKey] > 2) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['sessions' => 'Maaf Anda hanya diperbolehkan mengajukan maksimal 2 pertemuan dalam satu bulan. Permintaan Anda melebihi batas yang telah ditentukan.']);
+            }
+        }
+
+        $checkCoaching = (new CoachingMentoringSessionChecker())->canAddCoachingSessionsForMultipleUsers($request->coachee, $validated['sessions']);
+        if (!$checkCoaching['is_valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkCoaching['errors']]);
+        }
+
+        $checkCoaching2 = (new CoachingMentoringSessionChecker())->canAddCoaching2SessionsForMultipleUsers($request->coachee, $validated['sessions']);
+        if (!$checkCoaching2['is_valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkCoaching2['errors']]);
+        }
+
+        $checkMentoring = (new CoachingMentoringSessionChecker())->canAddMentoringSessionsForMultipleUsers($request->coachee, $validated['sessions']);
+        if (!$checkMentoring['is_valid']) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['sessions' => $checkMentoring['errors']]);
+        }
+
+        $coaching->update([
+            'title' => $validated['title'],
+            'goal' => $validated['goal'],
+            'reality' => $validated['reality'],
+            'option' => $validated['option'],
+            'way_forward' => $validated['way_forward'],
+            'success_indicator' => $validated['success_indicator'],
+            'total_session' => $validated['total_session'],
+            'learning_resources' => $validated['learning_resources'],
+        ]);
+
+        $coaching->coachees()->sync($request->coachee);
+
+        if ($request->hasFile('file')) {
+            $path = 'coaching/' . now()->year . '/' . $coaching->id . '/';
+            $file = $request->file('file');
+            $fileName = $path . 'spt.' . $file->getClientOriginalExtension();
+
+            if ($coaching->spt && Storage::disk('private')->exists($coaching->spt)) {
+                Storage::disk('private')->delete($coaching->spt);
+            }
+
+            Storage::disk('private')->put($fileName, file_get_contents($file));
+            $coaching->update(['spt' => $fileName]);
+        }
+
+        $coaching->coachingSessions()->delete();
+
+        foreach ($validated['sessions'] as $dateTime) {
+            CoachingSession::create([
+                'coaching_id' => $coaching->id,
+                'coaching_date' => $dateTime,
+            ]);
+        }
+
+        return redirect()->route('student.coach.show', $coaching->id)->with([
+            'messege' => 'Tema coaching berhasil diperbarui!',
+            'alert-type' => 'success'
+        ]);
+    }
+
 }

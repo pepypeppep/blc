@@ -8,7 +8,18 @@
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between align-items-center">
             <h4 class="">{{ __('Detail Tema Coaching') }}</h4>
-            <a href="{{ route('student.coach.index') }}" class="btn btn-secondary btn-sm">{{ __('Kembali') }}</a>
+            <div class="d-flex justify-content-end text-ebd items-end gap-2">
+                <div class="courses__item-bottom">
+                    <div class="button">
+                        <a href="{{ route('student.coach.edit', $coaching->id) }}" class="already-enrolled-btn">{{ __('Ubah') }}</a>
+                    </div>
+                </div>
+                <div class="courses__item-bottom">
+                    <div class="button">
+                        <a href="{{ route('student.coach.index') }}" class="already-enrolled-btn bg-secondary text-white">{{ __('Kembali') }}</a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="mt-3 border-top pt-3">

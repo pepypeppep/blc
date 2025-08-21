@@ -201,6 +201,7 @@ Route::name('api.')->group(function () {
                     Route::get('/', [CoachApiController::class, 'index'])->name('index');
                     Route::get('/{id}', [CoachApiController::class, 'show'])->name('show');
                     Route::post('/', [CoachApiController::class, 'store'])->name('store');
+                    Route::put('/{id}', [CoachApiController::class, 'update'])->name('update');
                     Route::put('/{id}/initiate-consensus', [CoachApiController::class, 'initiateConsensus'])->name('initiate-consensus');
                     Route::put('/{id}/process-coaching', [CoachApiController::class, 'processCoaching'])->name('process-coaching');
                     Route::put('/review', [CoachApiController::class, 'reviewStore'])->name('review');

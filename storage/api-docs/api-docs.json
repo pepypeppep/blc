@@ -1752,6 +1752,120 @@
                         "bearer": []
                     }
                 ]
+            },
+            "put": {
+                "tags": [
+                    "Coach"
+                ],
+                "summary": "Update coaching topic",
+                "description": "Update coaching topic",
+                "operationId": "f005f2e85778a96534ce7efceb7426a5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Coaching id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "goal",
+                                    "reality",
+                                    "option",
+                                    "way_forward",
+                                    "success_indicator",
+                                    "total_session",
+                                    "sessions",
+                                    "coachee"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Judul coaching"
+                                    },
+                                    "goal": {
+                                        "type": "string",
+                                        "example": "Pokok permasalahan coaching"
+                                    },
+                                    "reality": {
+                                        "type": "string",
+                                        "example": "Tujuan coaching"
+                                    },
+                                    "option": {
+                                        "type": "string",
+                                        "example": "Pilihan yang tersedia untuk mencapai tujuan"
+                                    },
+                                    "way_forward": {
+                                        "type": "string",
+                                        "example": "Langkah-langkah yang akan diambil untuk mencapai tujuan"
+                                    },
+                                    "success_indicator": {
+                                        "type": "string",
+                                        "example": "Indikator keberhasilan yang diharapkan"
+                                    },
+                                    "total_session": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "sessions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-07-01 08:00:00"
+                                        }
+                                    },
+                                    "learning_resources": {
+                                        "type": "string",
+                                        "example": "Sumber belajar coaching"
+                                    },
+                                    "coachee": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "file": {
+                                        "description": "(Optional) Upload new PDF file to replace existing",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    },
+                    "403": {
+                        "description": "Forbidden: user not authorized or coaching not in draft status"
+                    },
+                    "422": {
+                        "description": "Validation failed. Conditions: same year, date sequence (earliest to latest), max 2 sessions/month."
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/coaching/coach/{id}/initiate-consensus": {

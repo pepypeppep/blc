@@ -13,25 +13,25 @@
                             <tr>
                                 <th>{{ __('Title') }}</th>
                                 <th>{{ __('Category') }}</th>
-                                <th>{{ __('Action') }}</th>
+                                <th>{{ __('JPL') }}</th>
+                                <th>{{ __('Pelaksanaan') }}</th>
+                                <th>{{ __('Download') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($certificates as $data)
+                            @foreach ($certificates as $data)
                                 <tr>
                                     <td><strong>{{ $data->name }}</strong> ({{ $data->date }})</td>
                                     <td>{{ ucwords($data->category) }}</td>
+                                    <td>{{ $data->jp }}</td>
+                                    <td>{{ $data->periode }}</td>
                                     <td>
                                         <a href="{{ $data->url }}" class="btn-action-primary" title="Unduh">
                                             <i class="fa fa-download"></i>
                                         </a>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="text-center">{{ __('Tidak ada riwayat') }}</td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

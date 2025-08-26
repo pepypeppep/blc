@@ -15,11 +15,11 @@ class CertificateController extends Controller
     public function index(Request $request, CertificateService $certificateService)
     {
         $user_id = Auth::user()->id;
-        $result = $certificateService->getCertificatesForUser($user_id);
+        $result = $certificateService->getCertificatesForUser($request, $user_id);
 
-        if (!$result['success']) {
-            return redirect()->back()->with('error', $result['message']);
-        }
+        // if (!$result['success']) {
+        //     return redirect()->back()->with('error', $result['message']);
+        // }
 
         return view('frontend.student-dashboard.certificate.page', [
             'certificates' => json_decode(json_encode($result['data']))

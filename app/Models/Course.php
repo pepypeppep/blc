@@ -167,7 +167,7 @@ class Course extends Model
 
         $partners = $this->partnerInstructors->pluck('instructor');
 
-        return collect([$primary])->merge($partners);
+        return collect([$primary])->merge($partners)->unique('id')->filter();
     }
 
     protected function thumbnailUrl(): Attribute

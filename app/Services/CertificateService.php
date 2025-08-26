@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\CourseProgress;
 use App\Models\CourseChapterItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Modules\Coaching\app\Models\Coaching;
 use Modules\Mentoring\app\Models\Mentoring;
@@ -11,17 +12,25 @@ use Modules\Order\app\Models\Enrollment;
 
 class CertificateService
 {
-    public function getCertificatesForUser($user_id)
+    public function getCertificatesForUser(Request $request, $user_id)
     {
+        $year = $request->year ?? date('Y');
+
         $enrollments = Enrollment::with([
-            'course' => function ($q) {
-                $q->withTrashed();
+            'course' => function ($q) use ($year) {
+                $q->withTrashed()
+                    ->whereYear('start_date', $year)
+                    ->whereYear('end_date', $year);
             },
             'user' => function ($q) {
                 $q->select('id', 'name');
             }
         ])
             ->where('user_id', $user_id)
+            ->whereHas('course', function ($q) use ($year) {
+                $q->whereYear('start_date', $year)
+                    ->whereYear('end_date', $year);
+            })
             ->orderByDesc('id')
             ->get();
 
@@ -64,36 +73,49 @@ class CertificateService
                 $certificates[] = [
                     'category' => 'course',
                     'name' => $course->title,
+                    'jp' => $course->jp,
                     'date' => $completed_date,
+                    'periode' => $course->start_date . ' - ' . $course->end_date,
                     'url' => route('student.download-certificate', $course->id),
                 ];
             }
         }
 
-        $mentorings = Mentoring::where('mentee_id', $user_id)->where('status', Mentoring::STATUS_DONE)->get();
+        $mentorings = Mentoring::with('mentoringSessions')->where('mentee_id', $user_id)
+            ->where('status', Mentoring::STATUS_DONE)
+            ->whereHas('mentoringSessions', function ($q) use ($year) {
+                $q->whereYear('mentoring_date', $year);
+            })->get();
 
         foreach ($mentorings as $data) {
             $certificates[] = [
                 'category' => 'mentoring',
                 'name' => $data->title,
+                'jp' => '-',
                 'date' => $data->updated_at->format('Y'),
-                'url' => 'https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf',
+                'periode' => $data->mentoringSessions->first()->mentoring_date . ' - ' . $data->mentoringSessions->last()->mentoring_date,
+                'url' => $data->certificate_url,
             ];
         }
 
-        $coachings = Coaching::whereHas('coachees', function ($query) use ($user_id) {
+        $coachings = Coaching::with('coachingSessions')->whereHas('coachees', function ($query) use ($user_id) {
             $query->where('user_id', $user_id);
             $query->where('is_joined', 1);
             $query->whereNotNull('joined_at');
             $query->whereNotNull('final_report');
-        })->where('status', Coaching::STATUS_DONE)->get();
+        })->where('status', Coaching::STATUS_DONE)
+            ->whereHas('coachingSessions', function ($q) use ($year) {
+                $q->whereYear('coaching_date', $year);
+            })->get();
 
         foreach ($coachings as $data) {
             $certificates[] = [
                 'category' => 'coaching',
                 'name' => $data->title,
+                'jp' => '-',
                 'date' => $data->updated_at->format('Y'),
-                'url' => 'https://www.rd.usda.gov/sites/default/files/pdf-sample_0.pdf',
+                'periode' => $data->coachingSessions->first()->coaching_date . ' - ' . $data->coachingSessions->last()->coaching_date,
+                'url' => $data->certificate_url,
             ];
         }
 

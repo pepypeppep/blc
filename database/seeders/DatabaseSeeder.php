@@ -74,7 +74,7 @@ class DatabaseSeeder extends Seeder
             CertificateRecognitionDatabaseSeeder::class,
             InstructorEvaluationDatabaseSeeder::class,
             ConfigSeeder::class,
-            MentoringDatabaseSeeder::class,
+            // MentoringDatabaseSeeder::class,
         ]);
     }
 }

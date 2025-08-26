@@ -503,7 +503,7 @@ class CourseApiController extends Controller
                 'levels',
                 'enrollments',
                 'category.translation',
-                'chapters',
+                'chapters.chapterItems.lesson',
                 'reviews',
                 'lessons',
                 'category' => function ($query) {

@@ -21,6 +21,7 @@ use Modules\Order\app\Models\Enrollment;
 use Illuminate\Contracts\Session\Session;
 use App\Http\Requests\Frontend\QuizLessonCreateRequest;
 use Modules\Course\app\Http\Requests\ChapterLessonRequest;
+use Yajra\DataTables\Facades\DataTables;
 
 class CourseContentController extends Controller
 {
@@ -125,6 +126,7 @@ class CourseContentController extends Controller
 
     function lessonCreate(Request $request)
     {
+
         $courseId = $request->courseId;
         $chapterId = $request->chapterId;
         $chapters = CourseChapter::where('course_id', $courseId)->get();
@@ -150,6 +152,13 @@ class CourseContentController extends Controller
                 'chapters' => $chapters,
                 'type' => $type
             ])->render();
+
+            // return view('course::course.partials.quiz-create-form', [
+            //     'courseId' => $courseId,
+            //     'chapterId' => $chapterId,
+            //     'chapters' => $chapters,
+            //     'type' => 'quiz'
+            // ]);
         } elseif ($request->type == 'rtl') {
             return view('course::course.partials.rtl-create-modal', [
                 'courseId' => $courseId,
@@ -387,6 +396,11 @@ class CourseContentController extends Controller
 
     function createQuizQuestion(string $quizId)
     {
+        dd('a');
+
+        return view('course::course.partials.quiz-question-create-modal', ['quizId' => $quizId])->render();
+
+
         return view('course::course.partials.quiz-question-create-modal', ['quizId' => $quizId])->render();
     }
 
@@ -551,5 +565,25 @@ class CourseContentController extends Controller
     public  function importQuizQuestion(string $quizId)
     {
         return view('course::course.partials.quiz-question-import-modal', ['quizId' => $quizId])->render();
+    }
+
+    public function quizList(Request $request)
+    {
+        $query = Quiz::with(['chapter', 'course', 'instructor']); // kalau ada relasi
+
+        return DataTables::eloquent($query)
+            ->addColumn('action', function ($quiz) {
+                return '
+                    <a href="' . route('quizzes.edit', $quiz->id) . '" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="' . route('quizzes.destroy', $quiz->id) . '" method="POST" style="display:inline-block">
+                        ' . csrf_field() . method_field('DELETE') . '
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Yakin hapus?\')">Delete</button>
+                    </form>
+                ';
+            })
+            ->editColumn('due_date', function ($quiz) {
+                return $quiz->due_date ? date('d-m-Y', strtotime($quiz->due_date)) : '-';
+            })
+            ->make(true);
     }
 }

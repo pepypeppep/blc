@@ -19,6 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'approved.instructor' => \App\Http\Middleware\ApprovedInstructorMiddleware::class
         ]);
 
+        $middleware->group('api', [
+            \App\Http\Middleware\ForceJsonResponse::class,
+        ]);
+
         $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions) {

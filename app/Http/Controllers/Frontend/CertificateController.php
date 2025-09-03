@@ -22,7 +22,9 @@ class CertificateController extends Controller
         // }
 
         return view('frontend.student-dashboard.certificate.page', [
-            'certificates' => json_decode(json_encode($result['data']))
+            'certificates' => json_decode(json_encode($result['data'])),
+            'totalJp' => json_decode(json_encode($result['totalJp'])),
+            'totalJpPerTriwulan' => json_decode(json_encode($result['totalJpPerTriwulan'])),
         ]);
     }
 

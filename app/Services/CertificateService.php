@@ -34,50 +34,43 @@ class CertificateService
             ->orderByDesc('id')
             ->get();
 
-        if ($enrollments->isEmpty()) {
-            return [
-                'success' => false,
-                'message' => 'Tidak ada pelatihan yang terdaftar untuk user ID ' . $user_id,
-                'data' => [],
-                'code' => 404
-            ];
-        }
-
         $certificates = [];
+        if (!$enrollments->isEmpty()) {
+            foreach ($enrollments as $enrollment) {
+                $course = $enrollment->course;
 
-        foreach ($enrollments as $enrollment) {
-            $course = $enrollment->course;
+                if (!$course || $course->certificate != 1) {
+                    continue;
+                }
 
-            if (!$course || $course->certificate != 1) {
-                continue;
-            }
+                $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
+                    $q->where('course_id', $course->id);
+                })->count();
 
-            $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
-                $q->where('course_id', $course->id);
-            })->count();
-
-            $courseLectureCompletedByUser = CourseProgress::where('user_id', $user_id)
-                ->where('course_id', $course->id)
-                ->where('watched', 1)
-                ->count();
-
-            $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
-
-            if ($courseCompletedPercent == 100) {
-                $completed_date = formatDate(CourseProgress::where('user_id', $user_id)
+                $courseLectureCompletedByUser = CourseProgress::where('user_id', $user_id)
                     ->where('course_id', $course->id)
                     ->where('watched', 1)
-                    ->latest()
-                    ->first()->created_at, 'Y');
+                    ->count();
 
-                $certificates[] = [
-                    'category' => 'course',
-                    'name' => $course->title,
-                    'jp' => $course->jp,
-                    'date' => $completed_date,
-                    'periode' => $course->start_date . ' - ' . $course->end_date,
-                    'url' => route('student.download-certificate', $course->id),
-                ];
+                $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
+
+                if ($courseCompletedPercent == 100) {
+                    $completed_date = formatDate(CourseProgress::where('user_id', $user_id)
+                        ->where('course_id', $course->id)
+                        ->where('watched', 1)
+                        ->latest()
+                        ->first()->created_at, 'Y');
+
+                    $certificates[] = [
+                        'category' => 'course',
+                        'name' => $course->title,
+                        'jp' => $course->jp,
+                        'date' => $completed_date,
+                        'periode' => $course->start_date . ' - ' . $course->end_date,
+                        'triwulan' => (int) ceil((date('n', strtotime($course->start_date)) - 1) / 3) + 1,
+                        'url' => route('student.download-certificate', $course->id),
+                    ];
+                }
             }
         }
 
@@ -91,9 +84,10 @@ class CertificateService
             $certificates[] = [
                 'category' => 'mentoring',
                 'name' => $data->title,
-                'jp' => '-',
+                'jp' => 0,
                 'date' => $data->updated_at->format('Y'),
                 'periode' => $data->mentoringSessions->first()->mentoring_date . ' - ' . $data->mentoringSessions->last()->mentoring_date,
+                'triwulan' => (int) ceil((date('n', strtotime($data->mentoringSessions->first()->mentoring_date)) - 1) / 3) + 1,
                 'url' => $data->certificate_url,
             ];
         }
@@ -112,9 +106,10 @@ class CertificateService
             $certificates[] = [
                 'category' => 'coaching',
                 'name' => $data->title,
-                'jp' => '-',
+                'jp' => 0,
                 'date' => $data->updated_at->format('Y'),
                 'periode' => $data->coachingSessions->first()->coaching_date . ' - ' . $data->coachingSessions->last()->coaching_date,
+                'triwulan' => (int) ceil((date('n', strtotime($data->mentoringSessions->first()->coaching_date)) - 1) / 3) + 1,
                 'url' => $data->certificate_url,
             ];
         }
@@ -124,14 +119,32 @@ class CertificateService
                 'success' => false,
                 'message' => 'Sertifikat tidak ditemukan.',
                 'data' => [],
+                'totalJp' => 0,
+                'totalJpPerTriwulan' => [],
                 'code' => 404
             ];
+        }
+
+        $totalJp = array_reduce($certificates, function ($total, $item) {
+            return $total + $item['jp'];
+        }, 0);
+
+        $totalJpPerTriwulan = [];
+        foreach ($certificates as $item) {
+            $triwulan = $item['triwulan'];
+            $totalJpPerTriwulan[$triwulan] = array_reduce(array_filter($certificates, function ($certificate) use ($triwulan) {
+                return $certificate['triwulan'] == $triwulan;
+            }), function ($total, $item) {
+                return $total + $item['jp'];
+            }, 0);
         }
 
         return [
             'success' => true,
             'message' => 'Daftar sertifikat ditemukan.',
             'data' => $certificates,
+            'totalJp' => $totalJp,
+            'totalJpPerTriwulan' => $totalJpPerTriwulan,
             'code' => 200
         ];
     }

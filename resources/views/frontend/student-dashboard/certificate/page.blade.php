@@ -4,8 +4,85 @@
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between">
             <h4 class="title">{{ __('Certificate List') }}</h4>
+            <div>
+                <select name="year" class="form-control px-5" id="year" style="cursor: pointer;"
+                    onchange="location.href='{{ request()->url() }}?year='+this.value;">
+                    <option value="2025" @selected(request('year') == '2025')>2025</option>
+                    <option value="2024" @selected(request('year') == '2024')>2024</option>
+                </select>
+            </div>
         </div>
         <div class="row">
+            <div class="col-4">
+                <div class="dashboard__counter-item">
+                    <div class="content">
+                        <span class="count odometer odometer-auto-theme" data-count="{{ $totalJp }}">
+                            <div class="odometer-inside"><span class="odometer-digit"><span
+                                        class="odometer-digit-spacer">8</span><span class="odometer-digit-inner"><span
+                                            class="odometer-ribbon"><span class="odometer-ribbon-inner"><span
+                                                    class="odometer-value">{{ $totalJp }}</span></span></span></span></span>
+                            </div>
+                        </span>
+                        <p>JPL Tahun {{ request('year') ?? date('Y') }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="dashboard__counter-item">
+                    <div class="content">
+                        <span class="count odometer odometer-auto-theme" data-count="{{ $totalJpPerTriwulan[1] ?? 0 }}">
+                            <div class="odometer-inside"><span class="odometer-digit"><span
+                                        class="odometer-digit-spacer">8</span><span class="odometer-digit-inner"><span
+                                            class="odometer-ribbon"><span class="odometer-ribbon-inner"><span
+                                                    class="odometer-value">{{ $totalJpPerTriwulan[1] ?? 0 }}</span></span></span></span></span>
+                            </div>
+                        </span>
+                        <p>JPL TW I</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="dashboard__counter-item">
+                    <div class="content">
+                        <span class="count odometer odometer-auto-theme" data-count="{{ $totalJpPerTriwulan[2] ?? 0 }}">
+                            <div class="odometer-inside"><span class="odometer-digit"><span
+                                        class="odometer-digit-spacer">8</span><span class="odometer-digit-inner"><span
+                                            class="odometer-ribbon"><span class="odometer-ribbon-inner"><span
+                                                    class="odometer-value">{{ $totalJpPerTriwulan[2] ?? 0 }}</span></span></span></span></span>
+                            </div>
+                        </span>
+                        <p>JPL TW II</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="dashboard__counter-item">
+                    <div class="content">
+                        <span class="count odometer odometer-auto-theme" data-count="{{ $totalJpPerTriwulan[3] ?? 0 }}">
+                            <div class="odometer-inside"><span class="odometer-digit"><span
+                                        class="odometer-digit-spacer">8</span><span class="odometer-digit-inner"><span
+                                            class="odometer-ribbon"><span class="odometer-ribbon-inner"><span
+                                                    class="odometer-value">{{ $totalJpPerTriwulan[3] ?? 0 }}</span></span></span></span></span>
+                            </div>
+                        </span>
+                        <p>JPL TW III</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="dashboard__counter-item">
+                    <div class="content">
+                        <span class="count odometer odometer-auto-theme" data-count="{{ $totalJpPerTriwulan[4] ?? 0 }}">
+                            <div class="odometer-inside"><span class="odometer-digit"><span
+                                        class="odometer-digit-spacer">8</span><span class="odometer-digit-inner"><span
+                                            class="odometer-ribbon"><span class="odometer-ribbon-inner"><span
+                                                    class="odometer-value">{{ $totalJpPerTriwulan[4] ?? 0 }}</span></span></span></span></span>
+                            </div>
+                        </span>
+                        <p>JPL TW IV</p>
+                    </div>
+                </div>
+            </div>
             <div class="col-12">
                 <div class="dashboard__review-table table-responsive">
                     <table class="table table-borderless">

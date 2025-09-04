@@ -6361,48 +6361,28 @@
                 ]
             }
         },
-        "/student-quiz/my-quiz-results": {
+        "/student-quiz/quizzes/{quizId}/my-quiz-results": {
             "get": {
                 "tags": [
                     "Student Quiz"
                 ],
                 "summary": "Lihat hasil kuis peserta",
-                "operationId": "435e23531260dced68540ede1301d209",
+                "operationId": "5f85f9bb3ee6a7b814f91f40d5d73e76",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "ID kuis",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Daftar hasil kuis",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Server error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/student-quiz/my-quiz-seasons": {
-            "get": {
-                "tags": [
-                    "Student Quiz"
-                ],
-                "summary": "Daftar kuis yang sudah dimulai (quiz_seasons)",
-                "operationId": "fd2590fc97a57b0f29ca828c20d01cf4",
-                "responses": {
-                    "200": {
-                        "description": "Daftar seasons yang sudah dimulai",
                         "content": {
                             "application/json": {
                                 "schema": {

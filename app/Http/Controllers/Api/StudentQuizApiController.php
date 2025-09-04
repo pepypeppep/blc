@@ -263,7 +263,7 @@ class StudentQuizApiController extends Controller
                 $questionId = $newAnswer['question_id'];
                 $answerId   = $newAnswer['answer_id'];
 
-                // ✅ Pastikan question_id valid untuk quiz ini
+                // Pastikan question_id valid untuk quiz ini
                 $question = $quiz->questions->firstWhere('id', $questionId);
                 if (!$question) {
                     return response()->json([
@@ -277,7 +277,7 @@ class StudentQuizApiController extends Controller
                     ], 422);
                 }
 
-                // ✅ Pastikan answer_id valid untuk question ini
+                // Pastikan answer_id valid untuk question ini
                 $validAnswer = $question->answers->firstWhere('id', $answerId);
                 if (!$validAnswer) {
                     return response()->json([
@@ -466,10 +466,17 @@ class StudentQuizApiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/student-quiz/my-quiz-results",
+     *     path="/student-quiz/quizzes/{quizId}/my-quiz-results",
      *     summary="Lihat hasil kuis peserta",
      *     tags={"Student Quiz"},
      *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         name="quizId",
+     *         in="path",
+     *         required=true,
+     *         description="ID kuis",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Daftar hasil kuis",
@@ -479,49 +486,47 @@ class StudentQuizApiController extends Controller
      * )
      */
 
-    public function myResults(Request $request)
+    public function myResults(Request $request, string $quizId)
     {
         try {
             $user = $request->user();
             if ($user instanceof JsonResponse) return $user;
 
-            $results = QuizResult::with('quiz')
+            $result = QuizResult::with('quiz')
                 ->where('user_id', $user->id)
+                ->where('quiz_id', $quizId)
                 ->latest()
-                ->get();
+                ->first();
 
-            return $this->successResponse($results, 'Results fetched successfully', 200);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), [], 500);
-        }
-    }
+            if (!$result) {
+                return $this->errorResponse('No result found', [], 404);
+            }
 
-    /**
-     * @OA\Get(
-     *     path="/student-quiz/my-quiz-seasons",
-     *     summary="Daftar kuis yang sudah dimulai (quiz_seasons)",
-     *     tags={"Student Quiz"},
-     *     security={{"bearer":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Daftar seasons yang sudah dimulai",
-     *         @OA\JsonContent(type="array", @OA\Items(type="object"))
-     *     ),
-     *     @OA\Response(response=500, description="Server error")
-     * )
-     */
+            $formatted = [
+                'id'         => $result->id,
+                'score'      => $result->user_grade,
+                'status'     => ucfirst($result->status),
+                'duration'   => $result->duration . ' detik',
+                'created_at' => $result->created_at->format('d M Y H:i'),
+                'answers'    => collect($result->result)->map(function ($res, $qid) {
+                    return [
+                        'question_id' => (int) $qid,
+                        'answer'      => $res['answer'],
+                        'is_correct'  => $res['correct'],
+                    ];
+                })->values(),
+                'quiz' => [
+                    'id'         => $result->quiz->id,
+                    'title'      => $result->quiz->title,
+                    'time_limit' => $result->quiz->time . ' menit',
+                    'attempts'   => $result->quiz->attempt,
+                    'pass_mark'  => $result->quiz->pass_mark,
+                    'total_mark' => $result->quiz->total_mark,
+                    'due_date'   => $result->quiz->due_date,
+                ]
+            ];
 
-    public function myQuizSessions(Request $request)
-    {
-        try {
-            $user = $request->user();
-            if ($user instanceof JsonResponse) return $user;
-            $seasons = QuizSession::with('quiz')
-                ->where('user_id', $user->id)
-                ->latest()
-                ->get();
-
-            return $this->successResponse($seasons, 'Seasons fetched successfully', 200);
+            return $this->successResponse($formatted, 'Result fetched successfully', 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);
         }

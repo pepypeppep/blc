@@ -439,6 +439,8 @@ class StudentQuizApiController extends Controller
                 'result'     => $resultData,
                 'user_grade' => $score, // skor asli
                 'status'     => $score >= $quiz->pass_mark ? 'passed' : 'failed',
+                'start_quiz_at' => $session->started_at,
+                'end_quiz_at' => $endedAt,
                 'duration'   => abs($durationInSeconds),
             ]);
 

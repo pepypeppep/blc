@@ -396,10 +396,6 @@ class CourseContentController extends Controller
 
     function createQuizQuestion(string $quizId)
     {
-        dd('a');
-
-        return view('course::course.partials.quiz-question-create-modal', ['quizId' => $quizId])->render();
-
 
         return view('course::course.partials.quiz-question-create-modal', ['quizId' => $quizId])->render();
     }

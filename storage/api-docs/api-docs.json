@@ -6229,7 +6229,7 @@
                     "Student Quiz"
                 ],
                 "summary": "Simpan jawaban sementara",
-                "description": "Menyimpan jawaban sementara ke tabel quiz_seasons",
+                "description": "Menyimpan jawaban sementara ke tabel quiz_sessions",
                 "operationId": "236b5d2bdc31913fb47fe870d3b5c932",
                 "parameters": [
                     {
@@ -6250,16 +6250,26 @@
                             "schema": {
                                 "properties": {
                                     "answers": {
-                                        "type": "object",
-                                        "example": {
-                                            "1": [
-                                                2
-                                            ],
-                                            "2": [
-                                                5,
-                                                6
-                                            ]
-                                        }
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "question_id": {
+                                                    "type": "integer",
+                                                    "example": 496
+                                                },
+                                                "answer_id": {
+                                                    "type": "integer",
+                                                    "example": 1975
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "example": [
+                                            {
+                                                "question_id": 496,
+                                                "answer_id": 1975
+                                            }
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -6273,6 +6283,9 @@
                     },
                     "404": {
                         "description": "Quiz/Season not found"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
                     },
                     "500": {
                         "description": "Server error"

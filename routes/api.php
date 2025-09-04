@@ -140,8 +140,8 @@ Route::name('api.')->group(function () {
             Route::get('quizzes/{quizId}/start', [StudentQuizApiController::class, 'start'])->name('start');        // mulai kuis
             Route::post('quizzes/{quizId}/save-answer', [StudentQuizApiController::class, 'saveAnswer'])->name('answer'); // autosave
             Route::post('quizzes/{quizId}/submit', [StudentQuizApiController::class, 'submit'])->name('submit');     // submit akhir
-            Route::get('my-quiz-results', [StudentQuizApiController::class, 'myResults'])->name('my.results');      // hasil kuis
-            Route::get('my-quiz-seasons', [StudentQuizApiController::class, 'myQuizSeasons'])->name('my.quiz.seasons');  // daftar kuis yg dirandom
+            Route::get('quizzes/{quizId}/my-quiz-results', [StudentQuizApiController::class, 'myResults'])->name('my.results');      // hasil kuis
+            Route::get('quizzes/{quizId}/my-quiz-seasons', [StudentQuizApiController::class, 'myQuizSeasons'])->name('my.quiz.seasons');  // daftar kuis yg dirandom
         });
 
     // Mentoring

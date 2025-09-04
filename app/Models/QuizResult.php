@@ -15,7 +15,10 @@ class QuizResult extends Model
         'quiz_id',
         'result',
         'user_grade',
-        'status'
+        'status',
+        'duration',
+        'start_quiz_at',
+        'end_quiz_at',
     ];
 
     protected $casts = [

@@ -81,13 +81,14 @@ class CertificateService
             })->get();
 
         foreach ($mentorings as $data) {
+            $sessions = $data->mentoringSessions;
             $certificates[] = [
                 'category' => 'mentoring',
                 'name' => $data->title,
                 'jp' => 0,
                 'date' => $data->updated_at->format('Y'),
-                'periode' => $data->mentoringSessions->first()->mentoring_date . ' - ' . $data->mentoringSessions->last()->mentoring_date,
-                'triwulan' => (int) ceil((date('n', strtotime($data->mentoringSessions->first()->mentoring_date)) - 1) / 3) + 1,
+                'periode' => ($sessions) ? $sessions->first()->mentoring_date . ' - ' . $sessions->last()->mentoring_date : null,
+                'triwulan' => ($sessions) ? (int) ceil((date('n', strtotime($sessions->first()->mentoring_date)) - 1) / 3) + 1 : null,
                 'url' => $data->certificate_url,
             ];
         }
@@ -103,13 +104,14 @@ class CertificateService
             })->get();
 
         foreach ($coachings as $data) {
+            $sessions = $data->coachingSessions;
             $certificates[] = [
                 'category' => 'coaching',
                 'name' => $data->title,
                 'jp' => 0,
                 'date' => $data->updated_at->format('Y'),
-                'periode' => $data->coachingSessions->first()->coaching_date . ' - ' . $data->coachingSessions->last()->coaching_date,
-                'triwulan' => (int) ceil((date('n', strtotime($data->mentoringSessions->first()->coaching_date)) - 1) / 3) + 1,
+                'periode' => ($sessions) ? $sessions->first()->coaching_date . ' - ' . $sessions->last()->coaching_date : null,
+                'triwulan' => ($sessions) ? (int) ceil((date('n', strtotime($sessions->first()->coaching_date)) - 1) / 3) + 1 : null,
                 'url' => $data->certificate_url,
             ];
         }

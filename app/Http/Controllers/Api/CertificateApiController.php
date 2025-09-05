@@ -104,7 +104,7 @@ class CertificateApiController extends Controller
     public function getCertificatesForStudent(Request $request, CertificateService $certificateService)
     {
         try {
-            $result = $certificateService->getCertificatesForUser($request, $request->user()->id);
+            // $result = $certificateService->getCertificatesForUser($request, $request->user()->id);
             $result = [
                 "success" => true,
                 "message" => "Daftar sertifikat ditemukan.",

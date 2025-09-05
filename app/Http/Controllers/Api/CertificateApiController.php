@@ -25,45 +25,56 @@ class CertificateApiController extends Controller
      *         description="successful operation",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(
-     *                 property="success",
-     *                 type="boolean",
-     *                 example=true
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Daftar sertifikat ditemukan."
-     *             ),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     type="object",
-     *                     @OA\Property(
-     *                         property="category",
-     *                         type="string",
-     *                         example="course"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="name",
-     *                         type="string",
-     *                         example="Pelatihan 1"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="date",
-     *                         type="string",
-     *                         format="date-time",
-     *                         example="2022-01-01 00:00:00"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="url",
-     *                         type="string",
-     *                         format="uri",
-     *                         example="https://example.com/certificates/1"
-     *                     )
-     *                 )
-     *             )
+     *             example={
+     *                 "success": true,
+     *                 "message": "Daftar sertifikat ditemukan.",
+     *                 "data": {
+     *                     {
+     *                         "category": "course",
+     *                         "name": "Advanced Web Development",
+     *                         "jp": 20,
+     *                         "date": "2024",
+     *                         "periode": "2024-01-15 - 2024-03-20",
+     *                         "triwulan": 1,
+     *                         "url": "https://example.com/student/download-certificate/123"
+     *                     },
+     *                     {
+     *                         "category": "course",
+     *                         "name": "Data Science Fundamentals",
+     *                         "jp": 15,
+     *                         "date": "2024",
+     *                         "periode": "2024-04-10 - 2024-06-15",
+     *                         "triwulan": 2,
+     *                         "url": "https://example.com/student/download-certificate/456"
+     *                     },
+     *                     {
+     *                         "category": "mentoring",
+     *                         "name": "Career Development Mentoring",
+     *                         "jp": 0,
+     *                         "date": "2024",
+     *                         "periode": "2024-07-05 - 2024-09-10",
+     *                         "triwulan": 3,
+     *                         "url": "https://example.com/certificates/mentoring/789"
+     *                     },
+     *                     {
+     *                         "category": "coaching",
+     *                         "name": "Leadership Coaching Program",
+     *                         "jp": 0,
+     *                         "date": "2024",
+     *                         "periode": "2024-10-01 - 2024-12-15",
+     *                         "triwulan": 4,
+     *                         "url": "https://example.com/certificates/coaching/101"
+     *                     }
+     *                 },
+     *                 "totalJp": 35,
+     *                 "totalJpPerTriwulan": {
+     *                     "1": 20,
+     *                     "2": 15,
+     *                     "3": 0,
+     *                     "4": 0
+     *                 },
+     *                 "code": 200
+     *             }
      *         )
      *     ),
      *     @OA\Response(
@@ -71,16 +82,10 @@ class CertificateApiController extends Controller
      *         description="Not found",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(
-     *                 property="success",
-     *                 type="boolean",
-     *                 example=false
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Tidak ada pelatihan yang terdaftar untuk user ID 1"
-     *             )
+     *             example={
+     *                 "success": false,
+     *                 "message": "Tidak ada pelatihan yang terdaftar untuk user ID 1"
+     *             }
      *         )
      *     ),
      *     @OA\Response(
@@ -88,16 +93,10 @@ class CertificateApiController extends Controller
      *         description="Internal Server Error",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(
-     *                 property="success",
-     *                 type="boolean",
-     *                 example=false
-     *             ),
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Terjadi kesalahan: "
-     *             )
+     *             example={
+     *                 "success": false,
+     *                 "message": "Terjadi kesalahan: "
+     *             }
      *         )
      *     )
      * )

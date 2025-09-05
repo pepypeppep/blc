@@ -78,7 +78,7 @@ Route::name('api.')->group(function () {
 
     // Dashboard
     Route::name('dashboard.')->group(function () {
-        Route::get('/certificates', [CertificateApiController::class, 'getCertificatesForStudent'])->name('certificates');
+        Route::get('/certificates', [CertificateApiController::class, 'getCertificatesForStudent'])->middleware('auth:sso-api')->name('certificates');
 
         Route::prefix('pendidikan-lanjutan')->group(function () {
             Route::get('/', [PendidikanLanjutanController::class, 'index']);

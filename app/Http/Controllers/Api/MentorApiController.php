@@ -30,6 +30,15 @@ class MentorApiController extends Controller
      *             type="integer"
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -39,10 +48,20 @@ class MentorApiController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = Mentoring::with('mentor:id,name', 'mentee:id,name')
+            $dataQuery = Mentoring::with('mentor:id,name', 'mentee:id,name')
                 ->where('mentor_id', $request->user()->id)
-                ->whereNot('status', Mentoring::STATUS_DRAFT)
-                ->orderByDesc('id')->paginate(10);
+                ->whereNot('status', Mentoring::STATUS_DRAFT);
+
+            if ($request->has('search')) {
+                $dataQuery->where('title', 'like', '%' . $request->search . '%')
+                    ->orWhere('description', 'like', '%' . $request->search . '%')
+                    ->orWhere('purpose', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('mentee', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->search . '%');
+                    });
+            }
+
+            $data = $dataQuery->orderByDesc('id')->paginate(10);
 
             return $this->successResponse($data, 'Mentor topics fetched successfully');
         } catch (\Exception $e) {

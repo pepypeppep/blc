@@ -71,6 +71,15 @@ class CoachApiController extends Controller
      *             type="integer"
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -84,13 +93,23 @@ class CoachApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $coaching = Coaching::with(
+            $dataQuery = Coaching::with(
                 'coach:id,name',
                 'coachees:id,name',
                 'joinedCoachees:id,name',
                 'coachingSessions.details.coachingUser.coachee:id,name',
                 'coachingSessions.details.coachingUser.assessment'
-            )->where('coach_id', $request->user()->id)->findOrFail($id);
+            )->where('coach_id', $request->user()->id);
+
+            if ($request->has('search')) {
+                $dataQuery->where('title', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('coachees', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->search . '%');
+                    });
+            }
+
+            $coaching = $dataQuery->findOrFail($id);
+
             $coaching->joinedCoachees->each(function ($coachee) {
                 $coachee->pivot->load('assessment');
             });

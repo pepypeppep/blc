@@ -104,57 +104,57 @@ class CertificateApiController extends Controller
     public function getCertificatesForStudent(Request $request, CertificateService $certificateService)
     {
         try {
-            // $result = $certificateService->getCertificatesForUser($request, $request->user()->id);
-            $result = [
-                "success" => true,
-                "message" => "Daftar sertifikat ditemukan.",
-                "data" => [
-                    [
-                        "category" => "course",
-                        "name" => "Advanced Web Development",
-                        "jp" => 20,
-                        "date" => "2024",
-                        "periode" => "2024-01-15 - 2024-03-20",
-                        "triwulan" => 1,
-                        "url" => "https://example.com/student/download-certificate/123"
-                    ],
-                    [
-                        "category" => "course",
-                        "name" => "Data Science Fundamentals",
-                        "jp" => 15,
-                        "date" => "2024",
-                        "periode" => "2024-04-10 - 2024-06-15",
-                        "triwulan" => 2,
-                        "url" => "https://example.com/student/download-certificate/456"
-                    ],
-                    [
-                        "category" => "mentoring",
-                        "name" => "Career Development Mentoring",
-                        "jp" => 0,
-                        "date" => "2024",
-                        "periode" => "2024-07-05 - 2024-09-10",
-                        "triwulan" => 3,
-                        "url" => "https://example.com/certificates/mentoring/789"
-                    ],
-                    [
-                        "category" => "coaching",
-                        "name" => "Leadership Coaching Program",
-                        "jp" => 0,
-                        "date" => "2024",
-                        "periode" => "2024-10-01 - 2024-12-15",
-                        "triwulan" => 4,
-                        "url" => "https://example.com/certificates/coaching/101"
-                    ]
-                ],
-                "totalJp" => 35,
-                "totalJpPerTriwulan" => [
-                    "1" => 20,
-                    "2" => 15,
-                    "3" => 0,
-                    "4" => 0
-                ],
-                "code" => 200
-            ];
+            $result = $certificateService->getCertificatesForUser($request, $request->user()->id);
+            // $result = [
+            //     "success" => true,
+            //     "message" => "Daftar sertifikat ditemukan.",
+            //     "data" => [
+            //         [
+            //             "category" => "course",
+            //             "name" => "Advanced Web Development",
+            //             "jp" => 20,
+            //             "date" => "2024",
+            //             "periode" => "2024-01-15 - 2024-03-20",
+            //             "triwulan" => 1,
+            //             "url" => "https://example.com/student/download-certificate/123"
+            //         ],
+            //         [
+            //             "category" => "course",
+            //             "name" => "Data Science Fundamentals",
+            //             "jp" => 15,
+            //             "date" => "2024",
+            //             "periode" => "2024-04-10 - 2024-06-15",
+            //             "triwulan" => 2,
+            //             "url" => "https://example.com/student/download-certificate/456"
+            //         ],
+            //         [
+            //             "category" => "mentoring",
+            //             "name" => "Career Development Mentoring",
+            //             "jp" => 0,
+            //             "date" => "2024",
+            //             "periode" => "2024-07-05 - 2024-09-10",
+            //             "triwulan" => 3,
+            //             "url" => "https://example.com/certificates/mentoring/789"
+            //         ],
+            //         [
+            //             "category" => "coaching",
+            //             "name" => "Leadership Coaching Program",
+            //             "jp" => 0,
+            //             "date" => "2024",
+            //             "periode" => "2024-10-01 - 2024-12-15",
+            //             "triwulan" => 4,
+            //             "url" => "https://example.com/certificates/coaching/101"
+            //         ]
+            //     ],
+            //     "totalJp" => 35,
+            //     "totalJpPerTriwulan" => [
+            //         "1" => 20,
+            //         "2" => 15,
+            //         "3" => 0,
+            //         "4" => 0
+            //     ],
+            //     "code" => 200
+            // ];
 
             return response()->json($result);
         } catch (\Exception $e) {

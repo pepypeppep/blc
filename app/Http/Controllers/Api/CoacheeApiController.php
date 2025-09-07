@@ -24,6 +24,15 @@ class CoacheeApiController extends Controller
      *     description="Retrieve a list of coaching sessions for the coachee",
      *     operationId="listCoachingSessions",
      *     security={{"bearer": {}}},
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -38,11 +47,20 @@ class CoacheeApiController extends Controller
     {
         // Logic to list coaching sessions for the coachee
         try {
-            $coachingSessions = Coaching::with(['coachees' => function ($q) use ($request) {
+            $dataQuery = Coaching::with(['coachees' => function ($q) use ($request) {
                 $q->select('users.id', 'name', 'email')->where('users.id', $request->user()->id);
             }, 'coach:id,name,email'])->whereHas('coachees', function ($q) use ($request) {
                 $q->where('users.id', $request->user()->id);
-            })->where('status', '!=', 'draft')->paginate(10);
+            })->where('status', '!=', 'draft');
+
+            if ($request->has('search')) {
+                $dataQuery->where('title', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('coach', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->search . '%');
+                    });
+            }
+
+            $coachingSessions = $dataQuery->paginate(10);
 
             return $this->successResponse($coachingSessions, 'List of coaching sessions');
         } catch (\Exception $e) {

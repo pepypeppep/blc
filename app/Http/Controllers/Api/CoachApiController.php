@@ -34,6 +34,15 @@ class CoachApiController extends Controller
      *             type="integer"
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -47,7 +56,16 @@ class CoachApiController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = Coaching::with('coach:id,name')->where('coach_id', $request->user()->id)->orderByDesc('id')->paginate($request->per_page ?? 10);;
+            $dataQuery = Coaching::with('coach:id,name')->where('coach_id', $request->user()->id);
+
+            if ($request->has('search')) {
+                $dataQuery->where('title', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('coachees', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->search . '%');
+                    });
+            }
+
+            $data = $dataQuery->orderByDesc('id')->paginate($request->per_page ?? 10);
 
             return $this->successResponse($data, 'Coaching topics fetched successfully');
         } catch (\Exception $e) {
@@ -71,15 +89,6 @@ class CoachApiController extends Controller
      *             type="integer"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="search",
-     *         in="query",
-     *         description="Search",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -93,23 +102,13 @@ class CoachApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $dataQuery = Coaching::with(
+            $coaching = Coaching::with(
                 'coach:id,name',
                 'coachees:id,name',
                 'joinedCoachees:id,name',
                 'coachingSessions.details.coachingUser.coachee:id,name',
                 'coachingSessions.details.coachingUser.assessment'
-            )->where('coach_id', $request->user()->id);
-
-            if ($request->has('search')) {
-                $dataQuery->where('title', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('coachees', function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->search . '%');
-                    });
-            }
-
-            $coaching = $dataQuery->findOrFail($id);
-
+            )->where('coach_id', $request->user()->id)->findOrFail($id);
             $coaching->joinedCoachees->each(function ($coachee) {
                 $coachee->pivot->load('assessment');
             });

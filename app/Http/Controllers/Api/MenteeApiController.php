@@ -32,6 +32,15 @@ class MenteeApiController extends Controller
      *             type="integer"
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -41,7 +50,18 @@ class MenteeApiController extends Controller
     public function index(Request $request)
     {
         try {
-            $data = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('mentee_id', $request->user()->id)->orderByDesc('id')->paginate(10);
+            $dataQuery = Mentoring::with('mentor:id,name', 'mentee:id,name')->where('mentee_id', $request->user()->id);
+
+            if ($request->has('search')) {
+                $dataQuery->where('title', 'like', '%' . $request->search . '%')
+                    ->orWhere('description', 'like', '%' . $request->search . '%')
+                    ->orWhere('purpose', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('mentor', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->search . '%');
+                    });
+            }
+
+            $data = $dataQuery->orderByDesc('id')->paginate(10);
 
             return $this->successResponse($data, 'Mentor topics fetched successfully');
         } catch (\Exception $e) {
@@ -65,15 +85,6 @@ class MenteeApiController extends Controller
      *             type="integer"
      *         )
      *     ),
-     *     @OA\Parameter(
-     *         name="search",
-     *         in="query",
-     *         description="Search",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -83,18 +94,7 @@ class MenteeApiController extends Controller
     public function show(Request $request, $id)
     {
         try {
-            $dataQuery = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions', 'feedback', 'review')->where('mentee_id', $request->user()->id);
-
-            if ($request->has('search')) {
-                $dataQuery->where('title', 'like', '%' . $request->search . '%')
-                    ->orWhere('description', 'like', '%' . $request->search . '%')
-                    ->orWhere('purpose', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('mentor', function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->search . '%');
-                    });
-            }
-
-            $mentoring = $dataQuery->findOrFail($id);
+            $mentoring = Mentoring::with('mentor:id,name', 'mentee:id,name', 'mentoringSessions', 'feedback', 'review')->where('mentee_id', $request->user()->id)->findOrFail($id);
             $hasIncompleteSessions = $mentoring->mentoringSessions->contains(function ($session) {
                 return empty($session->activity);
             });

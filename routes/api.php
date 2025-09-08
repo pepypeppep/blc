@@ -57,6 +57,7 @@ Route::name('api.')->group(function () {
     Route::post('/courses/{slug}/join', [CourseApiController::class, 'joinCourse'])->name('courses.join.store');
     Route::get('/courses/{slug}/tos', [CourseApiController::class, 'courseTos'])->name('courses.tos');
     Route::post('/courses/{slug}/accept-tos', [CourseApiController::class, 'acceptTos'])->name('courses.accept-tos');
+    Route::post('/courses/request-sign-certificate/{enrollment}', [CourseApiController::class, 'requestSignCertificate'])->middleware('auth:sso-api')->name('courses.request-sign-certificate');
 
     Route::get('/courses/{type}/{id}/get-file', [StudentLearningApiController::class, 'getFilePathUrl'])->name('courses.get-file');
 

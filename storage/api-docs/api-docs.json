@@ -4091,6 +4091,46 @@
                 ]
             }
         },
+        "/courses/request-sign-certificate/{enrollment}": {
+            "post": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Request sign certificate",
+                "description": "Request sign certificate",
+                "operationId": "0ffce52a5bfd946e2f1313f449dfadf6",
+                "parameters": [
+                    {
+                        "name": "enrollment",
+                        "in": "path",
+                        "description": "Enrollment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/courses/{slug}/tos": {
             "get": {
                 "tags": [

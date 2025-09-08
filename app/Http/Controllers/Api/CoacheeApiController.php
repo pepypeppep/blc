@@ -33,6 +33,24 @@ class CoacheeApiController extends Controller
      *             type="string"
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Per page",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Halaman",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -60,7 +78,7 @@ class CoacheeApiController extends Controller
                     });
             }
 
-            $coachingSessions = $dataQuery->paginate(10);
+            $coachingSessions = $dataQuery->paginate($request->per_page ?? 10);
 
             return $this->successResponse($coachingSessions, 'List of coaching sessions');
         } catch (\Exception $e) {

@@ -35,6 +35,15 @@ class CoachApiController extends Controller
      *         )
      *     ),
      *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Halaman",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
      *         name="search",
      *         in="query",
      *         description="Search",

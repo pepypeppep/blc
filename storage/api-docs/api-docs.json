@@ -1429,6 +1429,48 @@
                 ],
                 "summary": "Get certificates for student",
                 "operationId": "50e47ab4d36543d7eebd3d727a3b2c86",
+                "parameters": [
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Tahun sertifikat",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 2024
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Kata kunci pencarian",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "Advanced Web Development"
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Jumlah data per halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 10
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 1
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "successful operation",

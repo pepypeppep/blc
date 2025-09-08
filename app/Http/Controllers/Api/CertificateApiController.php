@@ -20,6 +20,46 @@ class CertificateApiController extends Controller
      *     summary="Get certificates for student",
      *     security={{"bearer": {}}},
      *     tags={"Certificates"},
+     *     @OA\Parameter(
+     *         description="Tahun sertifikat",
+     *         in="query",
+     *         name="year",
+     *         required=false,
+     *         example=2024,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Kata kunci pencarian",
+     *         in="query",
+     *         name="search",
+     *         required=false,
+     *         example="Advanced Web Development",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Jumlah data per halaman",
+     *         in="query",
+     *         name="per_page",
+     *         required=false,
+     *         example=10,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Halaman",
+     *         in="query",
+     *         name="page",
+     *         required=false,
+     *         example=1,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="successful operation",

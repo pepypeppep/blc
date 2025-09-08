@@ -17,10 +17,6 @@ class CertificateController extends Controller
         $user_id = Auth::user()->id;
         $result = $certificateService->getCertificatesForUser($request, $user_id);
 
-        // if (!$result['success']) {
-        //     return redirect()->back()->with('error', $result['message']);
-        // }
-
         return view('frontend.student-dashboard.certificate.page', [
             'certificates' => json_decode(json_encode($result['data'])),
             'totalJp' => json_decode(json_encode($result['totalJp'])),

@@ -1644,6 +1644,15 @@
                         }
                     },
                     {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "search",
                         "in": "query",
                         "description": "Search",
@@ -2326,6 +2335,24 @@
                         "required": false,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -4416,6 +4443,15 @@
                         }
                     },
                     {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "name": "search",
                         "in": "query",
                         "description": "Search",
@@ -4803,6 +4839,15 @@
                         "name": "per_page",
                         "in": "query",
                         "description": "Per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Halaman",
                         "required": false,
                         "schema": {
                             "type": "integer"

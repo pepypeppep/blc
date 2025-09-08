@@ -31,6 +31,15 @@ class MentorApiController extends Controller
      *         )
      *     ),
      *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Halaman",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
      *         name="search",
      *         in="query",
      *         description="Search",
@@ -61,7 +70,7 @@ class MentorApiController extends Controller
                     });
             }
 
-            $data = $dataQuery->orderByDesc('id')->paginate(10);
+            $data = $dataQuery->orderByDesc('id')->paginate($request->per_page ?? 10);
 
             return $this->successResponse($data, 'Mentor topics fetched successfully');
         } catch (\Exception $e) {

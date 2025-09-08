@@ -15,7 +15,11 @@ class CertificateService
     public function getCertificatesForUser(Request $request, $user_id)
     {
         $year = $request->year ?? date('Y');
+        $search = $request->search ?? '';
+        $perPage = $request->per_page ?? 10;
+        $page = $request->page ?? 1;
 
+        // Get enrollments with course
         $enrollments = Enrollment::with([
             'course' => function ($q) use ($year) {
                 $q->withTrashed()
@@ -114,6 +118,15 @@ class CertificateService
             ];
         }
 
+        // Apply search filter
+        if (!empty($search)) {
+            $certificates = array_filter($certificates, function ($certificate) use ($search) {
+                return stripos($certificate['name'], $search) !== false;
+            });
+            // Re-index array after filtering
+            $certificates = array_values($certificates);
+        }
+
         if (count($certificates) === 0) {
             return [
                 'success' => false,
@@ -121,10 +134,15 @@ class CertificateService
                 'data' => [],
                 'totalJp' => 0,
                 'totalJpPerTriwulan' => [],
+                'total' => 0,
+                'per_page' => $perPage,
+                'current_page' => $page,
+                'last_page' => 0,
                 'code' => 404
             ];
         }
 
+        // Calculate totals before pagination
         $totalJp = array_reduce($certificates, function ($total, $item) {
             return $total + $item['jp'];
         }, 0);
@@ -139,12 +157,26 @@ class CertificateService
             }, 0);
         }
 
+        // Manual pagination
+        $total = count($certificates);
+        $lastPage = ceil($total / $perPage);
+        $offset = ($page - 1) * $perPage;
+        $paginatedData = array_slice($certificates, $offset, $perPage);
+
         return [
             'success' => true,
             'message' => 'Daftar sertifikat ditemukan.',
-            'data' => $certificates,
+            'data' => $paginatedData,
             'totalJp' => $totalJp,
             'totalJpPerTriwulan' => $totalJpPerTriwulan,
+            'pagination' => [
+                'total' => $total,
+                'per_page' => $perPage,
+                'current_page' => (int)$page,
+                'last_page' => $lastPage,
+                'from' => $offset + 1,
+                'to' => min($offset + $perPage, $total)
+            ],
             'code' => 200
         ];
     }

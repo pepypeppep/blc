@@ -2,8 +2,7 @@
 @section('meta_title', $course->title . ' || ' . $setting->app_name)
 
 @section('contents')
-
-    <section class="wsus__course_video">
+    <section class="wsus__course_video" id="main-lesson-section">
         <div class="col-12">
             <div class="wsus__course_header">
                 <a href="{{ route('student.dashboard') }}"><i class="fas fa-angle-left"></i>
@@ -216,6 +215,13 @@
             </div>
         </div>
     </div>
+    <div class="d-flex justify-content-center align-items-center vh-100" id="warning">
+        <div class="text-center">
+            <h2 class="mb-3">⚠️ Developer Tools Detected</h2>
+            <img src="{{ asset('frontend/img/police.png') }}" alt="" class="img-fluid w-25">
+            <p>Halaman ini berisi konten yang dilindungi. Silakan tutup Developer Tools untuk melanjutkan.</p>
+        </div>
+    </div>
 @endsection
 @push('scripts')
     <script>
@@ -322,6 +328,30 @@
                 },
             });
         }
+
+        (function() {
+            let devtoolsOpen = false;
+            const threshold = 160;
+
+            const checkDevTools = () => {
+                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                if (widthThreshold || heightThreshold) {
+                    if (!devtoolsOpen) {
+                        devtoolsOpen = true;
+                        document.getElementById('main-lesson-section').style.display = 'none';
+                        document.getElementById('warning').style.display = 'block';
+                    }
+                } else {
+                    devtoolsOpen = false;
+                    document.getElementById('warning').style.display = 'none';
+                    document.getElementById('main-lesson-section').style.display = 'block';
+                }
+            };
+
+            // check repeatedly
+            setInterval(checkDevTools, 500);
+        })();
     </script>
     <script src="{{ asset('frontend/js/custom-tinymce.js') }}"></script>
 @endpush

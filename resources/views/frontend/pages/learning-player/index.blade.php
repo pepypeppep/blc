@@ -227,6 +227,7 @@
     <script>
         var preloader_path = "{{ asset(Cache::get('setting')->preloader) }}";
         var watermark = "{{ property_exists($setting, 'watermark_img') ? asset($setting->watermark_img) : '' }}";
+        window.Y17JxWAOWqgYx999V6v4hpTZyFaxbF = @json(session('access_token'));
     </script>
     <script src="{{ asset('frontend/js/videojs-watermark.min.js') }}"></script>
     <script src="{{ asset('frontend/js/default/learning-player.js') }}?v={{ $setting?->version }}"></script>

@@ -4233,6 +4233,74 @@
                 ]
             }
         },
+        "/api/report-error": {
+            "post": {
+                "tags": [
+                    "Error Reporting"
+                ],
+                "summary": "Report Error",
+                "operationId": "report",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "module_id": {
+                                        "type": "integer",
+                                        "example": 71
+                                    },
+                                    "module": {
+                                        "type": "string",
+                                        "example": "Course"
+                                    },
+                                    "error_code": {
+                                        "type": "integer",
+                                        "example": 1150
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Video Youtube {lessonId} Error"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Playback on other Websites has been disabled by the video owner."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil melaporkan masalah",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Berhasil melaporkan masalah"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/home": {
             "get": {
                 "tags": [
@@ -6766,6 +6834,10 @@
         {
             "name": "Coachee",
             "description": "Coachee"
+        },
+        {
+            "name": "Error Reporting",
+            "description": "Error Reporting"
         },
         {
             "name": "Instructor Evaluation",

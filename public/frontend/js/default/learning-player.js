@@ -388,6 +388,9 @@ $(document).ready(function () {
     }
 
     window.reportVideo = function () {
+        const Y17JxWAOWqgYx999V6v4hpTZyFaxbF =
+            window.Y17JxWAOWqgYx999V6v4hpTZyFaxbF;
+
         swal.fire({
             title: "Laporkan Masalah Video",
             text: "Anda akan melaporkan masalah video ini. Apakah Anda yakin?",
@@ -400,6 +403,9 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
+                    headers: {
+                        Authorization: `Bearer ${Y17JxWAOWqgYx999V6v4hpTZyFaxbF}`,
+                    },
                     method: "POST",
                     url: "/api/report-error",
                     data: new FormData(document.getElementById("report-form")),

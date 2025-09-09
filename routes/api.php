@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\CertificateApiController;
 use App\Http\Controllers\Api\CoachApiController;
 use App\Http\Controllers\Api\CoacheeApiController;
+use App\Http\Controllers\Api\ErrorReportingController;
 use App\Http\Controllers\Api\InstructorEvaluationController;
 use App\Http\Controllers\Api\MenteeApiController;
 use App\Http\Controllers\Api\MentorApiController;
@@ -40,6 +41,8 @@ Route::name('api.')->group(function () {
     Route::post('/update-device-token', [NotificationController::class, 'updateDeviceToken'])->name('firebase.update.token');
     Route::get('/notifications', [NotificationController::class, 'list'])->name('notification.list');
     Route::get('/notifications/read', [NotificationController::class, 'read'])->name('notification.read');
+
+    Route::post('/report-error', [ErrorReportingController::class, 'report'])->name('report-error');
 
     // Course
     Route::get('/courses', [CourseApiController::class, 'courses'])->name('courses');

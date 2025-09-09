@@ -2184,7 +2184,7 @@ class CourseApiController extends Controller
                 'qrcodeData' => $qrcodeData
             ])->render();
 
-            $page1Html = str_replace('[student_name]', userAuth()->name, $page1Html);
+            $page1Html = str_replace('[student_name]', $request->user()->name, $page1Html);
             $page1Html = str_replace('[platform_name]', Cache::get('setting')->app_name, $page1Html);
             $page1Html = str_replace('[course]', $course->title, $page1Html);
             $page1Html = str_replace('[date]', formatDate($completed_date), $page1Html);

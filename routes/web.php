@@ -14,17 +14,19 @@ use App\Http\Controllers\Frontend\LearningController;
 use App\Http\Controllers\Frontend\AboutPageController;
 use App\Http\Controllers\Frontend\CoursePageController;
 use App\Http\Controllers\Global\CloudStorageController;
+use App\Http\Controllers\Frontend\CertificateController;
 use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Frontend\CourseContentController;
 use App\Http\Controllers\Frontend\StudentReviewController;
+use App\Http\Controllers\GoogleDrivePublicVideoController;
 use App\Http\Controllers\Frontend\FollowUpActionController;
 use App\Http\Controllers\Frontend\BecomeInstructorController;
-use App\Http\Controllers\Frontend\CertificateController;
 use App\Http\Controllers\Frontend\InstructorCourseController;
 use App\Http\Controllers\Frontend\InstructorPayoutController;
 use App\Http\Controllers\Frontend\StudentDashboardController;
 use App\Http\Controllers\Frontend\StudentPengetahuanController;
 use App\Http\Controllers\Frontend\TinymceImageUploadController;
+use Modules\Mentoring\app\Http\Controllers\MentoringController;
 use App\Http\Controllers\Frontend\InstructorDashboardController;
 use App\Http\Controllers\Frontend\InstructorLessonQnaController;
 use App\Http\Controllers\Frontend\StudentFollowUpActionController;
@@ -33,7 +35,6 @@ use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
-use Modules\Mentoring\app\Http\Controllers\MentoringController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -114,6 +115,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
     Route::get("/get-section-asset/{id}/attr/{attr}", [HomePageController::class, 'getSectionAsset'])->name('get.section.asset');
 
+    // The route for streaming video. It's now public and doesn't require user authentication.
+    Route::get('/stream-video/{fileId}', [GoogleDrivePublicVideoController::class, 'streamVideo']);
 
 
     /**

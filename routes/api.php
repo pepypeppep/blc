@@ -42,7 +42,7 @@ Route::name('api.')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'list'])->name('notification.list');
     Route::get('/notifications/read', [NotificationController::class, 'read'])->name('notification.read');
 
-    Route::post('/report-error', [ErrorReportingController::class, 'report'])->name('report-error');
+    Route::post('/report-error', [ErrorReportingController::class, 'report'])->middleware('auth:sso-api')->name('report-error');
 
     // Course
     Route::get('/courses', [CourseApiController::class, 'courses'])->name('courses');

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('error_reports', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->integer('module_id');
             $table->string('module');
             $table->integer('error_code');

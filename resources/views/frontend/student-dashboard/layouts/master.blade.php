@@ -5,9 +5,9 @@
 <!-- end meta -->
 
 @section('contents')
-@env('local')
-    {{ dump(session('access_token')) }}
-@endenv
+    @env('local')
+        <input type="text" value="{{ session('access_token') }}" class="w-100" onclick="this.select()">
+    @endenv
     <!-- breadcrumb-area -->
     <x-frontend.breadcrumb :title="__('')" :links="[]" />
     <!-- breadcrumb-area-end -->
@@ -21,7 +21,8 @@
                     <div class="dashboard__instructor-info-left">
                         <div class="thumb">
                             {{-- <img src="{{ asset('frontend/img/frontend-avatar.png') }}" alt="img"> --}}
-                            <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ auth()->user()->nip }}.jpg" alt="img">
+                            <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ auth()->user()->nip }}.jpg"
+                                alt="img">
                         </div>
                         <div class="content">
                             <h4 class="title">{{ auth()->user()->name }}</h4>
@@ -53,11 +54,13 @@
                         @php
                             $userBadges = userAuth()->badges ?? collect();
                         @endphp
-                        @if($userBadges->isNotEmpty())
+                        @if ($userBadges->isNotEmpty())
                             <ul class="badge-list">
-                                @foreach($userBadges as $badge)
+                                @foreach ($userBadges as $badge)
                                     <li>
-                                        <img class="badge-img" src="{{ asset($badge->image) }}" alt="img" data-toggle="tooltip" data-placement="top" title="{{ $badge->name }} - {{ $badge->pivot->category }}">
+                                        <img class="badge-img" src="{{ asset($badge->image) }}" alt="img"
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="{{ $badge->name }} - {{ $badge->pivot->category }}">
                                     </li>
                                 @endforeach
                             </ul>
@@ -84,7 +87,7 @@
             justify-content: center;
             align-items: center;
             padding: 0 10px;
-            background-color:rgb(63, 42, 63);
+            background-color: rgb(63, 42, 63);
             border-radius: 15px;
             overflow: hidden;
         }
@@ -99,7 +102,7 @@
             align-items: center;
         }
 
-        .badge-img{
+        .badge-img {
             max-width: 70px;
             height: auto;
             border-radius: 5px;
@@ -124,7 +127,7 @@
         }
 
         .dashboard__action a:hover,
-        .dashboard__action button:hover{
+        .dashboard__action button:hover {
             background: rgba(15, 36, 222, 0.25);
             color: var(--tg-common-color-white);
         }
@@ -148,21 +151,22 @@
             background: rgba(47, 87, 239, 0.20);
             color: var(--tg-theme-primary);
         }
+
         .dashboard__action .btn-action-success {
             background: rgba(40, 167, 69, 1);
             color: var(--tg-common-color-white);
         }
+
         .dashboard__action .btn-action-success:hover {
             background: rgba(40, 167, 69, 0.20);
             color: rgba(40, 167, 69, 1);
         }
-        
     </style>
 @endpush
 @push('scripts')
-<script>
-    $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-</script>
+    <script>
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 @endpush

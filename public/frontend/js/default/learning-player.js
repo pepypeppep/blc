@@ -77,7 +77,11 @@ $(document).ready(function () {
     $(".lesson-item").on("click", function () {
         // hide sidebar
         hideSidebar();
-        let ids = $(".lesson-item").map(function () { return $(this).attr("data-lesson-id") }).get();
+        let ids = $(".lesson-item")
+            .map(function () {
+                return $(this).attr("data-lesson-id");
+            })
+            .get();
 
         var lessonId = $(this).attr("data-lesson-id");
         var chapterId = $(this).attr("data-chapter-id");
@@ -88,7 +92,11 @@ $(document).ready(function () {
         var index = ids.indexOf(lessonId);
         if (index !== 0) {
             var previousLessonId = ids[index - 1];
-            if (!$("input[data-lesson-id=" + previousLessonId + "]").prop("checked")) {
+            if (
+                !$("input[data-lesson-id=" + previousLessonId + "]").prop(
+                    "checked"
+                )
+            ) {
                 alert("You must complete the previous lesson first.");
                 $("div[data-lesson-id=" + previousLessonId + "]").click();
                 return false;
@@ -148,17 +156,19 @@ $(document).ready(function () {
                                 (file_info.live.type === "zoom" &&
                                     file_info.course.instructor.zoom_credential)
                             ) {
-                                btnHtml += `<a href="${base_url +
+                                btnHtml += `<a href="${
+                                    base_url +
                                     "/student/learning/" +
                                     file_info.course.slug +
                                     "/" +
                                     file_info.id
-                                    }" class="btn btn-two me-2">${open_w_txt}</a>`;
+                                }" class="btn btn-two me-2">${open_w_txt}</a>`;
                             } else {
-                                btnHtml += `<p>${file_info.live.type === "zoom"
-                                    ? "Zoom"
-                                    : "Jitsi"
-                                    } ${cre_mi_txt}</p>`;
+                                btnHtml += `<p>${
+                                    file_info.live.type === "zoom"
+                                        ? "Zoom"
+                                        : "Jitsi"
+                                } ${cre_mi_txt}</p>`;
                             }
                             if (
                                 file_info.live.type === "zoom" &&
@@ -177,7 +187,8 @@ $(document).ready(function () {
                         playerHtml = `<div class="resource-file">
                         <div class="file-info">
                             <div class="text-center">
-                            <img src="${base_url + "/frontend/img/online-learning.png"
+                            <img src="${
+                                base_url + "/frontend/img/online-learning.png"
                             }" alt="">
                                 ${btnHtml}
                             </div>
@@ -225,7 +236,9 @@ $(document).ready(function () {
                     file_info.type == "lesson"
                 ) {
                     playerHtml = `<iframe id="google-drive-player" class="iframe-video"
-                                src="https://drive.google.com/file/d/${extractGoogleDriveVideoId(file_info.file_path)}/preview" width="640" height="680" allow="autoplay; encrypted-media" frameborder="0" allowfullscreen data-lesson-id="${lessonId}"></iframe>
+                                src="https://drive.google.com/file/d/${extractGoogleDriveVideoId(
+                                    file_info.file_path
+                                )}/preview" width="640" height="680" allow="autoplay; encrypted-media" frameborder="0" allowfullscreen data-lesson-id="${lessonId}"></iframe>
         <div class="completion-overlay" style="
         position: absolute;
         bottom: 20px;
@@ -256,10 +269,11 @@ $(document).ready(function () {
                     file_info.storage == "iframe" ||
                     file_info.type == "document"
                 ) {
-                    playerHtml = `<iframe class="iframe-video" src="${file_info.type == "document"
-                        ? base_url + file_info.file_path
-                        : file_info.file_path
-                        }" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="vjs-watermark"><img src="${watermark}"></div><div class="vjs-poster custom-poster"></div>`;
+                    playerHtml = `<iframe class="iframe-video" src="${
+                        file_info.type == "document"
+                            ? base_url + file_info.file_path
+                            : file_info.file_path
+                    }" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="vjs-watermark"><img src="${watermark}"></div><div class="vjs-poster custom-poster"></div>`;
                 } else if (file_info.type == "quiz") {
                     playerHtml = `<div class="resource-file">
                     <div class="file-info">
@@ -298,26 +312,43 @@ $(document).ready(function () {
                     // });
                     var player = videojs("vid1");
 
+                    player.on("error", function () {
+                        // Get the error using the error() method
+                        var error = player.error();
+                        if (error) {
+                            showVideoError(player, error, courseId, lessonId);
+                        }
+                    });
+
                     // Inside your player.ready function where you handle the timeupdate event:
-                    player.ready(function() {
+                    player.ready(function () {
                         // Add a flag to track if we've already marked this lesson as complete
                         let lessonCompleted = false;
 
-                        player.one('loadedmetadata', function() {
+                        player.one("loadedmetadata", function () {
                             var duration = player.duration();
 
                             if (duration && !isNaN(duration)) {
-                                player.on('timeupdate', function() {
+                                player.on("timeupdate", function () {
                                     var currentTime = player.currentTime();
 
                                     // Check if we're 1 second before the end and haven't completed yet
-                                    if (currentTime >= duration - 1 && !lessonCompleted) {
+                                    if (
+                                        currentTime >= duration - 1 &&
+                                        !lessonCompleted
+                                    ) {
                                         let itemId = lessonId;
-                                        let elements = document.querySelectorAll(`input[data-lesson-id="${itemId}"]`);
+                                        let elements =
+                                            document.querySelectorAll(
+                                                `input[data-lesson-id="${itemId}"]`
+                                            );
 
-                                        if (elements.length && !elements[0].checked) {
+                                        if (
+                                            elements.length &&
+                                            !elements[0].checked
+                                        ) {
                                             // elements[0].click();
-                                            completeLesson(lessonId)
+                                            completeLesson(lessonId);
                                             lessonCompleted = true; // Mark as completed
                                         }
 
@@ -333,13 +364,15 @@ $(document).ready(function () {
 
                 // Handle Google Drive video completion
                 if (document.getElementById("google-drive-player")) {
-                    const markCompleteBtn = document.getElementById("mark-complete-btn");
+                    const markCompleteBtn =
+                        document.getElementById("mark-complete-btn");
                     let lessonCompleted = false;
                     let file_duration = duration * 60;
 
                     // Show completion button after 5 seconds
                     setTimeout(() => {
-                        if (markCompleteBtn) markCompleteBtn.style.display = "block";
+                        if (markCompleteBtn)
+                            markCompleteBtn.style.display = "block";
                     }, file_duration * 1000);
 
                     // If we know video duration, auto-complete after that time + buffer
@@ -348,7 +381,8 @@ $(document).ready(function () {
                             if (!lessonCompleted) {
                                 completeLesson(lessonId);
                                 lessonCompleted = true;
-                                if (markCompleteBtn) markCompleteBtn.style.display = "none";
+                                if (markCompleteBtn)
+                                    markCompleteBtn.style.display = "none";
                             }
                         }, (file_duration + 10) * 1000); // 10 second buffer
                     }
@@ -384,9 +418,83 @@ $(document).ready(function () {
                 // load qna's
                 fetchQuestions(courseId, lessonId, 1, true);
             },
-            error: function (xhr, status, error) { },
+            error: function (xhr, status, error) {},
         });
     });
+
+    function showVideoError(player, error, courseId, lessonId) {
+        console.error("Video error:", error);
+        // Create error HTML with black screen
+        var playerHtml = `
+        <div class="video-error-container">
+            <img src="/frontend/img/black.png" alt="Black screen"
+                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQwIiBoZWlnaHQ9IjI2NCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDAwIi8+PC9zdmc+'; this.alt='Black background'">
+            <div class="video-error-message">
+                <p>📺 Playback Error</p>
+                <p class="error-details">${
+                    error.message || "Unable to play video"
+                }</p>
+                <p><small>Error code: ${error.code || "Unknown"}</small></p>
+                <button class="btn" onclick="reportVideo()">Laporkan</button>
+            </div>
+            <form action="" style="display: none;" id="report-form">
+            <input type="hidden" name="_token" value="${csrf_token}">
+            <input type="hidden" name="module_id" value="${courseId}">
+            <input type="hidden" name="module" value="Course">
+            <input type="hidden" name="error_code" value="${error.code}">
+            <input type="hidden" name="title" value="Video Youtube ${lessonId} Error">
+            <input type="hidden" name="description" value="${error.message}">
+            </form>
+        </div>
+    `;
+
+        // Clear the container completely first
+        if (videojs.getPlayers()["vid1"]) {
+            videojs.getPlayers()["vid1"].dispose();
+        }
+
+        $(".video-payer").html(playerHtml);
+    }
+
+    window.reportVideo = function () {
+        swal.fire({
+            title: "Laporkan Masalah Video",
+            text: "Anda akan melaporkan masalah video ini. Apakah Anda yakin?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "##5751e1",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Laporkan!",
+            cancelButtonText: "Batal",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    method: "POST",
+                    url: "/api/report-error",
+                    data: new FormData(document.getElementById("report-form")),
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.success) {
+                            toastr.success(data.message);
+                            setTimeout(function () {
+                                window.location.href =
+                                    "/student/enrolled-courses";
+                            }, 2000);
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        let errors = xhr.responseJSON.errors;
+                        $.each(errors, function (key, value) {
+                            toastr.error(value);
+                        });
+                    },
+                });
+            }
+        });
+    };
 
     // $(".lesson-completed-checkbox").on("click", function () {
     //     let lessonId = $(this).attr("data-lesson-id");

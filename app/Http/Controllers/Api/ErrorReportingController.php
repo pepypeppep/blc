@@ -11,7 +11,7 @@ class ErrorReportingController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/api/report-error",
+     *     path="/report-error",
      *     operationId="report",
      *     tags={"Error Reporting"},
      *     summary="Report Error",

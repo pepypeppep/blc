@@ -1568,27 +1568,38 @@
                 ]
             }
         },
-        "/callback/course/{enrollmentID}": {
+        "/callback/course/{enrollmentId}": {
             "post": {
                 "tags": [
                     "Bantara"
                 ],
-                "summary": "Post PDF file from Bantara",
-                "operationId": "54f6d3a79478bdbd6c440ff5793514ca",
+                "summary": "Bantara",
+                "operationId": "abd883b53d4ad3927877069312a4b728",
+                "parameters": [
+                    {
+                        "name": "enrollmentId",
+                        "in": "path",
+                        "description": "Enrollment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
                         "multipart/form-data": {
                             "schema": {
+                                "required": [
+                                    "file"
+                                ],
                                 "properties": {
                                     "file": {
                                         "description": "PDF file from Bantara",
                                         "type": "file",
                                         "format": "binary"
-                                    },
-                                    "id": {
-                                        "description": "Document ID",
-                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -1617,12 +1628,7 @@
                             }
                         }
                     }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
+                }
             }
         },
         "/coaching/coach": {

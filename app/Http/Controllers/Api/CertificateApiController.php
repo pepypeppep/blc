@@ -190,26 +190,31 @@ class CertificateApiController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/callback/course/{enrollmentID}",
-     *     summary="Post PDF file from Bantara",
+     *     path="/callback/course/{enrollmentId}",
+     *     summary="Bantara",
      *     tags={"Bantara"},
-     *     security={{"bearer": {}}},
+     *     @OA\Parameter(
+     *         description="Enrollment ID",
+     *         in="path",
+     *         name="enrollmentId",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="uuid"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 type="object",
+     *                 required={"file"},
      *                 @OA\Property(
      *                     property="file",
      *                     type="file",
      *                     format="binary",
      *                     description="PDF file from Bantara",
-     *                 ),
-     *                 @OA\Property(
-     *                     property="id",
-     *                     type="string",
-     *                     description="Document ID",
      *                 ),
      *             ),
      *         ),
@@ -232,7 +237,7 @@ class CertificateApiController extends Controller
      *     )
      * )
      */
-    public function bantaraCallback(Enrollment $enrollment, Request $request)
+    public function bantaraCallback($enrollmentId, Request $request)
     {
         // validate request header key
         $key = $request->header('Authorization');
@@ -244,8 +249,13 @@ class CertificateApiController extends Controller
         $key = str_replace('Bearer ', '', $key);
 
         // validate key
-        if ($key !== appConfig('bantara_callback_key') || $key = '' || $key === null) {
+        if ($key !== env('BANTARA_CALLBACK_KEY') || $key = '' || $key === null) {
             return response(['success' => false, 'message' => 'Invalid api key'], 403);
+        }
+
+        $enrollment = Enrollment::where('uuid', $enrollmentId)->first();
+        if (!$enrollment) {
+            return response(['success' => false, 'message' => 'Enrollment not found'], 404);
         }
 
         $file = $request->file('file');

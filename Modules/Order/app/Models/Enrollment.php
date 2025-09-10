@@ -35,6 +35,7 @@ class Enrollment extends Model
         'has_access' => 'has_access',
         'tos_status' => 'tos_status',
         'certificate_status' => 'certificate_status',
+        'certificate_path' => 'certificate_path',
     ];
 
     function article(): HasMany

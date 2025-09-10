@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use Modules\Article\app\Models\Article;
 use Modules\Order\Database\factories\EnrollmentFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Enrollment extends Model
 {
     use HasFactory;
+    protected $appends = ['certificate_path_url'];
 
     protected static function booted(): void
     {
@@ -57,5 +59,14 @@ class Enrollment extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    protected function certificatePathUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->certificate_status == 'signed'
+                ? route('api.courses.get-file', ['type' => 'certificate', 'id' => $this->id])
+                : null
+        );
     }
 }

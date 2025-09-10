@@ -199,8 +199,7 @@ class CertificateApiController extends Controller
      *         name="enrollmentId",
      *         required=true,
      *         @OA\Schema(
-     *             type="string",
-     *             format="uuid"
+     *             type="string"
      *         )
      *     ),
      *     @OA\RequestBody(

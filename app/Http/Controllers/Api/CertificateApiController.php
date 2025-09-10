@@ -190,7 +190,7 @@ class CertificateApiController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/bantara-callback/{enrollmentID}",
+     *     path="/callback/course/{enrollmentID}",
      *     summary="Post PDF file from Bantara",
      *     tags={"Bantara"},
      *     security={{"bearer": {}}},

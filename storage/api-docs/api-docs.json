@@ -1568,13 +1568,13 @@
                 ]
             }
         },
-        "/api/bantara-callback/{enrollmentID}": {
+        "/callback/course/{enrollmentID}": {
             "post": {
                 "tags": [
                     "Bantara"
                 ],
                 "summary": "Post PDF file from Bantara",
-                "operationId": "921004124fedf71d29a8c2707d31acd0",
+                "operationId": "54f6d3a79478bdbd6c440ff5793514ca",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4233,7 +4233,7 @@
                 ]
             }
         },
-        "/api/report-error": {
+        "/report-error": {
             "post": {
                 "tags": [
                     "Error Reporting"

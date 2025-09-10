@@ -19,6 +19,7 @@ use App\Models\QuizResult;
 use Illuminate\Support\Facades\Cache;
 use App\Models\QuizQuestion;
 use Illuminate\Http\JsonResponse;
+use Modules\Order\app\Models\Enrollment;
 
 class StudentLearningApiController extends Controller
 {
@@ -1223,6 +1224,9 @@ class StudentLearningApiController extends Controller
             } else if ($type == 'rtl') {
                 $data = FollowUpActionResponse::find($id);
                 return response()->file(Storage::disk('private')->path('rtl/' . $data->participant_file));
+            } else if ($type == 'certificate') {
+                $data = Enrollment::find($id);
+                return response()->file(Storage::disk('private')->path($data->certificate_path));
             }
         } catch (\Exception $e) {
             return response()->json([

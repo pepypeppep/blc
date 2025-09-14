@@ -12,7 +12,8 @@
     <!-- Custom Meta -->
     @stack('custom_meta')
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset($setting->favicon) }}">
+    <link rel="shortcut icon" type="image/x-icon"
+        href="{{ route('get.section.asset', [1, 'favicon']) }}?module=general">
     <!-- CSS here -->
     @include('frontend.layouts.styles')
     <!-- CustomCSS here -->
@@ -46,7 +47,8 @@
         <div id="preloader">
             <div id="loader" class="loader">
                 <div class="loader-container">
-                    <div class="loader-icon"><img src="{{ asset($setting->preloader) }}" alt="Preloader">
+                    <div class="loader-icon"><img
+                            src="{{ route('get.section.asset', [1, 'preloader']) }}?module=general" alt="Preloader">
                     </div>
                 </div>
             </div>
@@ -87,13 +89,13 @@
     @include('global.dynamic-js-variables')
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             getNotificationList();
-            $("#notificationList").on('click', function () {
+            $("#notificationList").on('click', function() {
                 $.ajax({
                     url: "{{ route('notification.read') }}",
                     type: "GET",
-                    success: function (response) {
+                    success: function(response) {
                         getNotificationCounter();
                     }
                 });
@@ -104,7 +106,7 @@
             $.ajax({
                 url: "{{ route('notification.list') }}",
                 type: "GET",
-                success: function (response) {
+                success: function(response) {
                     $("#notificationList").html(response);
                 }
             });
@@ -114,7 +116,7 @@
             $.ajax({
                 url: "{{ route('notification.counter') }}",
                 type: "GET",
-                success: function (response) {
+                success: function(response) {
                     $('#notificationCounter').html(response);
                 }
             });

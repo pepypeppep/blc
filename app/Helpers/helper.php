@@ -31,7 +31,52 @@ use Modules\PendidikanLanjutan\app\Models\VacancyLogs;
 use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
 use Google\Client as GoogleClient;
 
-function file_upload(UploadedFile $file, string $path = 'uploads/custom-images/', string | null $oldFile = '', bool $optimize = false)
+function file_upload(UploadedFile $file, string $path = 'custom-images/', string | null $oldFile = '', bool $optimize = false)
+{
+    $path = 'custom-images/';
+
+    // Validate file format
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+    $extension = $file->getClientOriginalExtension();
+
+    if (!in_array(strtolower($extension), $allowedExtensions)) {
+        throw new \Exception('Invalid file format. Allowed formats: jpg, jpeg, png, webp');
+    }
+
+    // Generate filename
+    $fileName = $path . time() . '-' . rand(999, 9999) . '.' . $extension;
+
+    // Store file using private disk
+    Storage::disk('private')->put($fileName, file_get_contents($file->getRealPath()));
+
+    try {
+        // Delete old file if it exists and is not a protected file
+        if ($oldFile && !str($oldFile)->contains('uploads/website-images')) {
+            // Check if old file exists in private storage
+            if (Storage::disk('private')->exists($oldFile)) {
+                Storage::disk('private')->delete($oldFile);
+            }
+            // Also check in public path for backward compatibility
+            elseif (File::exists(public_path($oldFile))) {
+                File::delete(public_path($oldFile));
+            }
+        }
+
+        // Handle optimization if needed (you might need to adjust this for private storage)
+        // if ($optimize) {
+        //     // For private storage, you might need to get the file content, optimize it, and put it back
+        //     $fileContent = Storage::disk('private')->get($fileName);
+        //     // You'll need to implement optimization logic for private storage
+        //     // This might require temporary files or a different approach
+        // }
+    } catch (Exception $e) {
+        Log::info($e->getMessage());
+    }
+
+    return $fileName;
+}
+
+function file_upload2(UploadedFile $file, string $path = 'uploads/custom-images/', string | null $oldFile = '', bool $optimize = false)
 {
     $extention = $file->getClientOriginalExtension();
     $file_name = 'wsus-img' . date('-Y-m-d-h-i-s-') . rand(999, 9999) . '.' . $extention;

@@ -4,16 +4,18 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Modules\Article\database\seeders\ArticleDatabaseSeeder;
-use Modules\Article\database\seeders\ArticleSeeder;
+use Illuminate\Support\Facades\Storage;
 use Modules\Badges\database\seeders\BadgeSeeder;
+use Modules\Article\database\seeders\ArticleSeeder;
+use Modules\Order\database\seeders\EnrollmentSeeder;
 use Modules\Currency\database\seeders\CurrencySeeder;
 use Modules\Language\database\seeders\LanguageSeeder;
 use Modules\GlobalSetting\database\seeders\SeoInfoSeeder;
-use Modules\Mentoring\database\seeders\MentoringDatabaseSeeder;
+use Modules\Article\database\seeders\ArticleDatabaseSeeder;
 use Modules\Menubuilder\database\seeders\MenubuilderSeeder;
 use Modules\Frontend\database\seeders\HomePagesSectionSeeder;
 use Modules\GlobalSetting\database\seeders\EmailTemplateSeeder;
+use Modules\Mentoring\database\seeders\MentoringDatabaseSeeder;
 use Modules\GlobalSetting\database\seeders\CustomPaginationSeeder;
 use Modules\GlobalSetting\database\seeders\MarketingSettingSeeder;
 use Modules\GlobalSetting\database\seeders\GlobalSettingInfoSeeder;
@@ -21,10 +23,9 @@ use Modules\Frontend\database\seeders\FeaturedInstructorSectionSeeder;
 use Modules\InstructorRequest\database\seeders\InstructorRequestSeeder;
 use Modules\CertificateBuilder\database\seeders\CertificateBuilderSeeder;
 use Modules\CertificateBuilder\database\seeders\CertificateBuilderItemSeeder;
-use Modules\Order\database\seeders\EnrollmentSeeder;
 use Modules\PendidikanLanjutan\database\seeders\PendidikanLanjutanDatabaseSeeder;
-use Modules\CertificateRecognition\database\seeders\CertificateRecognitionDatabaseSeeder;
 use Modules\InstructorEvaluation\database\seeders\InstructorEvaluationDatabaseSeeder;
+use Modules\CertificateRecognition\database\seeders\CertificateRecognitionDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -33,6 +34,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Storage::disk('private')->deleteDirectory('custom-images');
+
         $this->call([
             // InstallerDatabaseSeeder::class,
             LanguageSeeder::class,

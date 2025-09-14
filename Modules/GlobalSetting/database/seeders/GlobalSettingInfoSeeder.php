@@ -4,6 +4,7 @@ namespace Modules\GlobalSetting\database\seeders;
 
 use App\Enums\ThemeList;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 use Modules\GlobalSetting\app\Models\Setting;
 
 class GlobalSettingInfoSeeder extends Seeder
@@ -13,12 +14,38 @@ class GlobalSettingInfoSeeder extends Seeder
      */
     public function run(): void
     {
+        // Logo image
+        $logoImage = public_path('frontend/img/starter/BLC.png');
+        $logoFilename = 'custom-images/logo' . time() . '.' . pathinfo($logoImage, PATHINFO_EXTENSION);
+        $filePath = Storage::disk('private')->put($logoFilename, file_get_contents($logoImage));
+        // Favicon image
+        $faviconImage = public_path('frontend/img/starter/favicon.png');
+        $faviconFilename = 'custom-images/favicon' . time() . '.' . pathinfo($faviconImage, PATHINFO_EXTENSION);
+        Storage::disk('private')->put($faviconFilename, file_get_contents($faviconImage));
+        // Avatar image
+        $avatarImage = public_path('frontend/img/starter/default-avatar.png');
+        $avatarFilename = 'custom-images/avatar' . time() . '.' . pathinfo($avatarImage, PATHINFO_EXTENSION);
+        Storage::disk('private')->put($avatarFilename, file_get_contents($avatarImage));
+        // Breadcrumb image
+        $breadcrumbImage = public_path('frontend/img/starter/breadcrumb-image.jpg');
+        $breadcrumbFilename = 'custom-images/breadcrumb' . time() . '.' . pathinfo($breadcrumbImage, PATHINFO_EXTENSION);
+        Storage::disk('private')->put($breadcrumbFilename, file_get_contents($breadcrumbImage));
+        // Preloader image
+        $preloaderImage = public_path('frontend/img/starter/BLC.png');
+        $preloaderFilename = 'custom-images/preloader' . time() . '.' . pathinfo($preloaderImage, PATHINFO_EXTENSION);
+        Storage::disk('private')->put($preloaderFilename, file_get_contents($preloaderImage));
+        // Watermark image
+        $watermarkImage = public_path('frontend/img/starter/BLC.png');
+        $watermarkFilename = 'custom-images/watermark' . time() . '.' . pathinfo($watermarkImage, PATHINFO_EXTENSION);
+        Storage::disk('private')->put($watermarkFilename, file_get_contents($watermarkImage));
+
+
         $setting_data = [
             'app_name' => 'LMS Kabupaten Bantul',
             'version' => '2.0.0',
-            'logo' => 'uploads/website-images/logo.svg',
+            'logo' => $logoFilename,
             'timezone' => 'Asia/Jakarta',
-            'favicon' => 'uploads/website-images/favicon.png',
+            'favicon' => $faviconFilename,
             'cookie_status' => 'active',
             'border' => 'normal',
             'corners' => 'thin',
@@ -49,8 +76,8 @@ class GlobalSettingInfoSeeder extends Seeder
             'gmail_client_id' => 'gmail_client_id',
             'gmail_secret_id' => 'gmail_secret_id',
             'gmail_redirect_url' => 'gmail_redirect_url',
-            'default_avatar' => 'uploads/website-images/default-avatar.png',
-            'breadcrumb_image' => 'uploads/website-images/breadcrumb-image.jpg',
+            'default_avatar' => $avatarFilename,
+            'breadcrumb_image' => $breadcrumbFilename,
             'mail_host' => 'mail_host',
             'mail_sender_email' => 'sender@gmail.com',
             'mail_username' => 'mail_username',
@@ -76,7 +103,7 @@ class GlobalSettingInfoSeeder extends Seeder
             'site_address' => 'Jl. RW Monginsidi 1 Bantul Daerah Istimewa Yogyakarta 55711',
             'site_email' => 'bkpsdm@bantulkab.go.id',
             'site_theme' => ThemeList::MAIN->value,
-            'preloader' => '/frontend/img/logo/preloader.svg',
+            'preloader' => $preloaderFilename,
             'primary_color' => '#5751e1',
             'secondary_color' => '#ffc224',
 
@@ -106,7 +133,7 @@ class GlobalSettingInfoSeeder extends Seeder
             'header_topbar_status' => 'active',
             'cursor_dot_status' => 'active',
             'header_social_status' => 'active',
-            'watermark_img' => 'uploads/website-images/watermark.svg',
+            'watermark_img' => $watermarkFilename,
             'position' => 'top_right',
             'opacity' => '0.7',
             'max_width' => '300',

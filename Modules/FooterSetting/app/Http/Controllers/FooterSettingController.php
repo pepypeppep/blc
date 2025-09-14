@@ -23,20 +23,24 @@ class FooterSettingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) 
+    public function update(Request $request, $id)
     {
-       checkAdminHasPermissionAndThrowException('footer.management');
-       $footerSetting = FooterSetting::updateOrCreate(
-        ['id' => 1],
-        $request->except('_token', 'method', 'logo')
-       );
+        checkAdminHasPermissionAndThrowException('footer.management');
 
-       if ($request->hasFile('logo')) {
-        $fileName = file_upload($request->file('logo'), 'uploads/custom-images/', $footerSetting->logo);
-        $footerSetting->update(['logo' => $fileName]);
-       }
+        $request->validate([
+            'logo' => 'required|file|mimes:jpg,jpeg,png,webp',
+        ]);
 
-       return redirect()->back()->with(['messege' => __('Updated successfully'), 'alert-type' => 'success']);
+        $footerSetting = FooterSetting::updateOrCreate(
+            ['id' => 1],
+            $request->except('_token', 'method', 'logo')
+        );
+
+        if ($request->hasFile('logo')) {
+            $fileName = file_upload($request->file('logo'), 'custom-images', $footerSetting->logo);
+            $footerSetting->update(['logo' => $fileName]);
+        }
+
+        return redirect()->back()->with(['messege' => __('Updated successfully'), 'alert-type' => 'success']);
     }
-
 }

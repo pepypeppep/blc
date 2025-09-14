@@ -215,7 +215,7 @@
             </div>
         </div>
     </div>
-    <div class="d-flex justify-content-center align-items-center vh-100" id="warning">
+    <div class="d-flex justify-content-center align-items-center vh-100" id="warning" style="display: none;">
         <div class="text-center">
             <h2 class="mb-3">⚠️ Developer Tools Detected</h2>
             <img src="{{ asset('frontend/img/police.png') }}" alt="" class="img-fluid w-25">
@@ -226,7 +226,8 @@
 @push('scripts')
     <script>
         var preloader_path = "{{ asset(Cache::get('setting')->preloader) }}";
-        var watermark = "{{ property_exists($setting, 'watermark_img') ? asset($setting->watermark_img) : '' }}";
+        var watermark =
+            "{{ property_exists($setting, 'watermark_img') ? route('get.section.asset', [1, 'watermark_img']) . '?module=general' : '' }}";
         window.Y17JxWAOWqgYx999V6v4hpTZyFaxbF = @json(session('access_token'));
     </script>
     <script src="{{ asset('frontend/js/videojs-watermark.min.js') }}"></script>

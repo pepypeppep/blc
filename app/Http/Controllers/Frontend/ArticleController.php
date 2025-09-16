@@ -47,7 +47,8 @@ class ArticleController extends Controller
         $comments = ArticleComment::with('user')->whereHas('post', function ($query) use ($slug) {
             $query->where('slug', $slug);
         })->orderBy('created_at', 'desc')->get();
-        $review = ArticleReview::where(['article_id' => $article->id, 'author_id' => auth()->user()->id])->first();
+        // $review = ArticleReview::where(['article_id' => $article->id, 'author_id' => auth()->user()->id])->first();
+        $review = ArticleReview::where(['article_id' => $article->id])->first();
 
         return view('frontend.pages.article-details', compact('article', 'latestBlogs', 'categories', 'tags', 'review', 'comments'));
     }

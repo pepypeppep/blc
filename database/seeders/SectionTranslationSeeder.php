@@ -97,6 +97,7 @@ class SectionTranslationSeeder extends Seeder
                 'banner_section' => 1,
                 'latest_blog_section' => 1,
                 'blog_page' => 1,
+                'article_page' => 1,
                 'about_page' => 1,
                 'contact_page' => 1,
             ]

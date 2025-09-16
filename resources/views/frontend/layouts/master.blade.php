@@ -88,40 +88,42 @@
     <!-- Language Translation Variables -->
     @include('global.dynamic-js-variables')
 
-    <script>
-        $(document).ready(function() {
-            getNotificationList();
-            $("#notificationList").on('click', function() {
-                $.ajax({
-                    url: "{{ route('notification.read') }}",
-                    type: "GET",
-                    success: function(response) {
-                        getNotificationCounter();
-                    }
+    @auth
+        <script>
+            $(document).ready(function() {
+                getNotificationList();
+                $("#notificationList").on('click', function() {
+                    $.ajax({
+                        url: "{{ route('notification.read') }}",
+                        type: "GET",
+                        success: function(response) {
+                            getNotificationCounter();
+                        }
+                    });
                 });
             });
-        });
 
-        function getNotificationList() {
-            $.ajax({
-                url: "{{ route('notification.list') }}",
-                type: "GET",
-                success: function(response) {
-                    $("#notificationList").html(response);
-                }
-            });
-        }
+            function getNotificationList() {
+                $.ajax({
+                    url: "{{ route('notification.list') }}",
+                    type: "GET",
+                    success: function(response) {
+                        $("#notificationList").html(response);
+                    }
+                });
+            }
 
-        function getNotificationCounter() {
-            $.ajax({
-                url: "{{ route('notification.counter') }}",
-                type: "GET",
-                success: function(response) {
-                    $('#notificationCounter').html(response);
-                }
-            });
-        }
-    </script>
+            function getNotificationCounter() {
+                $.ajax({
+                    url: "{{ route('notification.counter') }}",
+                    type: "GET",
+                    success: function(response) {
+                        $('#notificationCounter').html(response);
+                    }
+                });
+            }
+        </script>
+    @endauth
 
     <!-- Page specific js -->
     @if (session('registerUser') && $setting->google_tagmanager_status == 'active' && $marketing_setting?->register)

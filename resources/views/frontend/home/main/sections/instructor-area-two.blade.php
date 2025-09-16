@@ -17,7 +17,7 @@
                             </div>
                         </div>
                         <div class="instructor__content-two">
-                            <h3 class="title"><a href="{{ route('register') }}">{{ __('Become a Instructor') }}</a>
+                            <h3 class="title"><a href="javascript:void(0)">{{ __('Become a Instructor') }}</a>
                             </h3>
                             <p>{{ __('Join our team to inspire students, share your knowledge, and shape the future') }}.
                             </p>
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                         <div class="instructor__content-two">
-                            <h3 class="title"><a href="{{ route('register') }}">{{ __('Become a Student') }}</a></h3>
+                            <h3 class="title"><a href="javascript:void(0)">{{ __('Become a Student') }}</a></h3>
                             <p>{{ __('Unlock your potential by joining our vibrant learning community') }}.</p>
                             </p>
                             {{-- <div class="tg-button-wrap">

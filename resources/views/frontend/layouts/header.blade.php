@@ -220,7 +220,8 @@
                         <nav class="tgmobile__menu-box">
                             <div class="close-btn"><i class="tg-flaticon-close-1"></i></div>
                             <div class="nav-logo">
-                                <a href="{{ route('home') }}"><img src="{{ asset(Cache::get('setting')->logo) }}"
+                                <a href="{{ route('home') }}"><img
+                                        src="{{ route('get.section.asset', [1, 'logo']) }}?module=general"
                                         alt="Logo"></a>
                             </div>
 

@@ -18,7 +18,7 @@
     <!-- breadcrumb-area -->
     <x-frontend.breadcrumb :title="__('Detail Pengetahuan')" :links="[
         ['url' => route('home'), 'text' => __('Home')],
-        ['url' => route('blogs'), 'text' => __('Pengetahuan')],
+        ['url' => route('article'), 'text' => __('Pengetahuan')],
         ['url' => '', 'text' => $article->title],
     ]" />
     <!-- breadcrumb-area-end -->
@@ -31,7 +31,8 @@
                     <div class="blog__details-wrapper">
                         <div class="blog__details-thumb">
                             @if ($article->category == 'video')
-                                <iframe class="w-100" style="height: 70vh" src="{{ $article->embed_link }}" allowfullscreen></iframe>
+                                <iframe class="w-100" style="height: 70vh" src="{{ $article->embed_link }}"
+                                    allowfullscreen></iframe>
                             @elseif ($article->category == 'document')
                                 <object data="{{ $article->document_url }}" type="application/pdf" width="100%"
                                     height="600">
@@ -113,7 +114,8 @@
                                         <div class="comment-note">
                                             <p>{{ __('Please rate to add a comment.') }}</p>
                                         </div>
-                                        <form action="{{ route('article.submit-review') }}" class="comment-form" method="post">
+                                        <form action="{{ route('article.submit-review') }}" class="comment-form"
+                                            method="post">
                                             @csrf
                                             <input type="hidden" name="article_id" value="{{ $article->id }}">
                                             <div class="form-grp mb-3">
@@ -140,7 +142,8 @@
                                         <div class="comment-note">
                                             <p>{{ __('Please keep your comment under 1000 characters') }}</p>
                                         </div>
-                                        <form action="{{ route('article.submit-comment') }}" class="comment-form" method="post">
+                                        <form action="{{ route('article.submit-comment') }}" class="comment-form"
+                                            method="post">
                                             @csrf
                                             <input type="hidden" name="article_id" value="{{ $article->id }}">
                                             <div class="comment-field">
@@ -188,6 +191,7 @@
                                             <div class="comments-box">
                                                 <div class="comments-avatar">
                                                     <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $comment->user->nip }}.jpg"
+                                                        onerror="this.src='{{ route('get.section.asset', [1, 'default_avatar']) }}?module=general';"
                                                         alt="img">
                                                 </div>
                                                 <div class="comments-text">

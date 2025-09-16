@@ -9,6 +9,7 @@ use Modules\Course\app\Http\Controllers\CourseController;
 use Modules\Course\app\Http\Controllers\CourseDeleteRequestController;
 use Modules\Course\app\Http\Controllers\CourseLanguageController;
 use Modules\Course\app\Http\Controllers\CourseLevelController;
+use Modules\Course\app\Http\Controllers\CourseReportController;
 use Modules\Course\app\Http\Controllers\CourseReviewController;
 use Modules\Course\app\Http\Controllers\CourseSubCategoryController;
 use Modules\Course\app\Http\Controllers\CourseTosController;
@@ -49,6 +50,9 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
 
         Route::get('/course-tos', [CourseTosController::class, 'create'])->name('course-tos.create');
         Route::post('/course-tos', [CourseTosController::class, 'store'])->name('course-tos.store');
+
+        Route::get('/course-report', [CourseReportController::class, 'index'])->name('course-report.index');
+        Route::get('/course-report/{id}', [CourseReportController::class, 'show'])->name('course-report.show');
     });
 
 

@@ -27,7 +27,7 @@ class NotificationController extends Controller
         } else {
             if (auth()->check()) {
                 $user = auth()->user();
-                $notifications = Notification::where('user_id', $user->id)->limit(5)->orderByDesc('id')->get();
+                $notifications = Notification::where('user_id', $user->id)->limit(5)->orderByDesc('id')->paginate();
                 $counter = Notification::where('user_id', $user->id)->where('is_read', 0)->count();
             } else {
                 $notifications = [];

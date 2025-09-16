@@ -1,7 +1,7 @@
 {{-- Here will go all the strings that will be translated for javascript parts --}}
 <script>
     var base_url = "{{ url('/') }}";
-    var preloader_path = "{{ asset(Cache::get('setting')->preloader) }}";
+    var preloader_path = "{{ route('get.section.asset', [1, 'preloader']) }}?module=general";
 
     var demo_mode_error = "{{ __('This Is Demo Version. You Can Not Change Anything') }}";
     var translation_success = "{{ __('Translated Successfully!') }}";

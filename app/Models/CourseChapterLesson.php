@@ -37,6 +37,10 @@ class CourseChapterLesson extends Model
     {
         return $this->belongsTo(Course::class, 'course_id', 'id');
     }
+    function courseChapter(): BelongsTo
+    {
+        return $this->belongsTo(CourseChapter::class, 'chapter_id', 'id');
+    }
     function chapterItem(): BelongsTo
     {
         return $this->belongsTo(CourseChapterItem::class, 'chapter_item_id', 'id');

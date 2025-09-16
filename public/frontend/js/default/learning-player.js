@@ -341,6 +341,19 @@ $(document).ready(function () {
 
                         this.play();
                     });
+
+                    // Catch YouTube iframe API invalid video id
+                    window.addEventListener("error", function (e) {
+                        if (
+                            e.message &&
+                            e.message.includes("Invalid video id")
+                        ) {
+                            let error = {
+                                code: 0,
+                            };
+                            showVideoError(player, error, courseId, lessonId);
+                        }
+                    });
                 }
 
                 // set lecture description
@@ -423,10 +436,7 @@ $(document).ready(function () {
                         }
                     },
                     error: function (xhr, status, error) {
-                        let errors = xhr.responseJSON.errors;
-                        $.each(errors, function (key, value) {
-                            toastr.error(value);
-                        });
+                        toastr.error(error);
                     },
                 });
             }

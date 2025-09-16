@@ -43,7 +43,12 @@
                 @endif
 
                 @if (Module::isEnabled('Course') && checkAdminHasPermission('report.management'))
-                    @include('badges::sidebar')
+                    <li class="{{ isRoute('admin.course-report.index', 'active') }}">
+                        <a class="nav-link" href="{{ route('admin.course-report.index') }}"><i
+                                class="fas fa-award"></i>
+                            <span>{{ __('Reports') }}</span>
+                        </a>
+                    </li>
                 @endif
 
                 <li class="menu-header">{{ __('Certificate Recognition') }}</li>

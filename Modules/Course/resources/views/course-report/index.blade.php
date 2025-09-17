@@ -1,5 +1,4 @@
 @extends('admin.master_layout')
-@use('Modules\CertificateRecognition\app\Models\CertificateRecognition')
 @section('title')
     <title>{{ __('Error Report') }}</title>
 @endsection
@@ -55,48 +54,43 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
+                                                <th>{{ __('Reporter') }}</th>
                                                 <th>{{ __('Course') }}</th>
                                                 <th>{{ __('Chapter') }}</th>
                                                 <th>{{ __('Lesson') }}</th>
                                                 <th>{{ __('Status') }}</th>
                                                 <th>{{ __('Description') }}</th>
-                                                <th>{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse ($courseReport as $index => $data)
                                                 <tr>
                                                     <td>{{ ++$index }}</td>
+                                                    <td>{{ $data->user->name }}</td>
                                                     <td>
-                                                        <a
-                                                            href="{{ route('admin.course-report.show', $data->id) }}">{{ $data->module_model->title }}</a>
+                                                        <a href="{{ route('admin.courses.edit-view', $data->module_model->id) }}"
+                                                            target="_blank"
+                                                            title="Klik untuk membuka pelatihan">{{ $data->module_model->title }}</a>
                                                     </td>
-                                                    <td>{{ $data->lesson_model->courseChapter->title }}</td>
-                                                    <td>{{ $data->lesson_model->title }}</td>
                                                     <td>
-                                                        @if ($data->status == 'reported')
-                                                            <div class="badge badge-danger">Dilaporkan</div>
-                                                        @else
-                                                            <div class="badge badge-success">Selesai</div>
-                                                        @endif
+                                                        <a href="{{ route('admin.courses.edit', [$data->module_model->id, 3]) }}"
+                                                            target="_blank"
+                                                            title="Klik untuk membuka bab">{{ $data->lesson_model->courseChapter->title }}</a>
+                                                    </td>
+                                                    <td>{{ $data->lesson_model->title }}</td>
+                                                    <td class="course-table-approve">
+                                                        <select name=""
+                                                            class="form-control course-change-status badge {{ $data->status == 'reported' ? 'badge-danger' : 'badge-success' }}"
+                                                            data-id="{{ $data->id }}" style="cursor: pointer;">
+                                                            <option @selected($data->status == 'reported') value="reported">
+                                                                Dilaporkan
+                                                            </option>
+                                                            <option @selected($data->status == 'solved') value="solved">
+                                                                Selesai
+                                                            </option>
+                                                        </select>
                                                     </td>
                                                     <td>{{ $data->description }}</td>
-                                                    <td class="flex text-end justify-end items-end">
-                                                        <a href="{{ route('admin.course-report.show', $data->id) }}"
-                                                            class="btn btn-info btn-sm"><i class="fa fa-eye"></i>
-                                                        </a>
-                                                        {{-- <form
-                                                            action="{{ route('admin.course-report.destroy', $data->id) }}"
-                                                            method="POST" id="delete-form-{{ $data->id }}"
-                                                            style="display: inline-block;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <a href="javascript:void(0)"
-                                                                onclick="handleDelete(event, 'delete-form-{{ $data->id }}')"
-                                                                class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>
-                                                            </a>
-                                                        </form> --}}
-                                                    </td>
                                                 </tr>
                                             @empty
                                                 <x-empty-table :name="__('Error Report')" route="" create="no"
@@ -139,6 +133,30 @@
     @endif
 
     <script>
+        $(".course-change-status").on("change", function(e) {
+            e.preventDefault();
+            let id = $(this).data("id");
+            $.ajax({
+                method: "PUT",
+                url: base_url + "/admin/course-report/" + id,
+                data: {
+                    _token: csrf_token,
+                },
+                success: function(data) {
+                    console.log(data);
+
+                    if (data.status == "success") {
+                        toastr.success(data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status != 200) {
+                        toastr.error(xhr.responseJSON.message);
+                    }
+                },
+            });
+        });
+
         function handleDelete(event, formId) {
             event.preventDefault();
             Swal.fire({

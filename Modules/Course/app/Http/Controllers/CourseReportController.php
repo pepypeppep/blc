@@ -57,7 +57,15 @@ class CourseReportController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $errorReport = ErrorReport::find($id);
+        $errorReport->update([
+            'status' => $errorReport->status == 'reported' ? 'solved' : 'reported',
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil menyelesaikan error',
+        ]);
     }
 
     /**

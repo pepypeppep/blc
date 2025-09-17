@@ -52,7 +52,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
         Route::post('/course-tos', [CourseTosController::class, 'store'])->name('course-tos.store');
 
         Route::get('/course-report', [CourseReportController::class, 'index'])->name('course-report.index');
-        Route::get('/course-report/{id}', [CourseReportController::class, 'show'])->name('course-report.show');
+        Route::put('/course-report/{id}', [CourseReportController::class, 'update'])->name('course-report.update');
     });
 
 

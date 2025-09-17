@@ -23,7 +23,7 @@ class SectionSettingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) 
+    public function update(Request $request, $id)
     {
         checkAdminHasPermissionAndThrowException('appearance.management');
 
@@ -44,6 +44,7 @@ class SectionSettingController extends Controller
                 'banner_section' => $request->has('banner_section'),
                 'latest_blog_section' => $request->has('latest_blog_section'),
                 'blog_page' => $request->has('blog_page'),
+                'article_page' => $request->has('article_page'),
                 'about_page' => $request->has('about_page'),
                 'contact_page' => $request->has('contact_page'),
             ]

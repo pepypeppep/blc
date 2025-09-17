@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('module');
             $table->integer('error_code');
             $table->string('title');
+            $table->string('status')->default('reported');
             $table->longText('description');
             $table->timestamps();
         });

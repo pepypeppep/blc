@@ -273,6 +273,13 @@ trait PermissionsTrait
         ],
     ];
 
+    public static array $reportPermission = [
+        'group_name' => 'Reports',
+        'permissions' => [
+            'report.management',
+        ],
+    ];
+
     public static array $OrderPermission = [
         'group_name' => 'order management',
         'permissions' => [

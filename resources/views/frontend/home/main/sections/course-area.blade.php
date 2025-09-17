@@ -15,7 +15,11 @@
                                 $allCoursesIds = json_decode(
                                     $featuredCourse?->all_category_ids ? $featuredCourse->all_category_ids : '[]',
                                 );
-                                $allCourses = App\Models\Course::with('favoriteBy','category.translation', 'instructor:id,name')
+                                $allCourses = App\Models\Course::with(
+                                    'favoriteBy',
+                                    'category.translation',
+                                    'instructor:id,name',
+                                )
                                     ->whereIn('id', $allCoursesIds)
                                     ->withCount([
                                         'reviews as avg_rating' => function ($query) {
@@ -40,7 +44,8 @@
                                             ->first();
                                         $categoryOneIds = json_decode($featuredCourse->category_one_ids);
                                         $categoryOneCourses = App\Models\Course::with(
-                                            'favoriteBy','category.translation',
+                                            'favoriteBy',
+                                            'category.translation',
                                             'instructor:id,name',
                                         )
                                             ->whereIn('id', $categoryOneIds)
@@ -67,7 +72,8 @@
                                             ->first();
                                         $categoryTwoIds = json_decode($featuredCourse->category_two_ids);
                                         $categoryTwoCourses = App\Models\Course::with(
-                                            'favoriteBy','category.translation',
+                                            'favoriteBy',
+                                            'category.translation',
                                             'instructor:id,name',
                                         )
                                             ->whereIn('id', $categoryTwoIds)
@@ -96,7 +102,8 @@
                                             ->first();
                                         $categoryThreeIds = json_decode($featuredCourse->category_three_ids);
                                         $categoryThreeCourses = App\Models\Course::with(
-                                            'favoriteBy','category.translation',
+                                            'favoriteBy',
+                                            'category.translation',
                                             'instructor:id,name',
                                         )
                                             ->whereIn('id', $categoryThreeIds)
@@ -124,7 +131,8 @@
                                             ->first();
                                         $categoryFourIds = json_decode($featuredCourse->category_four_ids);
                                         $categoryFourCourses = App\Models\Course::with(
-                                            'favoriteBy','category.translation',
+                                            'favoriteBy',
+                                            'category.translation',
                                             'instructor:id,name',
                                         )
                                             ->whereIn('id', $categoryFourIds)
@@ -152,7 +160,8 @@
                                             ->first();
                                         $categoryFiveIds = json_decode($featuredCourse->category_five_ids);
                                         $categoryFiveCourses = App\Models\Course::with(
-                                            'favoriteBy','category.translation',
+                                            'favoriteBy',
+                                            'category.translation',
                                             'instructor:id,name',
                                         )
                                             ->whereIn('id', $categoryFiveIds)
@@ -190,8 +199,9 @@
                                             class="shine__animate-link">
                                             <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
                                             <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
                                         </a>
                                     </div>
@@ -210,16 +220,18 @@
                                         </h3>
                                         <p class="author">{{ __('By') }}
                                             @if ($course->instructor)
-                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                                <a
+                                                    href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
                                             @else
-                                            Tim Diklat
+                                                Tim Diklat
                                             @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <span
+                                                style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
                                             <div class="button">
-                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
-                                                    data-id="">
+                                                <a href="{{ route('course.show', $course->slug) }}"
+                                                    class="already-enrolled-btn" data-id="">
                                                     <span class="text">Lihat Detail</span>
                                                     <i class="flaticon-arrow-right"></i>
                                                 </a>
@@ -250,9 +262,11 @@
                                             class="shine__animate-link">
                                             <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
                                         </a>
                                     </div>
                                     <div class="courses__item-content">
@@ -270,16 +284,18 @@
                                         </h3>
                                         <p class="author">{{ __('By') }}
                                             @if ($course->instructor)
-                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                                <a
+                                                    href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
                                             @else
-                                            Tim Diklat
+                                                Tim Diklat
                                             @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <span
+                                                style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
                                             <div class="button">
-                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
-                                                    data-id="">
+                                                <a href="{{ route('course.show', $course->slug) }}"
+                                                    class="already-enrolled-btn" data-id="">
                                                     <span class="text">Lihat Detail</span>
                                                     <i class="flaticon-arrow-right"></i>
                                                 </a>
@@ -310,9 +326,11 @@
                                             class="shine__animate-link">
                                             <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
                                         </a>
                                     </div>
                                     <div class="courses__item-content">
@@ -330,16 +348,18 @@
                                         </h3>
                                         <p class="author">{{ __('By') }}
                                             @if ($course->instructor)
-                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                                <a
+                                                    href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
                                             @else
-                                            Tim Diklat
+                                                Tim Diklat
                                             @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <span
+                                                style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
                                             <div class="button">
-                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
-                                                    data-id="">
+                                                <a href="{{ route('course.show', $course->slug) }}"
+                                                    class="already-enrolled-btn" data-id="">
                                                     <span class="text">Lihat Detail</span>
                                                     <i class="flaticon-arrow-right"></i>
                                                 </a>
@@ -370,9 +390,11 @@
                                             class="shine__animate-link">
                                             <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
                                         </a>
                                     </div>
                                     <div class="courses__item-content">
@@ -390,16 +412,18 @@
                                         </h3>
                                         <p class="author">{{ __('By') }}
                                             @if ($course->instructor)
-                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                                <a
+                                                    href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
                                             @else
-                                            Tim Diklat
+                                                Tim Diklat
                                             @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <span
+                                                style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
                                             <div class="button">
-                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
-                                                    data-id="">
+                                                <a href="{{ route('course.show', $course->slug) }}"
+                                                    class="already-enrolled-btn" data-id="">
                                                     <span class="text">Lihat Detail</span>
                                                     <i class="flaticon-arrow-right"></i>
                                                 </a>
@@ -430,9 +454,11 @@
                                             class="shine__animate-link">
                                             <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
                                         </a>
                                     </div>
                                     <div class="courses__item-content">
@@ -450,16 +476,18 @@
                                         </h3>
                                         <p class="author">{{ __('By') }}
                                             @if ($course->instructor)
-                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                                <a
+                                                    href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
                                             @else
-                                            Tim Diklat
+                                                Tim Diklat
                                             @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <span
+                                                style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
                                             <div class="button">
-                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
-                                                    data-id="">
+                                                <a href="{{ route('course.show', $course->slug) }}"
+                                                    class="already-enrolled-btn" data-id="">
                                                     <span class="text">Lihat Detail</span>
                                                     <i class="flaticon-arrow-right"></i>
                                                 </a>
@@ -490,9 +518,11 @@
                                             class="shine__animate-link">
                                             <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
+                                            <i
+                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
                                         </a>
                                     </div>
                                     <div class="courses__item-content">
@@ -510,16 +540,18 @@
                                         </h3>
                                         <p class="author">{{ __('By') }}
                                             @if ($course->instructor)
-                                            <a href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
+                                                <a
+                                                    href="{{ route('instructor-details', ['id' => $course->instructor->id, 'slug' => Str::slug($course->instructor->name)]) }}">{{ $course->instructor->name }}</a>
                                             @else
-                                            Tim Diklat
+                                                Tim Diklat
                                             @endif
                                         </p>
                                         <div class="courses__item-bottom">
-                                            <span style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
+                                            <span
+                                                style="display: inline-block; padding: 5px 10px; border-radius: 10px; font-size: 12px; font-weight: 500; color: #fff; background-color: {{ $course->access === 'private' ? '#dc3545' : '#28a745' }};">{{ $course->access === 'private' ? 'Internal' : 'Publik' }}</span>
                                             <div class="button">
-                                                <a href="{{ route('course.show', $course->slug) }}" class="already-enrolled-btn"
-                                                    data-id="">
+                                                <a href="{{ route('course.show', $course->slug) }}"
+                                                    class="already-enrolled-btn" data-id="">
                                                     <span class="text">Lihat Detail</span>
                                                     <i class="flaticon-arrow-right"></i>
                                                 </a>

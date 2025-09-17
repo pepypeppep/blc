@@ -22,6 +22,7 @@
                         <div class="thumb">
                             {{-- <img src="{{ asset('frontend/img/frontend-avatar.png') }}" alt="img"> --}}
                             <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ auth()->user()->nip }}.jpg"
+                                onerror="this.onerror=null;this.src='{{ route('get.section.asset', [1, 'default_avatar']) . '?module=general' }}';"
                                 alt="img">
                         </div>
                         <div class="content">

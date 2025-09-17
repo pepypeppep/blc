@@ -14,7 +14,8 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('admin.footersetting.update', 1) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.footersetting.update', 1) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="row">
@@ -42,7 +43,8 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>{{ __('Footer Address') }}</label>
-                                        <input type="text" class="form-control" name="address" value="{{ $footerSetting?->address }}">
+                                        <input type="text" class="form-control" name="address"
+                                            value="{{ $footerSetting?->address }}">
                                         @error('address')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -51,7 +53,8 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>{{ __('Footer Phone') }}</label>
-                                        <input type="text" class="form-control" name="phone" value="{{ $footerSetting?->phone }}">
+                                        <input type="text" class="form-control" name="phone"
+                                            value="{{ $footerSetting?->phone }}">
                                         @error('phone')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -69,7 +72,8 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>{{ __('Google Play Link') }}</label>
-                                        <input type="text" class="form-control" name="google_play_link" value="{{ $footerSetting?->google_play_link }}">
+                                        <input type="text" class="form-control" name="google_play_link"
+                                            value="{{ $footerSetting?->google_play_link }}">
                                         @error('google_play_link')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -78,7 +82,8 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>{{ __('Apple Store Link') }}</label>
-                                        <input type="text" class="form-control" name="apple_store_link" value="{{ $footerSetting?->apple_store_link }}">
+                                        <input type="text" class="form-control" name="apple_store_link"
+                                            value="{{ $footerSetting?->apple_store_link }}">
                                         @error('apple_store_link')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -107,7 +112,7 @@
             success_callback: null
         });
         $('#image-preview').css({
-            'background-image': 'url({{ asset($footerSetting?->logo) }})',
+            'background-image': "url({{ route('get.section.asset', [$footerSetting?->id, 'logo']) . '?module=footer' }})",
             'background-size': 'contain',
             'background-position': 'center',
             'background-repeat': 'no-repeat'

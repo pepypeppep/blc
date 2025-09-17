@@ -1,4 +1,5 @@
-<section class="breadcrumb__area breadcrumb__bg" data-background="{{ asset(Cache::get('setting')?->breadcrumb_image) }}">
+<section class="breadcrumb__area breadcrumb__bg"
+    data-background="{{ route('get.section.asset', [1, 'breadcrumb_image']) }}?module=general">
     <div class="container">
         <div class="row">
             <div class="col-12">

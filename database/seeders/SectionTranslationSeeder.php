@@ -75,7 +75,7 @@ class SectionTranslationSeeder extends Seeder
                 'address'   => 'Jl. RW Monginsidi 1 Bantul Daerah Istimewa Yogyakarta 55711',
                 'phone_one' => '0274-367509',
                 'email_one' => 'bkpsdm@bantulkab.go.id',
-                'map'       => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4399.781671048126!2d110.32533732500605!3d-7.886218792136385!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7aff0036c0342f%3A0x33038655a04641a1!2sBadan%20kepegawaian%20dan%20Pengembangan%20Sumber%20Daya%20Manusia%20Kabupaten%20Bantul!5e1!3m2!1sid!2sid!4v1734926641720!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade',
+                'map'       => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4404.927614523036!2d110.32533732500605!3d-7.886218792136385!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7aff0036c0342f%3A0x33038655a04641a1!2sBadan%20kepegawaian%20dan%20Pengembangan%20Sumber%20Daya%20Manusia%20Kabupaten%20Bantul!5e1!3m2!1sid!2sid!4v1757845174565!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade',
             ]
         );
 
@@ -97,6 +97,7 @@ class SectionTranslationSeeder extends Seeder
                 'banner_section' => 1,
                 'latest_blog_section' => 1,
                 'blog_page' => 1,
+                'article_page' => 1,
                 'about_page' => 1,
                 'contact_page' => 1,
             ]

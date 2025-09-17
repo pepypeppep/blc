@@ -98,7 +98,8 @@
                     <div class="tgmenu__wrap">
                         <nav class="tgmenu__nav">
                             <div class="logo">
-                                <a href="{{ route('home') }}"><img src="{{ asset($setting?->logo) }}"
+                                <a href="{{ route('home') }}"><img
+                                        src="{{ route('get.section.asset', [1, 'logo']) }}?module=general"
                                         alt="Logo"></a>
                             </div>
                             <div class="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
@@ -147,7 +148,8 @@
                                                 fill="currentcolor" />
                                         </svg>
 
-                                        <select class="form-select select_js w_150px" aria-label="Default select example" name="main_category">
+                                        <select class="form-select select_js w_150px"
+                                            aria-label="Default select example" name="main_category">
                                             <option selected disabled>{{ __('Categories') }}</option>
                                             @foreach ($categories as $category)
                                                 <option @selected(request('main_category') == $category->slug) value="{{ $category->slug }}">
@@ -165,8 +167,10 @@
                             </div>
                             <div class="tgmenu__action">
                                 <ul class="list-wrap">
-                                    <!-- Notification Dropdown -->
-                                    <li class="notification-icon" id="notificationList"></li>
+                                    @if (auth()->user())
+                                        <!-- Notification Dropdown -->
+                                        <li class="notification-icon" id="notificationList"></li>
+                                    @endif
 
                                     <!-- Existing User Icon -->
                                     <li class="mini-cart-icon user_icon">
@@ -216,7 +220,8 @@
                         <nav class="tgmobile__menu-box">
                             <div class="close-btn"><i class="tg-flaticon-close-1"></i></div>
                             <div class="nav-logo">
-                                <a href="{{ route('home') }}"><img src="{{ asset(Cache::get('setting')->logo) }}"
+                                <a href="{{ route('home') }}"><img
+                                        src="{{ route('get.section.asset', [1, 'logo']) }}?module=general"
                                         alt="Logo"></a>
                             </div>
 

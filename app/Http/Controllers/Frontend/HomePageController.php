@@ -33,10 +33,12 @@ use Modules\Course\app\Models\CourseCategory;
 use Modules\PageBuilder\app\Models\CustomPage;
 use Modules\Testimonial\app\Models\Testimonial;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
+use Modules\FooterSetting\app\Models\FooterSetting;
 use Modules\Frontend\app\Models\FeaturedInstructor;
 use Modules\GlobalSetting\app\Models\EmailTemplate;
 use Modules\SiteAppearance\app\Models\SectionSetting;
 use Modules\Frontend\app\Models\FeaturedCourseSection;
+use Modules\GlobalSetting\app\Models\Setting;
 use Modules\PendidikanLanjutan\app\Models\VacancySchedule;
 
 class HomePageController extends Controller
@@ -275,10 +277,18 @@ class HomePageController extends Controller
         return redirect('/');
     }
 
-    public function getSectionAsset($id, $attr)
+    public function getSectionAsset(Request $request, $id, $attr)
     {
-        $section = Section::find($id);
-        $path = Storage::disk('private')->path($section->global_content->{$attr});
+        if ($request->has('module') && $request->module === 'general') {
+            $general = Setting::where('key', $attr)->first();
+            $path = Storage::disk('private')->path($general->value);
+        } elseif ($request->has('module') && $request->module === 'footer') {
+            $footerSetting = FooterSetting::first();
+            $path = Storage::disk('private')->path($footerSetting->$attr);
+        } else {
+            $section = Section::find($id);
+            $path = Storage::disk('private')->path($section->global_content->{$attr});
+        }
 
         return response()->file($path);
     }

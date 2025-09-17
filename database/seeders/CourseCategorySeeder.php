@@ -4,9 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 use Modules\Course\app\Models\CourseCategory;
-use Modules\Course\app\Models\CourseCategoryTranslation;
 use Modules\Language\app\Enums\TranslationModels;
+use Modules\Course\app\Models\CourseCategoryTranslation;
 use Modules\Language\app\Traits\GenerateTranslationTrait;
 
 class CourseCategorySeeder extends Seeder
@@ -22,10 +23,15 @@ class CourseCategorySeeder extends Seeder
             'slug' => 'it-department',
         ]);
 
+        $image = public_path('frontend/img/starter/it-software.png');
+        $filename = 'course/category/' . $request->slug . '.' . pathinfo($image, PATHINFO_EXTENSION);
+        Storage::disk('private')->put($filename, file_get_contents($image));
+
         $category = CourseCategory::create([
             'slug' => $request->slug,
-            'icon' => 'uploads/custom-images/it-department.png',
-            'status' => 1
+            'icon' => $filename,
+            'status' => 1,
+            'show_at_trending' => 1
         ]);
 
         CourseCategoryTranslation::create([
@@ -70,10 +76,15 @@ class CourseCategorySeeder extends Seeder
             'slug' => 'management-department',
         ]);
 
+        $image = public_path('frontend/img/starter/productivity.png');
+        $filename = 'course/category/' . $request->slug . '.' . pathinfo($image, PATHINFO_EXTENSION);
+        Storage::disk('private')->put($filename, file_get_contents($image));
+
         $category =  CourseCategory::create([
             'slug' => $request->slug,
-            'icon' => 'uploads/custom-images/it-department.png',
-            'status' => 1
+            'icon' => $filename,
+            'status' => 1,
+            'show_at_trending' => 1
         ]);
 
         CourseCategoryTranslation::create([

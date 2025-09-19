@@ -829,6 +829,8 @@
     "Instansi is required": "Diperlukan instansi",
     "Instansi must be a number": "instansi harus berupa angka",
     "Language code is required.": "Kode bahasa diperlukan.",
+    "Tipe pelatihan diperlukan": "Tipe pelatihan diperlukan",
+    "Tipe pelatihan harus berupa string": "Tipe pelatihan harus berupa string",
     "Course Create": "Pembuatan Pelatihan",
     "Course Filters": "Filter Pelatihan",
     "Instructor": "Pengajar",

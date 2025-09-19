@@ -224,16 +224,44 @@
                                     <div class="swiper-wrapper">
                                         @foreach ($courses as $course)
                                             <div class="swiper-slide">
-                                                <div class="courses__item shine__animate-item">
-                                                    <div class="courses__item-thumb">
+                                                <div class="courses__item shine__animate-item position-relative">
+                                                    {{-- <div class="courses__item-thumb">
                                                         <a href="{{ route('course.show', $course->slug) }}"
                                                             class="shine__animate-link">
                                                             <img src="{{ asset($course->thumbnail) }}" alt="img">
                                                         </a>
-                                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"
-                                            data-slug="{{ $course?->slug }}" aria-label="WishList">
-                                            <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
-                                        </a>
+
+                                                        <a href="javascript:;"
+                                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                                            data-slug="{{ $course?->slug }}" aria-label="WishList">
+                                                            <i
+                                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
+                                                        </a>
+                                                    </div> --}}
+                                                    <div class="courses__item-thumb position-relative"
+                                                        style="height: 260px; overflow: hidden; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                                                        <!-- Badge Type (Kiri Atas) -->
+                                                        <span
+                                                            class="position-absolute top-0 start-0 m-2 px-3 py-1 text-dark fw-semibold small rounded-pill text-capitalize"
+                                                            style="font-size: 12px; background-color: rgba(218, 233, 158, 0.85); z-index: 10;">
+                                                            {{ $course->type == 'course' ? 'Kursus' : ucwords($course->type) }}
+                                                        </span>
+
+                                                        <!-- Wishlist Icon (Kanan Atas) -->
+                                                        <a href="javascript:;" class="position-absolute top-0 end-0 m-2"
+                                                            style="z-index: 10; color: #ff69b4;"
+                                                            data-slug="{{ $course?->slug }}" aria-label="WishList">
+                                                            <i
+                                                                class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart fa-lg"></i>
+                                                        </a>
+
+                                                        <!-- Gambar -->
+                                                        <a href="{{ route('course.show', $course->slug) }}"
+                                                            class="d-block w-100 h-100">
+                                                            <img src="{{ $course->thumbnail_url }}" alt="img"
+                                                                class="w-100 h-100"
+                                                                style="object-fit: cover; display: block;">
+                                                        </a>
                                                     </div>
                                                     <div class="courses__item-content">
                                                         <ul class="courses__item-meta list-wrap">
@@ -332,7 +360,9 @@
     </section>
     <!-- instructor-details-area-end -->
 @endsection
-@if (session('instructorQuickContact') && $setting->google_tagmanager_status == 'active' && $marketing_setting?->instructor_contact)
+@if (session('instructorQuickContact') &&
+        $setting->google_tagmanager_status == 'active' &&
+        $marketing_setting?->instructor_contact)
     @php
         $instructorQuickContact = session('instructorQuickContact');
         session()->forget('instructorQuickContact');

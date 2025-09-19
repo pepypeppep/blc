@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tag;
 use Illuminate\Support\Facades\Cache;
 use Modules\Article\app\Models\Article;
+use Modules\Article\app\Models\ArticleComment;
 use Modules\Article\app\Models\ArticleTag;
 use Modules\Article\app\Models\ArticleReview;
 
@@ -43,11 +44,33 @@ class ArticleController extends Controller
         $latestBlogs = Article::where('slug', '!=', $slug)->isPublished()->orderBy('created_at', 'desc')->limit(8)->get();
         $categories = ['blog', 'document', 'video'];
         $tags = Tag::has('articles')->get();
-        $comments = ArticleReview::with('user')->whereHas('post', function ($query) use ($slug) {
+        $comments = ArticleComment::with('user')->whereHas('post', function ($query) use ($slug) {
             $query->where('slug', $slug);
         })->orderBy('created_at', 'desc')->get();
+        // $review = ArticleReview::where(['article_id' => $article->id, 'author_id' => auth()->user()->id])->first();
+        $review = ArticleReview::where(['article_id' => $article->id])->first();
 
-        return view('frontend.pages.article-details', compact('article', 'latestBlogs', 'categories', 'tags', 'comments'));
+        return view('frontend.pages.article-details', compact('article', 'latestBlogs', 'categories', 'tags', 'review', 'comments'));
+    }
+
+    function submitReview(Request $request)
+    {
+        $request->validate([
+            'rating' => ['required', 'integer', 'min:1', 'max:5']
+        ], [
+            'rating.required' => __('The rating field is required'),
+            'rating.integer' => __('The rating must be an integer'),
+            'rating.min' => __('The rating must be at least 1'),
+            'rating.max' => __('The rating must not be greater than 5'),
+        ]);
+        $review = new ArticleReview();
+
+        $review->article_id = $request->article_id;
+        $review->author_id = userAuth()->id;
+        $review->stars = $request->rating;
+        $review->save();
+
+        return redirect()->back()->withFragment('comments')->with(['messege' => __('Rating added successfully.'), 'alert-type' => 'success']);
     }
 
     function submitComment(Request $request)
@@ -61,12 +84,12 @@ class ArticleController extends Controller
             'g-recaptcha-response.required' => __('The reCAPTCHA verification is required'),
             'g-recaptcha-response.recaptcha' => __('The reCAPTCHA verification failed'),
         ]);
-        $comment = new ArticleReview();
+        $comment = new ArticleComment();
 
         $comment->article_id = $request->article_id;
-        $comment->user_id = userAuth()->id;
-        $comment->comment = $request->comment;
+        $comment->author_id = userAuth()->id;
+        $comment->description = $request->comment;
         $comment->save();
-        return redirect()->back()->withFragment('comments')->with(['messege' => __('Comment added successfully. waiting for approval'), 'alert-type' => 'success']);
+        return redirect()->back()->withFragment('comments')->with(['messege' => __('Comment added successfully.'), 'alert-type' => 'success']);
     }
 }

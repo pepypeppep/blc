@@ -73,6 +73,11 @@ class VacanciesImport implements ToModel, WithHeadingRow
 
         $this->imported++;
 
+        $row['syarat_pendidikan'] = array_map(function ($value) {
+            return "\"" . strtoupper(trim($value)) . "\"";
+        }, explode(', ', $row['syarat_pendidikan']));
+        $row['syarat_pendidikan'] = "[" . implode(', ', $row['syarat_pendidikan']) . "]";
+
         $vacancy = Vacancy::firstOrCreate([
             'study_id' => $studyId,
             'instansi_id' => $instansi->id,
@@ -80,6 +85,7 @@ class VacanciesImport implements ToModel, WithHeadingRow
             'employee_grade_id' => $employeeGrade->id,
             'formation' => $row['jumlah_formasi'],
             'year' => $row['tahun'],
+            'education_requirements' => $row['syarat_pendidikan'],
         ], [
             'description' => $row['catatan'] ?? null, // Assuming 'catatan' is optional
         ]);

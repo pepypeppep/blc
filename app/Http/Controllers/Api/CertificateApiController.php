@@ -2,90 +2,177 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Models\Course;
 use Illuminate\Http\Request;
-use App\Models\CourseChapterItem;
 use App\Models\CourseProgress;
+use App\Models\CourseChapterItem;
+use App\Http\Controllers\Controller;
+use App\Services\CertificateService;
 use Illuminate\Support\Facades\Storage;
 use Modules\Order\app\Models\Enrollment;
+use Modules\CertificateRecognition\app\Models\CertificateRecognitionEnrollment;
 
 class CertificateApiController extends Controller
 {
-    public function getCertificatesForStudent(Request $request)
+    /**
+     * @OA\Get(
+     *     path="/certificates",
+     *     summary="Get certificates for student",
+     *     security={{"bearer": {}}},
+     *     tags={"Certificates"},
+     *     @OA\Parameter(
+     *         description="Tahun sertifikat",
+     *         in="query",
+     *         name="year",
+     *         required=false,
+     *         example=2024,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Kata kunci pencarian",
+     *         in="query",
+     *         name="search",
+     *         required=false,
+     *         example="Advanced Web Development",
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Jumlah data per halaman",
+     *         in="query",
+     *         name="per_page",
+     *         required=false,
+     *         example=10,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Halaman",
+     *         in="query",
+     *         name="page",
+     *         required=false,
+     *         example=1,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             example={
+     *                 "success": true,
+     *                 "message": "Daftar sertifikat ditemukan.",
+     *                 "data": {
+     *                     {
+     *                         "category": "course",
+     *                         "name": "Advanced Web Development",
+     *                         "jp": 20,
+     *                         "date": "2024",
+     *                         "periode": "2024-01-15 - 2024-03-20",
+     *                         "triwulan": 1,
+     *                         "url": "https://example.com/student/download-certificate/123"
+     *                     },
+     *                     {
+     *                         "category": "course",
+     *                         "name": "Data Science Fundamentals",
+     *                         "jp": 15,
+     *                         "date": "2024",
+     *                         "periode": "2024-04-10 - 2024-06-15",
+     *                         "triwulan": 2,
+     *                         "url": "https://example.com/student/download-certificate/456"
+     *                     },
+     *                     {
+     *                         "category": "mentoring",
+     *                         "name": "Career Development Mentoring",
+     *                         "jp": 0,
+     *                         "date": "2024",
+     *                         "periode": "2024-07-05 - 2024-09-10",
+     *                         "triwulan": 3,
+     *                         "url": "https://example.com/certificates/mentoring/789"
+     *                     },
+     *                     {
+     *                         "category": "coaching",
+     *                         "name": "Leadership Coaching Program",
+     *                         "jp": 0,
+     *                         "date": "2024",
+     *                         "periode": "2024-10-01 - 2024-12-15",
+     *                         "triwulan": 4,
+     *                         "url": "https://example.com/certificates/coaching/101"
+     *                     }
+     *                 },
+     *                 "totalJp": 35,
+     *                 "totalJpPerTriwulan": {
+     *                     "1": 20,
+     *                     "2": 15,
+     *                     "3": 0,
+     *                     "4": 0
+     *                 },
+     *                 "code": 200
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             example={
+     *                 "success": false,
+     *                 "message": "Tidak ada pelatihan yang terdaftar untuk user ID 1"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             example={
+     *                 "success": false,
+     *                 "message": "Terjadi kesalahan: "
+     *             }
+     *         )
+     *     )
+     * )
+     */
+    public function getCertificatesForStudent(Request $request, CertificateService $certificateService)
+    {
+        try {
+            $result = $certificateService->getCertificatesForUser($request, $request->user()->id);
+
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getStudentCertificates(Request $request)
     {
         $user_id = $request->input('user_id');
         try {
-            $enrollments = Enrollment::with([
-                'course' => function ($q) {
-                    $q->withTrashed();
-                },
-                'user' => function ($q) {
-                    $q->select('id', 'name');
-                }
-            ])
-                ->where('user_id', $user_id)
-                ->orderByDesc('id')
-                ->get();
+            $certificates = CertificateRecognitionEnrollment::with('user:id,name', 'certificateRecognition.certificate')->where('user_id', $user_id)->orderByDesc('id')->get();
+            foreach ($certificates as $key => $cert) {
+                $certId = $cert->certificateRecognition->certificate->id;
+                $courseIds = Course::where('certificate_id', $certId)->get()->pluck('id');
+                $enrollments = Enrollment::where('user_id', $user_id)->whereIn('course_id', $courseIds)->get();
+                $courseId = $enrollments->first()->course_id;
 
-            if ($enrollments->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Tidak ada pelatihan yang terdaftar untuk user ID ' . $user_id,
-                ], 404);
+                $certificates[$key]->certificate_url = route('student.download-certificate', $courseId);
             }
-
-            $certificates = [];
-
-            foreach ($enrollments as $enrollment) {
-                $course = $enrollment->course;
-
-                if (!$course || $course->certificate != 1) {
-                    continue;
-                }
-
-                $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
-                    $q->where('course_id', $course->id);
-                })->count();
-
-                $courseLectureCompletedByUser = CourseProgress::where('user_id', $user_id)
-                    ->where('course_id', $course->id)
-                    ->where('watched', 1)
-                    ->count();
-
-                $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
-
-                if ($courseCompletedPercent == 100) {
-                    $completed_date = formatDate(CourseProgress::where('user_id', $user_id)
-                        ->where('course_id', $course->id)
-                        ->where('watched', 1)
-                        ->latest()
-                        ->first()->created_at);
-
-                    // $certificate = CertificateBuilder::first();
-                    // $certificateItems = CertificateBuilderItem::all();
-
-                    // $html = view('frontend.student-dashboard.certificate.index', compact('certificateItems', 'certificate'))->render();
-
-                    // $html = str_replace('[student_name]', $enrollment->user->name, $html);
-                    // $html = str_replace('[platform_name]', Cache::get('setting')->app_name, $html);
-                    // $html = str_replace('[course]', $course->title, $html);
-                    // $html = str_replace('[date]', $completed_date, $html);
-                    // $html = str_replace('[instructor_name]', $course->instructor->name, $html);
-
-                    $certificates[] = [
-                        'course' => $course->title,
-                        // 'certificate_html' => $html,
-                        'completed_date' => $completed_date,
-                        'certificate_url' => route('student.download-certificate', $course->id)
-                    ];
-                }
-            }
-
             if (count($certificates) === 0) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Sertifikat tidak ditemukan.',
-                ], 404);
+                ], 200);
             }
 
             return response()->json([
@@ -103,26 +190,30 @@ class CertificateApiController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/bantara-callback/{enrollmentID}",
-     *     summary="Post PDF file from Bantara",
+     *     path="/callback/course/{enrollmentId}",
+     *     summary="Bantara",
      *     tags={"Bantara"},
-     *     security={{"bearer": {}}},
+     *     @OA\Parameter(
+     *         description="Enrollment ID",
+     *         in="path",
+     *         name="enrollmentId",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 type="object",   
+     *                 type="object",
+     *                 required={"file"},
      *                 @OA\Property(
      *                     property="file",
      *                     type="file",
      *                     format="binary",
      *                     description="PDF file from Bantara",
-     *                 ),
-     *                 @OA\Property(
-     *                     property="id",
-     *                     type="string",
-     *                     description="Document ID",
      *                 ),
      *             ),
      *         ),
@@ -145,7 +236,7 @@ class CertificateApiController extends Controller
      *     )
      * )
      */
-    public function bantaraCallback(Enrollment $enrollment, Request $request)
+    public function bantaraCallback($enrollmentId, Request $request)
     {
         // validate request header key
         $key = $request->header('Authorization');
@@ -161,7 +252,16 @@ class CertificateApiController extends Controller
             return response(['success' => false, 'message' => 'Invalid api key'], 403);
         }
 
+        $enrollment = Enrollment::where('uuid', $enrollmentId)->first();
+        if (!$enrollment) {
+            return response(['success' => false, 'message' => 'Enrollment not found'], 404);
+        }
+
         $file = $request->file('file');
+
+        if (!$file) {
+            return response(['success' => false, 'message' => 'File is required'], 400);
+        }
 
         // check if file is pdf
         if ($file->getClientOriginalExtension() !== 'pdf') {

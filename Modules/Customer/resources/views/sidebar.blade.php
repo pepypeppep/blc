@@ -35,12 +35,12 @@
             </a>
         </li>
 
-        @if (getAdminAuthRole() != 'Admin OPD')
+        {{-- @if (getAdminAuthRole() != 'Admin OPD')
             <li class="{{ isRoute('admin.send-bulk-mail', 'active') }}">
                 <a class="nav-link" href="{{ route('admin.send-bulk-mail') }}">
                     {{ __('Send bulk mail') }}
                 </a>
             </li>
-        @endif
+        @endif --}}
     </ul>
 </li>

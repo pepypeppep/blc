@@ -5,7 +5,12 @@
     "workspaceFolder": "/var/www/html",
     "customizations": {
         "vscode": {
-            "extensions": [],
+            "extensions": [
+                "laravel.vscode-laravel",
+                "bmewburn.vscode-intelephense-client",
+                "Codeium.codeium",
+                "shufo.vscode-blade-formatter"
+            ],
             "settings": {}
         }
     },

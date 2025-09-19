@@ -14,20 +14,15 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="card shadow">
-                            @if ($user->image)
-                                <img src="{{ asset($user->image) }}" class="profile_img w-100">
+                            @if ($user->nip)
+                                <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $user->nip }}.jpg"
+                                    class="profile_img w-100">
                             @else
                                 <img src="{{ asset($setting->default_avatar) }}" class="w-100">
                             @endif
 
                             <div class="container my-3">
                                 <h4>{{ html_decode($user->name) }}</h4>
-
-                                @if ($user->phone)
-                                    <p class="title">{{ html_decode($user->phone) }}</p>
-                                @endif
-
-                                <p class="title">{{ html_decode($user->email) }}</p>
 
                                 <p class="title">{{ __('Joined') }} : {{ $user->created_at->format('h:iA, d M Y') }}</p>
 
@@ -57,6 +52,14 @@
                                         class="btn btn-warning my-2">{{ __('Ban User') }}</a>
                                 @endif
 
+                                @if ($user->role == 'student')
+                                    <a href="javascript:;" data-toggle="modal" data-target="#changeRoleModal"
+                                        class="btn btn-info my-2">{{ __('Change Role To Instructor') }}</a>
+                                @else
+                                    <a href="javascript:;" data-toggle="modal" data-target="#changeRoleModal"
+                                        class="btn btn-info my-2">{{ __('Change Role To Student') }}</a>
+                                @endif
+
                                 @if ($user->role != 'instructor')
                                     <a onclick="deleteData({{ $user->id }})" href="javascript:;" data-toggle="modal"
                                         data-target="#deleteModal" class="btn btn-danger">{{ __('Delete Account') }}</a>
@@ -69,67 +72,108 @@
                     <div class="col-md-9">
                         {{-- profile information card area --}}
                         <div class="card">
-                            <div class="card-header">
-                                <h5 class="service_card">{{ __('Profile Information') }}</h5>
+                            <div class="card-header d-flex justify-content-between">
+                                <h5 class="service_card mb-0">{{ __('Profile Information') }}</h5>
+                                <div
+                                    class="badge badge-pill badge-{{ $user->role == 'instructor' ? 'success' : 'primary' }} mr-2">
+                                    {{ $user->role == 'instructor' ? 'Instruktur' : 'Pelajar' }}</div>
+                                @if ($user->role == 'instructor')
+                                    <div class="d-flex align-items-center">
+                                        @php
+                                            $fullStars = floor($user->rating);
+                                            $hasHalfStar = $user->rating - $fullStars >= 0.5;
+                                        @endphp
+
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            @if ($i <= $fullStars)
+                                                <i class="fa fa-star text-warning"></i>
+                                            @elseif ($i == $fullStars + 1 && $hasHalfStar)
+                                                <i class="fa fa-star-half text-warning"></i>
+                                            @else
+                                                <i class="far fa-star text-warning"></i>
+                                            @endif
+                                        @endfor
+                                        <span class="ml-2">({{ $user->rating }})</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="card-body">
-                                <form action="{{ route('admin.customer-info-update', $user->id) }}" method="post"
-                                    enctype="multipart/form-data">
-                                    @csrf
-                                    @method('PUT')
-
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="name">{{ __('Full Name') }} <code>*</code></label>
-                                                <input id="name" name="name" type="text"
-                                                    value="{{ $user->name }}" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="email">{{ __('Email') }} <code>*</code></label>
-                                                <input id="email" name="email" type="email"
-                                                    value="{{ $user->email }}" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="phone">{{ __('phone') }}</label>
-                                                <input id="phone" name="phone" type="text"
-                                                    value="{{ $user->phone }}" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="gender">{{ __('Gender') }}</label>
-                                                <select name="gender" id="gender" class="form-control">
-                                                    <option value="">{{ __('Select') }}</option>
-                                                    <option @selected($user->gender == 'male') value="male">{{ __('Male') }}
-                                                    </option>
-                                                    <option @selected($user->gender == 'female') value="female">{{ __('Female') }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="age">{{ __('Age') }}</label>
-                                                <input id="age" name="age" type="text"
-                                                    value="{{ $user->age }}" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 mt-4">
-                                            <button type="submit"
-                                                class="btn btn-primary w-100">{{ __('Update Profile') }}</button>
-                                        </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Nip') }} : <b>{{ $user->nip }}</b></p>
                                     </div>
-                                </form>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Name') }} : <b>{{ $user->name }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Jabatan') }} : <b>{{ $user->jabatan }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Phone') }} : <b>{{ $user->phone }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Email') }} : <b>{{ $user->email }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Place of Birth') }} : <b>{{ $user->place_of_birth }}</b>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Date of Birth') }} : <b>{{ $user->date_of_birth }}</b>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Jenis Kelamin') }} : <b>{{ $user->jenis_kelamin }}</b>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Tempat Lahir') }} : <b>{{ $user->tempat_lahir }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Tanggal Lahir') }} : <b>{{ $user->tanggal_lahir }}</b>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Bup') }} : <b>{{ $user->bup }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Golongan') }} : <b>{{ $user->golongan }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Pangkat') }} : <b>{{ $user->pangkat }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Eselon') }} : <b>{{ $user->eselon }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Alamat') }} : <b>{{ $user->alamat }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Pendidikan') }} : <b>{{ $user->pendidikan }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Tingkat Pendidikan') }} :
+                                            <b>{{ $user->tingkat_pendidikan }}</b>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('TMT Golongan') }} : <b>{{ $user->tmt_golongan }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('TMT Jabatan') }} : <b>{{ $user->tmt_jabatan }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('ASN Status') }} : <b>{{ $user->asn_status }}</b></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="title">{{ __('Ninebox') }} : <b>{{ $user->ninebox }}</b></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         {{-- change biography card area --}}
-                        <div class="card">
+                        {{-- <div class="card">
                             <div class="card-header">
                                 <h5 class="service_card">{{ __('Profile Biography') }}</h5>
                             </div>
@@ -170,11 +214,11 @@
                                     </div>
                                 </form>
                             </div>
-                        </div>
+                        </div> --}}
 
-                        @if($user->role == 'instructor')
-                        {{-- change Education and experience card area --}}
-                        <div class="card">
+                        @if ($user->role == 'instructor')
+                            {{-- change Education and experience card area --}}
+                            {{-- <div class="card">
                             <div class="card-header">
                                 <h5 class="service_card">{{ __('Experience and Education') }}</h5>
                             </div>
@@ -325,11 +369,11 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         @endif
 
-                        {{-- change biography card area --}}
-                        <div class="card">
+                        {{-- change location card area --}}
+                        {{-- <div class="card">
                             <div class="card-header">
                                 <h5 class="service_card">{{ __('Profile Location') }}</h5>
                             </div>
@@ -356,17 +400,17 @@
                                         <div class="col-md-4">
                                             <div class="form-grp">
                                                 <label for="state">{{ __('State') }}</label>
-                                                <input type="text" class="form-control" name="state" id="state" value="{{ $user->state }}"> 
+                                                <input type="text" class="form-control" name="state" id="state" value="{{ $user->state }}">
                                             </div>
                                         </div>
-                        
+
                                         <div class="col-md-4">
                                             <div class="form-grp">
                                                 <label for="city">{{ __('City') }}</label>
                                                 <input type="text" class="form-control" name="city" id="city" value="{{ $user->city }}">
                                             </div>
                                         </div>
-                        
+
 
                                         <div class="col-md-12">
                                             <div class="form-group">
@@ -384,10 +428,10 @@
 
                                 </form>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- change socials card area --}}
-                        <div class="card">
+                        {{-- <div class="card">
                             <div class="card-header">
                                 <h5 class="service_card">{{ __('Profile Socials') }}</h5>
                             </div>
@@ -420,11 +464,10 @@
                                       </div>
                                   </form>
                             </div>
-                        </div>
-
+                        </div> --}}
 
                         {{-- change password card area --}}
-                        <div class="card">
+                        {{-- <div class="card">
                             <div class="card-header">
                                 <h5 class="service_card">{{ __('Change Password') }}</h5>
                             </div>
@@ -454,7 +497,7 @@
                                     </div>
                                 </form>
                             </div>
-                        </div>
+                        </div> --}}
 
                         {{-- banned history card area --}}
                         @if ($banned_histories->count() > 0)
@@ -595,6 +638,47 @@
         </div>
     </div>
     <!-- End Send Mail modal -->
+
+    <!-- Change Role Modal -->
+    <div class="modal fade" id="changeRoleModal" tabindex="-1" role="dialog" aria-labelledby="changeRoleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header px-4">
+                    <h5 class="modal-title" id="changeRoleModalLabel">{{ __('Change Role') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('admin.customer-role-update', $user->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        @if ($user->role == 'student')
+                            <div class="form-group">
+                                <label for="role">{{ __('Role') }}</label>
+                                <select name="role" id="role" class="form-control">
+                                    <option value="instructor" selected>{{ __('Instructor') }}</option>
+                                </select>
+                            </div>
+                        @else
+                            <div class="form-group">
+                                <label for="role">{{ __('Role') }}</label>
+                                <select name="role" id="role" class="form-control">
+                                    <option value="student" selected>{{ __('Student') }}</option>
+                                </select>
+                            </div>
+                        @endif
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <x-admin.delete-modal />
     @push('js')

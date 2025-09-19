@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Modules\Customer\app\Jobs\SendBulkEmailToUser;
 use Modules\Customer\app\Jobs\SendUserBannedMailJob;
 use Modules\Customer\app\Models\BannedHistory;
+use Modules\InstructorEvaluation\app\Models\InstructorEvaluation;
 use Modules\Location\app\Models\City;
 use Modules\Location\app\Models\State;
 
@@ -32,9 +33,11 @@ class CustomerController extends Controller
          */
         $authUser = auth()->user();
         $authInstansi = $authUser->instansi;
+        $query = User::query();
 
-        $query = User::query()
-            ->where('instansi_id', $authInstansi->id);
+        if (!$authUser->hasRole('Super Admin')) {
+            $query->where('instansi_id', $authInstansi->id);
+        }
 
         $query->when($request->filled('keyword'), function ($q) use ($request) {
             $q->where('name', 'like', '%' . $request->keyword . '%')
@@ -116,6 +119,10 @@ class CustomerController extends Controller
         } else {
             $users = $query->orderBy('id', $orderBy)->paginate()->withQueryString();
         }
+
+        $users->each(function ($user) {
+            $user->rating = InstructorEvaluation::where('instructor_id', $user->id)->avg('rating');
+        });
 
         return view('customer::all_instructor')->with([
             'users' => $users,
@@ -225,7 +232,7 @@ class CustomerController extends Controller
     {
         checkAdminHasPermissionAndThrowException('customer.view');
         $user = User::findOrFail($id);
-
+        $user->rating = InstructorEvaluation::where('instructor_id', $user->id)->avg('rating');
         // limting access to the user on same instansi
         $this->authorize('view',  $user);
 
@@ -304,6 +311,32 @@ class CustomerController extends Controller
         $user->job_title = $request->designation;
         $user->bio = $request->bio;
         $user->short_bio = $request->short_bio;
+        $user->save();
+
+        $notification = __('Updated Successfully');
+        $notification = ['messege' => $notification, 'alert-type' => 'success'];
+
+        return redirect()->back()->with($notification);
+    }
+
+    function roleUpdate(Request $request, $id)
+    {
+        $rules = [
+            'role' => ['required', 'string', 'in:student,instructor'],
+        ];
+        $messages = [
+            'role.required' => __('The role field is required'),
+            'role.string' => __('The role must be a string'),
+            'role.in' => __('The selected role is invalid'),
+        ];
+
+        $this->validate($request, $rules, $messages);
+
+        $user = User::findOrFail($id);
+
+        $this->authorize('update',  $user);
+
+        $user->role = $request->role;
         $user->save();
 
         $notification = __('Updated Successfully');

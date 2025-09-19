@@ -38,10 +38,6 @@ class CertificateBuilderController extends Controller
         $request->validate([
             'background' => ['required', 'image', 'max:3000'],
             'background2' => ['nullable', 'image', 'max:3000'],
-            // 'title' => ['required', 'string', 'max:255'],
-            // 'sub_title' => ['nullable', 'string', 'max:255'],
-            // 'description' => ['nullable', 'string', 'max:600'],
-            // 'signature' => ['nullable', 'image', 'max:3000', 'mimes:png,jpg', 'dimensions:max_width=500,min_height=10'],
         ], [
             'background.required' => __('Background is required'),
             'background.image' => __('Background must be an image file'),
@@ -50,29 +46,20 @@ class CertificateBuilderController extends Controller
             'background2.image' => __('Background must be an image file'),
             'background2.max' => __('Background must not be greater than 3000 kilobytes'),
             'background2.mimes' => __('Background must be a file of type: png, jpg'),
-            // 'title.required' => __('Title is required'),
-            // 'title.string' => __('Title must be a string'),
-            // 'title.max' => __('Title must not be greater than 255 characters'),
-            // 'sub_title.string' => __('Sub title must be a string'),
-            // 'sub_title.max' => __('Sub title must not be greater than 255 characters'),
-            // 'description.string' => __('Description must be a string'),
-            // 'description.max' => __('Description must not be greater than 600 characters'),
-            // 'signature.image' => __('Signature must be an image file'),
-            // 'signature.max' => __('Signature must not be greater than 3000 kilobytes'),
-            // 'signature.mimes' => __('Signature must be a file of type: png, jpg'),
-            // 'signature.dimensions' => __('Signature must have a minimum height of 10 pixels and a maximum width of 500 pixels'),
         ]);
 
         $randName = strtotime(now());
         $bgFile = $request->file('background');
         $bgName = 'certificates/' . now()->year . '/bg_' . $randName . '.png';
         Storage::disk('private')->put($bgName, file_get_contents($bgFile));
-        $bgFile2 = $request->file('background2');
-        $bgName2 = 'certificates/' . now()->year . 'bg_2_' . $randName . '.png';
-        Storage::disk('private')->put($bgName2, file_get_contents($bgFile2));
-        // $sgFile = $request->file('signature');
-        // $sgName = 'certificates/sg_' . strtotime(now()) . '.png';
-        // Storage::disk('private')->put($sgName, file_get_contents($sgFile));
+
+        $bgName2 = null;
+
+        if ($request->hasFile('background2')) {
+            $bgFile2 = $request->file('background2');
+            $bgName2 = 'certificates/' . now()->year . '/bg_2_' . $randName . '.png';
+            Storage::disk('private')->put($bgName2, file_get_contents($bgFile2));
+        }
 
         $certificate = CertificateBuilder::create([
             'title' => "Penghargaan untuk [student_name]",
@@ -175,6 +162,7 @@ class CertificateBuilderController extends Controller
 
         $sgName = $certificate->signature;
         $bgName = $certificate->background;
+
         $sg2Name = $certificate->signature2;
         $bg2Name = $certificate->background2;
 
@@ -190,17 +178,6 @@ class CertificateBuilderController extends Controller
             Storage::disk('private')->put($sgName, file_get_contents($sgFile));
         }
 
-        if ($request->hasFile('background2')) {
-            $bgFile = $request->file('background2');
-            $bgName = 'certificates/' . now()->year . '/bg_2_' . $randName . '.png';
-            Storage::disk('private')->put($bgName, file_get_contents($bgFile));
-        }
-        if ($request->hasFile('signature2')) {
-            $sgFile = $request->file('signature2');
-            $sgName = 'certificates/' . now()->year . '/sg_2_' . $randName . '.png';
-            Storage::disk('private')->put($sgName, file_get_contents($sgFile));
-        }
-
         $certificate->update([
             'title' => $request->title,
             'sub_title' => $request->sub_title,
@@ -211,7 +188,7 @@ class CertificateBuilderController extends Controller
             'sub_title2' => $request->sub_title2,
             'description2' => $request->description2,
             'signature2' => $sg2Name,
-            'background2' => $bg2Name
+            'background2' => $bg2Name,
         ]);
 
         return redirect()->back()->with(['messege' => __('Updated successfully'), 'alert-type' => 'success']);
@@ -240,7 +217,6 @@ class CertificateBuilderController extends Controller
     public function getBg($id)
     {
         $certificate = CertificateBuilder::findOrFail($id);
-
         return response()->file(Storage::disk('private')->path($certificate->background));
     }
 
@@ -249,13 +225,6 @@ class CertificateBuilderController extends Controller
         $certificate = CertificateBuilder::findOrFail($id);
 
         return response()->file(Storage::disk('private')->path($certificate->signature));
-    }
-
-    public function getBg2($id)
-    {
-        $certificate = CertificateBuilder::findOrFail($id);
-
-        return response()->file(Storage::disk('private')->path($certificate->background2));
     }
 
     public function getSg2($id)

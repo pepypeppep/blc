@@ -199,8 +199,9 @@
                                             class="shine__animate-link">
                                             <img src="{{ $course?->thumbnail_url }}" alt="img">
                                         </a>
-                                        <a href="javascript:;" class="wsus-wishlist-btn common-white courses__wishlist-two"  aria-label="WishList"
-                                            data-slug="{{ $course?->slug }}">
+                                        <a href="javascript:;"
+                                            class="wsus-wishlist-btn common-white courses__wishlist-two"
+                                            aria-label="WishList" data-slug="{{ $course?->slug }}">
                                             <i class="{{ $course?->favorite_by_client ? 'fas' : 'far' }} fa-heart"></i>
                                         </a>
                                     </div> --}}

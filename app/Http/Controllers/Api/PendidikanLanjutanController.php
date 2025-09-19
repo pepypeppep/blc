@@ -36,6 +36,15 @@ class PendidikanLanjutanController extends Controller
      *             type="integer"
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search Study",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -47,12 +56,35 @@ class PendidikanLanjutanController extends Controller
         try {
             $perPage = $request->get('per_page', 10);
             $user = User::where('id', $request->user_id)->firstOrFail();
+            $sch = VacancySchedule::where('year', now()->year)->first();
+            if (now() <= $sch->start_at) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pendaftaran belum dibuka',
+                    'data' => []
+                ]);
+            } elseif (now() >= $sch->end_at) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pendaftaran sudah ditutup',
+                    'data' => []
+                ]);
+            }
+
             $schedule = VacancySchedule::where('year', now()->year)
                 ->where('start_at', '<=', now())
                 ->where('end_at', '>=', now())
                 ->first();
-            $vacancies = Vacancy::with('instansi:id,name', 'study:id,name')->where('instansi_id', $user->instansi_id)
-                ->where('year', $schedule->year ?? -1)->paginate($perPage);
+            $vac = Vacancy::with('instansi:id,name', 'study:id,name')->where('instansi_id', $user->instansi_id)
+                ->where('year', $schedule->year ?? -1);
+
+            if ($request->has('search')) {
+                $vac->whereHas('study', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                });
+            }
+
+            $vacancies = $vac->paginate($perPage);
 
             return response()->json([
                 'success' => true,
@@ -107,7 +139,7 @@ class PendidikanLanjutanController extends Controller
                 ->where('start_at', '<=', now())
                 ->where('end_at', '>=', now())
                 ->first();
-            $vacancy = Vacancy::with(['instansi:id,name', 'study:id,name', 'users' => function ($query) use ($user) {
+            $vacancy = Vacancy::with(['details', 'employeeGrade:id,name', 'instansi:id,name', 'study:id,name', 'users' => function ($query) use ($user) {
                 $query->where('user_id', $user->id)->whereNotIn('status', [VacancyUser::STATUS_REGISTER]); // next update with value_type, unor, dll
             }])->where('year', $schedule->year ?? -1)->findOrFail($id);
 
@@ -180,6 +212,61 @@ class PendidikanLanjutanController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve vacancy logs',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/pendidikan-lanjutan/riwayat",
+     *     summary="Get riwayat pendidikan lanjutan",
+     *     description="Get riwayat pendidikan lanjutan",
+     *     tags={"Pendidikan Lanjutan"},
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Per page",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="user_id",
+     *         in="query",
+     *         description="User id",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response"
+     *     )
+     * )
+     */
+    public function history(Request $request)
+    {
+        try {
+            $perPage = $request->get('per_page', 10);
+            $user = User::where('id', $request->user_id)->firstOrFail();
+            $vacancies = Vacancy::with('instansi:id,name', 'study:id,name', 'users.user:id,name', 'users.detail')
+                ->whereHas('users', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->paginate($perPage);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Vacancy retrieved successfully',
+                'data' => $vacancies
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve vacancy',
                 'error' => $e->getMessage()
             ], 500);
         }

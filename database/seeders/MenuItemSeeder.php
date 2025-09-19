@@ -68,11 +68,11 @@ class MenuItemSeeder extends Seeder
                 'url' => '/contact',
             ],
             (object) [
-                'name' => 'Privacy Policy',
+                'name' => 'Kebijakan Privasi',
                 'url' => '/page/privacy-policy',
             ],
             (object) [
-                'name' => 'Terms and Conditions',
+                'name' => 'Syarat dan Ketentuan',
                 'url' => '/page/terms-and-conditions',
             ],
             (object) [

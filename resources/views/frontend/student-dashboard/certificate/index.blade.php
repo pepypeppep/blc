@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ __('Certificate') }}</title>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100..900&family=Noto+Sans+Bengali:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
@@ -31,22 +32,13 @@
 
             @if ($cover1Base64)
                 background-image: url("data:image/png;base64,{{ $cover1Base64 }}");
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
                 background-repeat: no-repeat;
             @endif
         }
 
-        .certificate-body {
-            /* width: 930px !important;
-            height: 600px !important; */
-            /* background: rgb(231, 231, 231); */
-            /* position: relative; */
 
-            /* background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat; */
-        }
 
         .draggable-element {
             position: absolute;
@@ -83,12 +75,27 @@
             left: 50%;
             transform: translate(-50%);
         }
+
+        .signature {
+            font-size: 12px;
+            color: black;
+            text-align: center;
+            font-weight: inherit;
+            width: 730px;
+            left: 50%;
+            transform: translate(-50%);
+        }
+
+        .text-center {
+            text-align: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="certificate-outer">
         <div class="certificate-body">
+
             @if ($certificate->title)
                 <div id="title" class="draggable-element">{{ $certificate->title }}</div>
             @endif
@@ -99,19 +106,26 @@
             @endif
 
             @if ($certificate->description)
-                <div id="description" class="draggable-element">{!! clean(nl2br($certificate->description)) !!}
+                <div id="description" class="draggable-element">
+                    {!! clean(nl2br($certificate->description)) !!}
                 </div>
             @endif
 
 
             @if ($certificate->description)
                 <div id="signature" class="draggable-element">
-                    {{--  TODO image generation below is slow and consume a lot of memory --}}   
-                        <img style="width: 100px; height: 100px;"
-                        src="{{$qrcodeData}}"
-                        alt=""> 
+                    <div class="text-center">
+                        <div>[tanggal_sertifikat]</div>
+                        <div>[nama_jabatan]</div>
+                        <div>Kabupaten Bantul</div>
+                        <img style="width: 100px; height: 100px;" src="{{ $qrcodeData }}" alt="">
+                        <div>[nama_kepala_opd]</div>
+                        <div>[nama_golongan]</div>
+                        <div>[nip]</div>
+                    </div>
                 </div>
             @endif
+
         </div>
     </div>
 </body>

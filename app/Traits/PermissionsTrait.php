@@ -273,6 +273,13 @@ trait PermissionsTrait
         ],
     ];
 
+    public static array $reportPermission = [
+        'group_name' => 'Reports',
+        'permissions' => [
+            'report.management',
+        ],
+    ];
+
     public static array $OrderPermission = [
         'group_name' => 'order management',
         'permissions' => [
@@ -376,6 +383,34 @@ trait PermissionsTrait
             'sertifikat.pengakuan.update',
             'sertifikat.pengakuan.destroy',
             'sertifikat.pengakuan.verify',
+        ],
+    ];
+
+    public static array $mentoringPermissions = [
+        'group_name' => 'mentoring',
+        'permissions' => [
+            'mentoring.view',
+            'mentoring.create',
+            'mentoring.store',
+            'mentoring.edit',
+            'mentoring.update',
+            'mentoring.destroy',
+            'mentoring.verify',
+        ],
+    ];
+
+
+
+    public static array $coachingPermissions = [
+        'group_name' => 'coaching',
+        'permissions' => [
+            'coaching.view',
+            'coaching.create',
+            'coaching.store',
+            'coaching.edit',
+            'coaching.update',
+            'coaching.destroy',
+            'coaching.verify',
         ],
     ];
 

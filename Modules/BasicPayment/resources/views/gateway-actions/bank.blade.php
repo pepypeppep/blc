@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Bank Checkout</title>
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset($setting->favicon) }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ route('get.section.asset', [1, 'favicon']) }}?module=general">
     <link rel="stylesheet" href="{{ asset('frontend/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/css/main.min.css') }}?v={{ $setting?->version }}">
 </head>

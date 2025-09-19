@@ -1,5 +1,5 @@
 @php
-$header_admin = Auth::guard('admin')->user();
+    $header_admin = Auth::guard('admin')->user();
 @endphp
 
 <!DOCTYPE html>
@@ -15,7 +15,7 @@ $header_admin = Auth::guard('admin')->user();
     @yield('custom_meta')
 
     @yield('title')
-    <link rel="icon" href="{{ asset($setting->favicon) }}">
+    <link rel="icon" href="{{ route('get.section.asset', [1, 'favicon']) }}?module=general">
     <style>
         .cursor-pointer {
             cursor: pointer;
@@ -38,41 +38,41 @@ $header_admin = Auth::guard('admin')->user();
                         <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-none"><i
                                     class="fas fa-search"></i></a></li>
                         @if (Module::isEnabled('Language') && Route::has('set-language'))
-                        @if (count(allLanguages()?->where('status', 1)) > 1)
-                        <form id="setLanguageHeader" action="{{ route('set-language') }}">
-                            <select class="bg-transparent form-control-sm border-light select_js"
-                                name="code">
-                                @forelse (allLanguages()?->where('status', 1) as $language)
-                                <option class="text-dark" value="{{ $language->code }}"
-                                    {{ getSessionLanguage() == $language->code ? 'selected' : '' }}>
-                                    {{ $language->name }}
-                                </option>
-                                @empty
-                                <option value="en" {{ getSessionLanguage() == 'en' ? 'selected' : '' }}>
-                                    English
-                                </option>
-                                @endforelse
-                            </select>
-                        </form>
-                        @endif
+                            @if (count(allLanguages()?->where('status', 1)) > 1)
+                                <form id="setLanguageHeader" action="{{ route('set-language') }}">
+                                    <select class="bg-transparent form-control-sm border-light select_js"
+                                        name="code">
+                                        @forelse (allLanguages()?->where('status', 1) as $language)
+                                            <option class="text-dark" value="{{ $language->code }}"
+                                                {{ getSessionLanguage() == $language->code ? 'selected' : '' }}>
+                                                {{ $language->name }}
+                                            </option>
+                                        @empty
+                                            <option value="en" {{ getSessionLanguage() == 'en' ? 'selected' : '' }}>
+                                                English
+                                            </option>
+                                        @endforelse
+                                    </select>
+                                </form>
+                            @endif
                         @endif
 
                         @if (count(allCurrencies()?->where('status', 'active')) > 1)
-                        <form action="{{ route('set-currency') }}" class="set-currency-header">
-                            <select name="currency"
-                                class="change-currency bg-transparent form-control-sm border-light ml-2 select_js">
-                                @forelse (allCurrencies()?->where('status', 'active') as $currency)
-                                <option class="text-dark" value="{{ $currency->currency_code }}"
-                                    {{ getSessionCurrency() == $currency->currency_code ? 'selected' : '' }}>
-                                    {{ $currency->currency_name }}
-                                </option>
-                                @empty
-                                <option value="USD" {{ getSessionCurrency() == 'USD' ? 'selected' : '' }}>
-                                    {{ __('USD') }}
-                                </option>
-                                @endforelse
-                            </select>
-                        </form>
+                            <form action="{{ route('set-currency') }}" class="set-currency-header">
+                                <select name="currency"
+                                    class="change-currency bg-transparent form-control-sm border-light ml-2 select_js">
+                                    @forelse (allCurrencies()?->where('status', 'active') as $currency)
+                                        <option class="text-dark" value="{{ $currency->currency_code }}"
+                                            {{ getSessionCurrency() == $currency->currency_code ? 'selected' : '' }}>
+                                            {{ $currency->currency_name }}
+                                        </option>
+                                    @empty
+                                        <option value="USD" {{ getSessionCurrency() == 'USD' ? 'selected' : '' }}>
+                                            {{ __('USD') }}
+                                        </option>
+                                    @endforelse
+                                </select>
+                            </form>
                         @endif
                     </ul>
                 </div>
@@ -81,14 +81,14 @@ $header_admin = Auth::guard('admin')->user();
                         placeholder="{{ __('Search options') }}">
                     <div id="admin_menu_list" class="position-absolute d-none rounded-2">
                         @foreach (adminSearchRouteList() as $route_item)
-                        @if (checkAdminHasPermission($route_item?->permission) || empty($route_item?->permission))
-                        <a @isset($route_item->tab)
+                            @if (checkAdminHasPermission($route_item?->permission) || empty($route_item?->permission))
+                                <a @isset($route_item->tab)
                             data-active-tab="{{ $route_item->tab }}" class="border-bottom search-menu-item"
                             @else
                             class="border-bottom"
                             @endisset
-                            href="{{ $route_item?->route }}">{{ $route_item?->name }}</a>
-                        @endif
+                                    href="{{ $route_item?->route }}">{{ $route_item?->name }}</a>
+                            @endif
                         @endforeach
                         <a class="not-found-message d-none" href="javascript:;">{{ __('Not Found!') }}</a>
                     </div>
@@ -104,10 +104,10 @@ $header_admin = Auth::guard('admin')->user();
                     <li class="dropdown"><a href="#" data-toggle="dropdown"
                             class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                             @if ($header_admin->image)
-                            <img alt="image" src="{{ asset($header_admin->image) }}"
-                                class="mr-1 rounded-circle">
+                                <img alt="image" src="{{ asset($header_admin->image) }}"
+                                    class="mr-1 rounded-circle">
                             @else
-                            <img alt="image" src="" class="mr-1 rounded-circle">
+                                <img alt="image" src="" class="mr-1 rounded-circle">
                             @endif
 
                             <div class="d-sm-none d-lg-inline-block">{{ $header_admin->name }}</div>
@@ -119,9 +119,9 @@ $header_admin = Auth::guard('admin')->user();
 
 
                             @adminCan('admin.profile.view')
-                            <a href="{{ route('admin.edit-profile') }}" class="dropdown-item has-icon">
-                                <i class="far fa-user"></i> {{ __('Profile') }}
-                            </a>
+                                <a href="{{ route('admin.edit-profile') }}" class="dropdown-item has-icon">
+                                    <i class="far fa-user"></i> {{ __('Profile') }}
+                                </a>
                             @endadminCan
                             <a href="javascript:;" class="dropdown-item has-icon d-flex align-items-center text-danger"
                                 onclick="event.preventDefault(); $('#admin-logout-form').trigger('submit');">
@@ -134,27 +134,27 @@ $header_admin = Auth::guard('admin')->user();
             </nav>
 
             @if (request()->routeIs(
-            'admin.general-setting',
-            'admin.marketing-setting',
-            'admin.commission-setting',
-            'admin.crediential-setting',
-            'admin.email-configuration',
-            'admin.edit-email-template',
-            'admin.currency.*',
-            'admin.seo-setting',
-            'admin.custom-code',
-            'admin.cache-clear',
-            'admin.database-clear',
-            'admin.system-update.index',
-            'admin.addons.*',
-            'admin.admin.*',
-            'admin.languages.*',
-            'admin.basicpayment',
-            'admin.paymentgateway',
-            'admin.role.*'))
-            @include('admin.settings.sidebar')
+                    'admin.general-setting',
+                    'admin.marketing-setting',
+                    'admin.commission-setting',
+                    'admin.crediential-setting',
+                    'admin.email-configuration',
+                    'admin.edit-email-template',
+                    'admin.currency.*',
+                    'admin.seo-setting',
+                    'admin.custom-code',
+                    'admin.cache-clear',
+                    'admin.database-clear',
+                    'admin.system-update.index',
+                    'admin.addons.*',
+                    'admin.admin.*',
+                    'admin.languages.*',
+                    'admin.basicpayment',
+                    'admin.paymentgateway',
+                    'admin.role.*'))
+                @include('admin.settings.sidebar')
             @else
-            @include('admin.sidebar')
+                @include('admin.sidebar')
             @endif
             @yield('admin-content')
 

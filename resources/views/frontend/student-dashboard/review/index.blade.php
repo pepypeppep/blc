@@ -12,7 +12,7 @@
                     <table class="table table-borderless">
                         <thead>
                             <tr>
-                                <th>{{ __('No') }}</th>
+                                <th>No</th>
                                 <th>{{ __('Course') }}</th>
                                 <th>{{ __('Rating') }}</th>
                                 <th>{{ __('Status') }}</th>
@@ -42,7 +42,8 @@
                                     <td>
                                         <a href="{{ route('student.reviews.show', $review->id) }}" class="text-primary"><i
                                                 class="fa fa-eye"></i></a>
-                                        <a href="{{ route('student.reviews.destroy', $review->id) }}" class="text-danger delete-item"><i class="fas fa-trash-alt"></i></a>
+                                        <a href="{{ route('student.reviews.destroy', $review->id) }}"
+                                            class="text-danger delete-item"><i class="fas fa-trash-alt"></i></a>
                                     </td>
                                 </tr>
                             @empty

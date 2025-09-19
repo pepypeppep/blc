@@ -49,7 +49,8 @@
                 </div>
                 <div class="col-lg-9 position-relative">
                     <div class="preloader d-none">
-                        <div class="loader-icon"><img src="{{ asset(Cache::get('setting')->preloader) }}" alt="Preloader">
+                        <div class="loader-icon"><img
+                                src="{{ route('get.section.asset', [1, 'preloader']) }}?module=general" alt="Preloader">
                         </div>
                     </div>
 

@@ -7,12 +7,16 @@ use App\Models\Course;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Modules\Article\app\Models\Article;
 use Modules\Order\Database\factories\EnrollmentFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Enrollment extends Model
 {
     use HasFactory;
+    protected $appends = ['certificate_path_url'];
 
     protected static function booted(): void
     {
@@ -32,8 +36,14 @@ class Enrollment extends Model
         'course_id' => 'course_id',
         'has_access' => 'has_access',
         'tos_status' => 'tos_status',
+        'certificate_status' => 'certificate_status',
+        'certificate_path' => 'certificate_path',
     ];
 
+    function article(): HasMany
+    {
+        return $this->hasMany(Article::class);
+    }
 
     function course(): BelongsTo
     {
@@ -49,5 +59,14 @@ class Enrollment extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    protected function certificatePathUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->certificate_status == 'signed'
+                ? route('api.courses.get-file', ['type' => 'certificate', 'id' => $this->id])
+                : null
+        );
     }
 }

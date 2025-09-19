@@ -2,6 +2,7 @@
 
 namespace Modules\PendidikanLanjutan\app\Models;
 
+use App\Models\EmployeeGrade;
 use App\Models\Unor;
 use App\Models\User;
 use App\Models\Instansi;
@@ -57,6 +58,16 @@ class Vacancy extends Model
     public function instansi(): BelongsTo
     {
         return $this->belongsTo(Instansi::class);
+    }
+
+    /**
+     * Get the employeeGrade that owns the Vacancy
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function employeeGrade(): BelongsTo
+    {
+        return $this->belongsTo(EmployeeGrade::class);
     }
 
     public function educationLevel()

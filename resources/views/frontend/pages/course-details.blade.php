@@ -123,131 +123,6 @@
                                                         {{ $loop->iteration }}. {{ $chapter?->title }}
                                                     </button>
                                                 </h2>
-                                                <div id="collapse{{ $chapter->id }}" class="accordion-collapse collapse"
-                                                    aria-labelledby="heading{{ $chapter->id }}"
-                                                    data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        <ul class="list-wrap">
-                                                            @foreach ($chapter->chapterItems as $chapterItem)
-                                                                @if ($chapterItem?->type == 'lesson')
-                                                                    @if ($chapterItem?->lesson?->is_free == 1)
-                                                                        @if ($chapterItem?->lesson?->file_type == 'video')
-                                                                            @if ($chapterItem?->lesson->storage == 'google_drive')
-                                                                                <li class="course-item open-item">
-                                                                                    <a href="javascript:;"
-                                                                                        data-bs-toggle="modal"
-                                                                                        data-bs-target="#videoModal"
-                                                                                        data-bs-video="https://drive.google.com/file/d/{{ extractGoogleDriveVideoId($chapterItem?->lesson->file_path) }}/preview"
-                                                                                        class="course-item-link">
-                                                                                        <span
-                                                                                            class="item-name">{{ $chapterItem?->lesson?->title }}</span>
-                                                                                        <div class="course-item-meta">
-                                                                                            <span
-                                                                                                class="item-meta duration">{{ minutesToHours($chapterItem?->lesson?->duration) }}</span>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                            @else
-                                                                                {{-- <li class="course-item open-item">
-                                                                                    <a href="@if (!in_array($chapterItem?->lesson->storage, ['wasabi', 'aws'])) {{ $chapterItem?->lesson->file_path }} @else {{ Storage::disk($chapterItem?->lesson->storage)->temporaryUrl($chapterItem?->lesson->file_path, now()->addHours(1)) }} @endif"
-                                                                                        class="course-item-link popup-video">
-                                                                                        <span
-                                                                                            class="item-name">{{ $chapterItem?->lesson?->title }}</span>
-                                                                                        <div class="course-item-meta">
-                                                                                            <span
-                                                                                                class="item-meta duration">{{ minutesToHours($chapterItem?->lesson?->duration) }}</span>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li> --}}
-                                                                                <li class="course-item">
-                                                                                    <a href="javascript:;"
-                                                                                        class="course-item-link">
-                                                                                        <span
-                                                                                            class="item-name">{{ $chapterItem?->lesson?->title }}</span>
-                                                                                        <div class="course-item-meta">
-                                                                                            <span
-                                                                                                class="item-meta duration">
-                                                                                                --.-- </span>
-                                                                                            <span
-                                                                                                class="item-meta course-item-status">
-                                                                                                <img src="{{ asset('frontend/img/icons/lock.svg') }}"
-                                                                                                    alt="icon">
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                </li>
-                                                                            @endif
-                                                                        @else
-                                                                            <li class="course-item">
-                                                                                <a href="javascript:;"
-                                                                                    class="course-item-link">
-                                                                                    <span
-                                                                                        class="item-name">{{ $chapterItem?->lesson?->title }}</span>
-                                                                                    <div class="course-item-meta">
-                                                                                        <span class="item-meta duration">
-                                                                                            --.-- </span>
-                                                                                        <span
-                                                                                            class="item-meta course-item-status">
-                                                                                            <img src="{{ asset('frontend/img/icons/lock.svg') }}"
-                                                                                                alt="icon">
-                                                                                        </span>
-                                                                                    </div>
-                                                                                </a>
-                                                                            </li>
-                                                                        @endif
-                                                                    @else
-                                                                        <li class="course-item">
-                                                                            <a href="javascript:;"
-                                                                                class="course-item-link">
-                                                                                <span
-                                                                                    class="item-name">{{ $chapterItem?->lesson?->title }}</span>
-                                                                                <div class="course-item-meta">
-                                                                                    <span
-                                                                                        class="item-meta duration">{{ minutesToHours($chapterItem?->lesson?->duration) }}</span>
-                                                                                    <span
-                                                                                        class="item-meta course-item-status">
-                                                                                        <img src="{{ asset('frontend/img/icons/lock.svg') }}"
-                                                                                            alt="icon">
-                                                                                    </span>
-                                                                                </div>
-                                                                            </a>
-                                                                        </li>
-                                                                    @endif
-                                                                @elseif($chapterItem?->type == 'document')
-                                                                    <li class="course-item">
-                                                                        <a href="javascript:;" class="course-item-link">
-                                                                            <span
-                                                                                class="item-name">{{ $chapterItem?->lesson?->title }}</span>
-                                                                            <div class="course-item-meta">
-                                                                                <span
-                                                                                    class="item-meta duration">{{ minutesToHours($chapterItem?->lesson?->duration) }}</span>
-                                                                                <span class="item-meta course-item-status">
-                                                                                    <img src="{{ asset('frontend/img/icons/lock.svg') }}"
-                                                                                        alt="icon">
-                                                                                </span>
-                                                                            </div>
-                                                                        </a>
-                                                                    </li>
-                                                                @elseif ($chapterItem->type == 'quiz')
-                                                                    <li class="course-item">
-                                                                        <a href="javascript:;" class="course-item-link">
-                                                                            <span
-                                                                                class="item-name">{{ $chapterItem?->quiz?->title }}</span>
-                                                                            <div class="course-item-meta">
-                                                                                <span
-                                                                                    class="item-meta duration">{{ minutesToHours($chapterItem?->lesson?->duration) }}</span>
-                                                                                <span class="item-meta course-item-status">
-                                                                                    <img src="{{ asset('frontend/img/icons/lock.svg') }}"
-                                                                                        alt="icon">
-                                                                                </span>
-                                                                            </div>
-                                                                        </a>
-                                                                    </li>
-                                                                @endif
-                                                            @endforeach
-                                                        </ul>
-                                                    </div>
-                                                </div>
                                             </div>
                                         @endforeach
                                     </div>
@@ -260,6 +135,7 @@
                                     <div class="courses__instructors-wrap">
                                         <div class="courses__instructors-thumb">
                                             <img src="{{ asset($course->instructor->image) }}" alt="img"
+                                                onerror="this.src='{{ route('get.section.asset', [1, 'default_avatar']) }}?module=general';"
                                                 class="instructor-thumb">
                                         </div>
                                         <div class="courses__instructors-content">
@@ -318,6 +194,7 @@
                                             <div class="courses__instructors-wrap">
                                                 <div class="courses__instructors-thumb">
                                                     <img src="{{ asset($instructor->instructor->image) }}"
+                                                        onerror="this.src='{{ route('get.section.asset', [1, 'default_avatar']) }}?module=general';"
                                                         alt="img">
                                                 </div>
                                                 <div class="courses__instructors-content">

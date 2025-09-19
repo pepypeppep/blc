@@ -118,6 +118,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     // The route for streaming video. It's now public and doesn't require user authentication.
     Route::get('/stream-video/{fileId}', [GoogleDrivePublicVideoController::class, 'streamVideo']);
 
+    Route::get('faqs', [HomePageController::class, 'faq'])->name('faqs');
+
 
     /**
      * ============================================================================

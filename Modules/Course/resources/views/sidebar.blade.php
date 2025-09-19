@@ -23,10 +23,11 @@
                 <a class="nav-link" href="{{ route('admin.courses.index') }}">
                     {{ __('Courses') }}
                     @if ($pendingCourseCount > 0)
-                        <small class="badge badge-danger ml-2">{{ $pendingCourseCount }}</small>
+                        <small class="badge badge-danger ml-2"
+                            title="{{ __('Pending Courses') }}">{{ $pendingCourseCount }}</small>
                     @endif
                     @if ($pendingEnrolledCount > 0)
-                        <small class="badge badge-info ml-2"
+                        <small class="badge badge-info ml-2" title="{{ __('Pending Enrollments') }}"
                             title="{{ __('Pending Enrollments') }}">{{ $pendingEnrolledCount }}</small>
                     @endif
                 </a>

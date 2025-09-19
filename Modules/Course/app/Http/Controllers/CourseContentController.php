@@ -78,6 +78,11 @@ class CourseContentController extends Controller
         $chapter->title = $request->title;
         $chapter->jp = $request->jp;
         $chapter->save();
+
+        $course = Course::find($chapter->course_id);
+        $course->jp = $course->chapters->sum('jp');
+        $course->save();
+
         return redirect()->back()->with(['messege' => __('Updated successfully'), 'alert-type' => 'success']);
     }
 

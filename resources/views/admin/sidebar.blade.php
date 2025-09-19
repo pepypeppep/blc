@@ -45,10 +45,17 @@
                 @endif
 
                 @if (Module::isEnabled('Course') && checkAdminHasPermission('report.management'))
+                    @php
+                        $reportCount = \App\Models\ErrorReport::where('status', 'reported')->count();
+                    @endphp
                     <li class="{{ isRoute('admin.course-report.index', 'active') }}">
                         <a class="nav-link" href="{{ route('admin.course-report.index') }}"><i
-                                class="fas fa-award"></i>
+                                class="fas fa-exclamation-circle"></i>
                             <span>{{ __('Reports') }}</span>
+                            @if ($reportCount > 0)
+                                <small class="badge badge-danger ml-2"
+                                    title="{{ __('Reports') }}">{{ $reportCount }}</small>
+                            @endif
                         </a>
                     </li>
                 @endif

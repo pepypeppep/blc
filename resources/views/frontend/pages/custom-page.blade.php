@@ -10,7 +10,10 @@
             <div class="card singUp-wrap custom-page-body">
                 <div class="card-body">
                     {!! clean($page->translation->content) !!}
-                    {{-- <a href="{{ route('home') }}" class="btn btn-primary custom-page-button mt-4">{{ __('Go to Home') }}</a> --}}
+                    <div class="d-flex justify-content-center mt-4">
+                        <a href="{{ route('home') }}"
+                            class="btn btn-primary custom-page-button mt-4">{{ __('Go to Home') }}</a>
+                    </div>
                 </div>
             </div>
 

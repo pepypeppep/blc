@@ -461,7 +461,7 @@
     "Sort By": "Urutkan Berdasarkan",
     "Latest to Oldest": "Terbaru hingga Terlama",
     "Oldest to Latest": "Terlama hingga Terbaru",
-    "Go to Home": "Pergi ke Rumah",
+    "Go to Home": "Kembali ke Beranda",
     "Instructor Details": "Detail Instruktur",
     "My Courses": "Pelatihan Saya",
     "Checkout my latest courses": "Lihat pelatihan terbaru saya",
@@ -1900,7 +1900,8 @@
     "Booking Number": "Nomor Pemesanan",
     "YoGa": "YoGa",
     "Expert": "Pakar",
-    "Coach": "Pelatih",
+    "Coach": "Coach",
+    "Coachee List": "Daftar Coachee",
     "Since 1996": "Sejak tahun 1996",
     "My special yoga classes to improve yourself": "Kelas yoga khusus saya untuk meningkatkan diri",
     "Join class Now": "Bergabunglah dengan kelas Sekarang",
@@ -2142,5 +2143,6 @@
     "Mentor Evaluation": "Evaluasi Mentor",
     "Mentee Evaluation": "Evaluasi Mentee",
     "Error Report": "Laporan Error",
-    "Error Report List": "Daftar Laporan Error"
+    "Error Report List": "Daftar Laporan Error",
+    "Learn More": "Pelajari Lebih Lanjut"
 }

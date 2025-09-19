@@ -62,7 +62,7 @@ class HomePageController extends Controller
         $bannerSection = $sections->where('name', 'banner_section')->first();
         $faqSection = $sections->where('name', 'faq_section')->first();
 
-        $faqs = Faq::with('translation')->where('status', 1)->get();
+        $faqs = Faq::with('translation')->where('status', 1)->limit(3)->get();
 
         $trendingCategories = CourseCategory::with(['translation:id,name,course_category_id', 'subCategories' => function ($query) {
             $query->withCount(['courses' => function ($query) {
@@ -291,5 +291,19 @@ class HomePageController extends Controller
         }
 
         return response()->file($path);
+    }
+
+    public function faq()
+    {
+        $theme_name = Session::has('demo_theme') ? Session::get('demo_theme') : DEFAULT_HOMEPAGE;
+
+        $faqs = Faq::with('translation')->where('status', 1)->get();
+
+        $sections = Section::whereHas("home", function ($q) use ($theme_name) {
+            $q->where('slug', $theme_name);
+        })->get();
+        $faqSection = $sections->where('name', 'faq_section')->first();
+
+        return view('frontend.pages.faq', compact('faqs', 'faqSection'));
     }
 }

@@ -262,13 +262,13 @@ class CourseController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * 
-     * @param Request $request 
-     * @return RedirectResponse|JsonResponse|void 
-     * @throws InvalidArgumentException 
-     * @throws ModelNotFoundException 
-     * @throws BindingResolutionException 
-     * @throws AccessPermissionDeniedException 
+     *
+     * @param Request $request
+     * @return RedirectResponse|JsonResponse|void
+     * @throws InvalidArgumentException
+     * @throws ModelNotFoundException
+     * @throws BindingResolutionException
+     * @throws AccessPermissionDeniedException
      */
     function update(Request $request)
     {
@@ -655,7 +655,13 @@ class CourseController extends Controller
             $newCourse->title = $course->title . ' - Copy';
             $newCourse->type = $course->type;
             $newCourse->slug = generateUniqueSlug(Course::class, $course->title) . now()->timestamp;
-            $newCourse->status = Course::STATUS_IS_DRAFT;
+
+            $currentUserInstansi = adminAuth()->instansi_id;
+            if (!$currentUserInstansi) {
+                $newCourse->status = Course::STATUS_ACTIVE;
+            } else {
+                $newCourse->status = Course::STATUS_IS_DRAFT;
+            }
             $newCourse->is_approved = Course::ISAPPROVED_PENDING;
             $newCourse->save();
 

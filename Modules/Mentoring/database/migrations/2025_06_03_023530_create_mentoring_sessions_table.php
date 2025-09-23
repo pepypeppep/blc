@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('mentoring_instructions');
             $table->unsignedBigInteger('mentoring_id')->onDelete('cascade');
             $table->string('status')->default('pending');
+            $table->integer('jp')->default(0);
             $table->timestamps();
         });
     }

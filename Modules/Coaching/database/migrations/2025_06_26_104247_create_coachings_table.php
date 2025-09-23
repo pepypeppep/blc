@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('spt');
             $table->foreignId('coach_id')->constrained('users')->onDelete('cascade');
             $table->string('status')->default('Draft');
+            $table->integer('jp')->default(0);
             $table->timestamps();
         });
     }

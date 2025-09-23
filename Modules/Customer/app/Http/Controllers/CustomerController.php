@@ -2,23 +2,24 @@
 
 namespace Modules\Customer\app\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Course;
 use App\Models\User;
+use App\Models\Course;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Models\UserEducation;
 use App\Models\UserExperience;
 use App\Services\MailSenderService;
-use App\Traits\GetGlobalInformationTrait;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Modules\Customer\app\Jobs\SendBulkEmailToUser;
-use Modules\Customer\app\Jobs\SendUserBannedMailJob;
-use Modules\Customer\app\Models\BannedHistory;
-use Modules\InstructorEvaluation\app\Models\InstructorEvaluation;
 use Modules\Location\app\Models\City;
 use Modules\Location\app\Models\State;
+use App\Traits\GetGlobalInformationTrait;
+use Modules\Customer\app\Models\BannedHistory;
+use Modules\Customer\app\Jobs\SendBulkEmailToUser;
+use Modules\Customer\app\Jobs\SendUserBannedMailJob;
+use Modules\InstructorEvaluation\app\Models\InstructorEvaluation;
 
 class CustomerController extends Controller
 {
@@ -807,5 +808,23 @@ class CustomerController extends Controller
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
 
         return redirect()->back()->with($notification);
+    }
+
+    public function impersonate($id)
+    {
+        if (!auth('admin')->user()->hasAllPermissions()) {
+            abort(403);
+        }
+
+        session()->put([
+            'impersonator' => auth()->user(),
+            'impersonation_key' => Str::random(32)
+        ]);
+
+        $user = User::findOrFail($id);
+
+        Auth::login($user);
+
+        return redirect('/student/dashboard');
     }
 }

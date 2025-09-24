@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('spt');
             $table->foreignId('coach_id')->constrained('users')->onDelete('cascade');
             $table->string('status')->default('Draft');
+            // certificate
+            $table->foreignId('certificate_id')->nullable()->constrained('certificates')->onDelete('restrict');
             $table->timestamps();
         });
     }

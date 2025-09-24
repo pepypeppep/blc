@@ -484,6 +484,7 @@
                                 </div>
                             </div>
                         @endif
+                        {{-- SPT Coaching --}}
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('SPT Coaching') }}</h4>
@@ -502,10 +503,49 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- /SPT Coaching --}}
+                        {{-- Sertifikat Coaching --}}
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <h4>{{ __('Sertifikat Coaching') }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group d-flex justify-content-center">
+                                    <div>
+                                        <div id="certificateBg"></div>
+                                        <input type="hidden" name="certificate" value="{{ $coaching->certificate_id }}"
+                                            class="form-control">
+
+
+                                        {{-- @forelse ($coaching->signers as $signer)
+                                            @if ($signer->step == 1)
+                                                <input type="hidden" name="tte1" value="{{ $signer->user_id }}">
+                                            @endif
+                                            @if ($signer->step == 2)
+                                                <input type="hidden" name="tte2" value="{{ $signer->user_id }}">
+                                            @endif
+                                        @empty
+                                            <input type="hidden" name="tte1">
+                                            <input type="hidden" name="tte2">
+                                        @endforelse --}}
+
+                                        {{-- pilih sertifikat modal --}}
+                                        <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
+                                            data-target="#certificate-type-modal">{{ __('Choose Certificate') }}</button>
+                                        {{-- pilih penanda tangan modal --}}
+                                        <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
+                                            data-target="#certificate-signer-modal">{{ __('Choose Signer') }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- /Sertifikat Coaching --}}
                     </div>
                 </div>
             </div>
         </section>
+        @include('coaching::certificate-type-modal')
+        @include('coaching::certificate-signer-modal')
     </div>
 @endsection
 

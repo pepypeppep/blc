@@ -113,4 +113,9 @@ class Coaching extends Model
     {
         return route('api.coaching.show.document', ['id' => $this->id, 'module' => 'coaching', 'type' => 'spt']);
     }
+
+    public function signers()
+    {
+        return $this->hasMany(CoachingSigner::class);
+    }
 }

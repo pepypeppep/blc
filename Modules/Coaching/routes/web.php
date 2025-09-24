@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Coaching\app\Http\Controllers\CoacheeController;
 use Modules\Coaching\app\Http\Controllers\CoachingController;
 use Modules\Coaching\app\Http\Controllers\CoachController;
+use Modules\Coaching\app\Http\Controllers\CoachingSignerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,5 +64,13 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         Route::get('/{id}/document', [CoachingController::class, 'showDocumentSpt'])->name('view.spt');
         Route::get('/{id}/report', [CoachingController::class, 'showReport'])->name('view.report');
         Route::get('/{id}/document/{type}', [CoachingController::class, 'showDocument'])->name('view.document');
+
+
+        // Certificate
+        Route::group(['prefix' => 'certificate', 'as' => 'certificate.'], function () {
+            Route::get('list-signer', [CoachingSignerController::class, 'list'])->name('list-signer');
+            Route::post('store-signer', [CoachingSignerController::class, 'storeSigners'])->name('store-signer');
+            Route::post('store-type', [CoachingSignerController::class, 'storeType'])->name('store-type');
+        });
     });
 });

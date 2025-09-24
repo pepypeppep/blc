@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Rules\CustomRecaptcha;
 use App\Http\Controllers\Controller;
-use App\Models\Tag;
 use Illuminate\Support\Facades\Cache;
 use Modules\Article\app\Models\Article;
-use Modules\Article\app\Models\ArticleComment;
 use Modules\Article\app\Models\ArticleTag;
 use Modules\Article\app\Models\ArticleReview;
+use Modules\Article\app\Models\ArticleComment;
+use Modules\Article\app\Models\ArticleCommentReport;
 
 class ArticleController extends Controller
 {
@@ -46,7 +47,7 @@ class ArticleController extends Controller
         $tags = Tag::has('articles')->get();
         $comments = ArticleComment::with('user')->whereHas('post', function ($query) use ($slug) {
             $query->where('slug', $slug);
-        })->orderBy('created_at', 'desc')->get();
+        })->where('status', 'published')->orderBy('created_at', 'desc')->get();
         // $review = ArticleReview::where(['article_id' => $article->id, 'author_id' => auth()->user()->id])->first();
         $review = ArticleReview::where(['article_id' => $article->id])->first();
 
@@ -91,5 +92,31 @@ class ArticleController extends Controller
         $comment->description = $request->comment;
         $comment->save();
         return redirect()->back()->withFragment('comments')->with(['messege' => __('Comment added successfully.'), 'alert-type' => 'success']);
+    }
+
+    public function report(Request $request, $slug)
+    {
+        $request->validate([
+            'comment_id' => 'required|integer|exists:article_comments,id',
+            'reason' => 'required|string'
+        ]);
+
+        $report = ArticleCommentReport::where('user_id', auth()->user()->id)
+            ->where('comment_id', $request->comment_id)
+            ->first();
+
+        if (!$report) {
+            $comment = ArticleComment::findOrFail($request->comment_id);
+            $comment->reported_count++;
+            $comment->save();
+
+            $report = ArticleCommentReport::create([
+                'comment_id' => $comment->id,
+                'user_id' => auth()->user()->id,
+                'reason' => $request->reason
+            ]);
+        }
+
+        return redirect()->route('article.show', $slug)->with(['messege' => __('Comment reported successfully.'), 'alert-type' => 'success']);
     }
 }

@@ -4,6 +4,7 @@ namespace Modules\Article\app\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Article\Database\factories\ArticleCommentFactory;
@@ -34,5 +35,15 @@ class ArticleComment extends Model
     function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    /**
+     * Get all of the reports for the ArticleComment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reports(): HasMany
+    {
+        return $this->hasMany(ArticleCommentReport::class, 'comment_id');
     }
 }

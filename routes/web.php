@@ -81,6 +81,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::get('article/{slug}', [ArticleController::class, 'show'])->name('article.show');
     Route::post('article/submit-review', [ArticleController::class, 'submitReview'])->name('article.submit-review');
     Route::post('article/submit-comment', [ArticleController::class, 'submitComment'])->name('article.submit-comment');
+    Route::post('/article/{slug}/report-comment', [ArticleController::class, 'report'])->name('article.report-comment');
 
     /** About page routes */
     Route::get('about-us', [AboutPageController::class, 'index'])->name('about-us');

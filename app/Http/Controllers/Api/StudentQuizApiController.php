@@ -66,32 +66,58 @@ class StudentQuizApiController extends Controller
             $enrolled = $this->checkEnrollment($user, $course);
             if ($enrolled instanceof JsonResponse) return $enrolled;
 
-            // 🔹 Cek due date
+            //Cek due date
             if ($quiz->due_date && now()->greaterThan($quiz->due_date)) {
                 return $this->errorResponse('Quiz has expired.', [], 403);
             }
 
-            // 🔹 Hitung attempt
+            //Hitung attempt
             $attemptCount = QuizResult::where('user_id', $user->id)
                 ->where('quiz_id', $quizId)
                 ->count();
 
-            // 🔹 Ambil session terakhir
+            //Ambil session terakhir
             $lastSession = QuizSession::where('user_id', $user->id)
                 ->where('quiz_id', $quizId)
                 ->latest()
                 ->first();
 
-            // 🔹 Kalau ada session aktif, langsung kembalikan
+            //Kalau ada session aktif, langsung kembalikan (tapi cek isi)
             $activeSession = QuizSession::where('user_id', $user->id)
                 ->where('quiz_id', $quizId)
                 ->whereNull('ended_at')
                 ->first();
 
             if ($activeSession) {
+                $questions = $activeSession->questions;
+                $answers   = $activeSession->answers;
+
+                //Kalau kosong/null → generate ulang
+                if (empty($questions)) {
+                    $questions = $quiz->questions->shuffle()->map(function ($q) {
+                        return [
+                            'id'      => $q->id,
+                            'title'   => $q->title,
+                            'type'    => $q->type,
+                            'grade'   => $q->grade,
+                            'answers' => $q->answers->shuffle()->map(fn($a) => [
+                                'id'    => $a->id,
+                                'title' => $a->title,
+                            ]),
+                        ];
+                    });
+
+                    $answers = null;
+
+                    $activeSession->update([
+                        'questions' => $questions,
+                        'answers'   => $answers,
+                    ]);
+                }
+
                 return $this->successResponse([
-                    'questions'   => $activeSession->questions,
-                    'answers'     => $activeSession->answers,
+                    'questions'   => $questions,
+                    'answers'     => $answers,
                     'started_at'  => $activeSession->started_at,
                     'ended_at'    => $activeSession->ended_at,
                     'time_limit'  => $quiz->time,
@@ -101,7 +127,7 @@ class StudentQuizApiController extends Controller
                 ], 'Quiz already started', 200);
             }
 
-            // 🔹 Kalau attempt habis (kecuali 0 = unlimited)
+            //Kalau attempt habis (kecuali 0 = unlimited)
             if ($quiz->attempt !== 0 && $attemptCount >= $quiz->attempt) {
                 return $this->successResponse([
                     'questions'   => $lastSession?->questions,
@@ -115,7 +141,7 @@ class StudentQuizApiController extends Controller
                 ], "Maximum attempt ({$quiz->attempt}) reached.", 403);
             }
 
-            // 🔹 Kalau masih bisa attempt → buat pertanyaan random
+            //Kalau masih bisa attempt → buat pertanyaan random
             $randomQuestions = $quiz->questions->shuffle()->map(function ($q) {
                 return [
                     'id'      => $q->id,
@@ -129,20 +155,20 @@ class StudentQuizApiController extends Controller
                 ];
             });
 
-            // 🔹 Copy jawaban dari session pertama (kalau ada)
+            //Copy jawaban dari session pertama (kalau ada)
             $firstSession = QuizSession::where('user_id', $user->id)
                 ->where('quiz_id', $quizId)
                 ->orderBy('id', 'asc')
                 ->first();
 
-            $answersToCopy = $firstSession?->answers ?? [];
+            $answersToCopy = $firstSession?->answers ?? null;
 
-            // 🔹 Update atau buat session baru
+            //Update atau buat session baru
             $session = QuizSession::updateOrCreate(
                 ['user_id' => $user->id, 'quiz_id' => $quizId],
                 [
-                    'questions'  => $randomQuestions,
-                    'answers'    => $answersToCopy,
+                    'questions'  => $randomQuestions->isEmpty() ? null : $randomQuestions,
+                    'answers'    => $answersToCopy ?: null,
                     'started_at' => now(),
                     'ended_at'   => null,
                 ]
@@ -150,7 +176,7 @@ class StudentQuizApiController extends Controller
 
             return $this->successResponse([
                 'questions'   => $session->questions,
-                'answers'     => $answersToCopy,
+                'answers'     => $session->answers,
                 'started_at'  => $session->started_at,
                 'ended_at'    => $session->ended_at,
                 'time_limit'  => $quiz->time,
@@ -162,6 +188,7 @@ class StudentQuizApiController extends Controller
             return $this->errorResponse($e->getMessage(), [], 500);
         }
     }
+
 
 
     /**
@@ -368,12 +395,12 @@ class StudentQuizApiController extends Controller
                 return $this->errorResponse('Quiz not found', [], 404);
             }
 
-            // 🔹 Cek due date
+            //Cek due date
             if ($quiz->due_date && now()->greaterThan($quiz->due_date)) {
                 return $this->errorResponse('Quiz has expired.', [], 403);
             }
 
-            // 🔹 Ambil session aktif terakhir
+            //Ambil session aktif terakhir
             $session = QuizSession::where('user_id', $user->id)
                 ->where('quiz_id', $quizId)
                 ->whereNull('ended_at')
@@ -384,7 +411,7 @@ class StudentQuizApiController extends Controller
                 return $this->errorResponse('No active session found.', [], 404);
             }
 
-            // 🔹 Cek batas waktu pengerjaan
+            //Cek batas waktu pengerjaan
             $maxTime    = $session->started_at->addMinutes((int) $quiz->time);
             $waktuHabis = now()->gt($maxTime);
 
@@ -426,13 +453,13 @@ class StudentQuizApiController extends Controller
                 ];
             }
 
-            // 🔹 Tutup session
+            //Tutup session
             $endedAt = now();
             $session->update(['ended_at' => $endedAt]);
 
             $durationInSeconds = $endedAt->diffInSeconds($session->started_at);
 
-            // 🔹 Simpan hasil quiz → selalu insert (bisa jadi history)
+            //Simpan hasil quiz → selalu insert (bisa jadi history)
             $quizResult = QuizResult::create([
                 'user_id'    => $user->id,
                 'quiz_id'    => $quiz->id,
@@ -444,7 +471,7 @@ class StudentQuizApiController extends Controller
                 'duration'   => abs($durationInSeconds),
             ]);
 
-            // 🔹 Hitung attempt yang sudah dipakai (dari QuizResult)
+            //Hitung attempt yang sudah dipakai (dari QuizResult)
             $attemptCount = QuizResult::where('user_id', $user->id)
                 ->where('quiz_id', $quizId)
                 ->count();

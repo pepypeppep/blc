@@ -234,6 +234,7 @@ class CustomerController extends Controller
         checkAdminHasPermissionAndThrowException('customer.view');
         $user = User::findOrFail($id);
         $user->rating = InstructorEvaluation::where('instructor_id', $user->id)->avg('rating');
+        $evaluations = InstructorEvaluation::where('instructor_id', $user->id)->paginate(10);
         // limting access to the user on same instansi
         $this->authorize('view',  $user);
 
@@ -245,7 +246,8 @@ class CustomerController extends Controller
             'user' => $user,
             'banned_histories' => $banned_histories,
             'states' => $states,
-            'cities' => $cities
+            'cities' => $cities,
+            'evaluations' => $evaluations
         ]);
     }
 

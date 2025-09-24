@@ -156,7 +156,7 @@
                                                     <td>{{ $loop->index + 1 }}</td>
                                                     <td class="course-table-title">
                                                         <a
-                                                            href="{{ route('course.show', $course->slug) }}"><span>{{ truncate($course->title) }}</span></a>
+                                                            href="{{ route('admin.courses.show', $course->id) }}"><span>{{ truncate($course->title) }}</span></a>
                                                         <br>
                                                         <small>{{ $course->category->translation->name ?? '' }}</small>
                                                         <br>

@@ -35,6 +35,11 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
             Route::get('/report-file/{id}', [MasterPendidikanLanjutanController::class, 'reportFileEdit'])->name('vacancies.master.file.edit');
             Route::put('/report-file/{id}', [MasterPendidikanLanjutanController::class, 'reportFileUpdate'])->name('vacancies.master.file.update');
 
+            Route::get('/attachment-file', [MasterPendidikanLanjutanController::class, 'attachmentFileIndex'])->name('vacancies.master.attachment.index');
+            Route::post('/attachment-file', [MasterPendidikanLanjutanController::class, 'attachmentFileStore'])->name('vacancies.master.attachment.store');
+            Route::get('/attachment-file/{id}', [MasterPendidikanLanjutanController::class, 'attachmentFileEdit'])->name('vacancies.master.attachment.edit');
+            Route::put('/attachment-file/{id}', [MasterPendidikanLanjutanController::class, 'attachmentFileUpdate'])->name('vacancies.master.attachment.update');
+
             Route::get('/schedule', [VacancyScheduleController::class, 'index'])->name('vacancies.master.schedule.index');
             Route::post('/schedule', [VacancyScheduleController::class, 'store'])->name('vacancies.master.schedule.store');
             Route::put('/schedule/{id}', [VacancyScheduleController::class, 'update'])->name('vacancies.master.schedule.update');

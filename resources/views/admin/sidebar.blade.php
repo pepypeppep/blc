@@ -1,12 +1,14 @@
 <div class="main-sidebar">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <a href="{{ route('admin.dashboard') }}"><img class="admin_logo" src="{{ asset($setting->logo) ?? '' }}"
+            <a href="{{ route('admin.dashboard') }}"><img class="admin_logo"
+                    src="{{ route('get.section.asset', [1, 'logo']) }}?module=general"
                     alt="{{ $setting->app_name ?? '' }}"></a>
         </div>
 
         <div class="sidebar-brand sidebar-brand-sm">
-            <a href="{{ route('admin.dashboard') }}"><img src="{{ asset($setting->favicon) ?? '' }}"
+            <a href="{{ route('admin.dashboard') }}"><img
+                    src="{{ route('get.section.asset', [1, 'favicon']) }}?module=general"
                     alt="{{ $setting->app_name ?? '' }}"></a>
         </div>
 
@@ -20,8 +22,8 @@
             @endadminCan
 
             @if (Module::isEnabled('Pengumuman') && checkAdminHasPermission('pengumuman.view'))
-                    @include('pengumuman::sidebar')
-                @endif
+                @include('pengumuman::sidebar')
+            @endif
 
             @if (checkAdminHasPermission('course.view') ||
                     checkAdminHasPermission('course.certificate.management') ||
@@ -38,12 +40,29 @@
                     @include('certificatebuilder::sidebar')
                 @endif
 
-                @if (Module::isEnabled('CertificateRecognition') && checkAdminHasPermission('sertifikat.pengakuan.view'))
-                    @include('certificaterecognition::sidebar')
-                @endif
-
                 @if (Module::isEnabled('Badges') && checkAdminHasPermission('badge.management'))
                     @include('badges::sidebar')
+                @endif
+
+                @if (Module::isEnabled('Course') && checkAdminHasPermission('report.management'))
+                    @php
+                        $reportCount = \App\Models\ErrorReport::where('status', 'reported')->count();
+                    @endphp
+                    <li class="{{ isRoute('admin.course-report.index', 'active') }}">
+                        <a class="nav-link" href="{{ route('admin.course-report.index') }}"><i
+                                class="fas fa-exclamation-circle"></i>
+                            <span>{{ __('Reports') }}</span>
+                            @if ($reportCount > 0)
+                                <small class="badge badge-danger ml-2"
+                                    title="{{ __('Reports') }}">{{ $reportCount }}</small>
+                            @endif
+                        </a>
+                    </li>
+                @endif
+
+                <li class="menu-header">{{ __('Certificate Recognition') }}</li>
+                @if (Module::isEnabled('CertificateRecognition') && checkAdminHasPermission('sertifikat.pengakuan.view'))
+                    @include('certificaterecognition::sidebar')
                 @endif
 
                 {{-- @if (Module::isEnabled('Blog') && (checkAdminHasPermission('blog.view') || checkAdminHasPermission('blog.category.view') || checkAdminHasPermission('blog.comment.view')))
@@ -57,6 +76,23 @@
                     @include('pendidikanlanjutan::sidebar')
                 @endif
             @endif
+
+            @if (checkAdminHasPermission('mentoring.view'))
+                <li class="menu-header">{{ __('Manage Mentoring') }}</li>
+
+                @if (Module::isEnabled('Mentoring') && checkAdminHasPermission('mentoring.view'))
+                    @include('mentoring::sidebar')
+                @endif
+            @endif
+
+            @if (checkAdminHasPermission('coaching.view'))
+                <li class="menu-header">{{ __('Manage Coaching') }}</li>
+
+                @if (Module::isEnabled('Coaching') && checkAdminHasPermission('coaching.view'))
+                    @include('coaching::sidebar')
+                @endif
+            @endif
+
 
             @if (checkAdminHasPermission('knowledge.verification'))
                 <li class="menu-header">{{ __('Manage Knowledge') }}</li>
@@ -85,10 +121,12 @@
                     checkAdminHasPermission('customer.view') ||
                     checkAdminHasPermission('location.view'))
                 <li class="menu-header">{{ __('Manage Users') }}</li>
-                {{-- @if (
-                    (Module::isEnabled('InstructorRequest') && checkAdminHasPermission('instructor.request.list')) ||
-                        checkAdminHasPermission('instructor.request.setting'))
+                {{-- @if ((Module::isEnabled('InstructorRequest') && checkAdminHasPermission('instructor.request.list')) || checkAdminHasPermission('instructor.request.setting'))
                     @include('instructorrequest::sidebar')
+                @endif --}}
+
+                {{-- @if (Module::isEnabled('InstructorEvaluation'))
+                    @include('instructorevaluation::sidebar')
                 @endif --}}
 
                 @if (Module::isEnabled('Customer') && checkAdminHasPermission('customer.view'))
@@ -129,13 +167,13 @@
                     checkAdminHasPermission('faq.view'))
                 <li class="menu-header">{{ __('Manage Website') }}</li>
 
-                @if (Module::isEnabled('MenuBuilder') && checkAdminHasPermission('menu.view'))
+                {{-- @if (Module::isEnabled('MenuBuilder') && checkAdminHasPermission('menu.view'))
                     @include('menubuilder::sidebar')
                 @endif
 
                 @if (Module::isEnabled('PageBuilder') && checkAdminHasPermission('page.management'))
                     @include('pagebuilder::sidebar')
-                @endif
+                @endif --}}
 
                 @if (Module::isEnabled('SocialLink') && checkAdminHasPermission('social.link.management'))
                     @include('sociallink::sidebar')
@@ -161,9 +199,7 @@
                 </li>
             @endif
 
-            @if (checkAdminHasPermission('newsletter.view') ||
-                    checkAdminHasPermission('testimonial.view') ||
-                    checkAdminHasPermission('contect.message.view'))
+            {{-- @if (checkAdminHasPermission('newsletter.view') || checkAdminHasPermission('testimonial.view') || checkAdminHasPermission('contect.message.view'))
                 <li class="menu-header">{{ __('Utility') }}</li>
 
                 @if (Module::isEnabled('NewsLetter') && checkAdminHasPermission('newsletter.view'))
@@ -177,7 +213,7 @@
                 @if (Module::isEnabled('ContactMessage') && checkAdminHasPermission('contect.message.view'))
                     @include('contactmessage::sidebar')
                 @endif
-            @endif
+            @endif --}}
             <li class="nav-item dropdown {{ isRoute('admin.addon.*') ? 'active' : '' }}" id="addon_sidemenu">
                 <a class="nav-link has-dropdown" data-toggle="dropdown" href="#"><i class="fas fa-gem"></i>
                     <span>{{ __('Manage Addons') }} </span>

@@ -2,8 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Instansi;
 use App\Models\User;
+use App\Models\Instansi;
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
@@ -62,6 +63,31 @@ class UsersSync extends Command
             $nineboxData = Http::get('https://asn.bantulkab.go.id/makansajaapi/api/external/pegawai/' . $user['nip'])
                 ->json();
 
+            if (strpos($user['tingkat_pendidikan'], '/')) {
+                $user['tingkat_pendidikan'] = substr($user['tingkat_pendidikan'], 0, strpos($user['tingkat_pendidikan'], '/'));
+            }
+
+            if (Str::contains($user['tingkat_pendidikan'], 'Sekolah Dasar')) {
+                $user['tingkat_pendidikan'] = 'SD';
+            }
+            if (Str::contains($user['tingkat_pendidikan'], 'SMA ')) {
+                $user['tingkat_pendidikan'] = 'SMA';
+            }
+            if ($user['tingkat_pendidikan'] == 'Diploma I') {
+                $user['tingkat_pendidikan'] = 'D-1';
+            }
+            if ($user['tingkat_pendidikan'] == 'Diploma II') {
+                $user['tingkat_pendidikan'] = 'D-2';
+            }
+            if ($user['tingkat_pendidikan'] == 'Diploma III') {
+                $user['tingkat_pendidikan'] = 'D-3';
+            }
+            if ($user['tingkat_pendidikan'] == 'Diploma IV') {
+                $user['tingkat_pendidikan'] = 'D-4';
+            }
+
+            $this->line($user['tingkat_pendidikan']);
+
             User::updateOrCreate([
                 'username' => $user['nip'],
             ], [
@@ -81,7 +107,7 @@ class UsersSync extends Command
                 'alamat' => $user['alamat'],
                 'jenis_kelamin' => $user['jenis_kelamin'],
                 'pendidikan' => $user['pendidikan'],
-                'tingkat_pendidikan' => $user['tingkat_pendidikan'],
+                'tingkat_pendidikan' => trim($user['tingkat_pendidikan']),
                 'tmt_golongan' => $user['tmt_golongan'],
                 'tmt_jabatan' => $user['tmt_jabatan'],
                 'asn_status' => $user['jenis_asn'],

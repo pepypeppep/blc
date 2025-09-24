@@ -4,22 +4,33 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Course;
 use App\Models\LessonReply;
+use App\Traits\ApiResponse;
+use iio\libmergepdf\Merger;
 use App\Models\Announcement;
 use App\Models\CourseReview;
 use Illuminate\Http\Request;
+use App\Models\CourseChapter;
 use App\Models\CourseProgress;
 use App\Models\LessonQuestion;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\CourseChapterItem;
 use App\Models\CourseChapterLesson;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Modules\Course\app\Models\CourseTos;
 use Modules\Order\app\Models\Enrollment;
 use Modules\Course\app\Models\CourseLevel;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Modules\Course\app\Models\CourseCategory;
+use Modules\CertificateBuilder\app\Models\CertificateBuilder;
 
 class CourseApiController extends Controller
 {
+    use ApiResponse;
+
     /**
      * @OA\Get(
      *     path="/courses",
@@ -169,21 +180,34 @@ class CourseApiController extends Controller
                 });
             });
 
-            $query->with([
-                'instructor:id,name',
-                'enrollments',
-                'category.translation',
-                'category' => function ($query) {
-                    $query->withCount('courses');
-                }
-            ]);
-
             if ($request->has('user_id')) {
                 $authorId = $request->user_id;
+
+                $query->with([
+                    'instructor:id,name',
+                    'enrollments' => function ($q) use ($authorId) {
+                        $q->where('user_id', $authorId)
+                            ->with('article');
+                    },
+                    'category.translation',
+                    'category' => function ($query) {
+                        $query->withCount('courses');
+                    }
+                ]);
+
                 $query->whereHas('enrollments', function ($q) use ($authorId) {
                     $q->where('user_id', $authorId);
                     $q->where('has_access', 1);
                 });
+            } else {
+                $query->with([
+                    'instructor:id,name',
+                    'enrollments',
+                    'category.translation',
+                    'category' => function ($query) {
+                        $query->withCount('courses');
+                    }
+                ]);
             }
 
             $query->orderBy('id', $request->order && $request->filled('order') ? $request->order : 'desc');
@@ -490,7 +514,7 @@ class CourseApiController extends Controller
                 'levels',
                 'enrollments',
                 'category.translation',
-                'chapters',
+                'chapters.chapterItems.lesson',
                 'reviews',
                 'lessons',
                 'category' => function ($query) {
@@ -2063,6 +2087,212 @@ class CourseApiController extends Controller
                 'success' => false,
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ], 500);
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/courses/request-sign-certificate/{enrollment}",
+     *     summary="Request sign certificate",
+     *     description="Request sign certificate",
+     *     tags={"Courses"},
+     *     security={{"bearer":{}}},
+     *     @OA\Parameter(
+     *         description="Enrollment ID",
+     *         in="path",
+     *         name="enrollment",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     )
+     * )
+     */
+    public function requestSignCertificate(Request $request, string $enrollment)
+    {
+        $enrollment = Enrollment::where('uuid', $enrollment)->first();
+
+        if (!$enrollment) {
+            return $this->errorResponse(__('Enrollment not found'), [], 404);
+        }
+
+        try {
+            $course = $enrollment->course;
+
+            if (null == $course) {
+                return $this->errorResponse(__('Course not found'), [], 404);
+            }
+
+            $courseChapters = CourseChapter::where('course_id', $course->id)
+                ->where('status', 'active')
+                ->get();
+
+            $courseLectureCount = CourseChapterItem::whereHas('chapter', function ($q) use ($course) {
+                $q->where('course_id', $course->id);
+            })->count();
+
+            $courseLectureCompletedByUser = CourseProgress::where('user_id', $request->user()->id)
+                ->where('course_id', $course->id)->where('watched', 1)->latest();
+
+            $completed_date = formatDate($courseLectureCompletedByUser->first()?->created_at);
+
+            $courseLectureCompletedByUser = CourseProgress::where('user_id', $request->user()->id)
+                ->where('course_id', $course->id)->where('watched', 1)->count();
+
+            $courseCompletedPercent = $courseLectureCount > 0 ? ($courseLectureCompletedByUser / $courseLectureCount) * 100 : 0;
+
+            $certificate = CertificateBuilder::findOrFail($course->certificate_id);
+            $certificateItems = $certificate->items;
+
+            // $now = now();
+            $cover1Base64 = null;
+            if (filled($certificate->background)) {
+                if (!Storage::disk('private')->exists($certificate->background)) {
+                    return $this->errorResponse(__('Certificate background not found'), [], 404);
+                }
+                $cover1Base64 = base64_encode(file_get_contents(Storage::disk('private')->path($certificate->background)));
+            }
+
+            $qrCodePublicURL = route('public.certificate', ['uuid' => $enrollment->uuid]);
+
+            $qrcodeData = QrCode::format('png')->size(200)
+                ->merge('/public/backend/img/logobantul.png')
+                ->generate($qrCodePublicURL);
+            $qrcodeData = 'data:image/png;base64,' . base64_encode($qrcodeData);
+
+
+            $page1Html = view('frontend.student-dashboard.certificate.index', [
+                'certificateItems' => $certificateItems,
+                'certificate' => $certificate,
+                'cover1Base64' => $cover1Base64,
+                'qrcodeData' => $qrcodeData
+            ])->render();
+
+            $page1Html = str_replace('[student_name]', $request->user()->name, $page1Html);
+            $page1Html = str_replace('[platform_name]', Cache::get('setting')->app_name, $page1Html);
+            $page1Html = str_replace('[course]', $course->title, $page1Html);
+            $page1Html = str_replace('[date]', formatDate($completed_date), $page1Html);
+            $page1Html = str_replace('[instructor_name]', $course->instructor->name, $page1Html);
+
+            $signer1 = $course->signers()->where('step', 1)->first()->user;
+
+
+            $page1Html = str_replace('[tanggal_sertifikat]', sprintf('Bantul, %s %s %s', now()->day, now()->monthName, now()->year), $page1Html);
+            $page1Html = str_replace('[nama_jabatan]', $signer1->jabatan, $page1Html);
+            $page1Html = str_replace('[nama_kepala_opd]',  $signer1->name, $page1Html);
+            $page1Html = str_replace('[nama_golongan]', $signer1->golongan, $page1Html);
+            $page1Html = str_replace('[nip]',  $signer1->nip, $page1Html);
+
+            $now = now();
+            $pdf1Data = Pdf::loadHTML($page1Html)
+                ->setPaper('A4', 'landscape')->setWarnings(false)->output();
+            Log::info('render pdf 1 took ' . now()->diffInSeconds($now, true) . ' seconds');
+
+            //=========
+            // page2
+            //=========
+            $cover2Base64 = null;
+            if (filled($certificate->background2)) {
+                if (!Storage::disk('private')->exists($certificate->background2)) {
+                    return $this->errorResponse(__('Certificate background not found'), [], 404);
+                }
+                $cover2Base64 = base64_encode(file_get_contents(Storage::disk('private')->path($certificate->background2)));
+            }
+
+
+            $qrcodeData2 = QrCode::format('png')->size(200)
+                ->merge('/public/backend/img/logobantul.png')
+                ->generate($qrCodePublicURL);
+
+            $qrcodeData2 = 'data:image/png;base64,' . base64_encode($qrcodeData2);
+
+
+            $page2Html = view('frontend.student-dashboard.certificate.summary', [
+                'course' => $course,
+                'certificateItems' => $certificateItems,
+                'certificate' => $certificate,
+                'courseChapers' => $courseChapters,
+                'cover2Base64' => $cover2Base64,
+                'qrcodeData2' => $qrcodeData2
+            ])->render();
+
+
+            $signer2 = $course->signers()->where('step', 2)->first()->user;
+
+            $page2Html = str_replace('[tanggal_sertifikat]', sprintf('Bantul, %s %s %s', now()->day, now()->monthName, now()->year), $page2Html);
+            $page2Html = str_replace('[nama_jabatan]', $signer2->jabatan, $page2Html);
+            $page2Html = str_replace('[nama_kepala_opd]',  $signer2->name, $page2Html);
+            $page2Html = str_replace('[nama_golongan]', $signer2->golongan, $page2Html);
+            $page2Html = str_replace('[nip]',  $signer2->nip, $page2Html);
+
+            $pdf2Data = Pdf::loadHTML($page2Html)
+                ->setPaper('A4', 'portrait')->setWarnings(false)->output();
+
+            $now = now();
+            $m = new Merger();
+            $m->addRaw($pdf1Data);
+            $m->addRaw($pdf2Data);
+            $output = $m->merge();
+
+            Log::info('merge pdf took ' . now()->diffInSeconds($now));
+
+            // send to Bantara API endpoint
+            $url = sprintf('%s/internal/v1/tte/documents', appConfig('bantara_url'));
+
+            $signers = [];
+            foreach ($course->signers()->orderBy('step', 'desc')->get() as $signer) {
+                $signers[] =
+                    [
+                        'nik' => $signer->user->nik,
+                        'action' => 'SIGN'
+                    ];
+            }
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . appConfig('bantara_key'),
+            ])
+                ->attach(
+                    'file',
+                    $output,
+                    'certificate.pdf',
+                    ['Content-Type' => 'application/pdf']
+                )
+                ->post($url, [
+                    'signers' => json_encode($signers),
+                    'title' => sprintf("Sertifikat Pelatihan %s an %s", $course->title, $enrollment->user->name),
+                    'description' => $enrollment->user->name,
+                    'callback_url' => sprintf("%s", route('api.bantara-callback', $enrollment)),
+                    'callback_key' => appConfig('bantara_callback_key'),
+                ]);
+
+            if ($response->failed()) {
+                Log::error($response->body());
+                return $this->errorResponse('Terjadi kesalahan dalam pengiriman sertifikat ke Bantara', [], 500);
+            }
+
+            $enrollment->certificate_status = 'requested';
+            $enrollment->save();
+
+            return $this->successResponse([], 'Sertifikat berhasil dikirim ke Bantara', 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return $this->errorResponse($e->getMessage(), [], 500);
         }
     }
 

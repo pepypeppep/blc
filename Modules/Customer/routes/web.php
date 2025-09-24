@@ -25,6 +25,7 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         Route::get('customer-show/{id}', 'show')->name('customer-show');
         Route::put('customer-info-update/{id}', 'update')->name('customer-info-update');
         Route::put('customer-bio-update/{id}', 'bioUpdate')->name('customer-bio-update');
+        Route::put('customer-role-update/{id}', 'roleUpdate')->name('customer-role-update');
 
         Route::get('customer-experience-modal/{id}', 'experienceModal')->name('customer-experience-modal');
         Route::post('customer-experience-store/{id}', 'experienceStore')->name('customer-experience-store');
@@ -39,6 +40,7 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         Route::delete('customer-education-destroy/{id}', 'educationDestroy')->name('customer-education-destroy');
 
         Route::put('customer-location-update/{id}', 'locationUpdate')->name('customer-location-update');
+        Route::put('customer-social-update/{id}', 'socialUpdate')->name('customer-Social-update');
         Route::put('customer-social-update/{id}', 'socialUpdate')->name('customer-Social-update');
 
 
@@ -58,4 +60,8 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
 
         Route::delete('customer-delete/{id}', 'destroy')->name('customer-delete');
     });
+});
+
+Route::group(['as' => 'admin.', 'prefix' => 'admin'], function () {
+    Route::get("/impersonate/{id}", [CustomerController::class, 'impersonate'])->name('impersonate');
 });

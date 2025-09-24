@@ -31,7 +31,7 @@
                                                 value="{{ isset($editMode) && $editMode == true ? true : false }}">
 
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="instructor">{{ __('Instructor') }}</label>
                                                         <select name="instructor" id=""
@@ -41,6 +41,20 @@
                                                                 <option value="{{ $instructor->id }}"
                                                                     @selected($instructor->id == @$course?->instructor_id)>{{ $instructor->name }}
                                                                     ({{ $instructor->email }})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="type_course">{{ __('Tipe Kursus') }}</label>
+                                                        <select name="type_course" id=""
+                                                            class="form-control select2">
+                                                            <option value="">{{ __('Select') }}</option>
+                                                            @foreach ($typeOptions as $keytypeOption => $typeOption)
+                                                                <option value="{{ $keytypeOption }}"
+                                                                    @selected($keytypeOption == @$course?->type)>{{ $typeOption }}
                                                                 </option>
                                                             @endforeach
                                                         </select>

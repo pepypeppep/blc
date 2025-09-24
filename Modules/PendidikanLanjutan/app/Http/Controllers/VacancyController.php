@@ -261,10 +261,12 @@ class VacancyController extends Controller
         $vacancy = Vacancy::findOrFail($vacancyId);
 
         $request->validate([
-            'attachments.*' => 'required|integer|exists:vacancy_master_attachments,id',
+            'attachments.*' => 'required|integer|exists:vacancy_master_attachments,id'
         ]);
 
-        $vacancyAttachments = VacancyAttachment::where('vacancy_id', $vacancyId)->where('category', 'syarat')->get()->pluck('id')->toArray();
+        $vacancyAttachments = VacancyAttachment::where('vacancy_id', $vacancyId)
+            // ->where('category', 'syarat')
+            ->get()->pluck('id')->toArray();
         $diffs = array_diff($vacancyAttachments, $request->attachments);
         if (count($diffs) > 0) {
             foreach ($diffs as $key => $diffId) {
@@ -282,10 +284,9 @@ class VacancyController extends Controller
             ], [
                 'type' => 'pdf',
                 'max_size' => 10000,
-                'category' => 'syarat',
+                'category' => $attachment->category,
                 'is_required' => $isRequired
             ]);
-            // dd($request->all());
         }
 
         return redirect()->back()->with('success', 'Attachment updated successfully.');

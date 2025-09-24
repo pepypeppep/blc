@@ -15,7 +15,7 @@
                     <div class="footer__widget">
                         <div class="logo mb-35">
                             <a href="{{ route('home') }}"><img
-                                    src="{{ !empty($footerSetting?->logo) ? asset($footerSetting?->logo) : asset($setting?->logo) }}"
+                                    src="{{ !empty($footerSetting?->logo) ? route('get.section.asset', [$footerSetting?->id, 'logo']) . '?module=footer' : asset($setting?->logo) }}"
                                     alt="img"></a>
                         </div>
                         <div class="footer__content">

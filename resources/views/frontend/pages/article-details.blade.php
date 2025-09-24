@@ -18,7 +18,7 @@
     <!-- breadcrumb-area -->
     <x-frontend.breadcrumb :title="__('Detail Pengetahuan')" :links="[
         ['url' => route('home'), 'text' => __('Home')],
-        ['url' => route('blogs'), 'text' => __('Pengetahuan')],
+        ['url' => route('article'), 'text' => __('Pengetahuan')],
         ['url' => '', 'text' => $article->title],
     ]" />
     <!-- breadcrumb-area-end -->
@@ -31,7 +31,8 @@
                     <div class="blog__details-wrapper">
                         <div class="blog__details-thumb">
                             @if ($article->category == 'video')
-                                <iframe class="w-100" style="height: 70vh" src="{{ $article->embed_link }}" allowfullscreen></iframe>
+                                <iframe class="w-100" style="height: 70vh" src="{{ $article->embed_link }}"
+                                    allowfullscreen></iframe>
                             @elseif ($article->category == 'document')
                                 <object data="{{ $article->document_url }}" type="application/pdf" width="100%"
                                     height="600">
@@ -107,46 +108,62 @@
                     <div class="blog-post-comment">
                         @if ($article->allow_comments == 1)
                             @auth
-                                <div class="comment-respond">
-                                    <h4 class="comment-reply-title">{{ __('Post a comment') }}</h4>
-                                    <div class="comment-note">
-                                        <p>{{ __('Please keep your comment under 1000 characters') }}</p>
-                                    </div>
-                                    <form action="{{ route('blog.submit-comment') }}" class="comment-form" method="post">
-                                        @csrf
-                                        <input type="hidden" name="blog_id" value="{{ $article->id }}">
-                                        <div class="form-grp mb-3">
-                                            <label for="">{{ __('Rate this course') }} <code>*</code></label>
-                                            <div class="d-flex align-items-center justify-content-start">
-                                                <div class="rating-stars d-flex justify-content-start flex-row-reverse">
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        <input type="radio" id="star{{ $i }}" name="rating"
-                                                            value="{{ $i }}"
-                                                            {{ old('rating') == $i ? 'checked' : '' }} />
-                                                        <label for="star{{ $i }}" class="star">&#9733;</label>
-                                                    @endfor
+                                @if (!$review)
+                                    <div class="comment-respond">
+                                        <h4 class="comment-reply-title">{{ __('Give a rating') }}</h4>
+                                        <div class="comment-note">
+                                            <p>{{ __('Please rate to add a comment.') }}</p>
+                                        </div>
+                                        <form action="{{ route('article.submit-review') }}" class="comment-form"
+                                            method="post">
+                                            @csrf
+                                            <input type="hidden" name="article_id" value="{{ $article->id }}">
+                                            <div class="form-grp mb-3">
+                                                <label for="">{{ __('Rate this course') }} <code>*</code></label>
+                                                <div class="d-flex align-items-center justify-content-start">
+                                                    <div class="rating-stars d-flex justify-content-start flex-row-reverse">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <input type="radio" id="star{{ $i }}" name="rating"
+                                                                value="{{ $i }}"
+                                                                {{ old('rating') == $i ? 'checked' : '' }} />
+                                                            <label for="star{{ $i }}" class="star">&#9733;</label>
+                                                        @endfor
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <button class="btn btn-two arrow-btn">{{ __('Give a rating') }} <img
+                                                    src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
+                                                    class="injectable"></button>
+                                        </form>
+                                    </div>
+                                @else
+                                    <div class="comment-respond">
+                                        <h4 class="comment-reply-title">{{ __('Post a comment') }}</h4>
+                                        <div class="comment-note">
+                                            <p>{{ __('Please keep your comment under 1000 characters') }}</p>
                                         </div>
-                                        <div class="comment-field">
-                                            <label for="">Komentar</label>
-
-                                            <textarea placeholder="{{ __('Tulis Komentar') }}" name="comment"></textarea>
-                                        </div>
-                                        <!-- g-recaptcha -->
-                                        @if (Cache::get('setting')->recaptcha_status === 'active')
-                                            <div class="form-grp mt-3">
-                                                <div class="g-recaptcha"
-                                                    data-sitekey="{{ Cache::get('setting')->recaptcha_site_key }}"></div>
+                                        <form action="{{ route('article.submit-comment') }}" class="comment-form"
+                                            method="post">
+                                            @csrf
+                                            <input type="hidden" name="article_id" value="{{ $article->id }}">
+                                            <div class="comment-field">
+                                                <textarea placeholder="{{ __('Tulis Komentar') }}" name="comment"></textarea>
                                             </div>
-                                        @endif
+                                            <!-- g-recaptcha -->
+                                            @if (Cache::get('setting')->recaptcha_status === 'active')
+                                                <div class="form-grp mt-3">
+                                                    <div class="g-recaptcha"
+                                                        data-sitekey="{{ Cache::get('setting')->recaptcha_site_key }}"></div>
+                                                </div>
+                                            @endif
 
-                                        <p class="form-submit"></p>
-                                        <button class="btn btn-two arrow-btn">{{ __('Post Comment') }} <img
-                                                src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
-                                                class="injectable"></button>
-                                    </form>
-                                </div>
+                                            <p class="form-submit"></p>
+                                            <button class="btn btn-two arrow-btn">{{ __('Post Comment') }} <img
+                                                    src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
+                                                    class="injectable"></button>
+                                        </form>
+                                    </div>
+                                @endif
                             @else
                                 <div class="alert alert-primary d-flex align-items-center" role="alert">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -174,12 +191,30 @@
                                             <div class="comments-box">
                                                 <div class="comments-avatar">
                                                     <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $comment->user->nip }}.jpg"
+                                                        onerror="this.src='{{ route('get.section.asset', [1, 'default_avatar']) }}?module=general';"
                                                         alt="img">
                                                 </div>
                                                 <div class="comments-text">
                                                     <div class="avatar-name">
                                                         <h6 class="name">{{ $comment->user->name }}</h6>
-                                                        <span class="date">{{ formatDate($comment->created_at) }}</span>
+                                                        <span class="date">
+                                                            @if (\Modules\Article\app\Models\ArticleCommentReport::where('comment_id', $comment->id)->where('user_id', auth()->user()->id)->exists())
+                                                                <span class="m-1 text-secondary report-btn"
+                                                                    title="Anda telah Melaporkan Komentar">
+                                                                    <i class="fa fa-flag" aria-hidden="true"></i>
+                                                                </span>
+                                                            @else
+                                                                <span class="m-1 text-danger report-btn"
+                                                                    title="Laporkan Komentar" data-bs-toggle="modal"
+                                                                    data-bs-target="#reportModal"
+                                                                    data-article-slug="{{ $article->slug }}"
+                                                                    data-id="{{ $comment->id }}"
+                                                                    style="cursor: pointer;">
+                                                                    <i class="fa fa-flag" aria-hidden="true"></i>
+                                                                </span>
+                                                            @endif
+                                                            {{ formatDate($comment->created_at) }}
+                                                        </span>
                                                     </div>
                                                     <p>{{ $comment->description }}</p>
                                                 </div>
@@ -263,6 +298,35 @@
         </div>
     </section>
     <!-- blog-details-area-end -->
+
+    <!-- Report Comment Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <form action="" method="POST">
+                @csrf
+                <input type="hidden" name="comment_id" id="report_comment_id">
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reportModalLabel">{{ __('Report Comment') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <textarea name="reason" id="reason" class="form-control" rows="5" style="height: 10%;"
+                                placeholder="Tuliskan alasan Anda melaporkan komentar ini" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn btn-danger">{{ __('Submit Report') }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
@@ -270,6 +334,15 @@
 
     <script>
         Shareon.init();
+        $(document).on('click', '.report-btn', function() {
+            let slug = $(this).data('article-slug');
+            let path = "/article/" + slug + "/report-comment";
+            let url = window.location.origin + path;
+            $('#reportModal form').attr('action', url);
+
+            let commentId = $(this).data('id');
+            $('#report_comment_id').val(commentId);
+        });
     </script>
 @endpush
 
@@ -280,7 +353,7 @@
         }
 
         .rating-stars .star {
-            font-size: 2.5rem;
+            font-size: 7rem;
             color: #ccc;
             cursor: pointer;
             transition: color 0.3s ease;

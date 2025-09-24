@@ -21,6 +21,7 @@ use Modules\Order\app\Models\Enrollment;
 use Illuminate\Contracts\Session\Session;
 use App\Http\Requests\Frontend\QuizLessonCreateRequest;
 use Modules\Course\app\Http\Requests\ChapterLessonRequest;
+use Yajra\DataTables\Facades\DataTables;
 
 class CourseContentController extends Controller
 {
@@ -77,6 +78,11 @@ class CourseContentController extends Controller
         $chapter->title = $request->title;
         $chapter->jp = $request->jp;
         $chapter->save();
+
+        $course = Course::find($chapter->course_id);
+        $course->jp = $course->chapters->sum('jp');
+        $course->save();
+
         return redirect()->back()->with(['messege' => __('Updated successfully'), 'alert-type' => 'success']);
     }
 
@@ -125,6 +131,7 @@ class CourseContentController extends Controller
 
     function lessonCreate(Request $request)
     {
+
         $courseId = $request->courseId;
         $chapterId = $request->chapterId;
         $chapters = CourseChapter::where('course_id', $courseId)->get();
@@ -150,6 +157,13 @@ class CourseContentController extends Controller
                 'chapters' => $chapters,
                 'type' => $type
             ])->render();
+
+            // return view('course::course.partials.quiz-create-form', [
+            //     'courseId' => $courseId,
+            //     'chapterId' => $chapterId,
+            //     'chapters' => $chapters,
+            //     'type' => 'quiz'
+            // ]);
         } elseif ($request->type == 'rtl') {
             return view('course::course.partials.rtl-create-modal', [
                 'courseId' => $courseId,
@@ -172,7 +186,7 @@ class CourseContentController extends Controller
         if ($request->type == 'lesson') {
             CourseChapterLesson::create([
                 'title' => $request->title,
-                'slug' => Str::slug($request->title),
+                'slug' => Str::slug($request->title) . '-' . time(),
                 'description' => $request->description,
                 'instructor_id' =>  $chapterItem->instructor_id,
                 'course_id' => $request->course_id,
@@ -195,6 +209,7 @@ class CourseContentController extends Controller
 
             CourseChapterLesson::create([
                 'title' => $request->title,
+                'slug' => Str::slug($request->title) . '-' . time(),
                 'description' => $request->description,
                 'instructor_id' =>  $chapterItem->instructor_id,
                 'course_id' => $request->course_id,
@@ -288,6 +303,7 @@ class CourseContentController extends Controller
 
             $courseChapterLesson->update([
                 'title' => $request->title,
+                'slug' => Str::slug($request->title) . '-' . time(),
                 'description' => $request->description,
                 'course_id' => $chapterItem->course_id,
                 'chapter_id' => $chapterItem->chapter_id,
@@ -314,6 +330,7 @@ class CourseContentController extends Controller
 
             $courseChapterLesson->update([
                 'title' => $request->title,
+                'slug' => Str::slug($request->title) . '-' . time(),
                 'description' => $request->description,
                 'course_id' => $chapterItem->course_id,
                 'chapter_id' => $chapterItem->chapter_id,
@@ -387,20 +404,21 @@ class CourseContentController extends Controller
 
     function createQuizQuestion(string $quizId)
     {
+
         return view('course::course.partials.quiz-question-create-modal', ['quizId' => $quizId])->render();
     }
 
     function storeQuizQuestion(Request $request, string $quizId)
     {
         $request->validate([
-            'title' => ['required', 'max:255'],
-            'answers.*' => ['required', 'max:255'],
+            'title' => ['required'],
+            'answers.*' => ['required'],
             'grade' => ['required', 'numeric', 'min:0']
         ], [
             'title.required' => __('Question title is required'),
-            'title.max' => __('Question title should not be more than 255 characters'),
+            // 'title.max' => __('Question title should not be more than 255 characters'),
             'answers.*.required' => __('At least one answer is required'),
-            'answers.*.max' => __('Answer should not be more than 255 characters'),
+            // 'answers.*.max' => __('Answer should not be more than 255 characters'),
             'grade.required' => __('Grade is required'),
             'grade.numeric' => __('Grade should be a number'),
             'grade.min' => __('Grade should be greater than or equal to 0'),
@@ -440,14 +458,14 @@ class CourseContentController extends Controller
     function updateQuizQuestion(Request $request, string $questionId)
     {
         $request->validate([
-            'title' => ['required', 'max:255'],
-            'answers.*' => ['required', 'max:255'],
+            'title' => ['required'],
+            'answers.*' => ['required'],
             'grade' => ['required', 'numeric', 'min:0']
         ], [
             'title.required' => __('Question title is required'),
-            'title.max' => __('Question title should not be more than 255 characters'),
+            // 'title.max' => __('Question title should not be more than 255 characters'),
             'answers.*.required' => __('At least one answer is required'),
-            'answers.*.max' => __('Answer should not be more than 255 characters'),
+            // 'answers.*.max' => __('Answer should not be more than 255 characters'),
             'grade.required' => __('Grade is required'),
             'grade.numeric' => __('Grade should be a number'),
             'grade.min' => __('Grade should be greater than or equal to 0'),
@@ -551,5 +569,25 @@ class CourseContentController extends Controller
     public  function importQuizQuestion(string $quizId)
     {
         return view('course::course.partials.quiz-question-import-modal', ['quizId' => $quizId])->render();
+    }
+
+    public function quizList(Request $request)
+    {
+        $query = Quiz::with(['chapter', 'course', 'instructor']); // kalau ada relasi
+
+        return DataTables::eloquent($query)
+            ->addColumn('action', function ($quiz) {
+                return '
+                    <a href="' . route('quizzes.edit', $quiz->id) . '" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="' . route('quizzes.destroy', $quiz->id) . '" method="POST" style="display:inline-block">
+                        ' . csrf_field() . method_field('DELETE') . '
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Yakin hapus?\')">Delete</button>
+                    </form>
+                ';
+            })
+            ->editColumn('due_date', function ($quiz) {
+                return $quiz->due_date ? date('d-m-Y', strtotime($quiz->due_date)) : '-';
+            })
+            ->make(true);
     }
 }

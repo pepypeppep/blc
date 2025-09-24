@@ -27,6 +27,7 @@ return new class extends Migration
             $table->boolean('banner_section')->default(0);
             $table->boolean('latest_blog_section')->default(0);
             $table->boolean('blog_page')->default(0);
+            $table->boolean('article_page')->default(0);
             $table->boolean('about_page')->default(0);
             $table->boolean('contact_page')->default(0);
             $table->timestamps();

@@ -4,9 +4,14 @@
         if (auth()->user()?->hasRole('Super Admin') || adminAuth()->hasRole('Super Admin')) {
             $courseIds = \App\Models\Course::where('status', 'active')->get()->pluck('id');
         } else {
-            $courseIds = \App\Models\Course::where('instansi_id', auth()->user()->instansi_id)->where('status', 'active')->get()->pluck('id');
+            $courseIds = \App\Models\Course::where('instansi_id', auth()->user()->instansi_id)
+                ->where('status', 'active')
+                ->get()
+                ->pluck('id');
         }
-            $pendingEnrolledCount = \Modules\Order\app\Models\Enrollment::whereIn('course_id', $courseIds)->whereNull('has_access')->count();
+        $pendingEnrolledCount = \Modules\Order\app\Models\Enrollment::whereIn('course_id', $courseIds)
+            ->whereNull('has_access')
+            ->count();
     @endphp
     <li
         class="nav-item dropdown {{ isRoute(['admin.courses.*', 'admin.course-category.*', 'admin.course-filter.*', 'admin.course-language.*', 'admin.course-level.*', 'admin.course-review.*', 'admin.course-delete-request.*', 'admin.course-sub-category.*'], 'active') }}">
@@ -18,10 +23,12 @@
                 <a class="nav-link" href="{{ route('admin.courses.index') }}">
                     {{ __('Courses') }}
                     @if ($pendingCourseCount > 0)
-                        <small class="badge badge-danger ml-2">{{ $pendingCourseCount }}</small>
+                        <small class="badge badge-danger ml-2"
+                            title="{{ __('Pending Courses') }}">{{ $pendingCourseCount }}</small>
                     @endif
                     @if ($pendingEnrolledCount > 0)
-                        <small class="badge badge-info ml-2" title="{{ __('Pending Enrollments') }}">{{ $pendingEnrolledCount }}</small>
+                        <small class="badge badge-info ml-2" title="{{ __('Pending Enrollments') }}"
+                            title="{{ __('Pending Enrollments') }}">{{ $pendingEnrolledCount }}</small>
                     @endif
                 </a>
             </li>
@@ -34,13 +41,13 @@
                 </li>
             @endif
 
-            @if (checkAdminHasPermission('course.language.management'))
+            {{-- @if (checkAdminHasPermission('course.language.management'))
                 <li class="{{ isRoute('admin.course-language.*', 'active') }}">
                     <a class="nav-link" href="{{ route('admin.course-language.index') }}">
                         {{ __('languages') }}
                     </a>
                 </li>
-            @endif
+            @endif --}}
 
             @if (checkAdminHasPermission('course.level.management'))
                 <li class="{{ isRoute('admin.course-level.*', 'active') }}">

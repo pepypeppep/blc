@@ -132,7 +132,11 @@ class PendidikanLanjutanController extends Controller
             ->where('category', 'syarat')
             ->get();
 
-        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'vacancyUserAttachments'));
+        $vacancyReports = VacancyReport::with('vacancyuser')
+            ->where('vacancy_user_id', $vacancyUser->id)
+            ->get();
+
+        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'vacancyUserAttachments', 'vacancyReports'));
     }
 
     public function indexAssesment()
@@ -163,7 +167,11 @@ class PendidikanLanjutanController extends Controller
             'assLogs' => $assLogs
         ];
 
-        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'logs', 'sectionLog', 'vacancyUserAttachments'));
+        $vacancyReports = VacancyReport::with('vacancyuser')
+            ->where('vacancy_user_id', $vacancyUser->id)
+            ->get();
+
+        return view('pendidikanlanjutan::Submenu.show', compact('vacancyUser', 'logs', 'sectionLog', 'vacancyUserAttachments', 'vacancyReports'));
     }
 
     public function indexSK()

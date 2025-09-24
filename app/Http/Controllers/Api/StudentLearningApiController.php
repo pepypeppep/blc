@@ -19,6 +19,7 @@ use App\Models\QuizResult;
 use Illuminate\Support\Facades\Cache;
 use App\Models\QuizQuestion;
 use Illuminate\Http\JsonResponse;
+use Modules\Order\app\Models\Enrollment;
 
 class StudentLearningApiController extends Controller
 {
@@ -502,448 +503,448 @@ class StudentLearningApiController extends Controller
     }
 
 
-    /**
-     * Get quiz questions
-     *
-     * @OA\Get(
-     *     path="/student-learning/{courseId}/quiz/{quizId}",
-     *     summary="Get quiz questions",
-     *     description="Get quiz questions",
-     *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
-     *     @OA\Parameter(
-     *         name="courseId",
-     *         in="path",
-     *         required=true,
-     *         description="Course ID",
-     *         @OA\Schema(type="integer"),
-     *         example=1
-     *     ),
-     *     @OA\Parameter(
-     *         name="quizId",
-     *         in="path",
-     *         required=true,
-     *         description="Quiz ID",
-     *         @OA\Schema(type="integer"),
-     *         example=1
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Quiz questions retrieved successfully",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(
-     *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="quiz_id", type="integer", example=1),
-     *                 @OA\Property(property="title", type="string", example="What is the capital of France?"),
-     *                 @OA\Property(
-     *                     property="answers",
-     *                     type="array",
-     *                     @OA\Items(
-     *                         type="object",
-     *                         @OA\Property(property="id", type="integer", example=1),
-     *                         @OA\Property(property="quiz_question_id", type="integer", example=1),
-     *                         @OA\Property(property="title", type="string", example="Paris")
-     *                     )
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Bad request",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Bad request"),
-     *         ),
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Unauthorized"),
-     *         ),
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Quiz not found",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Quiz not found"),
-     *         ),
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Error",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Error"),
-     *         ),
-     *     ),
-     * )
-     */
+    // /**
+    //  * Get quiz questions
+    //  *
+    //  * @OA\Get(
+    //  *     path="/student-learning/{courseId}/quiz/{quizId}",
+    //  *     summary="Get quiz questions",
+    //  *     description="Get quiz questions",
+    //  *     tags={"Student Learning"},
+    //  *     security={{"bearer":{}}},
+    //  *     @OA\Parameter(
+    //  *         name="courseId",
+    //  *         in="path",
+    //  *         required=true,
+    //  *         description="Course ID",
+    //  *         @OA\Schema(type="integer"),
+    //  *         example=1
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="quizId",
+    //  *         in="path",
+    //  *         required=true,
+    //  *         description="Quiz ID",
+    //  *         @OA\Schema(type="integer"),
+    //  *         example=1
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=200,
+    //  *         description="Quiz questions retrieved successfully",
+    //  *         @OA\JsonContent(
+    //  *             type="array",
+    //  *             @OA\Items(
+    //  *                 type="object",
+    //  *                 @OA\Property(property="id", type="integer", example=1),
+    //  *                 @OA\Property(property="quiz_id", type="integer", example=1),
+    //  *                 @OA\Property(property="title", type="string", example="What is the capital of France?"),
+    //  *                 @OA\Property(
+    //  *                     property="answers",
+    //  *                     type="array",
+    //  *                     @OA\Items(
+    //  *                         type="object",
+    //  *                         @OA\Property(property="id", type="integer", example=1),
+    //  *                         @OA\Property(property="quiz_question_id", type="integer", example=1),
+    //  *                         @OA\Property(property="title", type="string", example="Paris")
+    //  *                     )
+    //  *                 )
+    //  *             )
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=400,
+    //  *         description="Bad request",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="Bad request"),
+    //  *         ),
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=401,
+    //  *         description="Unauthorized",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="Unauthorized"),
+    //  *         ),
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=404,
+    //  *         description="Quiz not found",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="Quiz not found"),
+    //  *         ),
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=500,
+    //  *         description="Error",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="Error"),
+    //  *         ),
+    //  *     ),
+    //  * )
+    //  */
 
-    public function quizIndex(Request $request, string $courseId, string $quizId) //method get
-    {
+    // public function quizIndex(Request $request, string $courseId, string $quizId) //method get
+    // {
 
-        try {
+    //     try {
 
-            $user = $request->user();
-            if ($user instanceof JsonResponse) return $user;
+    //         $user = $request->user();
+    //         if ($user instanceof JsonResponse) return $user;
 
-            $course = $this->getCourseById($courseId);
-            if ($course instanceof JsonResponse) return $course;
+    //         $course = $this->getCourseById($courseId);
+    //         if ($course instanceof JsonResponse) return $course;
 
-            $enrolled = $this->checkEnrollment($user, $course);
-            if ($enrolled instanceof JsonResponse) return $enrolled;
+    //         $enrolled = $this->checkEnrollment($user, $course);
+    //         if ($enrolled instanceof JsonResponse) return $enrolled;
 
-            // Hitung jumlah attempt user
-            $attempt = QuizResult::where('user_id', $user->id)
-                ->where('quiz_id', $quizId)
-                ->count();
+    //         // Hitung jumlah attempt user
+    //         $attempt = QuizResult::where('user_id', $user->id)
+    //             ->where('quiz_id', $quizId)
+    //             ->count();
 
-            // Ambil quiz dengan jumlah pertanyaan
-            $quiz = Quiz::with('questions.answers')->withCount('questions')->findOrFail($quizId);
+    //         // Ambil quiz dengan jumlah pertanyaan
+    //         $quiz = Quiz::with('questions.answers')->withCount('questions')->findOrFail($quizId);
 
-            // Cek limit attempt
-            if (!is_null($quiz->attempt) && $attempt >= $quiz->attempt) {
+    //         // Cek limit attempt
+    //         if (!is_null($quiz->attempt) && $attempt >= $quiz->attempt) {
 
-                return $this->errorResponse(__('You reached maximum attempt'), [], 400);
-            }
+    //             return $this->errorResponse(__('You reached maximum attempt'), [], 400);
+    //         }
 
-            // Cek batas waktu
-            if (Carbon::parse($quiz->due_date)->isPast()) {
-                return $this->errorResponse(__('Batas waktu telah berakhir pada tanggal :date', [
-                    'date' => Carbon::parse($quiz->due_date)->toFormattedDateString()
-                ]), [], 400);
-            }
+    //         // Cek batas waktu
+    //         if (Carbon::parse($quiz->due_date)->isPast()) {
+    //             return $this->errorResponse(__('Batas waktu telah berakhir pada tanggal :date', [
+    //                 'date' => Carbon::parse($quiz->due_date)->toFormattedDateString()
+    //             ]), [], 400);
+    //         }
 
-            // Key cache: unik per user per quiz
-            $cacheKey = "quiz_{$quizId}_user_{$user->id}_questions";
+    //         // Key cache: unik per user per quiz
+    //         $cacheKey = "quiz_{$quizId}_user_{$user->id}_questions";
 
-            if (Cache::has($cacheKey)) {
-                $questions = Cache::get($cacheKey);
-            } else {
-                // Ambil soal random + jawaban acak
-                $questions = $quiz->questions()
-                    ->inRandomOrder()
-                    ->with(['answers' => function ($query) {
-                        $query->inRandomOrder();
-                    }])
-                    ->get();
+    //         if (Cache::has($cacheKey)) {
+    //             $questions = Cache::get($cacheKey);
+    //         } else {
+    //             // Ambil soal random + jawaban acak
+    //             $questions = $quiz->questions()
+    //                 ->inRandomOrder()
+    //                 ->with(['answers' => function ($query) {
+    //                     $query->inRandomOrder();
+    //                 }])
+    //                 ->get();
 
-                // Simpan cache sesuai due_date
-                Cache::put($cacheKey, $questions, now()->addMinutes((int) $quiz->time));
-            }
+    //             // Simpan cache sesuai due_date
+    //             Cache::put($cacheKey, $questions, now()->addMinutes((int) $quiz->time));
+    //         }
 
-            // Menyembunyikan jawaban benar (correct) agar tidak bisa diakses dari frontend dan disalahgunakan
-            $questions->transform(function ($question) {
-                $question->answers = collect($question->answers)->map(function ($answer) {
-                    unset($answer['correct']);
-                    return $answer;
-                });
+    //         // Menyembunyikan jawaban benar (correct) agar tidak bisa diakses dari frontend dan disalahgunakan
+    //         $questions->transform(function ($question) {
+    //             $question->answers = collect($question->answers)->map(function ($answer) {
+    //                 unset($answer['correct']);
+    //                 return $answer;
+    //             });
 
-                return $question;
-            });
+    //             return $question;
+    //         });
 
-            $quiz->setRelation('questions', $questions);
+    //         $quiz->setRelation('questions', $questions);
 
-            $data = [
-                'quiz' => $quiz,
-                'user_attempt' => $attempt,
-                'due_date' => $quiz->due_date,
-            ];
+    //         $data = [
+    //             'quiz' => $quiz,
+    //             'user_attempt' => $attempt,
+    //             'due_date' => $quiz->due_date,
+    //         ];
 
-            return $this->successResponse($data, 'Progress updated successfully', 200);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), [], 500);
-        }
-    }
+    //         return $this->successResponse($data, 'Progress updated successfully', 200);
+    //     } catch (\Exception $e) {
+    //         return $this->errorResponse($e->getMessage(), [], 500);
+    //     }
+    // }
 
-    /**
-     * Store quiz answers
-     *
-     * @OA\Post(
-     *     path="/student-learning/{courseId}/quiz/{quizId}",
-     *     summary="Store quiz answers",
-     *     description="Store quiz answers",
-     *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
-     *     @OA\Parameter(
-     *         name="courseId",
-     *         in="path",
-     *         required=true,
-     *         description="Course ID",
-     *         @OA\Schema(type="integer"),
-     *         example=1
-     *     ),
-     *     @OA\Parameter(
-     *         name="quizId",
-     *         in="path",
-     *         required=true,
-     *         description="Quiz ID",
-     *         @OA\Schema(type="integer"),
-     *         example=1
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         description="Quiz answers submitted by the user",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="question",
-     *                 type="object",
-     *                 additionalProperties={
-     *                     @OA\Property(type="integer", example=5)
-     *                 },
-     *                 example={"1": 5, "2": 8}
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Quiz submitted successfully",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="user_id", type="integer", example=12),
-     *                 @OA\Property(property="quiz_id", type="integer", example=3),
-     *                 @OA\Property(
-     *                     property="result",
-     *                     type="object",
-     *                     additionalProperties={
-     *                         @OA\Property(property="answer", type="integer", example=5),
-     *                         @OA\Property(property="correct", type="boolean", example=true)
-     *                     }
-     *                 ),
-     *                 @OA\Property(property="user_grade", type="integer", example=85),
-     *                 @OA\Property(property="status", type="string", example="pass"),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-22T10:00:00Z"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-22T10:00:00Z")
-     *             ),
-     *             @OA\Property(property="message", type="string", example="Quiz submitted successfully")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Bad request",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Bad request")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Unauthorized")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="Forbidden",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="You are not enrolled in this course")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Not found",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Quiz not found")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="An unexpected error occurred")
-     *         )
-     *     )
-     * )
-     */
-    public function quizStore(Request $request, string $courseId, string $quizId)
-    {
-        $grad = 0;
-        $result = [];
+    // /**
+    //  * Store quiz answers
+    //  *
+    //  * @OA\Post(
+    //  *     path="/student-learning/{courseId}/quiz/{quizId}",
+    //  *     summary="Store quiz answers",
+    //  *     description="Store quiz answers",
+    //  *     tags={"Student Learning"},
+    //  *     security={{"bearer":{}}},
+    //  *     @OA\Parameter(
+    //  *         name="courseId",
+    //  *         in="path",
+    //  *         required=true,
+    //  *         description="Course ID",
+    //  *         @OA\Schema(type="integer"),
+    //  *         example=1
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="quizId",
+    //  *         in="path",
+    //  *         required=true,
+    //  *         description="Quiz ID",
+    //  *         @OA\Schema(type="integer"),
+    //  *         example=1
+    //  *     ),
+    //  *     @OA\RequestBody(
+    //  *         required=true,
+    //  *         description="Quiz answers submitted by the user",
+    //  *         @OA\JsonContent(
+    //  *             type="object",
+    //  *             @OA\Property(
+    //  *                 property="question",
+    //  *                 type="object",
+    //  *                 additionalProperties={
+    //  *                     @OA\Property(type="integer", example=5)
+    //  *                 },
+    //  *                 example={"1": 5, "2": 8}
+    //  *             )
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=200,
+    //  *         description="Quiz submitted successfully",
+    //  *         @OA\JsonContent(
+    //  *             type="object",
+    //  *             @OA\Property(
+    //  *                 property="data",
+    //  *                 type="object",
+    //  *                 @OA\Property(property="id", type="integer", example=1),
+    //  *                 @OA\Property(property="user_id", type="integer", example=12),
+    //  *                 @OA\Property(property="quiz_id", type="integer", example=3),
+    //  *                 @OA\Property(
+    //  *                     property="result",
+    //  *                     type="object",
+    //  *                     additionalProperties={
+    //  *                         @OA\Property(property="answer", type="integer", example=5),
+    //  *                         @OA\Property(property="correct", type="boolean", example=true)
+    //  *                     }
+    //  *                 ),
+    //  *                 @OA\Property(property="user_grade", type="integer", example=85),
+    //  *                 @OA\Property(property="status", type="string", example="pass"),
+    //  *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-22T10:00:00Z"),
+    //  *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-22T10:00:00Z")
+    //  *             ),
+    //  *             @OA\Property(property="message", type="string", example="Quiz submitted successfully")
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=400,
+    //  *         description="Bad request",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="Bad request")
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=401,
+    //  *         description="Unauthorized",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="Unauthorized")
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=403,
+    //  *         description="Forbidden",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="You are not enrolled in this course")
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=404,
+    //  *         description="Not found",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="Quiz not found")
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=500,
+    //  *         description="Internal server error",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="An unexpected error occurred")
+    //  *         )
+    //  *     )
+    //  * )
+    //  */
+    // public function quizStore(Request $request, string $courseId, string $quizId)
+    // {
+    //     $grad = 0;
+    //     $result = [];
 
-        try {
-            $quiz = Quiz::find($quizId);
+    //     try {
+    //         $quiz = Quiz::find($quizId);
 
-            if (!$quiz) {
-                return $this->errorResponse('Quiz not found', [], 404);
-            }
+    //         if (!$quiz) {
+    //             return $this->errorResponse('Quiz not found', [], 404);
+    //         }
 
-            $user = $request->user();
-            if ($user instanceof JsonResponse) return $user;
+    //         $user = $request->user();
+    //         if ($user instanceof JsonResponse) return $user;
 
 
-            $course = $this->getCourseById($quiz->course_id);
-            if ($course instanceof JsonResponse) return $course;
+    //         $course = $this->getCourseById($quiz->course_id);
+    //         if ($course instanceof JsonResponse) return $course;
 
-            $enrolled = $this->checkEnrollment($user, $course);
-            if ($enrolled instanceof JsonResponse) return $enrolled;
+    //         $enrolled = $this->checkEnrollment($user, $course);
+    //         if ($enrolled instanceof JsonResponse) return $enrolled;
 
-            $attempt = QuizResult::where('user_id', $user->id)
-                ->where('quiz_id', $quizId)
-                ->count();
+    //         $attempt = QuizResult::where('user_id', $user->id)
+    //             ->where('quiz_id', $quizId)
+    //             ->count();
 
-            if (!is_null($quiz->attempt) && $attempt >= $quiz->attempt) {
+    //         if (!is_null($quiz->attempt) && $attempt >= $quiz->attempt) {
 
-                return $this->errorResponse(__('You reached maximum attempt'), [], 400);
-            }
+    //             return $this->errorResponse(__('You reached maximum attempt'), [], 400);
+    //         }
 
-            foreach ($request->question ?? [] as $key => $questionAns) {
-                $question = QuizQuestion::findOrFail($key);
-                $answer = $question->answers->where('correct', 1)->pluck('id')->toArray();
+    //         foreach ($request->question ?? [] as $key => $questionAns) {
+    //             $question = QuizQuestion::findOrFail($key);
+    //             $answer = $question->answers->where('correct', 1)->pluck('id')->toArray();
 
-                if (in_array($questionAns, $answer)) {
-                    $grad += $question->grade;
-                }
-                $result[$key] = [
-                    "answer" => $questionAns,
-                    "correct" => in_array($questionAns, $answer),
-                ];
-            }
+    //             if (in_array($questionAns, $answer)) {
+    //                 $grad += $question->grade;
+    //             }
+    //             $result[$key] = [
+    //                 "answer" => $questionAns,
+    //                 "correct" => in_array($questionAns, $answer),
+    //             ];
+    //         }
 
-            QuizResult::create([
-                'user_id' => $user->id,
-                'quiz_id' => $quizId,
-                'result' => $result,
-                'user_grade' => $grad,
-                'status' => $grad >= $quiz->pass_mark ? 'pass' : 'failed',
-            ]);
+    //         QuizResult::create([
+    //             'user_id' => $user->id,
+    //             'quiz_id' => $quizId,
+    //             'result' => $result,
+    //             'user_grade' => $grad,
+    //             'status' => $grad >= $quiz->pass_mark ? 'pass' : 'failed',
+    //         ]);
 
-            $quizResult = QuizResult::where('user_id', $user->id)
-                ->where('quiz_id', $quizId)
-                ->latest()
-                ->first();
+    //         $quizResult = QuizResult::where('user_id', $user->id)
+    //             ->where('quiz_id', $quizId)
+    //             ->latest()
+    //             ->first();
 
-            return $this->successResponse($quizResult, 'Quiz submitted successfully', 200);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), [], 500);
-        }
-    }
+    //         return $this->successResponse($quizResult, 'Quiz submitted successfully', 200);
+    //     } catch (\Exception $e) {
+    //         return $this->errorResponse($e->getMessage(), [], 500);
+    //     }
+    // }
 
-    /**
-     * Get quiz result
-     *
-     * @OA\Get(
-     *     path="/student-learning/{courseId}/quiz/{quizId}/result",
-     *     summary="Get quiz result",
-     *     description="Retrieve detailed result of a quiz attempt by a student",
-     *     tags={"Student Learning"},
-     *     security={{"bearer":{}}},
-     *     @OA\Parameter(
-     *         name="courseId",
-     *         in="path",
-     *         required=true,
-     *         description="course ID",
-     *         example=1,
-     *         @OA\Schema(type="integer", format="int64")
-     *     ),
-     *     @OA\Parameter(
-     *         name="quizId",
-     *         in="path",
-     *         required=true,
-     *         description="Quiz ID",
-     *         example=1,
-     *         @OA\Schema(type="integer", format="int64")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Data retrieved successfully",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(
-     *                     property="quiz",
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="course_id", type="integer", example=3),
-     *                     @OA\Property(property="title", type="string", example="Basic Math Quiz"),
-     *                     @OA\Property(property="description", type="string", example="Test your basic math skills"),
-     *                     @OA\Property(property="pass_mark", type="integer", example=70),
-     *                     @OA\Property(property="questions_count", type="integer", example=3),
-     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-20T08:00:00Z"),
-     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-21T10:00:00Z")
-     *                 ),
-     *                 @OA\Property(property="attempt", type="integer", example=2),
-     *                 @OA\Property(
-     *                     property="quizResult",
-     *                     type="object",
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="user_id", type="integer", example=5),
-     *                     @OA\Property(property="quiz_id", type="integer", example=1),
-     *                     @OA\Property(
-     *                         property="result",
-     *                         type="array",
-     *                         @OA\Items(
-     *                             type="object",
-     *                             @OA\Property(property="question_id", type="integer", example=1),
-     *                             @OA\Property(property="answer", type="integer", example=7),
-     *                             @OA\Property(property="correct", type="boolean", example=true)
-     *                         )
-     *                     ),
-     *                     @OA\Property(property="user_grade", type="integer", example=80),
-     *                     @OA\Property(property="status", type="string", example="pass"),
-     *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-22T09:00:00Z"),
-     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-22T09:00:00Z")
-     *                 )
-     *             ),
-     *             @OA\Property(property="message", type="string", example="Data retrieved successfully")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Quiz or result not found",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Quiz not found")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal server error",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="An unexpected error occurred")
-     *         )
-     *     )
-     * )
-     */
+    // /**
+    //  * Get quiz result
+    //  *
+    //  * @OA\Get(
+    //  *     path="/student-learning/{courseId}/quiz/{quizId}/result",
+    //  *     summary="Get quiz result",
+    //  *     description="Retrieve detailed result of a quiz attempt by a student",
+    //  *     tags={"Student Learning"},
+    //  *     security={{"bearer":{}}},
+    //  *     @OA\Parameter(
+    //  *         name="courseId",
+    //  *         in="path",
+    //  *         required=true,
+    //  *         description="course ID",
+    //  *         example=1,
+    //  *         @OA\Schema(type="integer", format="int64")
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="quizId",
+    //  *         in="path",
+    //  *         required=true,
+    //  *         description="Quiz ID",
+    //  *         example=1,
+    //  *         @OA\Schema(type="integer", format="int64")
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=200,
+    //  *         description="Data retrieved successfully",
+    //  *         @OA\JsonContent(
+    //  *             type="object",
+    //  *             @OA\Property(
+    //  *                 property="data",
+    //  *                 type="object",
+    //  *                 @OA\Property(
+    //  *                     property="quiz",
+    //  *                     type="object",
+    //  *                     @OA\Property(property="id", type="integer", example=1),
+    //  *                     @OA\Property(property="course_id", type="integer", example=3),
+    //  *                     @OA\Property(property="title", type="string", example="Basic Math Quiz"),
+    //  *                     @OA\Property(property="description", type="string", example="Test your basic math skills"),
+    //  *                     @OA\Property(property="pass_mark", type="integer", example=70),
+    //  *                     @OA\Property(property="questions_count", type="integer", example=3),
+    //  *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-20T08:00:00Z"),
+    //  *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-21T10:00:00Z")
+    //  *                 ),
+    //  *                 @OA\Property(property="attempt", type="integer", example=2),
+    //  *                 @OA\Property(
+    //  *                     property="quizResult",
+    //  *                     type="object",
+    //  *                     @OA\Property(property="id", type="integer", example=1),
+    //  *                     @OA\Property(property="user_id", type="integer", example=5),
+    //  *                     @OA\Property(property="quiz_id", type="integer", example=1),
+    //  *                     @OA\Property(
+    //  *                         property="result",
+    //  *                         type="array",
+    //  *                         @OA\Items(
+    //  *                             type="object",
+    //  *                             @OA\Property(property="question_id", type="integer", example=1),
+    //  *                             @OA\Property(property="answer", type="integer", example=7),
+    //  *                             @OA\Property(property="correct", type="boolean", example=true)
+    //  *                         )
+    //  *                     ),
+    //  *                     @OA\Property(property="user_grade", type="integer", example=80),
+    //  *                     @OA\Property(property="status", type="string", example="pass"),
+    //  *                     @OA\Property(property="created_at", type="string", format="date-time", example="2025-04-22T09:00:00Z"),
+    //  *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-04-22T09:00:00Z")
+    //  *                 )
+    //  *             ),
+    //  *             @OA\Property(property="message", type="string", example="Data retrieved successfully")
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=404,
+    //  *         description="Quiz or result not found",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="Quiz not found")
+    //  *         )
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=500,
+    //  *         description="Internal server error",
+    //  *         @OA\JsonContent(
+    //  *             @OA\Property(property="message", type="string", example="An unexpected error occurred")
+    //  *         )
+    //  *     )
+    //  * )
+    //  */
 
-    function quizResult(Request $request, string $courseId, string $quizId)
-    {
-        try {
+    // function quizResult(Request $request, string $courseId, string $quizId)
+    // {
+    //     try {
 
-            $user = $request->user();
-            if ($user instanceof JsonResponse) return $user;
+    //         $user = $request->user();
+    //         if ($user instanceof JsonResponse) return $user;
 
-            $course = $this->getCourseById($courseId);
-            if ($course instanceof JsonResponse) return $course;
+    //         $course = $this->getCourseById($courseId);
+    //         if ($course instanceof JsonResponse) return $course;
 
-            $enrolled = $this->checkEnrollment($user, $course);
-            if ($enrolled instanceof JsonResponse) return $enrolled;
+    //         $enrolled = $this->checkEnrollment($user, $course);
+    //         if ($enrolled instanceof JsonResponse) return $enrolled;
 
-            $attempt = QuizResult::where('user_id', $user->id)->where('quiz_id', $quizId)->count();
+    //         $attempt = QuizResult::where('user_id', $user->id)->where('quiz_id', $quizId)->count();
 
-            $quiz = Quiz::withCount('questions')->findOrFail($quizId);
+    //         $quiz = Quiz::withCount('questions')->findOrFail($quizId);
 
-            $quizResult = QuizResult::where('user_id', $user->id)
-                ->where('quiz_id', $quizId)
-                ->latest()
-                ->first();
-            $data = [
-                'quiz' => $quiz,
-                'attempt' => $attempt,
-                'quizResult' => $quizResult
-            ];
-            return $this->successResponse($data, 'Data retrieved successfully', 200);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), [], 500);
-        }
-    }
+    //         $quizResult = QuizResult::where('user_id', $user->id)
+    //             ->where('quiz_id', $quizId)
+    //             ->latest()
+    //             ->first();
+    //         $data = [
+    //             'quiz' => $quiz,
+    //             'attempt' => $attempt,
+    //             'quizResult' => $quizResult
+    //         ];
+    //         return $this->successResponse($data, 'Data retrieved successfully', 200);
+    //     } catch (\Exception $e) {
+    //         return $this->errorResponse($e->getMessage(), [], 500);
+    //     }
+    // }
 
     /**
      * @OA\Get(
@@ -1223,6 +1224,9 @@ class StudentLearningApiController extends Controller
             } else if ($type == 'rtl') {
                 $data = FollowUpActionResponse::find($id);
                 return response()->file(Storage::disk('private')->path('rtl/' . $data->participant_file));
+            } else if ($type == 'certificate') {
+                $data = Enrollment::find($id);
+                return response()->file(Storage::disk('private')->path($data->certificate_path));
             }
         } catch (\Exception $e) {
             return response()->json([

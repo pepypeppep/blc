@@ -1,6 +1,6 @@
 @extends('frontend.layouts.master')
-@section('meta_title', $seo_setting['blog_page']['seo_title'])
-@section('meta_description', $seo_setting['blog_page']['seo_description'])
+@section('meta_title', $seo_setting['article_page']['seo_title'])
+@section('meta_description', $seo_setting['article_page']['seo_description'])
 @section('contents')
     <!-- breadcrumb-area -->
     <x-frontend.breadcrumb :title="__('Pengetahuan')" :links="[['url' => route('home'), 'text' => __('Home')], ['url' => route('blogs'), 'text' => __('Pengetahuan')]]" />
@@ -16,7 +16,8 @@
                             <div class="col-xl-4 col-md-6">
                                 <div class="blog__post-item shine__animate-item" style="min-height: 440px;">
                                     <div class="blog__post-thumb">
-                                        <a href="{{ route('article.show', $article->slug) }}" class="shine__animate-link blog">
+                                        <a href="{{ route('article.show', $article->slug) }}"
+                                            class="shine__animate-link blog">
                                             <img src="{{ $article->thumbnail_url }}" alt="img">
                                         </a>
                                         <a href="{{ route('article', ['category' => $article->category]) }}"
@@ -25,12 +26,14 @@
                                     <div class="courses__item-content">
                                         <ul
                                             class="courses__item-meta list-unstyled d-flex justify-content-between align-items-center">
-                                            <li><i class="flaticon-calendar"></i> {{ formatDate($article->created_at) }}</li>
+                                            <li><i class="flaticon-calendar"></i> {{ formatDate($article->created_at) }}
+                                            </li>
 
                                             <li class="d-flex align-items-center">
                                                 <span class="me-2"><i class="fas fa-eye"></i>{{ $article->views }}</span>
                                                 <span class="border-start px-2"></span>
-                                                <span><i class="fas fa-star" style="color: #FFC107"></i> {{ $article->reviewsRating() }}</span>
+                                                <span><i class="fas fa-star" style="color: #FFC107"></i>
+                                                    {{ $article->reviewsRating() }}</span>
                                             </li>
                                         </ul>
                                         <h5 class="title">
@@ -41,7 +44,8 @@
                                             <li class="d-flex align-items-center">
                                                 <i class="flaticon-user-1 me-2"></i>
                                                 {{ __('by') }}
-                                                <a href="javascript:;" class="ms-1">{{ truncate($article->author->name, 14) }}</a>
+                                                <a href="javascript:;"
+                                                    class="ms-1">{{ truncate($article->author->name, 14) }}</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -59,7 +63,7 @@
                     <aside class="blog-sidebar">
                         <div class="blog-widget widget_search">
                             <div class="sidebar-search-form">
-                                <form action="{{ route('blogs') }}" method="get">
+                                <form action="{{ route('article') }}" method="get">
                                     <input type="text" placeholder="{{ __('Search here') }}" name="search"
                                         value="{{ request('search') }}">
                                     <button type="submit"><i class="flaticon-search"></i></button>
@@ -129,3 +133,8 @@
     </section>
     <!-- blog-area-end -->
 @endsection
+@push('scripts')
+    <script>
+        scrollToElement(".blog-area");
+    </script>
+@endpush

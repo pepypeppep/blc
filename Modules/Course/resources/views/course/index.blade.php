@@ -155,18 +155,26 @@
                                                 <tr>
                                                     <td>{{ $loop->index + 1 }}</td>
                                                     <td class="course-table-title">
-                                                        <a href="{{ route('course.show', $course->slug) }}"><span>{{ truncate($course->title) }}</span></a>
+                                                        <a
+                                                            href="{{ route('admin.courses.show', $course->id) }}"><span>{{ truncate($course->title) }}</span></a>
                                                         <br>
                                                         <small>{{ $course->category->translation->name ?? '' }}</small>
                                                         <br>
                                                         <small>Akses:
                                                             @if ($course->access == 'private')
-                                                                <span class="text-warning font-weight-bold" title="Akses Internal">{{ __('Private') }}</span>
+                                                                <span class="text-warning font-weight-bold"
+                                                                    title="Akses Internal">{{ __('Private') }}</span>
                                                             @else
-                                                                <span class="text-success font-weight-bold" title="Akses Publik">{{ __('Public') }}</span>
+                                                                <span class="text-success font-weight-bold"
+                                                                    title="Akses Publik">{{ __('Public') }}</span>
                                                             @endif
                                                             |
-                                                            JPL: <span class="text-dark font-weight-bold">{{ $course->jp }}</span>
+                                                            Tipe Kursus: <span
+                                                                class="text-dark font-weight-bold">{{ $course->type == 'course' ? 'Kursus' : ucwords($course->type) }}</span>
+                                                            |
+                                                            JPL: <span
+                                                                class="text-dark font-weight-bold">{{ $course->jp }}</span>
+
                                                         </small>
                                                     </td>
                                                     <td class="text-center">{{ $course->enrollments_count }}</td>
@@ -202,7 +210,8 @@
                                                         <td class="course-table-approve">
                                                             <select name=""
                                                                 class="form-control course-change-status"
-                                                                data-id="{{ $course->id }}" data-current="{{ $course->is_approved }}">
+                                                                data-id="{{ $course->id }}"
+                                                                data-current="{{ $course->is_approved }}">
                                                                 <option @selected($course->is_approved == 'pending') value="pending">
                                                                     {{ __('Pending') }}</option>
                                                                 <option @selected($course->is_approved == 'approved') value="approved">

@@ -56,7 +56,9 @@ class PengumumanController extends Controller
                         'link' => route('student.dashboard'),
                         'path' => [
                             'module' => 'pengumuman',
-                            'id' => $result->id
+                            'submodule' => null,
+                            'id' => $result->id,
+                            'slug' => null
                         ]
                     ]);
                 }
@@ -110,22 +112,24 @@ class PengumumanController extends Controller
         }
 
         if ($request->status == 1) {
-                $users = User::where('role', 'student')->where('is_banned', 'no')->get();
+            $users = User::where('role', 'student')->where('is_banned', 'no')->get();
 
-                foreach ($users as $user) {
-                    // Send notification
-                    sendNotification([
-                        'user_id' => $user->id,
-                        'title' => $user->name,
-                        'body' => "Pengumuman baru telah ditambahkan",
-                        'link' => route('student.dashboard'),
-                        'path' => [
-                            'module' => 'pengumuman',
-                            'id' => $pengumuman->id
-                        ]
-                    ]);
-                }
+            foreach ($users as $user) {
+                // Send notification
+                sendNotification([
+                    'user_id' => $user->id,
+                    'title' => $user->name,
+                    'body' => "Pengumuman baru telah ditambahkan",
+                    'link' => route('student.dashboard'),
+                    'path' => [
+                        'module' => 'pengumuman',
+                        'submodule' => null,
+                        'id' => $pengumuman->id,
+                        'slug' => null
+                    ]
+                ]);
             }
+        }
 
         return redirect()->route('admin.pengumuman.index')->with('success', 'Pengumuman berhasil diperbarui');
     }

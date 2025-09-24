@@ -33,10 +33,10 @@ enum DefaultMenusEnum: string
                 'name' => __('Contact'),
                 'url' => '/contact',
             ],
-            (object) [
-                'name' => __('All Instructors'),
-                'url' => '/all-instructors',
-            ],
+            // (object) [
+            //     'name' => __('All Instructors'),
+            //     'url' => '/all-instructors',
+            // ],
         ];
         return collect($all_default_menus);
     }

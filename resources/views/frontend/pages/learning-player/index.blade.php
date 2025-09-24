@@ -2,8 +2,7 @@
 @section('meta_title', $course->title . ' || ' . $setting->app_name)
 
 @section('contents')
-
-    <section class="wsus__course_video">
+    <section class="wsus__course_video" id="main-lesson-section">
         <div class="col-12">
             <div class="wsus__course_header">
                 <a href="{{ route('student.dashboard') }}"><i class="fas fa-angle-left"></i>
@@ -23,8 +22,8 @@
             <div class="video-payer position-relative">
                 <div class="player-placeholder">
                     <div class="preloader-two player">
-                        <div class="loader-icon-two player"><img src="{{ asset(Cache::get('setting')->preloader) }}"
-                                alt="Preloader">
+                        <div class="loader-icon-two player">
+                            <img src="{{ route('get.section.asset', [1, 'preloader']) }}?module=general" alt="Preloader">
                         </div>
                     </div>
                 </div>
@@ -42,14 +41,14 @@
             </div>
             <h2 class="video_heading">{{ __('Course Content') }}</h2>
             <div class="accordion-item">
-                <div id="collapse-x"
-                    class="accordion-collapse collapse show"
-                    data-bs-parent="#accordionExample">
+                <div id="collapse-x" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                     <div class="accordion-body course-content pt-2 bg-white">
-                        <div id="tosSectionTrigger" class="form-check" data-bs-toggle="modal" data-bs-target="#termOfServiceModal">
-                            <input @checked($enrollment->tos_status == 'accepted') class="form-check-input lesson-completed-checkbox" type="checkbox">
+                        <div id="tosSectionTrigger" class="form-check" data-bs-toggle="modal"
+                            data-bs-target="#termOfServiceModal">
+                            <input @checked($enrollment->tos_status == 'accepted') class="form-check-input lesson-completed-checkbox"
+                                type="checkbox">
                             <label class="form-check-label">
-                                {{ __("Term of Service") }}
+                                {{ __('Term of Service') }}
                             </label>
                         </div>
                     </div>
@@ -61,7 +60,8 @@
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapse-{{ $chapter->id }}" aria-expanded="false"
-                                aria-controls="collapse-{{ $chapter->id }}" {{ $enrollment->tos_status != 'accepted' || $enrollment->tos_status == null ? 'disabled' : '' }}>
+                                aria-controls="collapse-{{ $chapter->id }}"
+                                {{ $enrollment->tos_status != 'accepted' || $enrollment->tos_status == null ? 'disabled' : '' }}>
                                 <b>{{ $chapter->title }}</b>
                                 <span></span>
                             </button>
@@ -72,11 +72,11 @@
                             <div class="accordion-body course-content">
                                 @foreach ($chapter->chapterItems as $chapterItem)
                                     @if ($chapterItem->type == 'lesson' || $chapterItem->type == 'live')
-                                        <div
-                                            class="form-check cursor-pointer lesson-item {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}"
-                                                data-lesson-id="{{ $chapterItem->lesson->id }}"
-                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
-                                                data-type="{{ $chapterItem->type }}" data-duration="{{ $chapterItem->lesson->duration }}">
+                                        <div class="form-check cursor-pointer lesson-item {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}"
+                                            data-lesson-id="{{ $chapterItem->lesson->id }}"
+                                            data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
+                                            data-type="{{ $chapterItem->type }}"
+                                            data-duration="{{ $chapterItem->lesson->duration }}">
                                             <input @checked(in_array($chapterItem->lesson->id, $alreadyWatchedLectures))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->lesson->id }}" value="1"
@@ -110,11 +110,10 @@
                                             </label>
                                         </div>
                                     @elseif ($chapterItem->type == 'document')
-                                        <div
-                                            class="form-check cursor-pointer lesson-item {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}"
-                                                data-lesson-id="{{ $chapterItem->lesson->id }}"
-                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
-                                                data-type="document">
+                                        <div class="form-check cursor-pointer lesson-item {{ $chapterItem->lesson->id == $currentProgress?->lesson_id ? 'item-active' : '' }}"
+                                            data-lesson-id="{{ $chapterItem->lesson->id }}"
+                                            data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
+                                            data-type="document">
                                             <input @checked(in_array($chapterItem->lesson->id, $alreadyWatchedLectures))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->lesson->id }}" value="1"
@@ -135,8 +134,8 @@
                                         </div>
                                     @elseif ($chapterItem->type == 'quiz')
                                         <div class="form-check cursor-pointer lesson-item"
-                                                data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
-                                                data-lesson-id="{{ $chapterItem->quiz->id }}" data-type="quiz">
+                                            data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
+                                            data-lesson-id="{{ $chapterItem->quiz->id }}" data-type="quiz">
                                             <input @checked(in_array($chapterItem->quiz->id, $alreadyCompletedQuiz))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->quiz->id }}" value="1"
@@ -155,9 +154,8 @@
                                         </div>
                                     @elseif ($chapterItem->type == 'rtl')
                                         <div class="form-check cursor-pointer lesson-item"
-                                                data-chapter-id="{{ $chapter->id }}"
-                                                data-course-id="{{ $course->id }}"
-                                                data-lesson-id="{{ $chapterItem->rtl->id }}" data-type="rtl">
+                                            data-chapter-id="{{ $chapter->id }}" data-course-id="{{ $course->id }}"
+                                            data-lesson-id="{{ $chapterItem->rtl->id }}" data-type="rtl">
                                             <input @checked(in_array($chapterItem->rtl->id, $alreadyCompletedRtl))
                                                 class="form-check-input lesson-completed-checkbox" type="checkbox"
                                                 data-lesson-id="{{ $chapterItem->rtl->id }}" value="1"
@@ -186,7 +184,8 @@
             </div>
         </div>
     </section>
-    <div class="modal fade" id="termOfServiceModal" tabindex="-1" aria-labelledby="termOfServiceModalLabel" aria-hidden="true">
+    <div class="modal fade" id="termOfServiceModal" tabindex="-1" aria-labelledby="termOfServiceModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-body p-0">
@@ -196,27 +195,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer d-flex justify-content-between px-4 pb-4 pt-3" style="border-top: 1px solid #dee2e6;">
+                <div class="modal-footer d-flex justify-content-between px-4 pb-4 pt-3"
+                    style="border-top: 1px solid #dee2e6;">
                     @if ($enrollment->tos_status != 'accepted')
-                    <a href="{{ route('student.enrolled-courses') }}" class="btn text-white" style="background: #dc3545;">{{ __('Tolak') }}</a>
-                    <form action="{{ route('student.learning.accept-tos', $course->slug) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-primary" id="acceptTermsBtn" data-bs-dismiss="modal" title="Baca hingga akhir agar tombol persetujuan aktif" disabled>{{ __('Setuju') }}</button>
-                    </form>
+                        <a href="{{ route('student.enrolled-courses') }}" class="btn text-white"
+                            style="background: #dc3545;">{{ __('Tolak') }}</a>
+                        <form action="{{ route('student.learning.accept-tos', $course->slug) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-primary" id="acceptTermsBtn" data-bs-dismiss="modal"
+                                title="Baca hingga akhir agar tombol persetujuan aktif"
+                                disabled>{{ __('Setuju') }}</button>
+                        </form>
                     @else
-                    <span></span>
-                    <h3 style="color: #5751e1;">Anda telah menyetujui syarat dan ketentuan</h3>
-                    <span></span>
+                        <span></span>
+                        <h3 style="color: #5751e1;">Anda telah menyetujui syarat dan ketentuan</h3>
+                        <span></span>
                     @endif
                 </div>
             </div>
         </div>
     </div>
+    <div class="d-flex justify-content-center align-items-center vh-100" id="warning" style="display: none;">
+        <div class="text-center">
+            <h2 class="mb-3">⚠️ Developer Tools Detected</h2>
+            <img src="{{ asset('frontend/img/police.png') }}" alt="" class="img-fluid w-25">
+            <p>Halaman ini berisi konten yang dilindungi. Silakan tutup Developer Tools untuk melanjutkan.</p>
+        </div>
+    </div>
 @endsection
 @push('scripts')
     <script>
-        var preloader_path = "{{ asset(Cache::get('setting')->preloader) }}";
-        var watermark = "{{ property_exists($setting, 'watermark_img') ? asset($setting->watermark_img) : '' }}";
+        var preloader_path = "{{ route('get.section.asset', [1, 'preloader']) }}?module=general";
+        var watermark =
+            "{{ property_exists($setting, 'watermark_img') ? route('get.section.asset', [1, 'watermark_img']) . '?module=general' : '' }}";
+        window.Y17JxWAOWqgYx999V6v4hpTZyFaxbF = @json(session('access_token'));
     </script>
     <script src="{{ asset('frontend/js/videojs-watermark.min.js') }}"></script>
     <script src="{{ asset('frontend/js/default/learning-player.js') }}?v={{ $setting?->version }}"></script>
@@ -256,14 +268,17 @@
                 const $acceptBtn = $('#acceptTermsBtn');
 
                 // Smooth scroll to top when modal is shown
-                $content.stop().animate({ scrollTop: 0 }, 400);
+                $content.stop().animate({
+                    scrollTop: 0
+                }, 400);
 
                 // Reset accept button state when modal is shown
                 $acceptBtn.prop('disabled', true);
 
                 $content.on('scroll', function() {
                     // Check if user has scrolled to the bottom
-                    const isBottom = $(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight - 10;
+                    const isBottom = $(this).scrollTop() + $(this).innerHeight() >= $(this)[0]
+                        .scrollHeight - 10;
 
                     if (isBottom) {
                         $acceptBtn.prop('disabled', false);
@@ -275,7 +290,8 @@
             $('#termOfServiceModal').on('scroll', '.term-of-service-content', function() {
                 const $content = $(this);
                 const $acceptBtn = $('#acceptTermsBtn');
-                const isBottom = $content.scrollTop() + $content.innerHeight() >= $content[0].scrollHeight - 10;
+                const isBottom = $content.scrollTop() + $content.innerHeight() >= $content[0].scrollHeight -
+                    10;
 
                 if (isBottom) {
                     $acceptBtn.prop('disabled', false);
@@ -283,7 +299,7 @@
             });
         });
 
-        function completeLesson(lessonId){
+        function completeLesson(lessonId) {
             // let lessonId = $(this).attr("data-lesson-id");
 
             let input = $(`input[data-lesson-id="${lessonId}"]`);
@@ -299,21 +315,45 @@
                     status: checked,
                     type: type,
                 },
-                success: function (data) {
+                success: function(data) {
                     if (data.status == "success") {
                         toastr.success(data.message);
                     } else if (data.status == "error") {
                         toastr.error(data.message);
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     let errors = xhr.responseJSON.errors;
-                    $.each(errors, function (key, value) {
+                    $.each(errors, function(key, value) {
                         toastr.error(value);
                     });
                 },
             });
         }
+
+        (function() {
+            let devtoolsOpen = false;
+            const threshold = 160;
+
+            const checkDevTools = () => {
+                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                if (widthThreshold || heightThreshold) {
+                    if (!devtoolsOpen) {
+                        devtoolsOpen = true;
+                        document.getElementById('main-lesson-section').style.display = 'none';
+                        document.getElementById('warning').style.display = 'block';
+                    }
+                } else {
+                    devtoolsOpen = false;
+                    document.getElementById('warning').style.display = 'none';
+                    document.getElementById('main-lesson-section').style.display = 'block';
+                }
+            };
+
+            // check repeatedly
+            setInterval(checkDevTools, 500);
+        })();
     </script>
     <script src="{{ asset('frontend/js/custom-tinymce.js') }}"></script>
 @endpush
@@ -351,6 +391,52 @@
 
         .cursor-pointer {
             cursor: pointer;
+        }
+
+        .video-error-container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            background: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .video-error-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .video-error-message {
+            position: relative;
+            z-index: 2;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .video-error-message p {
+            margin: 5px 0;
+        }
+
+        /* Hide all video.js and YouTube elements */
+        .video-error-mode .video-js,
+        .video-error-mode .vjs-tech,
+        .video-error-mode iframe {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
         }
     </style>
 @endpush

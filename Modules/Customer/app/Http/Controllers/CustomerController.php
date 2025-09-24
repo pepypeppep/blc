@@ -2,22 +2,24 @@
 
 namespace Modules\Customer\app\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Course;
 use App\Models\User;
+use App\Models\Course;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Models\UserEducation;
 use App\Models\UserExperience;
 use App\Services\MailSenderService;
-use App\Traits\GetGlobalInformationTrait;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Modules\Customer\app\Jobs\SendBulkEmailToUser;
-use Modules\Customer\app\Jobs\SendUserBannedMailJob;
-use Modules\Customer\app\Models\BannedHistory;
 use Modules\Location\app\Models\City;
 use Modules\Location\app\Models\State;
+use App\Traits\GetGlobalInformationTrait;
+use Modules\Customer\app\Models\BannedHistory;
+use Modules\Customer\app\Jobs\SendBulkEmailToUser;
+use Modules\Customer\app\Jobs\SendUserBannedMailJob;
+use Modules\InstructorEvaluation\app\Models\InstructorEvaluation;
 
 class CustomerController extends Controller
 {
@@ -32,9 +34,11 @@ class CustomerController extends Controller
          */
         $authUser = auth()->user();
         $authInstansi = $authUser->instansi;
+        $query = User::query();
 
-        $query = User::query()
-            ->where('instansi_id', $authInstansi->id);
+        if (!$authUser->hasRole('Super Admin')) {
+            $query->where('instansi_id', $authInstansi->id);
+        }
 
         $query->when($request->filled('keyword'), function ($q) use ($request) {
             $q->where('name', 'like', '%' . $request->keyword . '%')
@@ -116,6 +120,10 @@ class CustomerController extends Controller
         } else {
             $users = $query->orderBy('id', $orderBy)->paginate()->withQueryString();
         }
+
+        $users->each(function ($user) {
+            $user->rating = InstructorEvaluation::where('instructor_id', $user->id)->avg('rating');
+        });
 
         return view('customer::all_instructor')->with([
             'users' => $users,
@@ -225,7 +233,8 @@ class CustomerController extends Controller
     {
         checkAdminHasPermissionAndThrowException('customer.view');
         $user = User::findOrFail($id);
-
+        $user->rating = InstructorEvaluation::where('instructor_id', $user->id)->avg('rating');
+        $evaluations = InstructorEvaluation::where('instructor_id', $user->id)->paginate(10);
         // limting access to the user on same instansi
         $this->authorize('view',  $user);
 
@@ -237,7 +246,8 @@ class CustomerController extends Controller
             'user' => $user,
             'banned_histories' => $banned_histories,
             'states' => $states,
-            'cities' => $cities
+            'cities' => $cities,
+            'evaluations' => $evaluations
         ]);
     }
 
@@ -304,6 +314,32 @@ class CustomerController extends Controller
         $user->job_title = $request->designation;
         $user->bio = $request->bio;
         $user->short_bio = $request->short_bio;
+        $user->save();
+
+        $notification = __('Updated Successfully');
+        $notification = ['messege' => $notification, 'alert-type' => 'success'];
+
+        return redirect()->back()->with($notification);
+    }
+
+    function roleUpdate(Request $request, $id)
+    {
+        $rules = [
+            'role' => ['required', 'string', 'in:student,instructor'],
+        ];
+        $messages = [
+            'role.required' => __('The role field is required'),
+            'role.string' => __('The role must be a string'),
+            'role.in' => __('The selected role is invalid'),
+        ];
+
+        $this->validate($request, $rules, $messages);
+
+        $user = User::findOrFail($id);
+
+        $this->authorize('update',  $user);
+
+        $user->role = $request->role;
         $user->save();
 
         $notification = __('Updated Successfully');
@@ -774,5 +810,23 @@ class CustomerController extends Controller
         $notification = ['messege' => $notification, 'alert-type' => 'success'];
 
         return redirect()->back()->with($notification);
+    }
+
+    public function impersonate($id)
+    {
+        if (!auth('admin')->user()->hasAllPermissions()) {
+            abort(403);
+        }
+
+        session()->put([
+            'impersonator' => auth()->user(),
+            'impersonation_key' => Str::random(32)
+        ]);
+
+        $user = User::findOrFail($id);
+
+        Auth::login($user);
+
+        return redirect('/student/dashboard');
     }
 }

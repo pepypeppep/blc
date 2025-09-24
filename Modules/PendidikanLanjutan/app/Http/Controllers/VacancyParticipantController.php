@@ -134,7 +134,9 @@ class VacancyParticipantController extends Controller
                     'link' => route('student.continuing-education.registration.show', $vacancyUser->id),
                     'path' => [
                         'module' => 'pendidikan-lanjutan',
-                        'id' => $vacancyUser->id
+                        'submodule' => null,
+                        'id' => $vacancyUser->id,
+                        'slug' => null
                     ]
                 ]);
             }
@@ -199,7 +201,7 @@ class VacancyParticipantController extends Controller
             // if ($title == "Perjanjian Kinerja") {
             //     $status = 'final';
             // } else {
-            $status = 'draft';
+            $status = 'final';
             // }
 
             // Create Vacancy User Attachment
@@ -271,7 +273,9 @@ class VacancyParticipantController extends Controller
                 'link' => route('student.continuing-education.registration.show', $vacancyReport->vacancy_user_id),
                 'path' => [
                     'module' => 'pendidikan-lanjutan',
-                    'id' => $vacancyReport->vacancy_user_id
+                    'submodule' => null,
+                    'id' => $vacancyReport->vacancy_user_id,
+                    'slug' => null
                 ]
             ]);
 
@@ -282,7 +286,6 @@ class VacancyParticipantController extends Controller
         } catch (\Throwable $th) {
             // Rollback transaction
             DB::rollBack();
-            dd($th->getMessage());
 
             return redirect()->back()->with('error', $th->getMessage());
         }
@@ -331,7 +334,9 @@ class VacancyParticipantController extends Controller
                 'link' => route('student.continuing-education.registration.show', $activation->vacancy_user_id),
                 'path' => [
                     'module' => 'pendidikan-lanjutan',
-                    'id' => $activation->vacancy_user_id
+                    'submodule' => null,
+                    'id' => $activation->vacancy_user_id,
+                    'slug' => null
                 ]
             ]);
 
@@ -342,7 +347,6 @@ class VacancyParticipantController extends Controller
         } catch (\Throwable $th) {
             // Rollback transaction
             DB::rollBack();
-            dd($th->getMessage());
 
             return redirect()->back()->with('error', $th->getMessage());
         }

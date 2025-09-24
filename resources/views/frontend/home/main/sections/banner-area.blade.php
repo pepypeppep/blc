@@ -1,4 +1,5 @@
-<section class="banner-area banner-bg tg-motion-effects" style="background-image: url({{ asset($hero?->global_content?->hero_background) }});">
+<section class="banner-area banner-bg tg-motion-effects"
+    style="background-image: url({{ route('get.section.asset', [$hero?->id, 'hero_background']) }});">
     <div class="container">
         <div class="row justify-content-between align-items-start">
             <div class="col-xl-5 col-lg-6">
@@ -9,19 +10,26 @@
                     <p data-aos="fade-right" data-aos-delay="600">{!! clean(processText($hero?->content?->sub_title)) !!}</p>
                     <div class="banner__btn-two aos-init aos-animate mt-4" data-aos="fade-right" data-aos-delay="600">
                         @if ($hero?->content?->action_button_text != null)
-                        <a href="{{ $hero?->global_content?->action_button_url }}" class="btn arrow-btn">{{ $hero->content?->action_button_text }} <img src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img" class="injectable"></a>
+                            <a href="{{ $hero?->global_content?->action_button_url }}"
+                                class="btn arrow-btn">{{ $hero->content?->action_button_text }} <img
+                                    src="{{ asset('frontend/img/icons/right_arrow.svg') }}" alt="img"
+                                    class="injectable"></a>
                         @endif
                         @if ($hero?->content?->video_button_text != null)
-                        <a href="{{ $hero?->global_content?->video_button_url }}" class="play-btn popup-video" aria-label="{{$hero?->content?->video_button_text}}"><i class="fas fa-play"></i> {!! clean(processText($hero?->content?->video_button_text)) !!}</a>
+                            <a href="{{ $hero?->global_content?->video_button_url }}" class="play-btn popup-video"
+                                aria-label="{{ $hero?->content?->video_button_text }}"><i class="fas fa-play"></i>
+                                {!! clean(processText($hero?->content?->video_button_text)) !!}</a>
                         @endif
                     </div>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="banner__images">
-                    <img src="{{ route('get.section.asset',[$hero?->id,'banner_image']) }}" alt="img" class="main-img">
+                    <img src="{{ route('get.section.asset', [$hero?->id, 'banner_image']) }}" alt="img"
+                        class="main-img">
                     <div class="shape big-shape" data-aos="fade-up-right" data-aos-delay="600">
-                        <img src="{{ route('get.section.asset',[$hero?->id,'banner_background']) }}" alt="shape" class="tg-motion-effects1">
+                        <img src="{{ route('get.section.asset', [$hero?->id, 'banner_background']) }}" alt="shape"
+                            class="tg-motion-effects1">
                     </div>
                     <img src="{{ asset('frontend/img/banner/bg_dots.svg') }}" alt="shape"
                         class="shape bg-dots rotateme">
@@ -32,7 +40,8 @@
                         data-aos-delay="200">
                         <p class="title"><span>{{ $hero?->content?->total_student }}</span>
                             {{ __('Enrolled Students') }}</p>
-                        <img src="{{ route('get.section.asset',[$hero?->id,'enroll_students_image']) }}" alt="img">
+                        <img src="{{ route('get.section.asset', [$hero?->id, 'enroll_students_image']) }}"
+                            alt="img">
                     </div>
                     <div class="banner__student instructor aos-init aos-animate" data-aos="fade-left"
                         data-aos-delay="200">

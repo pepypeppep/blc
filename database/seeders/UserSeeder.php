@@ -148,6 +148,30 @@ class UserSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
+        // Bobot
+        User::create([
+            'id' => 10,
+            'name' => 'Bobot',
+            'username' => 'bobot',
+            'email' => 'bobot@gmail.com',
+            'password' => bcrypt('1234'),
+            'role' => 'student',
+            'email_verified_at' => now(),
+            'nik' => '3402171906690002',
+        ]);
+
+        // Isa 
+        User::create([
+            'id' => 11,
+            'name' => 'Isa Budihartono',
+            'username' => 'isa',
+            'email' => 'isa@gmail.com',
+            'password' => bcrypt('1234'),
+            'role' => 'student',
+            'email_verified_at' => now(),
+            'nik' => '3471120505680001',
+        ]);
+
         foreach (User::where('role', 'instructor')->get() as $key => $instructor) {
             InstructorRequest::updateOrCreate([
                 'user_id' => $instructor->id

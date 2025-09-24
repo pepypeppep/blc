@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Article\app\Http\Controllers\ArticleController;
+use Modules\Article\app\Http\Controllers\CommentController;
+
 // use Modules\Article\app\Http\Controllers\ArticleCategoryController;
 // use Modules\Article\app\Http\Controllers\ArticleCommentController;
 
@@ -21,9 +23,14 @@ use Modules\Article\app\Http\Controllers\ArticleController;
 
 Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::prefix('knowledges')->as('knowledge.')->group(function () {
-
         Route::get('/', [ArticleController::class, 'index'])->name('index');
         Route::get('{id}', [ArticleController::class, 'show'])->name('detail');
+        Route::put('{id}', [ArticleController::class, 'update'])->name('update');
         Route::put('{id}/update-status', [ArticleController::class, 'updateStatus'])->name('update-status');
+    });
+    Route::prefix('knowledge-comments')->as('knowledge-comments.')->group(function () {
+        Route::get('/', [CommentController::class, 'index'])->name('index');
+        Route::get('{id}', [CommentController::class, 'show'])->name('detail');
+        Route::put('{id}', [CommentController::class, 'update'])->name('update');
     });
 });

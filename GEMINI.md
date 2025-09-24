@@ -1,0 +1,1 @@
+Always read CLAUDE.md first to understand the project structure, common commands, and architecture.

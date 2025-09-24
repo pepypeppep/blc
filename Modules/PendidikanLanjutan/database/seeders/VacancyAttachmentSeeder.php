@@ -28,7 +28,34 @@ class VacancyAttachmentSeeder extends Seeder
 
         foreach ($attachments as $key => $att) {
             VacancyMasterAttachment::create([
-                'name' => $att
+                'name' => $att,
+                'category' => 'syarat'
+            ]);
+        }
+
+        $attachments = [
+            'Perjanjian Kinerja',
+            'SK',
+            'Petikan',
+        ];
+
+        foreach ($attachments as $key => $att) {
+            VacancyMasterAttachment::create([
+                'name' => $att,
+                'category' => 'lampiran'
+            ]);
+        }
+
+        $attachments = [
+            'Ijazah',
+            'Transkrip Nilai',
+            'Surat Pengantar dari Perangkat Daerah',
+        ];
+
+        foreach ($attachments as $key => $att) {
+            VacancyMasterAttachment::create([
+                'name' => $att,
+                'category' => 'aktivasi'
             ]);
         }
 

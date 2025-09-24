@@ -14,6 +14,7 @@ class CourseChapterLesson extends Model
 
     protected $fillable = [
         'title',
+        'slug',
         'description',
         'course_id',
         'chapter_id',
@@ -36,6 +37,10 @@ class CourseChapterLesson extends Model
     function course(): BelongsTo
     {
         return $this->belongsTo(Course::class, 'course_id', 'id');
+    }
+    function courseChapter(): BelongsTo
+    {
+        return $this->belongsTo(CourseChapter::class, 'chapter_id', 'id');
     }
     function chapterItem(): BelongsTo
     {

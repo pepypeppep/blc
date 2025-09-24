@@ -48,6 +48,12 @@
                                                 aria-controls="itemSix-tab-pane" aria-selected="false"
                                                 tabindex="-1">Lampiran</button>
                                         </li>
+                                    @endif
+                                    @if (
+                                        $vacancyUser->status === VacancyUser::STATUS_DONE ||
+                                            $vacancyUser->status === VacancyUser::STATUS_REPORT ||
+                                            $vacancyUser->status === VacancyUser::STATUS_ACTIVATION ||
+                                            $vacancyUser->status === VacancyUser::STATUS_EXTEND)
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link" id="itemSeven-tab" data-bs-toggle="tab"
                                                 data-bs-target="#laporan-tab-panel" type="button" role="tab"
@@ -75,6 +81,12 @@
                                         $vacancyUser->status === VacancyUser::STATUS_ACTIVATION ||
                                         $vacancyUser->status === VacancyUser::STATUS_EXTEND)
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.lampiran')
+                                @endif
+                                @if (
+                                    $vacancyUser->status === VacancyUser::STATUS_DONE ||
+                                        $vacancyUser->status === VacancyUser::STATUS_REPORT ||
+                                        $vacancyUser->status === VacancyUser::STATUS_ACTIVATION ||
+                                        $vacancyUser->status === VacancyUser::STATUS_EXTEND)
                                     @include('frontend.student-dashboard.continuing-education.registration.partials.laporan')
                                 @endif
                                 @if ($vacancyUser->status === VacancyUser::STATUS_DONE || $vacancyUser->status === VacancyUser::STATUS_ACTIVATION)

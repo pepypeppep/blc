@@ -14,9 +14,10 @@
                 <div class="col-xxl-3 col-md-6 col-lg-4">
                     <div class="blog__post-item shine__animate-item">
                         <div class="blog__post-thumb">
-                            <a href="{{ route('blog.show', $blog->slug) }}" class="shine__animate-link blog"><img src="{{ asset($blog->image) }}"
-                                    alt="img"></a>
-                            <a href="{{ route('blogs', ['category' => $blog->category->slug]) }}" class="post-tag">{{ $blog->category?->title }}</a>
+                            <a href="{{ route('blog.show', $blog->slug) }}" class="shine__animate-link blog"><img
+                                    src="{{ asset($blog->image) }}" alt="img"></a>
+                            <a href="{{ route('blogs', ['category' => $blog->category]) }}"
+                                class="post-tag">{{ $blog->category }}</a>
                         </div>
                         <div class="blog__post-content">
                             <div class="blog__post-meta">

@@ -105,17 +105,6 @@
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="form-group">
-                                <label for="">{{ __('Back Image') }} <code>( 930px * 600px )</code></label>
-                                <div id="image-preview-background2" class="image-preview w-100">
-                                    <label for="image-upload-background2"
-                                        id="image-label-background2">{{ __('Image') }}</label>
-                                    <input type="file" name="background2" id="image-upload-background2" accept="image/*">
-                                </div>
-                                @error('image')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
-                            </div>
                         </center>
                     </div>
                     <div class="modal-footer">

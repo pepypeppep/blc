@@ -16,8 +16,8 @@ class StudentPelatihanStoreRequest extends FormRequest
             'thumbnail' => 'required|mimes:jpg,jpeg,png|max:2048',
             'visibility' => 'required|in:public,internal',
             'link' => 'required_if:category,video',
-            'file' => 'mimes:pdf|max:10240',
-            'content' => 'required',
+            'file' => 'nullable|mimes:pdf|max:10240',
+            'content' => 'required_if:category,blog',
             'tags' => 'nullable|array|max:5',
             'tags.*' => 'required|string',
         ];
@@ -33,8 +33,8 @@ class StudentPelatihanStoreRequest extends FormRequest
             'description.required' => __('The description field is required'),
             'thumbnail.required' => __('The thumbnail field is required'),
             'visibility.required' => __('The visibility field is required'),
-            'file.required_if' => __('The file field is required'),
-            'content.required' => __('The content field is required'),
+            'file.required_if' => __('The file field is required when category is document'),
+            'content.required_if' => __('The content field is required when category is blog'),
             'category.in' => __('The selected category is invalid'),
             'enrollment.exists' => __('The selected enrollment id is invalid'),
             'thumbnail.mimes' => __('The thumbnail must be a file of type: jpg, jpeg, png'),
@@ -43,8 +43,6 @@ class StudentPelatihanStoreRequest extends FormRequest
             'file.max' => __('The file may not be greater than 10240 kilobytes'),
             'visibility.in' => __('The selected visibility is invalid'),
             'link.required_if' => __('The link field is required when category is video'),
-            'file.required_if' => __('The file field is required when category is document'),
-            'content.required' => __('The content field is required'),
             'tags.max' => __('The tags may not be greater than 5 items'),
         ];
     }

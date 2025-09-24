@@ -7,7 +7,8 @@
         </div>
         <div class="row">
             <div class="preloader-two preloader-two-fixed d-none">
-                <div class="loader-icon-two"><img src="{{ asset(Cache::get('setting')->preloader) }}" alt="Preloader"></div>
+                <div class="loader-icon-two"><img src="{{ route('get.section.asset', [1, 'preloader']) }}?module=general"
+                        alt="Preloader"></div>
             </div>
             <div class="col-12 wishlist-content">
                 @include('frontend.wishlist.wishlist-card')

@@ -39,6 +39,8 @@ class CourseVerificationController extends Controller
             'reason' => 'nullable|string'
         ]);
 
+        $course = Course::findOrFail($validated['course_id']);
+
         foreach ($validated['user_ids'] as $userId) {
             Enrollment::where('user_id', $userId)
                 ->where('course_id', $validated['course_id'])
@@ -61,7 +63,9 @@ class CourseVerificationController extends Controller
                 'link' => route('student.enrolled-courses'),
                 'path' => [
                     'module' => 'course',
-                    'id' => $validated['course_id']
+                    'submodule' => null,
+                    'id' => $validated['course_id'],
+                    'slug' => $course->slug,
                 ]
             ]);
         }
@@ -80,7 +84,8 @@ class CourseVerificationController extends Controller
             ->where('has_access', 0)
             ->whereNotNull('has_access')
             ->get();
+        $courseId = $id;
 
-        return view('course::course-verification.rejected', compact('rejectedUsers', 'submenu'));
+        return view('course::course-verification.rejected', compact('rejectedUsers', 'submenu', 'courseId'));
     }
 }

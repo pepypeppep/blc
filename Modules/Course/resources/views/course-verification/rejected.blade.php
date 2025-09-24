@@ -164,6 +164,7 @@
                         message = "Status peserta akan dikembalikan ke Pending.";
                     }
 
+
                     Swal.fire({
                         title: "Apakah Anda yakin?",
                         text: message,
@@ -193,6 +194,7 @@
                                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
                             },
                             body: JSON.stringify({
+                                course_id: parseInt("{{ $courseId }}"),
                                 user_ids: userIds,
                                 status: status,
                                 reason: reason || null // Alasan opsional untuk diterima
@@ -200,6 +202,7 @@
                         });
 
                         let data = await response.json();
+
                         Swal.fire("Sukses", data.message, "success");
 
                         // Hapus baris dari tabel setelah status diperbarui
@@ -211,6 +214,8 @@
                         });
 
                     } catch (error) {
+                        console.log(error);
+
                         Swal.fire("Error", "Terjadi kesalahan, coba lagi.", "error");
                     }
                 }
@@ -224,23 +229,29 @@
                     });
                 });
 
-                document.getElementById("acceptAll").addEventListener("click", function() {
-                    let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
-                        .map(checkbox => checkbox.value);
-                    showReasonModal(selectedUsers, 1);
-                });
+                if (document.getElementById("acceptAll")) {
+                    document.getElementById("acceptAll").addEventListener("click", function() {
+                        let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
+                            .map(checkbox => checkbox.value);
+                        showReasonModal(selectedUsers, 1);
+                    });
+                }
 
-                document.getElementById("rejectAll").addEventListener("click", function() {
-                    let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
-                        .map(checkbox => checkbox.value);
-                    showReasonModal(selectedUsers, 0);
-                });
+                if (document.getElementById("rejectAll")) {
+                    document.getElementById("rejectAll").addEventListener("click", function() {
+                        let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
+                            .map(checkbox => checkbox.value);
+                        showReasonModal(selectedUsers, 0);
+                    });
+                }
 
-                document.getElementById("resetAll").addEventListener("click", function() {
-                    let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
-                        .map(checkbox => checkbox.value);
-                    showReasonModal(selectedUsers, null);
-                });
+                if (document.getElementById("resetAll")) {
+                    document.getElementById("resetAll").addEventListener("click", function() {
+                        let selectedUsers = Array.from(document.querySelectorAll(".userCheckbox:checked"))
+                            .map(checkbox => checkbox.value);
+                        showReasonModal(selectedUsers, null);
+                    });
+                }
 
                 document.getElementById("selectAll").addEventListener("change", function() {
                     let isChecked = this.checked;

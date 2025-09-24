@@ -36,6 +36,15 @@ class PendidikanLanjutanController extends Controller
      *             type="integer"
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search Study",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response"
@@ -66,8 +75,16 @@ class PendidikanLanjutanController extends Controller
                 ->where('start_at', '<=', now())
                 ->where('end_at', '>=', now())
                 ->first();
-            $vacancies = Vacancy::with('instansi:id,name', 'study:id,name')->where('instansi_id', $user->instansi_id)
-                ->where('year', $schedule->year ?? -1)->paginate($perPage);
+            $vac = Vacancy::with('instansi:id,name', 'study:id,name')->where('instansi_id', $user->instansi_id)
+                ->where('year', $schedule->year ?? -1);
+
+            if ($request->has('search')) {
+                $vac->whereHas('study', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                });
+            }
+
+            $vacancies = $vac->paginate($perPage);
 
             return response()->json([
                 'success' => true,

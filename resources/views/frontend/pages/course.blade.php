@@ -11,7 +11,8 @@
     <section class="all-courses-area section-py-120 top-baseline">
         <div class="container position-relative">
             <div class="preloader-two d-none">
-                <div class="loader-icon-two"><img src="{{ asset(Cache::get('setting')->preloader) }}" alt="Preloader"></div>
+                <div class="loader-icon-two"><img src="{{ route('get.section.asset', [1, 'preloader']) }}?module=general"
+                        alt="Preloader"></div>
             </div>
             <div class="row">
                 <div class="col-xl-3 col-lg-4">
@@ -82,7 +83,7 @@
                             <div class="col-md-7">
                                 <div class="d-flex justify-content-center align-items-center flex-wrap">
                                     <div class="courses-top-right m-0 ms-md-auto">
-                                        <span class="sort-by">{{ __('Sort By') }}:</span>
+                                        <span class="sort-by"> {{ __('Sort By') }}:</span>
                                         <div class="courses-top-right-select">
                                             <select name="orderby" class="orderby">
                                                 <option value="desc">{{ __('Latest to Oldest') }}</option>

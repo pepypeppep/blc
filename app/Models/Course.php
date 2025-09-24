@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Modules\InstructorEvaluation\app\Models\InstructorEvaluation;
 
 /**
  *
@@ -26,7 +29,7 @@ class Course extends Model
      *
      * @var array
      */
-    protected $appends = ['thumbnail_url', 'all_instructors', 'course_user_progress'];
+    protected $appends = ['thumbnail_url', 'all_instructors', 'course_user_progress', 'course_review_score', 'evaluate_instructors'];
 
 
     public const CLASS_KLASIKAL_DARING = 'klasikal_daring';
@@ -108,6 +111,16 @@ class Course extends Model
         return $this->hasMany(Enrollment::class, 'course_id', 'id');
     }
 
+    /**
+     * Get all of the instructorsEvaluation for the Course
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function instructorsEvaluation(): HasMany
+    {
+        return $this->hasMany(InstructorEvaluation::class);
+    }
+
     public function progress()
     {
         return $this->hasMany(CourseProgress::class);
@@ -127,22 +140,36 @@ class Course extends Model
         return $courseCompletedPercent == 100;
     }
 
-    // public function getAllInstructorsAttribute()
-    // {
-    //     $primary = $this->instructor;
-    //     $partners = $this->partnerInstructors->pluck('user');
-
-    //     return collect([$primary])->merge($partners)->filter();
-    // }
-
     protected function allInstructors(): Attribute
     {
         $primary = $this->instructor;
-        $partners = $this->partnerInstructors->pluck('user');
-
+        $partners = $this->partnerInstructors->pluck('instructor');
         return Attribute::make(
-            get: fn() => collect([$primary])->merge($partners)->filter()
+            get: fn() => collect([$primary])->merge($partners)->unique('id')->filter()
         );
+    }
+
+    protected function evaluateInstructors(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => [
+                'total_all_instructors' => $this->allInstructors->count(),
+                'total_instructor_evaluations' => $this->instructorsEvaluation->count(),
+                'is_completed' => $this->instructorsEvaluation->count() === $this->allInstructors->count()
+            ]
+        );
+    }
+
+    public function getAllInstructors()
+    {
+        $primary = $this->instructor;
+        if ($primary == null) {
+            return collect();
+        }
+
+        $partners = $this->partnerInstructors->pluck('instructor');
+
+        return collect([$primary])->merge($partners)->unique('id')->filter();
     }
 
     protected function thumbnailUrl(): Attribute
@@ -192,6 +219,28 @@ class Course extends Model
         );
     }
 
+    /**
+     * Get the course reviews score percentage for the authenticated user.
+     */
+    protected function courseReviewScore(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $reviews = $this->reviews;
+
+                $totalScore = $reviews->sum('rating');
+                $totalReviews = $reviews->count();
+
+                $averageScore = $totalReviews > 0 ? number_format($totalScore / $totalReviews, 1) : 0;
+
+                return [
+                    'average_score' => (string) $averageScore,
+                    'total_reviews' => $totalReviews
+                ];
+            }
+        );
+    }
+
     public function getCourseUserProgressApi($userId = null)
     {
         // If no userId provided and no authenticated user, return null
@@ -223,6 +272,11 @@ class Course extends Model
             'percentage' => number_format($courseCompletedPercent, 1),
             'is_completed' => $courseCompletedPercent == 100,
         ];
+    }
+
+    public function signers()
+    {
+        return $this->hasMany(CourseSigner::class);
     }
 
     /**
@@ -263,5 +317,25 @@ class Course extends Model
                 $review->delete();
             });
         });
+    }
+
+    public static function getTypeOptions(): array
+    {
+        // Ambil definisi kolom type dari tabel 'courses'
+        $type = DB::selectOne("SHOW COLUMNS FROM courses WHERE Field = 'type'");
+
+        // Ambil bagian enum dari kolom (misal: enum('a','b','c'))
+        preg_match("/^enum\((.*)\)$/", $type->Type, $matches);
+
+        // Ubah ke array PHP
+        $enumValues = [];
+        if (isset($matches[1])) {
+            foreach (explode(',', $matches[1]) as $value) {
+                $v = trim($value, "'");
+                $enumValues[$v] = $v === 'course' ? 'Kursus' : Str::title($v); // bisa diganti ucfirst atau custom label
+            }
+        }
+
+        return $enumValues;
     }
 }

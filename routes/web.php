@@ -14,17 +14,19 @@ use App\Http\Controllers\Frontend\LearningController;
 use App\Http\Controllers\Frontend\AboutPageController;
 use App\Http\Controllers\Frontend\CoursePageController;
 use App\Http\Controllers\Global\CloudStorageController;
+use App\Http\Controllers\Frontend\CertificateController;
 use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Frontend\CourseContentController;
 use App\Http\Controllers\Frontend\StudentReviewController;
+use App\Http\Controllers\GoogleDrivePublicVideoController;
 use App\Http\Controllers\Frontend\FollowUpActionController;
 use App\Http\Controllers\Frontend\BecomeInstructorController;
-use App\Http\Controllers\Frontend\CertificateController;
 use App\Http\Controllers\Frontend\InstructorCourseController;
 use App\Http\Controllers\Frontend\InstructorPayoutController;
 use App\Http\Controllers\Frontend\StudentDashboardController;
 use App\Http\Controllers\Frontend\StudentPengetahuanController;
 use App\Http\Controllers\Frontend\TinymceImageUploadController;
+use Modules\Mentoring\app\Http\Controllers\MentoringController;
 use App\Http\Controllers\Frontend\InstructorDashboardController;
 use App\Http\Controllers\Frontend\InstructorLessonQnaController;
 use App\Http\Controllers\Frontend\StudentFollowUpActionController;
@@ -33,7 +35,6 @@ use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
-
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -78,7 +79,9 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     /** Article Routes */
     Route::get('article', [ArticleController::class, 'index'])->name('article');
     Route::get('article/{slug}', [ArticleController::class, 'show'])->name('article.show');
+    Route::post('article/submit-review', [ArticleController::class, 'submitReview'])->name('article.submit-review');
     Route::post('article/submit-comment', [ArticleController::class, 'submitComment'])->name('article.submit-comment');
+    Route::post('/article/{slug}/report-comment', [ArticleController::class, 'report'])->name('article.report-comment');
 
     /** About page routes */
     Route::get('about-us', [AboutPageController::class, 'index'])->name('about-us');
@@ -109,9 +112,14 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
     // Public Certificate URL
     Route::get("/public/certificate/{uuid}", [CertificateController::class, 'publicCertificate'])->name('public.certificate');
+    Route::get("/public/mentoring/{uuid}", [MentoringController::class, 'publicCertificate'])->name('public.mentoring');
 
     Route::get("/get-section-asset/{id}/attr/{attr}", [HomePageController::class, 'getSectionAsset'])->name('get.section.asset');
 
+    // The route for streaming video. It's now public and doesn't require user authentication.
+    Route::get('/stream-video/{fileId}', [GoogleDrivePublicVideoController::class, 'streamVideo']);
+
+    Route::get('faqs', [HomePageController::class, 'faq'])->name('faqs');
 
 
     /**
@@ -201,6 +209,9 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
         Route::resource('follow-up-action', StudentFollowUpActionController::class);
         // Route::get('follow-up-action/create', [StudentFollowUpActionController::class, 'create'])->name('follow-up-action.create');
+
+        /** certificates routes  */
+        Route::get('certificates', [CertificateController::class, 'index'])->name('certificates.index');
 
         /** learning routes */
         Route::post('accept-tos/{slug}', [LearningController::class, 'acceptTos'])->name('learning.accept-tos');

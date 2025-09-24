@@ -79,7 +79,7 @@
             });
 
             $('#image-preview-breadcrumb').css({
-                'background-image': 'url({{ asset($setting->breadcrumb_image) }})',
+                'background-image': "url({{ route('get.section.asset', [1, 'breadcrumb_image']) }}?module=general)",
                 'background-size': 'contain',
                 'background-position': 'center',
                 'background-repeat': 'no-repeat'
@@ -96,7 +96,7 @@
             });
 
             $('#image-preview-maintenance').css({
-                'background-image': 'url({{ asset($setting?->maintenance_image) }})',
+                'background-image': "url({{ route('get.section.asset', [1, 'maintenance_image']) }}?module=general)",
                 'background-size': 'contain',
                 'background-position': 'center',
                 'background-repeat': 'no-repeat'
@@ -112,7 +112,7 @@
                 success_callback: null
             });
             $('#image-preview-1').css({
-                'background-image': 'url({{ !empty($setting->logo) ? asset($setting->logo) : '' }})',
+                'background-image': "url({{ route('get.section.asset', [1, 'logo']) }}?module=general)",
                 'background-size': 'contain',
                 'background-position': 'center',
                 'background-repeat': 'no-repeat'
@@ -128,7 +128,7 @@
                 success_callback: null
             });
             $('#image-preview-2').css({
-                'background-image': 'url({{ asset(@$setting->favicon) }})',
+                'background-image': "url({{ route('get.section.asset', [1, 'favicon']) }}?module=general)",
                 'background-size': 'contain',
                 'background-position': 'center',
                 'background-repeat': 'no-repeat'
@@ -144,26 +144,26 @@
                 success_callback: null
             });
             $('#image-preview-3').css({
-                'background-image': 'url({{ asset(@$setting->preloader) }})',
+                'background-image': "url({{ route('get.section.asset', [1, 'preloader']) }}?module=general)",
                 'background-size': 'contain',
                 'background-position': 'center',
                 'background-repeat': 'no-repeat'
             });
             $.uploadPreview({
-            input_field: "#image-upload-4",
-            preview_box: "#image-preview-4",
-            label_field: "#image-label-4",
-            label_default: "{{ __('Choose Image') }}",
-            label_selected: "{{ __('Change Image') }}",
-            no_label: false,
-            success_callback: null
-        });
-        $('#image-preview-4').css({
-            'background-image': "url({{ asset(@$setting?->watermark_img ?? 'uploads/website-images/watermark.svg') }})",
-            'background-size': 'contain',
-            'background-position': 'center',
-            'background-repeat': 'no-repeat'
-        });
+                input_field: "#image-upload-4",
+                preview_box: "#image-preview-4",
+                label_field: "#image-label-4",
+                label_default: "{{ __('Choose Image') }}",
+                label_selected: "{{ __('Change Image') }}",
+                no_label: false,
+                success_callback: null
+            });
+            $('#image-preview-4').css({
+                'background-image': "url('{{ route('get.section.asset', [1, 'watermark']) }}?module=general')",
+                'background-size': 'contain',
+                'background-position': 'center',
+                'background-repeat': 'no-repeat'
+            });
 
         });
         //Maintenance mode toggler

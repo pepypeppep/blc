@@ -9,6 +9,7 @@ use Modules\Course\app\Http\Controllers\CourseController;
 use Modules\Course\app\Http\Controllers\CourseDeleteRequestController;
 use Modules\Course\app\Http\Controllers\CourseLanguageController;
 use Modules\Course\app\Http\Controllers\CourseLevelController;
+use Modules\Course\app\Http\Controllers\CourseReportController;
 use Modules\Course\app\Http\Controllers\CourseReviewController;
 use Modules\Course\app\Http\Controllers\CourseSubCategoryController;
 use Modules\Course\app\Http\Controllers\CourseTosController;
@@ -49,6 +50,9 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
 
         Route::get('/course-tos', [CourseTosController::class, 'create'])->name('course-tos.create');
         Route::post('/course-tos', [CourseTosController::class, 'store'])->name('course-tos.store');
+
+        Route::get('/course-report', [CourseReportController::class, 'index'])->name('course-report.index');
+        Route::put('/course-report/{id}', [CourseReportController::class, 'update'])->name('course-report.update');
     });
 
 
@@ -69,10 +73,11 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('courses/create', [CourseController::class, 'create'])->name('courses.create');
     Route::get('courses/create/{id}/step/{step?}', [CourseController::class, 'edit'])->name('courses.edit');
+    Route::get('courses/{id}/show', [CourseController::class, 'show'])->name('courses.show');
     Route::get('courses/{id}/edit', [CourseController::class, 'editView'])->name('courses.edit-view');
 
     Route::get('courses/get-instructors', [CourseController::class, 'getInstructors'])->name('courses.get-instructors');
-
+    Route::get('courses/get-signers', [CourseController::class, 'getSigners'])->name('courses.get-signers');
     Route::post('courses/create', [CourseController::class, 'store'])->name('courses.store');
     Route::post('courses/update', [CourseController::class, 'update'])->name('courses.update');
     Route::get('courses/duplicate/{id}', [CourseController::class, 'duplicate'])->name('courses.duplicate');

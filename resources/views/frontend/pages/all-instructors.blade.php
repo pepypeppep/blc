@@ -15,7 +15,9 @@
                                 <div class="instructor__thumb">
                                     <a
                                         href="{{ route('instructor-details', ['id' => $instructor->id, 'slug' => Str::slug($instructor->name)]) }}"><img
-                                            src="{{ asset($instructor->image) }}" alt="img"></a>
+                                            src="{{ asset($instructor->image) }}"
+                                            onerror="this.src='{{ route('get.section.asset', [1, 'default_avatar']) }}?module=general';"
+                                            alt="img"></a>
                                 </div>
                                 <div class="instructor__content">
                                     <h2 class="title"><a

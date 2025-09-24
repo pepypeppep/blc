@@ -421,6 +421,12 @@ class CourseSeeder extends Seeder
             // create course
             $course = new Course();
             $course->instructor_id = $instructorList[array_rand($instructorList, 1)];
+            $course->instansi_id = 1;
+            $course->certificate_id = 1;
+            $course->start_date = '2025-01-01';
+            $course->end_date = '2025-12-31';
+            $course->output = 'Online';
+            $course->outcome = 'Online';
             $course->category_id = 2;
             $course->type = "course";
             $course->title = $courseName;

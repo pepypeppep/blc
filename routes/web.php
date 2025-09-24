@@ -34,6 +34,7 @@ use App\Http\Controllers\Frontend\StudentProfileSettingController;
 use App\Http\Controllers\Frontend\InstructorAnnouncementController;
 use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
+use App\Http\Controllers\Frontend\PersonalCertificateRecognitionController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
@@ -169,6 +170,16 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             // Route::get('view/{id}', [StudentPengetahuanController::class, 'view'])->name('view.file');
         });
 
+        Route::group(['prefix' => 'pengakuan-sertifikat', 'as' => 'pengakuan-sertifikat.'], function () {
+            Route::get('/', [PersonalCertificateRecognitionController::class, 'index'])->name('index');
+            // Route::get('show/{slug}', [StudentPengetahuanController::class, 'show'])->name('show');
+            Route::get('create', [PersonalCertificateRecognitionController::class, 'create'])->name('create');
+            Route::post('store', [PersonalCertificateRecognitionController::class, 'store'])->name('store');
+            // Route::get('edit/{slug}', [StudentPengetahuanController::class, 'edit'])->name('edit');
+            // Route::put('update/{slug}', [StudentPengetahuanController::class, 'update'])->name('update');
+            // Route::put('/{slug}/ajukan', [StudentPengetahuanController::class, 'ajukanPengetahuan'])->name('ajukan');
+            // Route::delete('destroy/{slug}', [StudentPengetahuanController::class, 'destroy'])->name('destroy');
+        });
 
         Route::get('reviews', [StudentReviewController::class, 'index'])->name('reviews.index');
         Route::get('reviews/{id}', [StudentReviewController::class, 'show'])->name('reviews.show');

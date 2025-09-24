@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->longText('description')->nullable();
+            $table->string('category'); //syarat, lampiran, aktivasi
             $table->timestamps();
         });
     }

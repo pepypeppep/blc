@@ -10,11 +10,11 @@
             <h4 class="title">{{ __('Detail Program Pendidikan Lanjutan') }}</h4>
         </div>
         <div class="row">
-            <div class="col-12 mb-2">
-                <label for="vacancy" class="form-label">Pilih Skema Pendidikan Lanjutan<span class="text-danger">
-                        *</span></label>
+            <div class="col-12 mb-2 alert alert-info">
+                <h5 for="vacancy" class="form-label">Pilih Skema Pendidikan Lanjutan<span class="text-danger">
+                        *</span></h5>
                 <select class="form-select" aria-label="Pilih Skema Pendidikan Lanjutan" id="skemaId"
-                    onchange="skemaOnChange(this)" {{ $detailId ? 'disabled' : '' }}>
+                    onchange="skemaOnChange(this)" {{ $detailId ? 'disabled' : '' }} style="cursor: pointer;">
                     @foreach ($vacancyDetail as $item)
                         <option value="{{ $item->id }}" {{ $detailId == $item->id ? 'selected' : '' }}>
                             {{ $item->employment_status }} | {{ $item->cost_type }} | Batas
@@ -49,7 +49,7 @@
                             <tr>
                                 <td>{{ __('Syarat Pendidikan') }}</td>
                                 <td>
-                                    {{ str_replace(', ',' / ',str_replace(['"','[',']'], '', $vacancy->education_requirements)) }}
+                                    {{ str_replace(', ', ' / ', str_replace(['"', '[', ']'], '', $vacancy->education_requirements)) }}
                                 </td>
                                 <td class="text-center">
                                     @if ($passJenjangPendidikanTerakhir)
@@ -226,7 +226,12 @@
 
         <div class="row">
             <div class="col-12 text-end">
-                @if (!$isExist && $meetCondition && $vacancyUser->status == 'register' && $vacancyUser->vacancy_detail_id && $vacancyUser->vacancy_detail_id != 0)
+                @if (
+                    !$isExist &&
+                        $meetCondition &&
+                        $vacancyUser->status == 'register' &&
+                        $vacancyUser->vacancy_detail_id &&
+                        $vacancyUser->vacancy_detail_id != 0)
                     <form action="{{ route('student.continuing-education.ajukanBerkas', $vacancy->id) }}" method="POST"
                         class="d-inline">
                         @csrf

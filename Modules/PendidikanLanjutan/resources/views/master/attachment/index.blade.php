@@ -19,7 +19,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="{{ route('admin.vacancies.master.file.index') }}" method="GET"
+                                <form action="{{ route('admin.vacancies.master.attachment.index') }}" method="GET"
                                     onchange="$(this).trigger('submit')" class="form_padding">
                                     <div class="row">
                                         <div class="col-md-4 form-group">
@@ -65,7 +65,7 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Master Berkas Laporan') }}</h4>
+                                <h4>{{ __('Master Berkas Lampiran') }}</h4>
                                 <div>
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
                                         data-target="#tambahBerkasReportModal">{{ __('Add New') }}</button>
@@ -77,27 +77,27 @@
                                         <thead>
                                             <tr>
                                                 <th width="1%">{{ __('#') }}</th>
-                                                <th width="10%">{{ __('Name') }}</th>
-                                                <th width="20%">{{ __('Description') }}</th>
-                                                <th width="1%">{{ __('Status') }}</th>
+                                                <th width="30%">{{ __('Name') }}</th>
+                                                <th width="10%">{{ __('Category') }}</th>
                                                 <th width="1%">{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @forelse ($reports as $report)
+                                            @forelse ($attachments as $data)
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $report->name }}</td>
-                                                    <td>{{ $report->description }}</td>
+                                                    <td>{{ $data->name }}</td>
                                                     <td>
-                                                        @if ($report->is_active == 1)
-                                                            <span class="badge badge-success">Active</span>
-                                                        @else
-                                                            <span class="badge badge-danger">Inactive</span>
+                                                        @if ($data->category == 'syarat')
+                                                            <span class="badge badge-info">Syarat</span>
+                                                        @elseif ($data->category == 'lampiran')
+                                                            <span class="badge badge-primary">Lampiran</span>
+                                                        @elseif ($data->category == 'aktivasi')
+                                                            <span class="badge badge-warning">Aktivasi</span>
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <a href="{{ route('admin.vacancies.master.file.edit', $report->id) }}"
+                                                        <a href="{{ route('admin.vacancies.master.attachment.edit', $data->id) }}"
                                                             class="btn btn-warning btn-sm m-1" title="Ubah">
                                                             <i class="fa fa-edit" aria-hidden="true"></i>
                                                         </a>
@@ -112,12 +112,10 @@
                                             @endforelse
                                         </tbody>
                                     </table>
-                                </div>
-                                {{-- @if (request()->get('par-page') !== 'all')
-                                    <div class="float-right">
-                                        {{ $posts->onEachSide(0)->links() }}
+                                    <div class="d-flex justify-content-center mt-3">
+                                        {{ $attachments->links() }}
                                     </div>
-                                @endif --}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -137,7 +135,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('admin.vacancies.master.file.store') }}" method="POST">
+                <form action="{{ route('admin.vacancies.master.attachment.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
@@ -148,19 +146,13 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label for="">{{ __('Description') }} <code>*</code></label>
-                            <input type="text" name="description" class="form-control" required>
-                            @error('description')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="">{{ __('Status') }} <code>*</code></label>
-                            <select name="is_active" class="form-control" required>
-                                <option value="1">Aktif</option>
-                                <option value="0">Tidak Aktif</option>
+                            <label for="">{{ __('Category') }} <code>*</code></label>
+                            <select name="category" class="form-control" required>
+                                <option value="syarat">Syarat</option>
+                                <option value="lampiran">Lampiran</option>
+                                <option value="aktivasi">Aktivasi</option>
                             </select>
-                            @error('is_active')
+                            @error('category')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>

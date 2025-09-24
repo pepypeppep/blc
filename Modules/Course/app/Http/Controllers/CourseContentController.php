@@ -186,7 +186,7 @@ class CourseContentController extends Controller
         if ($request->type == 'lesson') {
             CourseChapterLesson::create([
                 'title' => $request->title,
-                'slug' => Str::slug($request->title),
+                'slug' => Str::slug($request->title) . '-' . time(),
                 'description' => $request->description,
                 'instructor_id' =>  $chapterItem->instructor_id,
                 'course_id' => $request->course_id,
@@ -209,6 +209,7 @@ class CourseContentController extends Controller
 
             CourseChapterLesson::create([
                 'title' => $request->title,
+                'slug' => Str::slug($request->title) . '-' . time(),
                 'description' => $request->description,
                 'instructor_id' =>  $chapterItem->instructor_id,
                 'course_id' => $request->course_id,
@@ -302,6 +303,7 @@ class CourseContentController extends Controller
 
             $courseChapterLesson->update([
                 'title' => $request->title,
+                'slug' => Str::slug($request->title) . '-' . time(),
                 'description' => $request->description,
                 'course_id' => $chapterItem->course_id,
                 'chapter_id' => $chapterItem->chapter_id,
@@ -328,6 +330,7 @@ class CourseContentController extends Controller
 
             $courseChapterLesson->update([
                 'title' => $request->title,
+                'slug' => Str::slug($request->title) . '-' . time(),
                 'description' => $request->description,
                 'course_id' => $chapterItem->course_id,
                 'chapter_id' => $chapterItem->chapter_id,

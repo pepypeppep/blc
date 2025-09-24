@@ -14,6 +14,7 @@ class CourseChapterLesson extends Model
 
     protected $fillable = [
         'title',
+        'slug',
         'description',
         'course_id',
         'chapter_id',

@@ -172,13 +172,14 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
 
         Route::group(['prefix' => 'pengakuan-sertifikat', 'as' => 'pengakuan-sertifikat.'], function () {
             Route::get('/', [PersonalCertificateRecognitionController::class, 'index'])->name('index');
-            // Route::get('show/{slug}', [StudentPengetahuanController::class, 'show'])->name('show');
+            Route::get('show/{id}', [PersonalCertificateRecognitionController::class, 'show'])->name('show');
             Route::get('create', [PersonalCertificateRecognitionController::class, 'create'])->name('create');
             Route::post('store', [PersonalCertificateRecognitionController::class, 'store'])->name('store');
-            // Route::get('edit/{slug}', [StudentPengetahuanController::class, 'edit'])->name('edit');
-            // Route::put('update/{slug}', [StudentPengetahuanController::class, 'update'])->name('update');
+            Route::get('edit/{id}', [PersonalCertificateRecognitionController::class, 'edit'])->name('edit');
+            Route::put('update/{id}', [PersonalCertificateRecognitionController::class, 'update'])->name('update');
             // Route::put('/{slug}/ajukan', [StudentPengetahuanController::class, 'ajukanPengetahuan'])->name('ajukan');
-            // Route::delete('destroy/{slug}', [StudentPengetahuanController::class, 'destroy'])->name('destroy');
+            Route::delete('destroy/{id}', [PersonalCertificateRecognitionController::class, 'destroy'])->name('destroy');
+            Route::get('file/{id}/{file}', [PersonalCertificateRecognitionController::class, 'attachment'])->name('attachment');
         });
 
         Route::get('reviews', [StudentReviewController::class, 'index'])->name('reviews.index');

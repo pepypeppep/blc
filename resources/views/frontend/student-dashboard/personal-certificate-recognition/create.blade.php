@@ -14,12 +14,13 @@
                         <div class="row">
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
-                                    <label for="enrollment">Jalur Pengembangan Kompetensi <code>*</code></label>
-                                    <select name="enrollment" class="form-control select2" required>
+                                    <label for="competency_development_id">Jalur Pengembangan Kompetensi
+                                        <code>*</code></label>
+                                    <select name="competency_development_id" class="form-control select2" required>
                                         <option value="">Pilih Jalur Pengembangan Kompetensi</option>
                                         @foreach ($competencies as $competency)
                                             <option
-                                                value="{{ $competency->id }}"@if (old('enrollment') == $competency->id) selected @endif>
+                                                value="{{ $competency->id }}"@if (old('competency_development_id') == $competency->id) selected @endif>
                                                 {{ $competency->name }}</option>
                                         @endforeach
                                     </select>
@@ -58,15 +59,17 @@
                                     <label for="file">Unggah Laporan Pengembangan Kompetensi <code>*</code></label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1"
-                                            onclick="$('#file').trigger('click');">
-                                            <a data-input="file" data-preview="holder">
+                                            onclick="$('#report_file').trigger('click');">
+                                            <a data-input="report_file" data-preview="holder">
                                                 <i class="fa fa-picture-o"></i> {{ __('Choose') }}
                                             </a>
                                         </span>
-                                        <input id="report_file" readonly class="form-control" type="text"
-                                            name="report_file" value="#" onclick="$('#file').trigger('click');">
-                                        <input id="file" name="file" class="form-control d-none" type="file"
-                                            onchange="$('#report_file').val(this.files[0].name)" accept=".pdf">
+                                        <input id="report_file_label" readonly class="form-control" type="text"
+                                            name="report_file_label" value=""
+                                            onclick="$('#report_file').trigger('click');">
+                                        <input id="report_file" name="report_file" class="form-control d-none"
+                                            type="file" onchange="$('#report_file_label').val(this.files[0].name)"
+                                            accept=".pdf">
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +91,7 @@
                             <div class="col-md-4 mt-2">
                                 <div class="form-group">
                                     <label for="jp">Jumlah Jam Pelajaran <code>*</code></label>
-                                    <input id="jp" name="jp" type="text" class="form-control"
+                                    <input id="jp" name="jp" type="number" class="form-control"
                                         placeholder="Jika tidak ada, silakan tulis 0" value="{{ old('jp') }}"
                                         required>
                                 </div>
@@ -114,16 +117,17 @@
                                     <label for="file">Unggah Sertifikat <code>*</code></label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1"
-                                            onclick="$('#file').trigger('click');">
-                                            <a data-input="file" data-preview="holder">
+                                            onclick="$('#certificate_file').trigger('click');">
+                                            <a data-input="certificate_file" data-preview="holder">
                                                 <i class="fa fa-picture-o"></i> {{ __('Choose') }}
                                             </a>
                                         </span>
-                                        <input id="certificate_file" readonly class="form-control" type="text"
-                                            name="certificate_file" value="#"
-                                            onclick="$('#file').trigger('click');">
-                                        <input id="file" name="file" class="form-control d-none" type="file"
-                                            onchange="$('#certificate_file').val(this.files[0].name)" accept=".pdf">
+                                        <input id="certificate_file_label" readonly class="form-control" type="text"
+                                            name="certificate_file_label" value=""
+                                            onclick="$('#certificate_file').trigger('click');">
+                                        <input id="certificate_file" name="certificate_file" class="form-control d-none"
+                                            type="file" onchange="$('#certificate_file_label').val(this.files[0].name)"
+                                            accept=".pdf">
                                     </div>
                                 </div>
                             </div>
@@ -132,15 +136,17 @@
                                     <label for="file">Unggah Piagam Penghargaan / Sejenisnya</label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1"
-                                            onclick="$('#file').trigger('click');">
-                                            <a data-input="file" data-preview="holder">
+                                            onclick="$('#award_file').trigger('click');">
+                                            <a data-input="award_file" data-preview="holder">
                                                 <i class="fa fa-picture-o"></i> {{ __('Choose') }}
                                             </a>
                                         </span>
-                                        <input id="award_file" readonly class="form-control" type="text"
-                                            name="award_file" value="#" onclick="$('#file').trigger('click');">
-                                        <input id="file" name="file" class="form-control d-none" type="file"
-                                            onchange="$('#award_file').val(this.files[0].name)" accept=".pdf">
+                                        <input id="award_file_label" readonly class="form-control" type="text"
+                                            name="award_file_label" value=""
+                                            onclick="$('#award_file').trigger('click');">
+                                        <input id="award_file" name="award_file" class="form-control d-none"
+                                            type="file" onchange="$('#award_file_label').val(this.files[0].name)"
+                                            accept=".pdf">
                                     </div>
                                 </div>
                             </div>
@@ -157,26 +163,5 @@
 @endsection
 
 @push('scripts')
-    <script>
-        $(document).ready(function() {
-            // Hide the file upload field and link field by default
-            $("#file-upload-field").hide();
-            $("#link-field").hide();
-
-            // Show/hide fields based on the selected category
-            $("input[name='category']").change(function() {
-                if ($("#document").is(":checked")) {
-                    $("#file-upload-field").show();
-                } else {
-                    $("#file-upload-field").hide();
-                }
-
-                if ($("#video").is(":checked")) {
-                    $("#link-field").show();
-                } else {
-                    $("#link-field").hide();
-                }
-            }).trigger('change');
-        });
-    </script>
+    <script></script>
 @endpush

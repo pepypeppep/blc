@@ -5,58 +5,121 @@
         <div class="row">
             <div class="col-12">
                 <div class="row">
-                    @if ($pengetahuan->status == 'rejected')
-                        <div class="alert alert-danger" role="alert">
-                            <span class="text text-capitalize">Status: {{ $pengetahuan->stat['label'] }}</span>
-                            <span class="alert-heading">Alasan</span>
-                            <p>{!! clean($pengetahuan->note) !!}</p>
+                    <div class="alert alert-{{ $pengakuan->stat['color'] }} d-flex justify-content-between" role="alert">
+                        <div><span class="text text-capitalize">Status:
+                                <strong>{{ $pengakuan->stat['label'] }}</strong></span></div>
+                        <div class="courses__item-bottom m-0">
+                            <div class="button">
+                                <a href="{{ route('student.pengakuan-sertifikat.edit', $pengakuan->id) }}"
+                                    class="already-enrolled-btn bg-primary" data-id="">
+                                    <i class="fa fa-pencil-alt text-white"></i>
+                                </a>
+                            </div>
                         </div>
-                    @else
-                        <div class="alert alert-{{ $pengetahuan->stat['color'] }}" role="alert">
-                            <span class="text text-capitalize">Status: {{ $pengetahuan->stat['label'] }}</span>
-                        </div>
-                    @endif
-                    <img src="{{ route('student.pengetahuan.view.file', $pengetahuan->id) }}"alt="img">
-
-                    <h4 class="title text mt-4">{{ $pengetahuan->title }}</h4>
-                    @if ($pengetahuan->enrollment)
-                        <div class="col-12">
-                            <span class="text text-capitalize"><strong>Pelatihan: </strong></span>
-                            <p class="text mt-0">{{ $pengetahuan->enrollment->course->title }}</p>
-                        </div>
-                    @endif
-                    <div>
-                        <span class="badge bg-primary">{{ $pengetahuan->category }}</span>
-                        <span
-                            class="badge bg-{{ $pengetahuan->visibility == 'public' ? 'primary' : 'warning' }}">{{ $pengetahuan->visibility == 'public' ? 'Public' : 'Internal' }}</span>
                     </div>
-                    @if ($pengetahuan->articleTags)
-                        <div class="col-12 mt-2">
-                            <span class="text text-capitalize"><strong>Tags </strong></span>
-                            @foreach ($pengetahuan->articleTags as $tag)
-                                <span class="badge bg-secondary">{{ $tag->name }}</span>
-                            @endforeach
+                    <div class="col-md-12 mt-2">
+                        <div class="form-group">
+                            <label for="title"><strong>Nama Pengembangan Kompetensi</strong></label>
+                            <div>{{ $pengakuan->title }}</div>
                         </div>
-                    @endif
-                    <hr>
-                    <div class="col-12">
-                        <span class="text text-capitalize"><strong>Deskripsi</strong></span>
-                        <p class="text mt-0">{!! clean($pengetahuan->description) !!}</p>
                     </div>
-                    @if ($pengetahuan->category == 'video')
-                        <div class="col-12">
-                            <span class="text text-capitalize"><strong>Link</strong></span>
-                            <p class="text mt-0">Lihat di <a href="{{ $pengetahuan->link }}"
-                                    target="_blank">{{ $pengetahuan->link }}</a></p>
+                    <div class="col-md-6 mt-2">
+                        <div class="form-group">
+                            <label for="competency_development_id"><strong>Jalur Pengembangan Kompetensi</strong>
+                            </label>
+                            <div>{{ $pengakuan->competency_development->name }}</div>
                         </div>
-                    @endif
-                    @if ($pengetahuan->category == 'document')
-                        <div class="col-12">
-                            <span class="text text-capitalize"><strong>File</strong></span>
-                            <p class="text mt-0"><a href="{{ route('student.pengetahuan.view.file', $pengetahuan->id) }}"
-                                    target="_blank">Lihat File</a></p>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="form-group">
+                            <label for="organization"><strong>Penyelenggara</strong></label>
+                            <div>{{ $pengakuan->organization }}</div>
                         </div>
-                    @endif
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="form-group">
+                            <label for="start_date"><strong>Tanggal Mulai</strong></label>
+                            <div>{{ $pengakuan->start_date }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="form-group">
+                            <label for="end_date"><strong>Tanggal Selesai</strong></label>
+                            <div>{{ $pengakuan->end_date }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="form-group">
+                            <label for="official_position"><strong>Jabatan Pejabat yang mengeluarkan</strong></label>
+                            <div>{{ $pengakuan->official_position }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="form-group">
+                            <label for="graduation_predicate"><strong>Predikat Kelulusan</strong></label>
+                            <div>{{ $pengakuan->graduation_predicate ?? '-' }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <div class="form-group">
+                            <label for="certificate_number"><strong>Nomor Sertifikat</strong></label>
+                            <div>{{ $pengakuan->certificate_number }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <div class="form-group">
+                            <label for="certificate_date"><strong>Tanggal Sertifikat</strong></label>
+                            <div>{{ $pengakuan->certificate_date }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <div class="form-group">
+                            <label for="jp"><strong>Jumlah Jam Pelajaran</strong></label>
+                            <div>{{ $pengakuan->jp }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2" id="file-upload-field2">
+                        <div class="form-group">
+                            <label for="file"><strong>Laporan Pengembangan Kompetensi</strong></label>
+                            <div>
+                                <object
+                                    data="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'report_file']) }}"
+                                    type="application/pdf" width="100%" height="500px">
+                                    <embed
+                                        src="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'report_file']) }}"
+                                        type="application/pdf">
+                                </object>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2" id="file-upload-field3">
+                        <div class="form-group">
+                            <label for="file"><strong>Sertifikat</strong></label>
+                            <div>
+                                <object
+                                    data="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'certificate_file']) }}"
+                                    type="application/pdf" width="100%" height="500px">
+                                    <embed
+                                        src="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'certificate_file']) }}"
+                                        type="application/pdf">
+                                </object>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2" id="file-upload-field4">
+                        <div class="form-group">
+                            <label for="file"><strong>Piagam Penghargaan / Sejenisnya</strong></label>
+                            <div>
+                                <object
+                                    data="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'award_file']) }}"
+                                    type="application/pdf" width="100%" height="500px">
+                                    <embed
+                                        src="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'award_file']) }}"
+                                        type="application/pdf">
+                                </object>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

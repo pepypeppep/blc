@@ -28,18 +28,37 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $data->title }}</td>
-                                    <td>{{ $data->competency_development_id }}</td>
+                                    <td>{{ $data->competency_development->name }}</td>
                                     <td>{{ $data->jp }}</td>
                                     <td class="text-center">
                                         <div class="badge bg-{{ $data->stat['color'] }}">
                                             {{ $data->stat['label'] }}</div>
                                     </td>
                                     <td class="text-nowrap">
-                                        <div class="dashboard__mentee-action d-inline-flex align-items-center gap-2">
-                                            <a href="{{ route('student.pengetahuan.show', $data->id) }}"
-                                                class="btn-action-primary" title="Lihat Detail">
-                                                <i class="fa fa-eye"></i> &nbsp;Lihat
-                                            </a>
+                                        <div class="d-flex justify-content-end text-ebd items-end gap-2">
+                                            <div class="courses__item-bottom">
+                                                <div class="button">
+                                                    <a href="{{ route('student.pengakuan-sertifikat.show', $data->id) }}"
+                                                        class="already-enrolled-btn bg-primary" data-id="">
+                                                        <i class="fa fa-eye text-white"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="courses__item-bottom">
+                                                <form id="delete-form-{{ $data->id }}"
+                                                    action="{{ route('student.pengakuan-sertifikat.destroy', $data->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <div class="button">
+                                                        <a onclick="deletePengakuanSertifikat(event, {{ $data->id }})"
+                                                            class="already-enrolled-btn bg-danger" data-id=""
+                                                            style="cursor: pointer;">
+                                                            <i class="fa fa-trash text-white"></i>
+                                                        </a>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -70,8 +89,8 @@
     <script>
         function deletePengakuanSertifikat(event, id) {
             swal.fire({
-                title: "Apakah kamu yakin ingin menghapus pengetahuan ini?",
-                text: "Anda tidak dapat mengembalikan pengetahuan ini!",
+                title: "Apakah kamu yakin ingin menghapus pengakuan sertifikat ini?",
+                text: "Anda tidak dapat mengembalikan pengakuan sertifikat ini!",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "##5751e1",

@@ -3,180 +3,167 @@
 @section('dashboard-contents')
     <div class="dashboard__content-wrap">
         <div class="dashboard__content-title d-flex justify-content-between">
-            <h4 class="title">{{ __('Ubah Pengetahuan') }} &quot;{{ $pengetahuan->title }}&quot;</h4>
+            <h4 class="title">{{ __('Ubah Pengakuan Sertifikat') }} &quot;{{ $pengakuan->title }}&quot;</h4>
         </div>
         <div class="row">
             <div class="col-12">
                 <div class="row">
-                    <form id="update-form" action="{{ route('student.pengetahuan.update', ['slug' => $pengetahuan->slug]) }}"
-                        method="POST" class="instructor__profile-form course-form" enctype="multipart/form-data">
+                    <form id="update-form"
+                        action="{{ route('student.pengakuan-sertifikat.update', ['id' => $pengakuan->id]) }}" method="POST"
+                        class="instructor__profile-form course-form" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="Category" class="me-3">{{ __('Category') }}
-                                        <code>*</code></label>
-                                    <div class="d-flex align-items-center">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="category" id="blog"
-                                                value="blog" @if ($pengetahuan->category == 'blog') checked @endif>
-                                            <label class="form-check-label" for="blog">
-                                                {{ __('Blog') }}
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="category" id="document"
-                                                value="document" @if ($pengetahuan->category == 'document') checked @endif>
-                                            <label class="form-check-label" for="document">
-                                                {{ __('Dokumen') }}
-                                            </label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="category" id="video"
-                                                value="video" @if ($pengetahuan->category == 'video') checked @endif>
-                                            <label class="form-check-label" for="video">
-                                                {{ __('Video') }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
-                                    <label for="enrollment">Pelatihan</label>
-                                    <select name="enrollment" class="form-control select2" disabled>
-                                        <option value="">{{ __('Select') }}</option>
-                                        @foreach ($completedCourses as $enrollment)
-                                            <option value="{{ $enrollment->id }}"
-                                                @if ($pengetahuan->enrollment_id == $enrollment->id) selected @endif>
-                                                {{ $enrollment->course->title }}</option>
+                                    <label for="competency_development_id">Jalur Pengembangan Kompetensi
+                                        <code>*</code></label>
+                                    <select name="competency_development_id" class="form-control select2" required>
+                                        <option value="">Pilih Jalur Pengembangan Kompetensi</option>
+                                        @foreach ($competencies as $competency)
+                                            <option
+                                                value="{{ $competency->id }}"@if ($pengakuan->competency_development_id == $competency->id) selected @endif>
+                                                {{ $competency->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
-                                    <label for="title">{{ __('Title') }} <code>*</code></label>
-                                    <input id="title" name="title" type="text" class="form-control"
-                                        placeholder="example" value="{{ $pengetahuan->title }}">
+                                    <label for="title">Nama Pengembangan Kompetensi <code>*</code></label>
+                                    <input id="title" name="title" type="text" class="form-control" placeholder=""
+                                        value="{{ $pengakuan->title }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <div class="form-group">
+                                    <label for="organization">Penyelenggara <code>*</code></label>
+                                    <input id="organization" name="organization" type="text" class="form-control"
+                                        placeholder="" value="{{ $pengakuan->organization }}" required>
                                 </div>
                             </div>
                             <div class="col-md-6 mt-2">
-                                <div class="from-group mb-3">
-                                    <label class="form-file-manager-label" for="">{{ __('Thumbnail') }}
-                                        <code>*</code></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon1"
-                                            onclick="$('#thumbnail').trigger('click');">
-                                            <a data-input="thumbnail" data-preview="holder">
-                                                <i class="fa fa-picture-o"></i> {{ __('Choose') }}
-                                            </a>
-                                        </span>
-                                        <input id="thumbnail_name" readonly class="form-control" type="text"
-                                            name="thumbnail_name" value="{{ $pengetahuan->thumbnail }}"
-                                            onclick="$('#thumbnail').trigger('click');">
-                                        <input id="thumbnail" name="thumbnail" class="form-control d-none" type="file"
-                                            onchange="$('#thumbnail_name').val(this.files[0].name)"
-                                            accept=".jpg, .jpeg, .png">
-                                    </div>
+                                <div class="form-group">
+                                    <label for="start_date">Tanggal Mulai <code>*</code></label>
+                                    <input id="start_date" name="start_date" type="date" class="form-control"
+                                        placeholder="" value="{{ $pengakuan->start_date }}" required>
                                 </div>
                             </div>
-
                             <div class="col-md-6 mt-2">
                                 <div class="form-group">
-                                    <label for="is_visible">{{ __('Visibilitas') }}
-                                        <code>*</code></label>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="visibility" id="public"
-                                            value="public" @if ($pengetahuan->visibility == 'public') checked @endif>
-                                        <label class="form-check-label" for="public">
-                                            {{ __('Public') }}
-                                        </label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="visibility" id="internal"
-                                            value="internal" @if ($pengetahuan->visibility == 'internal') checked @endif>
-                                        <label class="form-check-label" for="internal">
-                                            {{ __('Internal') }}
-                                        </label>
-                                    </div>
+                                    <label for="end_date">Tanggal Selesai <code>*</code></label>
+                                    <input id="end_date" name="end_date" type="date" class="form-control" placeholder=""
+                                        value="{{ $pengakuan->end_date }}" required>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2" id="file-upload-field">
+                            <div class="col-md-12 mt-2" id="file-upload-field2">
                                 <div class="form-group">
-                                    <label for="file">{{ __('Upload Dokumen Materi') }}
-                                        <code>*</code></label>
+                                    <label for="file">Unggah Laporan Pengembangan Kompetensi <code>*</code></label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1"
-                                            onclick="$('#file').trigger('click');">
-                                            <a data-input="file" data-preview="holder">
+                                            onclick="$('#report_file').trigger('click');">
+                                            <a data-input="report_file" data-preview="holder">
                                                 <i class="fa fa-picture-o"></i> {{ __('Choose') }}
                                             </a>
                                         </span>
-                                        <input id="file_name" readonly class="form-control" type="text"
-                                            name="file_name" value="{{ $pengetahuan->file }}"
-                                            onclick="$('#file').trigger('click');">
-                                        <input id="file" name="file" class="form-control d-none" type="file"
-                                            onchange="$('#file_name').val(this.files[0].name)" accept=".pdf">
+                                        <input id="report_file_label" readonly class="form-control" type="text"
+                                            name="report_file_label" value="{{ $pengakuan->report_file }}"
+                                            onclick="$('#report_file').trigger('click');">
+                                        <input id="report_file" name="report_file" class="form-control d-none"
+                                            type="file" onchange="$('#report_file_label').val(this.files[0].name)"
+                                            accept=".pdf">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2" id="link-field">
+                            <div class="col-md-4 mt-2">
                                 <div class="form-group">
-                                    <label for="link">{{ __('Link Materi') }}
-                                        <code>*</code></label>
-                                    <input id="link" name="link" type="url" class="form-control"
-                                        placeholder="example" value="{{ $pengetahuan->link }}">
+                                    <label for="certificate_number">Nomor Sertifikat <code>*</code></label>
+                                    <input id="certificate_number" name="certificate_number" type="text"
+                                        class="form-control" placeholder="" value="{{ $pengakuan->certificate_number }}"
+                                        required>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2">
+                            <div class="col-md-4 mt-2">
                                 <div class="form-group">
-                                    <label for="description">{{ __('description') }}
-                                        <code>*</code></label>
-                                    <textarea name="description" class="text-editor form-control summernote">{{ $pengetahuan->description }}</textarea>
+                                    <label for="certificate_date">Tanggal Sertifikat <code>*</code></label>
+                                    <input id="certificate_date" name="certificate_date" type="date" class="form-control"
+                                        value="{{ $pengakuan->certificate_date }}" required>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2">
+                            <div class="col-md-4 mt-2">
                                 <div class="form-group">
-                                    <label for="content">{{ __('Content') }}
-                                        <code>*</code></label>
-                                    <textarea name="content" class="text-editor form-control summernote">{{ $pengetahuan->content }}</textarea>
+                                    <label for="jp">Jumlah Jam Pelajaran <code>*</code></label>
+                                    <input id="jp" name="jp" type="number" class="form-control"
+                                        placeholder="Jika tidak ada, silakan tulis 0" value="{{ $pengakuan->jp }}"
+                                        required>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2">
+                            <div class="col-md-6 mt-2">
                                 <div class="form-group">
-                                    <label for="Tags">{{ __('Tags') }}</label>
-                                    <select class="select2" name="tags[]" multiple="multiple">
-                                        @foreach ($tags as $tag)
-                                            <option value="{{ $tag->name }}"
-                                                @if ($pengetahuan->articleTags->contains('name', $tag->name)) selected @endif>
-                                                {{ $tag->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <label for="official_position">Jabatan Pejabat yang mengeluarkan <code>*</code></label>
+                                    <input id="official_position" name="official_position" type="text"
+                                        class="form-control" placeholder="" value="{{ $pengakuan->official_position }}"
+                                        required>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2 mb-4">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="allow_comments"
-                                        id="allow_comments" @if ($pengetahuan->allow_comments) checked @endif>
-                                    <label class="form-check-label" for="allow_comments">
-                                        {{ __('Allow Comment') }}
-                                    </label>
+                            <div class="col-md-6 mt-2">
+                                <div class="form-group">
+                                    <label for="graduation_predicate">Predikat Kelulusan <code>*</code></label>
+                                    <input id="graduation_predicate" name="graduation_predicate" type="text"
+                                        class="form-control" placeholder="Jika tidak ada, silakan isi dengan tanda -"
+                                        value="{{ $pengakuan->graduation_predicate }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-2" id="file-upload-field3">
+                                <div class="form-group">
+                                    <label for="file">Unggah Sertifikat <code>*</code></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1"
+                                            onclick="$('#certificate_file').trigger('click');">
+                                            <a data-input="certificate_file" data-preview="holder">
+                                                <i class="fa fa-picture-o"></i> {{ __('Choose') }}
+                                            </a>
+                                        </span>
+                                        <input id="certificate_file_label" readonly class="form-control" type="text"
+                                            name="certificate_file_label" value="{{ $pengakuan->certificate_file }}"
+                                            onclick="$('#certificate_file').trigger('click');">
+                                        <input id="certificate_file" name="certificate_file" class="form-control d-none"
+                                            type="file" onchange="$('#certificate_file_label').val(this.files[0].name)"
+                                            accept=".pdf">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt-2" id="file-upload-field4">
+                                <div class="form-group">
+                                    <label for="file">Unggah Piagam Penghargaan / Sejenisnya</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1"
+                                            onclick="$('#award_file').trigger('click');">
+                                            <a data-input="award_file" data-preview="holder">
+                                                <i class="fa fa-picture-o"></i> {{ __('Choose') }}
+                                            </a>
+                                        </span>
+                                        <input id="award_file_label" readonly class="form-control" type="text"
+                                            name="award_file_label" value="{{ $pengakuan->award_file }}"
+                                            onclick="$('#award_file').trigger('click');">
+                                        <input id="award_file" name="award_file" class="form-control d-none"
+                                            type="file" onchange="$('#award_file_label').val(this.files[0].name)"
+                                            accept=".pdf">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div class="d-flex justify-content-between">
-                    <button class="btn btn-primary" form="update-form" type="submit">{{ __('Save') }}</button>
-                    <form id="delete-form" action="{{ route('student.pengetahuan.destroy', $pengetahuan->slug) }}"
+                <div class="mt-3 d-flex justify-content-between">
+                    <form id="delete-form" action="{{ route('student.pengakuan-sertifikat.destroy', $pengakuan->id) }}"
                         method="POST">
                         @csrf
                         @method('DELETE')
                         <button class="btn bg-danger text-white" type="button"
-                            onclick="deletePengetahuan()">{{ __('Hapus') }}</button>
+                            onclick="deletePengakuanSertifikat()">{{ __('Hapus') }}</button>
                     </form>
+                    <button class="btn btn-primary" form="update-form" type="submit">{{ __('Save') }}</button>
                 </div>
             </div>
         </div>
@@ -186,31 +173,10 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
-            // Hide the file upload field and link field by default
-            $("#file-upload-field").hide();
-            $("#link-field").hide();
-
-            // Show/hide fields based on the selected category
-            $("input[name='category']").change(function() {
-                if ($("#document").is(":checked")) {
-                    $("#file-upload-field").show();
-                } else {
-                    $("#file-upload-field").hide();
-                }
-
-                if ($("#video").is(":checked")) {
-                    $("#link-field").show();
-                } else {
-                    $("#link-field").hide();
-                }
-            }).trigger('change');
-        });
-
-        function deletePengetahuan() {
+        function deletePengakuanSertifikat() {
             swal.fire({
-                title: "Apakah kamu yakin ingin menghapus pengetahuan ini?",
-                text: "Anda tidak dapat mengembalikan pengetahuan ini!",
+                title: "Apakah kamu yakin ingin menghapus pengakuan sertifikat ini?",
+                text: "Anda tidak dapat mengembalikan pengakuan sertifikat ini!",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "##5751e1",

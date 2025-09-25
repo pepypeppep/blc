@@ -3,10 +3,33 @@
 namespace Modules\Coaching\app\Models;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Coaching\Database\factories\CoachingFactory;
 
+/**
+ * @property int $id
+ * @property string $uuid
+ * @property string $title
+ * @property string $goal
+ * @property string $reality
+ * @property string $option
+ * @property string $way_forward
+ * @property string $success_indicator
+ * @property int $total_session
+ * @property int $coach_id
+ * @property string $status
+ * @property string $created_at
+ * @property string $updated_at
+ * @property ?User $coach
+ * @property CoachingSession[] $coachingSessions
+ * @property User[] $coachees
+ * @property User[] $joinedCoachees
+ * @property User[] $respondedCoachees
+ * @property Collection<int, CoachingSigner> $signers
+ * @property string $stat
+ */
 class Coaching extends Model
 {
     use HasFactory;
@@ -45,6 +68,13 @@ class Coaching extends Model
             ->withPivot(['id', 'is_joined', 'joined_at', 'notes', 'final_report'])
             ->withTimestamps()
             ->wherePivotNotNull('is_joined');
+    }
+
+    public function completedCoachingUsers()
+    {
+        return $this->hasMany(CoachingUser::class)
+            ->whereNotNull('is_joined')
+            ->whereNotNull('final_report');
     }
 
     public function coach()

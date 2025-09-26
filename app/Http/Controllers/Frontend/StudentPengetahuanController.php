@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Frontend\StudentPelatihanStoreRequest;
-use App\Http\Requests\Frontend\StudentPelatihanUpdateRequest;
 use App\Models\Tag;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use Modules\Article\app\Models\Article;
 use Modules\Order\app\Models\Enrollment;
+use App\Http\Requests\Frontend\StudentPelatihanStoreRequest;
+use App\Http\Requests\Frontend\StudentPelatihanUpdateRequest;
+use Modules\CertificateRecognition\app\Models\PersonalCertificateRecognition;
 
 class StudentPengetahuanController extends Controller
 {
@@ -41,9 +42,13 @@ class StudentPengetahuanController extends Controller
             return $enrollment->course->iscompleted();
         });
 
+        $alreadyTakenCertificates = $articles->pluck('personal_certificate_recognition_id')->whereNotNull()->unique()->values()->toArray();
+        $certificateRecognitions = PersonalCertificateRecognition::where('user_id', auth()->user()->id)
+            ->whereNotIn('id', $alreadyTakenCertificates)
+            ->where('status', 'pending')->get();
 
         $tags = Tag::all();
-        return view('frontend.student-dashboard.pengetahuan.create', compact('completedCourses', 'tags'));
+        return view('frontend.student-dashboard.pengetahuan.create', compact('completedCourses', 'tags', 'certificateRecognitions'));
     }
 
     public function store(StudentPelatihanStoreRequest $request)
@@ -67,6 +72,7 @@ class StudentPengetahuanController extends Controller
             'author_id' => userAuth()->id,
             'category' => $request->category,
             'enrollment_id' => $request->enrollment != null ? $enrollment->id : null,
+            'personal_certificate_recognition_id' => $request->certificateRecognition ?? null,
             'title' => $request->title,
             'description' => $request->description,
             'visibility' => $request->visibility,

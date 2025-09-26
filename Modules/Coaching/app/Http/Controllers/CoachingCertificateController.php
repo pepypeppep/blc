@@ -158,12 +158,14 @@ class CoachingCertificateController extends Controller
 
 
         // Load file content
-        $htmlTemplate = Storage::disk('templates')->get("certificate-blue-corporate-1-sig.html");
 
 
         $sessions = $coaching->coachingSessions;
         foreach ($coachingUsers as $coachingUserPivot) {
             $coachingUser = $coachingUserPivot->coachee;
+
+            $htmlTemplate = Storage::disk('templates')->get("certificate-blue-corporate-1-sig.html");
+
 
             $now = now();
             $page1QrcodeURL =  route('public.certificate', ['uuid' => $coaching->id]);
@@ -195,9 +197,10 @@ class CoachingCertificateController extends Controller
             $htmlTemplate = str_replace(array_keys($page1Data), array_values($page1Data), $htmlTemplate);
 
 
-            // return html to browser
+
             // return response($htmlTemplate)
             //     ->header('Content-Type', 'text/html');
+
 
             $pdf1Data = Pdf::loadHTML($htmlTemplate)
                 ->setPaper('A4', 'landscape')
@@ -276,11 +279,11 @@ class CoachingCertificateController extends Controller
 
             // TODO: disable this on production
             // return PDF directly
-            return response($output, 200)
-                ->header('Content-Type', 'application/pdf');
+            // return response($output, 200)
+            //     ->header('Content-Type', 'application/pdf');
         }
 
-        // return redirect()->route('admin.coaching.show', $coaching->id)->with(['messege' => __('Certificate generated successfully'), 'alert-type' => 'success']);
+        return redirect()->route('admin.coaching.show', $coaching->id)->with(['messege' => __('Certificate generated successfully'), 'alert-type' => 'success']);
     }
 
     // download certificate

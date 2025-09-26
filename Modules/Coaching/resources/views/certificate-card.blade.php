@@ -31,6 +31,8 @@
          {{-- Kirim ke Bantara --}}
          <a href="{{ route('admin.coaching.certificate.send', $coaching->id) }}"
              class="btn btn-primary mt-3">{{ __('Send to Bantara') }}</a>
+         {{-- Batalkan TTE --}}
+         <a href="#" class="btn btn-danger mt-3">{{ __('Cancel TTE Bantara') }}</a>
 
          {{-- table list sertifikat --}}
          {{-- column name, link for download --}}

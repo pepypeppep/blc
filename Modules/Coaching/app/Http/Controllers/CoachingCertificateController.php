@@ -156,52 +156,59 @@ class CoachingCertificateController extends Controller
         $frontSigner = $coachingSigners->where('step', 1)->first()->user;
         $backSigner = $coachingSigners->where('step', 2)->first()->user;
 
+
+        // Load file content
+        $htmlTemplate = Storage::disk('templates')->get("certificate-blue-corporate-1-sig.html");
+
+
         $sessions = $coaching->coachingSessions;
         foreach ($coachingUsers as $coachingUserPivot) {
             $coachingUser = $coachingUserPivot->coachee;
 
             $now = now();
-            $cover1Base64 = null;
-            if (filled($certificateBuilder->background)) {
-                if (!Storage::disk('private')->exists($certificateBuilder->background)) {
-                    return redirect()->back()->with(['messege' => __('Certificate background not found'), 'alert-type' => 'error']);
-                }
-                $cover1Base64 = base64_encode(file_get_contents(Storage::disk('private')->path($certificateBuilder->background)));
-            }
+            $page1QrcodeURL =  route('public.certificate', ['uuid' => $coaching->id]);
 
-
-            $qrCodePublicURL =   route('public.certificate', ['uuid' => $coaching->id]);
-
-            $qrcodeData = QrCode::format('png')->size(200)
+            $page1Qrcode = QrCode::format('png')->size(200)
                 ->merge('/public/backend/img/logobantul.png')
-                ->generate($qrCodePublicURL);
-            $qrcodeData = 'data:image/png;base64,' . base64_encode($qrcodeData);
+                ->generate($page1QrcodeURL);
 
-            $page1Html = view('frontend.student-dashboard.certificate.index', [
-                'certificateItems' => $certificateBuilder->items,
-                'certificate' => $certificateBuilder,
-                'cover1Base64' => $cover1Base64,
-                'qrcodeData' => $qrcodeData
-            ])->render();
+            $page1Data = [
+                '[participant_name]' => $coachingUser->name,
+                '[program_name]' => $coaching->title,
+                '[program_start_date]' => $coaching->start_date,
+                '[program_end_date]' => $coaching->end_date,
+                '[completion_date]' => $coachingUserPivot->completed_date,
+                '[signer_1_name]' => $frontSigner->name,
+                '[signer_1_jabatan]' => $frontSigner->jabatan,
+                '[signer_1_nip]' => $frontSigner->nip,
+                '[signer_2_name]' => $backSigner->name,
+                '[signer_2_jabatan]' => $backSigner->jabatan,
+                '[signer_2_nip]' => $backSigner->nip,
+                '[signer_3_name]' => $backSigner->name,
+                '[signer_3_jabatan]' => $backSigner->jabatan,
+                '[signer_3_nip]' => $backSigner->nip,
+                '[certification_number]' => $coaching->id,
+                '[qrcode_data]' =>  'data:image/png;base64,' . base64_encode($page1Qrcode),
+                '[organization_name]' => "Badan Kepegawaian Daerah Kabupaten Bantul"
+            ];
 
-            $page1Html = str_replace('[student_name]', $coachingUser->name, $page1Html);
-            $page1Html = str_replace('[platform_name]', Cache::get('setting')->app_name, $page1Html);
-            $page1Html = str_replace('[course]', $coaching->title, $page1Html);
-            // $page1Html = str_replace('[date]', formatDate($completed_date), $page1Html);
-            $page1Html = str_replace('[instructor_name]', $coaching->coach->name, $page1Html);
-
-            //     $signer1 = $course->signers()->where('step', 1)->first()->user;
+            $htmlTemplate = str_replace(array_keys($page1Data), array_values($page1Data), $htmlTemplate);
 
 
-            $page1Html = str_replace('[tanggal_sertifikat]', sprintf('Bantul, %s %s %s', now()->day, now()->monthName, now()->year), $page1Html);
-            $page1Html = str_replace('[nama_jabatan]', $frontSigner->jabatan, $page1Html);
-            $page1Html = str_replace('[nama_kepala_opd]',  $frontSigner->name, $page1Html);
-            $page1Html = str_replace('[nama_golongan]', $frontSigner->golongan, $page1Html);
-            $page1Html = str_replace('[nip]',  $frontSigner->nip, $page1Html);
+            // return html to browser
+            // return response($htmlTemplate)
+            //     ->header('Content-Type', 'text/html');
 
-            $pdf1Data = Pdf::loadHTML($page1Html)
-                ->setPaper('A4', 'landscape')->setWarnings(false)->output();
+            $pdf1Data = Pdf::loadHTML($htmlTemplate)
+                ->setPaper('A4', 'landscape')
+                ->output();
+
             Log::info('render pdf 1 took ' . now()->diffInMilliseconds($now, true) . ' ms');
+
+
+            // return PDF directly
+            // return response($pdf1Data, 200)
+            //     ->header('Content-Type', 'application/pdf');
 
             //=========
             // page2
@@ -209,27 +216,42 @@ class CoachingCertificateController extends Controller
             $now = now();
             $cover2Base64 = null;
 
-            $qrcodeData2 = QrCode::format('png')->size(200)
+            $page2Qrcode = QrCode::format('png')->size(200)
                 ->merge('/public/backend/img/logobantul.png')
-                ->generate($qrCodePublicURL);
+                ->generate($page1QrcodeURL);
 
-            $qrcodeData2 = 'data:image/png;base64,' . base64_encode($qrcodeData2);
+            $sessionData = [
+                (object) ['title' => 'Dasar-dasar Kepemimpinan dan Manajemen Tim', 'jp' => 8],
+                (object) ['title' => 'Keterampilan Komunikasi dan Public Speaking', 'jp' => 6],
+                (object) ['title' => 'Perencanaan Strategis dan Penetapan Tujuan', 'jp' => 10],
+                (object) ['title' => 'Resolusi Konflik dan Negosiasi', 'jp' => 5],
+                (object) ['title' => 'Manajemen Kinerja dan Umpan Balik', 'jp' => 7],
+                (object) ['title' => 'Manajemen Perubahan dan Pengembangan Organisasi', 'jp' => 9],
+                (object) ['title' => 'Manajemen Waktu dan Peningkatan Produktivitas', 'jp' => 4],
+                (object) ['title' => 'Kecerdasan Emosional dan Kesadaran Diri', 'jp' => 6],
+            ];
 
-
-            $page2Html = view('coaching::certiticate-summary', [
+            $page2Data = [
                 'coaching' => $coaching,
                 'certificateItems' => $certificateBuilder->items,
                 'certificate' => $certificateBuilder,
                 'courseChapers' => [],
                 'cover2Base64' => $cover2Base64,
-                'qrcodeData2' => $qrcodeData2
-            ])->render();
+                'qrcodeData2' => 'data:image/png;base64,' . base64_encode($page2Qrcode),
+                'sessions' => $sessionData,
+            ];
 
-            $page2Html = str_replace('[tanggal_sertifikat]', sprintf('Bantul, %s %s %s', now()->day, now()->monthName, now()->year), $page2Html);
-            $page2Html = str_replace('[nama_jabatan]', $backSigner->jabatan, $page2Html);
-            $page2Html = str_replace('[nama_kepala_opd]',  $backSigner->name, $page2Html);
-            $page2Html = str_replace('[nama_golongan]', $backSigner->golongan, $page2Html);
-            $page2Html = str_replace('[nip]',  $backSigner->nip, $page2Html);
+            $page2Html = view('coaching::certificate.certiticate-summary', $page2Data)->render();
+
+            $page2Data = [
+                '[tanggal_sertifikat]' => sprintf('Bantul, %s %s %s', now()->day, now()->monthName, now()->year),
+                '[nama_jabatan]' => $backSigner->jabatan,
+                '[nama_kepala_opd]' =>  $backSigner->name,
+                '[nama_golongan]' => $backSigner->golongan,
+                '[nip]' =>  $backSigner->nip,
+            ];
+
+            $page2Html = str_replace(array_keys($page2Data), array_values($page2Data), $page2Html);
 
             $pdf2Data = Pdf::loadHTML($page2Html)
                 ->setPaper('A4', 'portrait')->setWarnings(false)->output();
@@ -254,13 +276,11 @@ class CoachingCertificateController extends Controller
 
             // TODO: disable this on production
             // return PDF directly
-            // return response($output, 200)
-            //     ->header('Content-Type', 'application/pdf');
-
-
+            return response($output, 200)
+                ->header('Content-Type', 'application/pdf');
         }
 
-        return redirect()->route('admin.coaching.show', $coaching->id)->with(['messege' => __('Certificate generated successfully'), 'alert-type' => 'success']);
+        // return redirect()->route('admin.coaching.show', $coaching->id)->with(['messege' => __('Certificate generated successfully'), 'alert-type' => 'success']);
     }
 
     // download certificate

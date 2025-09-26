@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sertifikat Coaching - Blue Gradient</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+            padding: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #fff;
+            color: #ffffff;
+        }
+
+        .certificate {
+            width: 1123px;
+            height: 794px;
+            position: relative;
+            background: #4a90e2;
+            border: 5px solid #ffffff;
+            overflow: hidden;
+        }
+
+        .certificate::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><circle cx="20" cy="20" r="3" fill="%23ffffff" opacity="0.1"/><circle cx="60" cy="60" r="2" fill="%23ffffff" opacity="0.08"/><circle cx="40" cy="40" r="1.5" fill="%23ffffff" opacity="0.06"/></svg>') repeat;
+            background-size: 80px 80px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 70px 90px;
+            height: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .logo-placeholder {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            color: #2c5aa0;
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            letter-spacing: 3px;
+        }
+
+        .organization {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .main-content {
+            text-align: center;
+            padding: 0 100px;
+        }
+
+        .certificate-text {
+            font-size: 22px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 300;
+        }
+
+        .participant-name {
+            font-size: 42px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 35px 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .participant-name::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .program-details {
+            font-size: 20px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 25px;
+        }
+
+        .program-details strong {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .completion-date {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 25px;
+            font-style: italic;
+        }
+
+        .signatures {
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .signature-block {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .signature-line {
+            width: 160px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.8);
+            margin: 15px 0 8px 0;
+        }
+
+        .signature-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+
+        .signature-title {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 3px;
+        }
+
+        .signature-nip {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 2px;
+        }
+
+        .gradient-border {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            opacity: 0.6;
+        }
+
+        .inner-gradient-border {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            right: 30px;
+            bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0.4;
+        }
+
+        .corner-circle {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .corner-circle.top-left {
+            top: 40px;
+            left: 40px;
+        }
+
+        .corner-circle.top-right {
+            top: 40px;
+            right: 40px;
+        }
+
+        .corner-circle.bottom-left {
+            bottom: 40px;
+            left: 40px;
+        }
+
+        .corner-circle.bottom-right {
+            bottom: 40px;
+            right: 40px;
+        }
+
+        .seal {
+            position: absolute;
+            bottom: 80px;
+            right: 80px;
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            color: #2c5aa0;
+            font-weight: bold;
+            font-size: 11px;
+            text-align: center;
+            line-height: 90px;
+        }
+
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .signature-table td {
+            width: 33.33%;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .certification-id {
+            position: absolute;
+            top: 40px;
+            right: 90px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .wave-pattern {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 100"><path d="M0 50 Q300 0 600 50 T1200 50 V100 H0 Z" fill="rgba(255,255,255,0.05)"/></svg>') no-repeat center;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <div class="gradient-border"></div>
+        <div class="inner-gradient-border"></div>
+        <div class="corner-circle top-left"></div>
+        <div class="corner-circle top-right"></div>
+        <div class="corner-circle bottom-left"></div>
+        <div class="corner-circle bottom-right"></div>
+        <div class="wave-pattern"></div>
+
+        <div class="content">
+            <div class="certification-id">[NOMOR SERTIFIKAT]</div>
+
+            <div class="header">
+                <div class="logo-placeholder">LOGO</div>
+                <div class="title">Sertifikat</div>
+                <div class="subtitle">Program Coaching</div>
+                <div class="organization">Badan Kepegawaian dan Pengembangan Sumber Daya Manusia</div>
+            </div>
+
+            <div class="main-content">
+                <div class="certificate-text">
+                    Dengan bangga menyatakan bahwa:
+                </div>
+
+                <div class="participant-name">
+                    [Nama Peserta]
+                </div>
+
+                <div class="program-details">
+                    Telah berhasil menyelesaikan Program Coaching<br>
+                    <strong>[Nama Program Coaching]</strong><br>
+                    yang diselenggarakan pada periode [Tanggal Mulai] hingga [Tanggal Selesai]
+                </div>
+
+                <div class="completion-date">
+                    Dikeluarkan pada: [Tanggal Dikeluarkan]
+                </div>
+            </div>
+
+            <div class="signatures">
+                <table class="signature-table">
+                    <tr>
+                        <td>
+                            <div class="signature-block">
+                                <div class="signature-line"></div>
+                                <div class="signature-name">[Nama Penandatangan 1]</div>
+                                <div class="signature-title">[Jabatan Penandatangan 1]</div>
+                                <div class="signature-nip">NIP: [NIP Penandatangan 1]</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="signature-block">
+                                <div class="signature-line"></div>
+                                <div class="signature-name">[Nama Penandatangan 2]</div>
+                                <div class="signature-title">[Jabatan Penandatangan 2]</div>
+                                <div class="signature-nip">NIP: [NIP Penandatangan 2]</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="signature-block">
+                                <div class="signature-line"></div>
+                                <div class="signature-name">[Nama Penandatangan 3]</div>
+                                <div class="signature-title">[Jabatan Penandatangan 3]</div>
+                                <div class="signature-nip">NIP: [NIP Penandatangan 3]</div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="seal">STEMPEL<br>RESMI</div>
+    </div>
+</body>
+</html>

@@ -110,6 +110,10 @@
                                                         @endif
                                                     </td>
                                                     <td>
+                                                        <a href="{{ route('admin.impersonate', $user->id) }}"
+                                                            class="btn btn-primary btn-sm"><i
+                                                                class="fas fa-user-shield"></i></a>
+
                                                         <a href="{{ route('admin.customer-show', $user->id) }}"
                                                             class="btn btn-success btn-sm"><i class="fas fa-eye"></i></a>
 

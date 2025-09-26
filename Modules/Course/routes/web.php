@@ -73,6 +73,7 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
     Route::get('courses/create', [CourseController::class, 'create'])->name('courses.create');
     Route::get('courses/create/{id}/step/{step?}', [CourseController::class, 'edit'])->name('courses.edit');
+    Route::get('courses/{id}/show', [CourseController::class, 'show'])->name('courses.show');
     Route::get('courses/{id}/edit', [CourseController::class, 'editView'])->name('courses.edit-view');
 
     Route::get('courses/get-instructors', [CourseController::class, 'getInstructors'])->name('courses.get-instructors');

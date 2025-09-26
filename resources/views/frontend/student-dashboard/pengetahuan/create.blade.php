@@ -42,15 +42,41 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2">
+                            <div class="col-md-12 mt-2 alert alert-warning">
                                 <div class="form-group">
                                     <label for="enrollment">Pelatihan</label>
-                                    <select name="enrollment" class="form-control select2">
+                                    <select id="enrollment" name="enrollment" class="form-control select2">
                                         <option value="">{{ __('Select') }}</option>
                                         @foreach ($completedCourses as $enrollment)
-                                            <option value="{{ $enrollment->id }}"@if (old('enrollment') == $enrollment->id) selected @endif>{{ $enrollment->course->title }}</option>
+                                            <option
+                                                value="{{ $enrollment->id }}"@if (old('enrollment') == $enrollment->id) selected @endif>
+                                                {{ $enrollment->course->title }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="certificateRecognition">Pengakuan Sertifikat</label>
+                                    <select id="certificateRecognition" name="certificateRecognition"
+                                        class="form-control select2">
+                                        <option value="">{{ __('Select') }}</option>
+                                        @foreach ($certificateRecognitions as $certificate)
+                                            <option
+                                                value="{{ $certificate->id }}"@if (old('enrollment') == $certificate->id) selected @endif>
+                                                {{ $certificate->title }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="mt-3">
+                                    <small><code>*</code>Jika Anda memilih pelatihan, maka akan dikaitkan ke pelatihan yang
+                                        dipilih.
+                                        <br><code>*</code>Jika Anda memilih pengakuan sertifikat, maka akan dikaitkan ke
+                                        pengakuan
+                                        sertifikat
+                                        yang dipilih.
+                                        <br><code>*</code>Tidak dapat memilih keduanya dalam satu waktu.
+                                        <br><code>*</code>Jika Anda hanya ingin membuat materi pengetahuan, maka tidak perlu
+                                        memilih pelatihan atau pengakuan sertifikat.
+                                    </small>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2">
@@ -114,8 +140,7 @@
                                         <input id="file_name" readonly class="form-control" type="text"
                                             name="file_name" value="#" onclick="$('#file').trigger('click');">
                                         <input id="file" name="file" class="form-control d-none" type="file"
-                                            onchange="$('#file_name').val(this.files[0].name)"
-                                            accept=".pdf">
+                                            onchange="$('#file_name').val(this.files[0].name)" accept=".pdf">
                                     </div>
                                 </div>
                             </div>
@@ -131,14 +156,22 @@
                                 <div class="form-group">
                                     <label for="description">{{ __('Description') }}
                                         <code>*</code></label>
-                                    <textarea name="description" class="text-editor form-control summernote">@if (old('description')){{ old('description') }}@endif</textarea>
+                                    <textarea name="description" class="text-editor form-control summernote">
+@if (old('description'))
+{{ old('description') }}
+@endif
+</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
                                     <label for="content">{{ __('Content') }}
                                         <code>*</code></label>
-                                    <textarea name="content" class="text-editor form-control summernote">@if (old('content')){{ old('content') }}@endif</textarea>
+                                    <textarea name="content" class="text-editor form-control summernote">
+@if (old('content'))
+{{ old('content') }}
+@endif
+</textarea>
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2">
@@ -192,6 +225,21 @@
                     $("#link-field").hide();
                 }
             }).trigger('change');
+
+            $("#enrollment").select2({
+                placeholder: "Pilih pelatihan",
+            });
+            $("#certificateRecognition").select2({
+                placeholder: "Pilih pengakuan sertifikat",
+            });
+
+            $("#enrollment").on('select2:select', function() {
+                $("#certificateRecognition").val('').trigger('change.select2');
+            });
+
+            $("#certificateRecognition").on('select2:select', function() {
+                $("#enrollment").val('').trigger('change.select2');
+            });
         });
     </script>
 @endpush

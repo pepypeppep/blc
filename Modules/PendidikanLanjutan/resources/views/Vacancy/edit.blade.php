@@ -53,8 +53,7 @@
                                     <div class="card-header d-flex justify-content-between">
                                         <h4>{{ __('Update Vacancy') }}</h4>
                                         <div>
-                                            <a href="{{ route('admin.vacancies.index') }}"
-                                                class="btn btn-primary"><i
+                                            <a href="{{ route('admin.vacancies.index') }}" class="btn btn-primary"><i
                                                     class="fa fa-arrow-left"></i>{{ __('Back') }}</a>
                                         </div>
                                     </div>
@@ -65,8 +64,10 @@
                                             <div class="row mb-3">
                                                 <div class="col-md-8 row px-0 offset-md-2">
                                                     <div class="form-group col-md-8">
-                                                        <label>{{ __('Instansi') }} <span class="text-danger">*</span></label>
-                                                        <select name="instansi_id" class="form-control select2" id="instansi_id">
+                                                        <label>{{ __('Instansi') }} <span
+                                                                class="text-danger">*</span></label>
+                                                        <select name="instansi_id" class="form-control select2"
+                                                            id="instansi_id">
                                                             <option value="">Pilih Instansi</option>
                                                             @foreach ($instansi as $in)
                                                                 <option value="{{ $in->id }}"
@@ -81,8 +82,9 @@
                                                     <div class="form-group col-md-4">
                                                         <label for="employee_grade_id">{{ __('Employment Grade') }} <span
                                                                 class="text-danger">*</span></label>
-                                                        <select name="employee_grade_id" class="form-control select2" id="employee_grade_id">
-                                                            @foreach($employeeGrades as $grade)
+                                                        <select name="employee_grade_id" class="form-control select2"
+                                                            id="employee_grade_id">
+                                                            @foreach ($employeeGrades as $grade)
                                                                 <option value="{{ $grade->id }}"
                                                                     {{ $vacancy->employee_grade_id == $grade->id ? 'selected' : '' }}>
                                                                     {{ $grade->name }}
@@ -96,8 +98,10 @@
                                                 </div>
                                                 <div class="col-md-8 row px-0 offset-md-2">
                                                     <div class="form-group col-md-8">
-                                                        <label>{{ __('Study') }} <span class="text-danger">*</span></label>
-                                                        <select name="study_id" class="form-control select2" id="study_id">
+                                                        <label>{{ __('Study') }} <span
+                                                                class="text-danger">*</span></label>
+                                                        <select name="study_id" class="form-control select2"
+                                                            id="study_id">
                                                             <option value="">Pilih Program Studi</option>
                                                             @foreach ($studies as $study)
                                                                 <option value="{{ $study->id }}"
@@ -139,12 +143,15 @@
                                                 </div>
                                                 <div class="col-md-8 row px-0 offset-md-2">
                                                     <div class="form-group col-md-4">
-                                                        <label for="education_requirements">{{ __('Education Requirements') }} <span
-                                                                class="text-danger">*</span></label>
-                                                        <select name="education_requirements[]" multiple="multiple" class="form-control select2"
-                                                            id="education_requirements">
+                                                        <label
+                                                            for="education_requirements">{{ __('Education Requirements') }}
+                                                            <span class="text-danger">*</span></label>
+                                                        <select name="education_requirements[]" multiple="multiple"
+                                                            class="form-control select2" id="education_requirements">
                                                             @foreach (['SD', 'SMP', 'SMA', 'D-1', 'D-2', 'D-3', 'D-4', 'S-1', 'S-2', 'S-3'] as $sch)
-                                                            <option value="{{ $sch }}" {{ $vacancy->education_requirements && in_array($sch, json_decode($vacancy->education_requirements)) ? 'selected' : '' }}>{{ $sch}}</option>
+                                                                <option value="{{ $sch }}"
+                                                                    {{ $vacancy->education_requirements && in_array($sch, json_decode($vacancy->education_requirements)) ? 'selected' : '' }}>
+                                                                    {{ $sch }}</option>
                                                             @endforeach
                                                         </select>
                                                         @error('education_requirements')
@@ -163,8 +170,8 @@
                                                     <div class="form-group col-md-4">
                                                         <label for="year">{{ __('Tahun') }} <span
                                                                 class="text-danger">*</span></label>
-                                                        <input type="number" name="year" id="year" class="form-control"
-                                                            value="{{ $vacancy->year }}">
+                                                        <input type="number" name="year" id="year"
+                                                            class="form-control" value="{{ $vacancy->year }}">
                                                         @error('year')
                                                             <span class="text-danger">{{ $message }}</span>
                                                         @enderror
@@ -195,25 +202,29 @@
                                     <div class="card-header d-flex justify-content-between">
                                         <h4>{{ __('Detail Vacancy') }}</h4>
                                         <div>
-                                            <a href="{{ route('admin.vacancies.index') }}"
-                                                class="btn btn-primary"><i
+                                            <a href="{{ route('admin.vacancies.index') }}" class="btn btn-primary"><i
                                                     class="fa fa-arrow-left"></i>{{ __('Back') }}</a>
                                         </div>
                                     </div>
                                     <div class="card-body">
-                                        <form action="{{ route('admin.vacancies.details.update', $vacancy->id) }}" method="POST">
+                                        <form action="{{ route('admin.vacancies.details.update', $vacancy->id) }}"
+                                            method="POST">
                                             @csrf
                                             @method('PUT')
                                             <div class="row mb-3" id="vacancy_details">
                                                 @foreach ($vacancy->details as $detail)
                                                     <div class="col-md-8 row px-0 offset-md-2">
                                                         <div class="form-group col-md-4">
-                                                            <label for="employment_status">{{ __('Employment Status') }} <span
-                                                                    class="text-danger">*</span></label>
-                                                            <select name="employment_status[]" class="form-control select2"
-                                                                id="employment_status">
-                                                                <option value="Tidak diberhentikan dari Jabatan" {{ $detail->employment_status == 'Tidak diberhentikan dari Jabatan' ? 'selected' : '' }}>Tidak diberhentikan dari Jabatan</option>
-                                                                <option value="Diberhentikan dari Jabatan" {{ $detail->employment_status == 'Diberhentikan dari Jabatan' ? 'selected' : '' }}>Diberhentikan dari Jabatan</option>
+                                                            <label for="employment_status">{{ __('Employment Status') }}
+                                                                <span class="text-danger">*</span></label>
+                                                            <select name="employment_status[]"
+                                                                class="form-control select2" id="employment_status">
+                                                                <option value="Tidak diberhentikan dari Jabatan"
+                                                                    {{ $detail->employment_status == 'Tidak diberhentikan dari Jabatan' ? 'selected' : '' }}>
+                                                                    Tidak diberhentikan dari Jabatan</option>
+                                                                <option value="Diberhentikan dari Jabatan"
+                                                                    {{ $detail->employment_status == 'Diberhentikan dari Jabatan' ? 'selected' : '' }}>
+                                                                    Diberhentikan dari Jabatan</option>
                                                             </select>
                                                             @error('employment_status')
                                                                 <span class="text-danger">{{ $message }}</span>
@@ -224,9 +235,15 @@
                                                                     class="text-danger">*</span></label>
                                                             <select name="cost_type[]" class="form-control select2"
                                                                 id="cost_type">
-                                                                <option value="APBD" {{ $detail->cost_type == 'APBD' ? 'selected' : '' }}>APBD</option>
-                                                                <option value="Non APBD" {{ $detail->cost_type == 'Non APBD' ? 'selected' : '' }}>Non APBD</option>
-                                                                <option value="Mandiri" {{ $detail->cost_type == 'Mandiri' ? 'selected' : '' }}>Mandiri</option>
+                                                                <option value="APBD"
+                                                                    {{ $detail->cost_type == 'APBD' ? 'selected' : '' }}>
+                                                                    APBD</option>
+                                                                <option value="Non APBD"
+                                                                    {{ $detail->cost_type == 'Non APBD' ? 'selected' : '' }}>
+                                                                    Non APBD</option>
+                                                                <option value="Mandiri"
+                                                                    {{ $detail->cost_type == 'Mandiri' ? 'selected' : '' }}>
+                                                                    Mandiri</option>
                                                             </select>
                                                             @error('cost_type')
                                                                 <span class="text-danger">{{ $message }}</span>
@@ -235,14 +252,16 @@
                                                         <div class="form-group col-md-3">
                                                             <label for="age_limit">{{ __('Age Limit') }} <span
                                                                     class="text-danger">*</span></label>
-                                                            <input type="number" name="age_limit[]" id="age_limit" class="form-control"
-                                                                value="{{ $detail->age_limit }}">
+                                                            <input type="number" name="age_limit[]" id="age_limit"
+                                                                class="form-control" value="{{ $detail->age_limit }}">
                                                             @error('age_limit')
                                                                 <span class="text-danger">{{ $message }}</span>
                                                             @enderror
                                                         </div>
-                                                        <div class="form-group col-md-1 d-flex flex-column justify-content-center" onclick="removeDetail(this)">
-                                                            <button type="button" class="btn btn-danger mx-auto" title="Hapus Detail">
+                                                        <div class="form-group col-md-1 d-flex flex-column justify-content-center"
+                                                            onclick="removeDetail(this)">
+                                                            <button type="button" class="btn btn-danger mx-auto"
+                                                                title="Hapus Detail">
                                                                 <i class="fas fa-times"></i>
                                                             </button>
                                                         </div>
@@ -252,7 +271,8 @@
 
                                             <div class="row">
                                                 <div class="text-center col-md-8 offset-md-2">
-                                                    <button type="button" class="btn btn-primary" onclick="addDetail()">Tambah Detail</button>
+                                                    <button type="button" class="btn btn-primary"
+                                                        onclick="addDetail()">Tambah Detail</button>
                                                     <x-admin.save-button :text="__('Save')"></x-admin.save-button>
                                                 </div>
                                             </div>
@@ -266,8 +286,7 @@
                                     <div class="card-header d-flex justify-content-between">
                                         <h4>{{ __('Vacancy Attachment') }}</h4>
                                         <div>
-                                            <a href="{{ route('admin.vacancies.index') }}"
-                                                class="btn btn-primary"><i
+                                            <a href="{{ route('admin.vacancies.index') }}" class="btn btn-primary"><i
                                                     class="fa fa-arrow-left"></i>{{ __('Back') }}</a>
                                         </div>
                                     </div>
@@ -282,6 +301,7 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th>Lampiran</th>
+                                                                    <th>Kategori</th>
                                                                     <th>Wajib <br> <small class="text-danger">(Tandai jika
                                                                             lampiran
                                                                             wajib)</small></th>
@@ -289,6 +309,14 @@
                                                             </thead>
                                                             <tbody>
                                                                 @foreach ($attachments as $att)
+                                                                    @php
+                                                                        $atm = \Modules\PendidikanLanjutan\app\Models\VacancyAttachment::where(
+                                                                            'vacancy_id',
+                                                                            $vacancy->id,
+                                                                        )
+                                                                            ->where('name', $att->name)
+                                                                            ->first();
+                                                                    @endphp
                                                                     <tr>
                                                                         <td>
                                                                             <div class="form-check">
@@ -299,7 +327,13 @@
                                                                                     name="attachments[{{ $att->id }}]"
                                                                                     value="{{ $att->id }}"
                                                                                     {{ \Modules\PendidikanLanjutan\app\Models\VacancyAttachment::where('vacancy_id', $vacancy->id)->where('name', $att->name)->exists() ? 'checked' : '' }}
-                                                                                    onchange="if (!this.checked) { $(this).closest('tr').find('#is_required{{ $att->id }}').prop('checked', false).prop('disabled', true); } else { $(this).closest('tr').find('#is_required{{ $att->id }}').prop('disabled', false); }">
+                                                                                    onchange="if (!this.checked) {
+    $(this).closest('tr').find('#is_required{{ $att->id }}').prop('checked', false).prop('disabled', true);
+    $(this).closest('tr').find('#category{{ $att->id }}').prop('required', false).prop('disabled', true);
+} else {
+    $(this).closest('tr').find('#is_required{{ $att->id }}').prop('disabled', false);
+    $(this).closest('tr').find('#category{{ $att->id }}').prop('required', true).prop('disabled', false);
+}">
                                                                                 <label
                                                                                     class="form-check-label cursor-pointer"
                                                                                     for="attachment{{ $att->id }}">
@@ -307,19 +341,38 @@
                                                                                 </label>
                                                                             </div>
                                                                         </td>
+                                                                        <td>
+                                                                            @if ($att->category == 'syarat')
+                                                                                <span
+                                                                                    class="badge badge-info">Syarat</span>
+                                                                            @elseif ($att->category == 'lampiran')
+                                                                                <span
+                                                                                    class="badge badge-primary">Lampiran</span>
+                                                                            @elseif ($att->category == 'aktivasi')
+                                                                                <span
+                                                                                    class="badge badge-warning">Aktivasi</span>
+                                                                            @endif
+                                                                            {{-- <select name="category[{{ $att->id }}]"
+                                                                                class="form-control select2"
+                                                                                id="category{{ $att->id }}">
+                                                                                <option value="">Pilih Kategori
+                                                                                </option>
+                                                                                <option value="syarat"
+                                                                                    {{ $atm?->category == 'syarat' ? 'selected' : '' }}>
+                                                                                    Syarat</option>
+                                                                                <option value="lampiran"
+                                                                                    {{ $atm?->category == 'lampiran' ? 'selected' : '' }}>
+                                                                                    Lampiran</option>
+                                                                                <option value="syarat"
+                                                                                    {{ $atm?->category == 'aktivasi' ? 'selected' : '' }}>
+                                                                                    Aktivasi</option>
+                                                                            </select> --}}
+                                                                        </td>
                                                                         <td class="text-center">
                                                                             <div class="form-check">
                                                                                 <input type="hidden"
                                                                                     name="is_required[{{ $att->id }}]"
                                                                                     value="0">
-                                                                                @php
-                                                                                    $atm = \Modules\PendidikanLanjutan\app\Models\VacancyAttachment::where(
-                                                                                        'vacancy_id',
-                                                                                        $vacancy->id,
-                                                                                    )
-                                                                                        ->where('name', $att->name)
-                                                                                        ->first();
-                                                                                @endphp
                                                                                 <input
                                                                                     class="form-check-input cursor-pointer"
                                                                                     id="is_required{{ $att->id }}"
@@ -350,14 +403,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade py-0" id="invite" role="tabpanel"
-                                aria-labelledby="invite-tab">
+                            <div class="tab-pane fade py-0" id="invite" role="tabpanel" aria-labelledby="invite-tab">
                                 <div class="card">
                                     <div class="card-header d-flex justify-content-between">
                                         <h4>{{ __('Direct Invite') }}</h4>
                                         <div>
-                                            <a href="{{ route('admin.vacancies.index') }}"
-                                                class="btn btn-primary"><i
+                                            <a href="{{ route('admin.vacancies.index') }}" class="btn btn-primary"><i
                                                     class="fa fa-arrow-left"></i>{{ __('Back') }}</a>
                                         </div>
                                     </div>
@@ -380,7 +431,8 @@
                                                                 @forelse ($directMembers as $member)
                                                                     <tr>
                                                                         <td>{{ $member->user->name }}</td>
-                                                                        <td>{{ optional($member->user->instansi)->name ?? '-' }}</td>
+                                                                        <td>{{ optional($member->user->instansi)->name ?? '-' }}
+                                                                        </td>
                                                                         <td>{{ $member->user->jabatan ?? '-' }}</td>
                                                                     </tr>
                                                                 @empty
@@ -413,8 +465,7 @@
                                     <div class="card-header d-flex justify-content-between">
                                         <h4>{{ __('Registrant') }}</h4>
                                         <div>
-                                            <a href="{{ route('admin.vacancies.index') }}"
-                                                class="btn btn-primary"><i
+                                            <a href="{{ route('admin.vacancies.index') }}" class="btn btn-primary"><i
                                                     class="fa fa-arrow-left"></i>{{ __('Back') }}</a>
                                         </div>
                                     </div>
@@ -436,10 +487,12 @@
                                                             @forelse ($members as $member)
                                                                 <tr>
                                                                     <td>{{ $member->user->name }}</td>
-                                                                    <td>{{ optional($member->user->instansi)->name ?? '-' }}</td>
+                                                                    <td>{{ optional($member->user->instansi)->name ?? '-' }}
+                                                                    </td>
                                                                     <td>{{ $member->user->jabatan ?? '-' }}</td>
                                                                     <td>{{ $member->status }}</td>
-                                                                    <td>{{ \Modules\PendidikanLanjutan\app\Models\VacancyUserDirect::where('vacancy_id', $vacancy->id)->where('user_id', $member->id)->first() ? 'Undangan' : 'Non-Undangan' }}</td>
+                                                                    <td>{{ \Modules\PendidikanLanjutan\app\Models\VacancyUserDirect::where('vacancy_id', $vacancy->id)->where('user_id', $member->id)->first() ? 'Undangan' : 'Non-Undangan' }}
+                                                                    </td>
                                                                 </tr>
                                                             @empty
                                                                 <tr class="text-center">
@@ -461,14 +514,14 @@
                 </div>
             </div>
         </section>
-        <div class="modal fade" id="addUserModal" tabindex="-1"
-            aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title pl-4" id="addUserModalLabel" style="color:#6777ef;">{{ __('Add Member') }}</h5>
-                        <button type="button" class="close" data-dismiss="modal"
-                            aria-label="Close">
+                        <h5 class="modal-title pl-4" id="addUserModalLabel" style="color:#6777ef;">
+                            {{ __('Add Member') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -477,11 +530,10 @@
                             @csrf
                             <div class="form-group">
                                 <label for="selectUser">{{ __('Select Member') }}</label>
-                                <select name="users[]" id="selectUser" class="form-control select2"
-                                    multiple="multiple">
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endforeach
+                                <select name="users[]" id="selectUser" class="form-control select2" multiple="multiple">
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="form-group d-flex justify-content-center">

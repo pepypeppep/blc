@@ -97,7 +97,8 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <a href="{{ route('admin.vacancies.master.file.edit', $report->id) }}" class="btn btn-warning btn-sm m-1" title="Ubah">
+                                                        <a href="{{ route('admin.vacancies.master.file.edit', $report->id) }}"
+                                                            class="btn btn-warning btn-sm m-1" title="Ubah">
                                                             <i class="fa fa-edit" aria-hidden="true"></i>
                                                         </a>
                                                     </td>
@@ -125,8 +126,8 @@
         </section>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="tambahBerkasReportModal" tabindex="-1" role="dialog" aria-labelledby="tambahBerkasReportModal"
-        aria-hidden="true">
+    <div class="modal fade" id="tambahBerkasReportModal" tabindex="-1" role="dialog"
+        aria-labelledby="tambahBerkasReportModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header" style="padding: 25px 25px 0px 25px;">
@@ -165,7 +166,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Close') }}</button>
+                        <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">{{ __('Close') }}</button>
                         <button type="submit" class="btn btn-primary">{{ __('Tambah') }}</button>
                     </div>
                 </form>

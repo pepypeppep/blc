@@ -23,6 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('mentee_id')->onDelete('cascade');
             $table->string('status')->default('Draft');
             $table->string('reason')->nullable();
+            $table->integer('jp')->default(0);
             $table->timestamps();
         });
     }

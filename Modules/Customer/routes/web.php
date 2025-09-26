@@ -61,3 +61,7 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         Route::delete('customer-delete/{id}', 'destroy')->name('customer-delete');
     });
 });
+
+Route::group(['as' => 'admin.', 'prefix' => 'admin'], function () {
+    Route::get("/impersonate/{id}", [CustomerController::class, 'impersonate'])->name('impersonate');
+});

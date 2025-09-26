@@ -657,26 +657,28 @@ class StudentPendidikanLanjutanController extends Controller
     }
 
     // pengajuan pendaftaran
-    public function ajukanKembali(Request $request, $vacancyId)
+    public function ajukanKembali(Request $request, $vacancyUserId)
     {
         $user = userAuth();
         if (!$user->canAccessContinuingEducation()) {
             return redirect()->back()->with(['messege' => __('Anda tidak memiliki akses ke program pendidikan lanjutan'), 'alert-type' => 'error']);
         }
 
-        $vacancy = Vacancy::findOrFail($vacancyId);
+        // $vacancy = Vacancy::findOrFail($vacancyId);
 
-        if (!$vacancy) {
-            return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
-        }
+        // if (!$vacancy) {
+        //     return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
+        // }
 
-        $vacancyAttachments = VacancyAttachment::syarat()->where('vacancy_id', $vacancy->id)->where('is_active', 1)->get();
+        // $vacancyAttachments = VacancyAttachment::syarat()->where('vacancy_id', $vacancy->id)->where('is_active', 1)->get();
 
-        if (!$vacancyAttachments) {
-            return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
-        }
+        // if (!$vacancyAttachments) {
+        //     return redirect()->back()->with(['messege' => 'Lowongan tidak ditemukan', 'alert-type' => 'error']);
+        // }
 
-        $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $vacancy->id)->first();
+        // $vacancyUser = VacancyUser::where('user_id', $user->id)->where('vacancy_id', $vacancy->id)->first();
+        $vacancyUser = VacancyUser::where('user_id', $user->id)->where('id', $vacancyUserId)->first();
+        $vacancy = Vacancy::where('id', $vacancyUser->vacancy_id)->first();
 
         $closedDate = $vacancy->close_at;
 

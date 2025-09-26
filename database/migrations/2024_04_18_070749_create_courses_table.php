@@ -29,10 +29,10 @@ return new class extends Migration
             $table->string('thumbnail')->nullable();
             $table->enum('demo_video_storage', ['upload', 'youtube', 'vimeo', 'external_link', 'aws'])->default('upload');
             $table->text('demo_video_source')->nullable();
-            $table->text('description')->nullable();
-            $table->text('background')->nullable();
-            $table->text('output')->nullable();
-            $table->text('outcome')->nullable();
+            $table->longText('description')->nullable();
+            $table->longText('background')->nullable();
+            $table->longText('output')->nullable();
+            $table->longText('outcome')->nullable();
             $table->integer('capacity')->nullable();
             $table->double('price')->default(0);
             $table->double('discount')->nullable();

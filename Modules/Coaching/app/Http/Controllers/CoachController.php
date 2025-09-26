@@ -129,6 +129,7 @@ class CoachController extends Controller
             'learning_resources' => $validated['learning_resources'],
             'coach_id' => $user->id,
             'status' => Coaching::STATUS_DRAFT,
+            'jp' => count($validated['sessions']) * 2
         ]);
 
         $coaching->coachees()->sync($request->coachee);
@@ -148,6 +149,7 @@ class CoachController extends Controller
             CoachingSession::create([
                 'coaching_id' => $coaching->id,
                 'coaching_date' => $dateTime,
+                'jp' => 2
             ]);
         }
 
@@ -684,5 +686,4 @@ class CoachController extends Controller
             'alert-type' => 'success'
         ]);
     }
-
 }

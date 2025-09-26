@@ -718,4 +718,13 @@ class CourseController extends Controller
             return redirect()->back()->with(['alert-type' => 'error', 'messege' => $th->getMessage()]);
         }
     }
+
+    public function show($id)
+    {
+        $course = Course::findOrFail($id);
+
+        return view('course::course.show', compact(
+            'course',
+        ));
+    }
 }

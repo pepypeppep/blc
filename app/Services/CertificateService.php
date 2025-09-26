@@ -88,7 +88,7 @@ class CertificateService
             $certificates[] = [
                 'category' => 'mentoring',
                 'name' => $data->title,
-                'jp' => 0,
+                'jp' => $data->jp,
                 'date' => $data->updated_at->format('Y'),
                 'periode' => $data->mentoringSessions->first()->mentoring_date . ' - ' . $data->mentoringSessions->last()->mentoring_date,
                 'triwulan' => (int) ceil((date('n', strtotime($data->mentoringSessions->first()->mentoring_date)) - 1) / 3) + 1,
@@ -110,7 +110,7 @@ class CertificateService
             $certificates[] = [
                 'category' => 'coaching',
                 'name' => $data->title,
-                'jp' => 0,
+                'jp' => $data->jp,
                 'date' => $data->updated_at->format('Y'),
                 'periode' => $data->coachingSessions->first()->coaching_date . ' - ' . $data->coachingSessions->last()->coaching_date,
                 'triwulan' => (int) ceil((date('n', strtotime($data->coachingSessions->first()->coaching_date)) - 1) / 3) + 1,

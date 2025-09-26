@@ -84,7 +84,8 @@ class CourseVerificationController extends Controller
             ->where('has_access', 0)
             ->whereNotNull('has_access')
             ->get();
+        $courseId = $id;
 
-        return view('course::course-verification.rejected', compact('rejectedUsers', 'submenu'));
+        return view('course::course-verification.rejected', compact('rejectedUsers', 'submenu', 'courseId'));
     }
 }

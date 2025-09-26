@@ -17,6 +17,7 @@ return new class extends Migration
             $table->dateTime('coaching_date_changed')->nullable();
             $table->unsignedBigInteger('coaching_id')->onDelete('cascade');
             $table->string('status')->default('pending');
+            $table->integer('jp')->default(0);
             $table->timestamps();
         });
     }

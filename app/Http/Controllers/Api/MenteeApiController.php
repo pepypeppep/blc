@@ -232,6 +232,7 @@ class MenteeApiController extends Controller
                 'mentor_id' => $validated['mentor'],
                 'mentee_id' => $user->id,
                 'status' => Mentoring::STATUS_DRAFT,
+                'jp' => count($validated['sessions']) * 2
             ]);
 
             if ($request->hasFile('file')) {
@@ -249,6 +250,7 @@ class MenteeApiController extends Controller
                 MentoringSession::create([
                     'mentoring_id' => $mentoring->id,
                     'mentoring_date' => $dateTime,
+                    'jp' => 2
                 ]);
             }
 

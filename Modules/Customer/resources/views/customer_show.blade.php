@@ -14,12 +14,9 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="card shadow">
-                            @if ($user->nip)
-                                <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $user->nip }}.jpg"
-                                    class="profile_img w-100">
-                            @else
-                                <img src="{{ asset($setting->default_avatar) }}" class="w-100">
-                            @endif
+                            <img src="https://asn.bantulkab.go.id/images/simpeg/fotopns/{{ $user->nip }}.jpg"
+                                onerror="this.src='{{ route('get.section.asset', [1, 'default_avatar']) }}?module=general'"
+                                class="profile_img w-100">
 
                             <div class="container my-3">
                                 <h4>{{ html_decode($user->name) }}</h4>
@@ -93,7 +90,7 @@
                                                 <i class="far fa-star text-warning"></i>
                                             @endif
                                         @endfor
-                                        <span class="ml-2">({{ $user->rating }})</span>
+                                        <span class="ml-2">({{ round($user->rating) }})</span>
                                     </div>
                                 @endif
                             </div>
@@ -168,6 +165,57 @@
                                     <div class="col-md-6">
                                         <p class="title">{{ __('Ninebox') }} : <b>{{ $user->ninebox }}</b></p>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="service_card">{{ __('Instructor Evaluation') }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ __('Name') }}</th>
+                                            <th>{{ __('Rating') }}</th>
+                                            <th>{{ __('Waktu') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($evaluations as $evaluation)
+                                            <tr>
+                                                <td>{{ $evaluation->student->name }}</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        @php
+                                                            $fullStars = floor($evaluation->rating);
+                                                            $hasHalfStar = $evaluation->rating - $fullStars >= 0.5;
+                                                        @endphp
+
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            @if ($i <= $fullStars)
+                                                                <i class="fa fa-star text-warning"></i>
+                                                            @elseif ($i == $fullStars + 1 && $hasHalfStar)
+                                                                <i class="fa fa-star-half text-warning"></i>
+                                                            @else
+                                                                <i class="far fa-star text-warning"></i>
+                                                            @endif
+                                                        @endfor
+                                                        <span class="ml-2">({{ round($evaluation->rating) }})</span>
+                                                    </div>
+                                                </td>
+                                                <td>{{ $evaluation->created_at->format('d F Y, H:i') }} WIB</td>
+                                            </tr>
+                                        @empty
+                                            <td colspan="3" class="text-center">
+                                                <span class="text-muted">{{ __('No Data!') }}</span>
+                                            </td>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                                <div class="d-flex justify-content-center">
+                                    {{ $evaluations->links() }}
                                 </div>
                             </div>
                         </div>

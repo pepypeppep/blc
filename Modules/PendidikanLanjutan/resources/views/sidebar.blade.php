@@ -4,6 +4,11 @@
                 class="beep parent">{{ __('Master') }}</span></a>
 
         <ul class="dropdown-menu">
+            <li class="{{ isRoute('vacancies.master.attachment.*', 'active') }}">
+                <a class="nav-link" href="{{ route('admin.vacancies.master.attachment.index') }}">
+                    {{ __('Berkas Lampiran') }}
+                </a>
+            </li>
             <li class="{{ isRoute('vacancies.master.file.*', 'active') }}">
                 <a class="nav-link" href="{{ route('admin.vacancies.master.file.index') }}">
                     {{ __('Berkas Laporan') }}
@@ -74,16 +79,16 @@
     {{-- @endadminCan --}}
 
     {{-- @if (request()->routeIs('admin.vacancies.*')) --}}
-        <script src="{{ asset('global/js/jquery-3.7.1.min.js') }}"></script>
-        <script>
-            $.ajax({
-                url: "{{ route('admin.vacancies.sidebar.counter') }}",
-                success: function(data) {
-                    $.each(data, function(key, value) {
-                        $('#'+key).text(value);
-                    });
-                }
-            })
-        </script>
+    <script src="{{ asset('global/js/jquery-3.7.1.min.js') }}"></script>
+    <script>
+        $.ajax({
+            url: "{{ route('admin.vacancies.sidebar.counter') }}",
+            success: function(data) {
+                $.each(data, function(key, value) {
+                    $('#' + key).text(value);
+                });
+            }
+        })
+    </script>
     {{-- @endif --}}
 @endif

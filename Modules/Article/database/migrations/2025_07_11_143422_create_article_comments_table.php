@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('status')->default('published');
             $table->text('notes')->nullable();
+            $table->integer('reported_count')->default(0);
             $table->timestamps();
         });
     }

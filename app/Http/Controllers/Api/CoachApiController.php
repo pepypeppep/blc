@@ -352,6 +352,7 @@ class CoachApiController extends Controller
                 'learning_resources' => $validated['learning_resources'],
                 'coach_id' => $user->id,
                 'status' => Coaching::STATUS_DRAFT,
+                'jp' => count($validated['sessions']) * 2
             ]);
 
             $coaching->coachees()->sync($request->coachee);
@@ -371,6 +372,7 @@ class CoachApiController extends Controller
                 CoachingSession::create([
                     'coaching_id' => $coaching->id,
                     'coaching_date' => $dateTime,
+                    'jp' => 2
                 ]);
             }
             return $this->successResponse([], 'Tema coaching berhasil ditambahkan!');

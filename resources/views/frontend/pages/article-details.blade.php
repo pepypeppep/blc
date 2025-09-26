@@ -197,7 +197,24 @@
                                                 <div class="comments-text">
                                                     <div class="avatar-name">
                                                         <h6 class="name">{{ $comment->user->name }}</h6>
-                                                        <span class="date">{{ formatDate($comment->created_at) }}</span>
+                                                        <span class="date">
+                                                            @if (\Modules\Article\app\Models\ArticleCommentReport::where('comment_id', $comment->id)->where('user_id', auth()->user()->id)->exists())
+                                                                <span class="m-1 text-secondary report-btn"
+                                                                    title="Anda telah Melaporkan Komentar">
+                                                                    <i class="fa fa-flag" aria-hidden="true"></i>
+                                                                </span>
+                                                            @else
+                                                                <span class="m-1 text-danger report-btn"
+                                                                    title="Laporkan Komentar" data-bs-toggle="modal"
+                                                                    data-bs-target="#reportModal"
+                                                                    data-article-slug="{{ $article->slug }}"
+                                                                    data-id="{{ $comment->id }}"
+                                                                    style="cursor: pointer;">
+                                                                    <i class="fa fa-flag" aria-hidden="true"></i>
+                                                                </span>
+                                                            @endif
+                                                            {{ formatDate($comment->created_at) }}
+                                                        </span>
                                                     </div>
                                                     <p>{{ $comment->description }}</p>
                                                 </div>
@@ -281,6 +298,35 @@
         </div>
     </section>
     <!-- blog-details-area-end -->
+
+    <!-- Report Comment Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <form action="" method="POST">
+                @csrf
+                <input type="hidden" name="comment_id" id="report_comment_id">
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reportModalLabel">{{ __('Report Comment') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <textarea name="reason" id="reason" class="form-control" rows="5" style="height: 10%;"
+                                placeholder="Tuliskan alasan Anda melaporkan komentar ini" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn btn-danger">{{ __('Submit Report') }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
@@ -288,6 +334,15 @@
 
     <script>
         Shareon.init();
+        $(document).on('click', '.report-btn', function() {
+            let slug = $(this).data('article-slug');
+            let path = "/article/" + slug + "/report-comment";
+            let url = window.location.origin + path;
+            $('#reportModal form').attr('action', url);
+
+            let commentId = $(this).data('id');
+            $('#report_comment_id').val(commentId);
+        });
     </script>
 @endpush
 

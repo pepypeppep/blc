@@ -289,7 +289,7 @@ class ArticleController extends Controller
                 $articles = $articles->limit($request->limit);
             }
 
-            $articles = $articles->paginate(10);
+            $articles = $articles->orderByDesc('id')->paginate(10);
             return $this->successResponse($articles, 'Articles fetched successfully');
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), [], 500);

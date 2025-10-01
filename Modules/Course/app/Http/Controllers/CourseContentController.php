@@ -399,10 +399,49 @@ class CourseContentController extends Controller
         return response()->json(['status' => 'success', 'message' => __('Lesson deleted successfully')]);
     }
 
-    function createQuizQuestion(string $quizId)
+    function createQuizQuestion(Request $request, string $quizId)
     {
 
-        return view('course::course.partials.quiz-question-create-modal', ['quizId' => $quizId])->render();
+        $quiz = Quiz::findOrFail($quizId);
+        $questions = QuizQuestion::where('quiz_id', $quizId)
+            // ->limit(15)
+            ->get();
+
+        if ($questions->count() > 0) {
+            if ($request->has('questionId')) {
+                // Ambil berdasarkan questionId yang dikirim request
+                $questionItem = QuizQuestion::where('quiz_id', $quizId)
+                    ->where('id', $request->questionId)
+                    ->first();
+            } else {
+                // Jika tidak ada questionId, ambil pertanyaan pertama dari list
+                $questionItem = $questions->first();
+            }
+        } else {
+            $questionItem = null; // atau [] sesuai kebutuhanmu
+        }
+
+        //question answer
+        $questionAnswer = [];
+        if ($questionItem) {
+            $questionAnswer = $questionItem->answers()->get()->map(function ($answer) {
+                return [
+                    'id' => $answer->id,
+                    'title' => $answer->title,
+                    'correct' => $answer->correct,
+                    'image' => isset($answer->image) ? asset($answer->image) : null
+                ];
+            })->toArray();
+        }
+
+
+        return view('course::course.partials.quiz-question-create-form', [
+            'quiz' => $quiz,
+            'questions' => $questions,
+            'quizId' => $quiz->id,
+            'questionItem' => $questionItem,
+            'questionAnswer' => $questionAnswer,
+        ]);
     }
 
     function storeQuizQuestion(Request $request, string $quizId)
@@ -444,6 +483,328 @@ class CourseContentController extends Controller
         }
 
         return response()->json(['status' => 'success', 'message' => __('Question created successfully')]);
+    }
+
+    public function storeQuizQuestionOnly(Request $request, string $quizId)
+    {
+        $request->validate([
+            'title' => ['required'],
+            'weight' => ['required', 'numeric', 'min:0'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+        ]);
+
+        $imagePath = null;
+
+        try {
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('images/question'), $imageName);
+                $imagePath = 'images/question/' . $imageName;
+            }
+
+            $question = QuizQuestion::create([
+                'quiz_id' => $quizId,
+                'title' => $request->title,
+                'grade' => $request->weight,
+                'image' => $imagePath,
+            ]);
+
+
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('Question created successfully'),
+                'callback_url' => route('admin.course-chapter.quiz-question.create', [
+                    $quizId,
+                    'questionId' => $question->id,
+                ]),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    // public function storeQuizQuestionAnswer(Request $request, string $quizId)
+    // {
+
+
+
+    //     $request->validate([
+    //         'question_text' => ['required', 'string'],
+    //         'weight' => ['required', 'integer', 'min:1'],
+    //         'question_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+    //         'answers' => ['required', 'array', 'min:2'],
+    //         'answers.*.text' => ['required', 'string'],
+    //     ], [
+    //         'question_text.required' => 'Pertanyaan wajib diisi.',
+    //         'question_text.string' => 'Pertanyaan harus berupa teks.',
+
+    //         'weight.required' => 'Bobot wajib diisi.',
+    //         'weight.integer' => 'Bobot harus berupa angka.',
+    //         'weight.min' => 'Bobot minimal bernilai 1.',
+
+    //         'image.image' => 'File harus berupa gambar.',
+    //         'image.mimes' => 'Gambar harus berformat jpeg, png, jpg, atau gif.',
+    //         'image.max' => 'Ukuran gambar maksimal 2MB.',
+
+    //         'answers.required' => 'Jawaban wajib diisi.',
+    //         'answers.array' => 'Jawaban harus dalam bentuk array.',
+    //         'answers.min' => 'Minimal harus ada 2 jawaban.',
+    //         'answers.*.text.required' => 'Teks jawaban wajib diisi.',
+    //         'answers.*.text.string' => 'Teks jawaban harus berupa teks.',
+    //     ]);
+
+    //     try {
+    //         $imagePath = null;
+
+    //         // kalau ada question_id → update
+    //         if ($request->filled('question_id')) {
+    //             $question = QuizQuestion::where('quiz_id', $quizId)->where('id', $request->question_id)->firstOrFail();
+    //             $imagePath = $question->image;
+
+    //             if ($request->hasFile('question_image')) {
+    //                 if ($imagePath && file_exists(public_path($imagePath))) {
+    //                     unlink(public_path($imagePath));
+    //                 }
+    //                 $image = $request->file('question_image');
+    //                 $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+    //                 $image->move(public_path('images/question'), $imageName);
+    //                 $imagePath = 'images/question/' . $imageName;
+    //             }
+
+    //             $question->update([
+    //                 'title' => $request->question_text,
+    //                 'grade' => $request->weight,
+    //                 'image' => $imagePath,
+    //             ]);
+
+    //             // 🔥 hapus jawaban lama
+    //             $question->answers()->delete();
+    //         } else {
+    //             // kalau create baru
+    //             if ($request->hasFile('question_image')) {
+    //                 $image = $request->file('question_image');
+    //                 $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+    //                 $image->move(public_path('images/question'), $imageName);
+    //                 $imagePath = 'images/question/' . $imageName;
+    //             }
+
+    //             $question = QuizQuestion::create([
+    //                 'quiz_id' => $quizId,
+    //                 'title'   => $request->question_text,
+    //                 'grade'   => $request->weight,
+    //                 'image'   => $imagePath,
+    //             ]);
+    //         }
+
+    //         // simpan jawaban baru (baik create maupun update)
+    //         foreach ($request->answers as $answer) {
+    //             $answerImagePath = null;
+    //             if (!empty($answer['image']) && $answer['image'] instanceof \Illuminate\Http\UploadedFile) {
+    //                 $imageName = time() . '_' . uniqid() . '.' . $answer['image']->getClientOriginalExtension();
+    //                 $answer['image']->move(public_path('images/answer'), $imageName);
+    //                 $answerImagePath = 'images/answer/' . $imageName;
+    //             }
+
+    //             $question->answers()->create([
+    //                 'title'   => $answer['text'],
+    //                 'correct' => isset($answer['is_correct']) ? 1 : 0,
+    //                 'image'   => $answerImagePath,
+    //             ]);
+    //         }
+
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => $request->filled('question_id')
+    //                 ? __('Question updated successfully')
+    //                 : __('Question created successfully'),
+    //             'callback_url' => route('admin.course-chapter.quiz-question.create', [
+    //                 $quizId,
+    //                 'questionId' => $question->id,
+    //             ]),
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => 'error',
+    //             'message' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
+    public function storeQuizQuestionAnswer(Request $request, string $quizId)
+    {
+        $validated =  $request->validate([
+            'question_text' => ['required', 'string'],
+            'weight' => ['required', 'integer', 'min:1'],
+            'question_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'answers' => ['required', 'array', 'min:2'],
+            'answers.*.text' => ['required', 'string'],
+            'answers.*.image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+        ], [
+            'question_text.required' => 'Pertanyaan wajib diisi.',
+            'question_text.string' => 'Pertanyaan harus berupa teks.',
+
+            'weight.required' => 'Bobot wajib diisi.',
+            'weight.integer' => 'Bobot harus berupa angka.',
+            'weight.min' => 'Bobot minimal bernilai 1.',
+
+            'question_image.image' => 'File harus berupa gambar.',
+            'question_image.mimes' => 'Gambar harus berformat jpeg, png, jpg, atau gif.',
+            'question_image.max' => 'Ukuran gambar maksimal 2MB.',
+
+            'answers.required' => 'Jawaban wajib diisi.',
+            'answers.array' => 'Jawaban harus dalam bentuk array.',
+            'answers.min' => 'Minimal harus ada 2 jawaban.',
+            'answers.*.text.required' => 'Teks jawaban wajib diisi.',
+            'answers.*.text.string' => 'Teks jawaban harus berupa teks.',
+            'answers.*.image.image' => 'File harus berupa gambar.',
+            'answers.*.image.mimes' => 'Gambar jawaban harus berformat jpeg, png, jpg, atau gif.',
+            'answers.*.image.max' => 'Ukuran gambar jawaban maksimal 2MB.',
+        ]);
+
+        //total question grade bandingkan dengan bobot di quiz
+
+        $quiz = Quiz::findOrFail($quizId);
+
+        // Hitung total bobot pertanyaan
+        $currentWeight = $quiz->questions()->sum('grade');
+        $newTotal = $currentWeight + $validated['weight'];
+
+        if ($newTotal > $quiz->pass_mark) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'grade' => ['Bobot pertanyaan melebihi bobot dari bobot Kuis.'],
+                ],
+            ], 422);
+        }
+
+
+        try {
+            $question = null;
+            $imagePath = null;
+
+            // UPDATE jika ada question_id
+            if ($request->filled('question_id')) {
+                $question = QuizQuestion::where('quiz_id', $quizId)->where('id', $request->question_id)->firstOrFail();
+                $imagePath = $question->image;
+
+                // ganti gambar pertanyaan kalau ada file baru
+                if ($request->hasFile('question_image')) {
+                    if ($imagePath && file_exists(public_path($imagePath))) {
+                        unlink(public_path($imagePath));
+                    }
+                    $image = $request->file('question_image');
+                    $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('images/question'), $imageName);
+                    $imagePath = 'images/question/' . $imageName;
+                }
+
+                // hapus gambar pertanyaan jika diminta
+                if ($request->boolean('remove_question_image')) {
+                    if ($imagePath && file_exists(public_path($imagePath))) {
+                        unlink(public_path($imagePath));
+                    }
+                    $imagePath = null;
+                }
+
+                $question->update([
+                    'title' => $request->question_text,
+                    'grade' => $request->weight,
+                    'image' => $imagePath,
+                ]);
+            } else {
+                // CREATE baru
+
+
+                if ($request->hasFile('question_image')) {
+                    $image = $request->file('question_image');
+                    $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('images/question'), $imageName);
+                    $imagePath = 'images/question/' . $imageName;
+                }
+
+                $question = QuizQuestion::create([
+                    'quiz_id' => $quizId,
+                    'title'   => $request->question_text,
+                    'grade'   => $request->weight,
+                    'image'   => $imagePath,
+                ]);
+            }
+
+            // === HANDLE JAWABAN ===
+            $existingAnswerIds = collect($request->answers)->pluck('id')->filter()->toArray();
+            $question->answers()->whereNotIn('id', $existingAnswerIds)->delete();
+
+            foreach ($request->answers as $key => $answerData) {
+                $answer = null;
+                $answerImagePath = null;
+
+                if (!empty($answerData['id'])) {
+                    // update jawaban lama
+                    $answer = $question->answers()->where('id', $answerData['id'])->first();
+                    $answerImagePath = $answer->image;
+
+                    if ($request->hasFile("answers.$key.image")) {
+                        if ($answerImagePath && file_exists(public_path($answerImagePath))) {
+                            unlink(public_path($answerImagePath));
+                        }
+                        $img = $request->file("answers.$key.image");
+                        $imgName = time() . '_' . uniqid() . '.' . $img->getClientOriginalExtension();
+                        $img->move(public_path('images/answer'), $imgName);
+                        $answerImagePath = 'images/answer/' . $imgName;
+                    }
+
+                    if (!empty($answerData['remove_image'])) {
+                        if ($answerImagePath && file_exists(public_path($answerImagePath))) {
+                            unlink(public_path($answerImagePath));
+                        }
+                        $answerImagePath = null;
+                    }
+
+                    $answer->update([
+                        'title'   => $answerData['text'],
+                        'correct' => !empty($answerData['is_correct']) ? 1 : 0,
+                        'image'   => $answerImagePath,
+                    ]);
+                } else {
+                    // tambah jawaban baru
+                    if ($request->hasFile("answers.$key.image")) {
+                        $img = $request->file("answers.$key.image");
+                        $imgName = time() . '_' . uniqid() . '.' . $img->getClientOriginalExtension();
+                        $img->move(public_path('images/answer'), $imgName);
+                        $answerImagePath = 'images/answer/' . $imgName;
+                    }
+
+                    $question->answers()->create([
+                        'title'   => $answerData['text'],
+                        'correct' => !empty($answerData['is_correct']) ? 1 : 0,
+                        'image'   => $answerImagePath,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $request->filled('question_id')
+                    ? 'Pertanyaan berhasil diperbarui'
+                    : 'Pertanyaan berhasil dibuat',
+                'callback_url' => route('admin.course-chapter.quiz-question.create', [
+                    $quizId,
+                    'questionId' => $question->id,
+                ]),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     function editQuizQuestion(string $questionId)

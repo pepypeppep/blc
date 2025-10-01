@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class QuizQuestion extends Model {
+class QuizQuestion extends Model
+{
     use HasFactory;
 
     protected $fillable = [
@@ -15,15 +16,18 @@ class QuizQuestion extends Model {
         'title',
         'grade',
         'type',
+        'image',
     ];
 
-    function answers(): HasMany {
+    function answers(): HasMany
+    {
         return $this->hasMany(QuizQuestionAnswer::class, 'question_id', 'id');
     }
     /**
      * Boot method to handle model events.
      */
-    protected static function boot() {
+    protected static function boot()
+    {
         parent::boot();
 
         // Hook into the deleting event to delete related data

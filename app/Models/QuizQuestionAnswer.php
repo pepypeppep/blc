@@ -12,6 +12,7 @@ class QuizQuestionAnswer extends Model
     protected $fillable = [
         'title',
         'correct',
-        'question_id'
+        'question_id',
+        'image',
     ];
 }

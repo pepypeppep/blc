@@ -350,6 +350,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::delete('course-chapter/quiz-question/delete/{question_id}', [CourseContentController::class, 'destroyQuizQuestion'])->name('course-chapter.quiz-question.destroy');
         Route::get('course-delete-request/{course_id}', [InstructorCourseController::class, 'showDeleteRequest'])->name('course.delete-request.show');
         Route::post('course-delete-request', [InstructorCourseController::class, 'sendDeleteRequest'])->name('course.send-delete-request');
+       
 
         /** payout routes */
         Route::get('payout', [InstructorPayoutController::class, 'index'])->name('payout.index');

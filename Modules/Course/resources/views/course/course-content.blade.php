@@ -59,7 +59,8 @@
                                                             <div
                                                                 class="icon_area d-flex flex-wrap justify-content-between align-items-center w-100">
                                                                 <div class="d-flex flex-wrap  align-items-center">
-                                                                    <span class="icon-container" style="background-color: blue !important">
+                                                                    <span class="icon-container"
+                                                                        style="background-color: blue !important">
                                                                         <i class="far fa-folder"></i>
                                                                     </span>
                                                                     <p class="mb-0 ms-2 bold-text">{{ $chapter->title }}
@@ -127,7 +128,8 @@
                                                                         class="d-flex flex-wrap justify-content-between align-items-center">
                                                                         <div
                                                                             class="edit_course_icons d-flex flex-wrap align-items-center">
-                                                                            <span class="icon-container" style="background-color: red !important">
+                                                                            <span class="icon-container"
+                                                                                style="background-color: red !important">
                                                                                 <i class="fas fa-video"></i>
                                                                             </span>
                                                                             <p class="mb-0 ms-2 bold-text">
@@ -188,7 +190,8 @@
                                                                         class="d-flex flex-wrap justify-content-between align-items-center">
                                                                         <div
                                                                             class="edit_course_icons d-flex flex-wrap align-items-center">
-                                                                            <span class="icon-container" style="background-color: #0dcaf0 !important">
+                                                                            <span class="icon-container"
+                                                                                style="background-color: #0dcaf0 !important">
                                                                                 <i class="fas fa-feather"></i>
                                                                             </span>
                                                                             <p class="mb-0 ms-2 bold-text">
@@ -234,8 +237,10 @@
                                                                                         class="d-flex flex-wrap justify-content-between align-items-center w-100">
                                                                                         <div
                                                                                             class="d-flex flex-wrap align-items-center">
-                                                                                            <span class="icon-container" style="background-color: orange !important">
-                                                                                                <i class="fas fa-question"></i>
+                                                                                            <span class="icon-container"
+                                                                                                style="background-color: orange !important">
+                                                                                                <i
+                                                                                                    class="fas fa-question"></i>
                                                                                             </span>
                                                                                             <p class="mb-0 ms-2 bold-text">
                                                                                                 {!! $chapterItem->quiz->title !!}
@@ -256,8 +261,12 @@
                                                                                         <ul
                                                                                             class="dropdown-menu dropdown-menu-end">
                                                                                             <li>
-                                                                                                <a class="dropdown-item add-quiz-question-btn"
-                                                                                                    href="javascript:;"
+                                                                                                {{-- <a class="dropdown-item add-quiz-question-btn"
+                                                                                                    href="{{ route('admin.course-quiz.question.create', $chapterItem->quiz->id) }}"
+                                                                                                    data-quiz-id="{{ $chapterItem->quiz->id }}">Entri
+                                                                                                    Soal</a> --}}
+                                                                                                <a class="dropdown-item "
+                                                                                                    href="{{ url('/admin/course-chapter/quiz-question/create/' . $chapterItem->quiz->id) }}"
                                                                                                     data-quiz-id="{{ $chapterItem->quiz->id }}">Entri
                                                                                                     Soal</a>
                                                                                             </li>
@@ -298,8 +307,11 @@
                                                                                             class="d-flex flex-wrap justify-content-between align-items-center">
                                                                                             <div
                                                                                                 class="edit_course_icons d-flex flex-wrap align-items-center">
-                                                                                                <span class="icon-container" style="background-color: white !important;">
-                                                                                                    <i class="fas fa-question-circle text-warning" style="font-size: 30px;"></i>
+                                                                                                <span
+                                                                                                    class="icon-container"
+                                                                                                    style="background-color: white !important;">
+                                                                                                    <i class="fas fa-question-circle text-warning"
+                                                                                                        style="font-size: 30px;"></i>
                                                                                                 </span>
                                                                                                 <p
                                                                                                     class="mb-0 ms-2 bold-text">

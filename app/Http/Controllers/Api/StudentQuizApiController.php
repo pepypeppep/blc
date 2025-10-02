@@ -154,12 +154,16 @@ class StudentQuizApiController extends Controller
                     'title'   => $q->title,
                     'type'    => $q->type,
                     'grade'   => $q->grade,
-                    'image' => isset($q->image) ? asset($q->image) : null,
+                    'image' => $q->image
+                        ? url('questions/image/' . baseName($q->image))
+                        : null,
 
                     'answers' => $q->answers->shuffle()->map(fn($a) => [
                         'id'    => $a->id,
                         'title' => $a->title,
-                        'image' => isset($a->image) ? asset($a->image) : null,
+                        'image' => $a->image
+                            ? url('answers/image/' . baseName($a->image))
+                            : null,
 
                     ]),
                 ];

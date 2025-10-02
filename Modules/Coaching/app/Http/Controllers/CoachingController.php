@@ -102,11 +102,6 @@ class CoachingController extends Controller
         authorizeCoachAccess($coaching);
         $certificates = CertificateBuilder::paginate();
 
-
-
-
-
-
         return view('coaching::show', compact('coaching', 'certificates'));
     }
 

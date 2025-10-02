@@ -26,7 +26,7 @@
                                     <label for="cpacity">{{ __('TTE Depan') }}</label>
                                     <select class="tte_select" id="front_tte" name="front_tte">
                                         @foreach ($coaching->signers as $signer)
-                                            @if ($signer->step == 1)
+                                            @if ($signer->step == 2)
                                                 <option selected value="{{ $signer->user_id }}">
                                                     {{ $signer->user->name }}
                                                 </option>
@@ -43,7 +43,7 @@
                                     <label for="cpacity">{{ __('TTE Belakang') }}</label>
                                     <select class="tte_select" id="back_tte" name="back_tte">
                                         @foreach ($coaching->signers as $signer)
-                                            @if ($signer->step == 2)
+                                            @if ($signer->step == 1)
                                                 <option selected value="{{ $signer->user_id }}">
                                                     {{ $signer->user->name }}
                                                 </option>

@@ -62,15 +62,17 @@ class CoachingCertificateController extends Controller
             // delete existing signer
             CoachingSigner::where('coaching_id', $validated['coaching_id'])->delete();
 
-            $coachingSignerFront = CoachingSigner::create([
-                'user_id' => $userFrontTte->id,
+
+
+            $coachingSignerBack = CoachingSigner::create([
+                'user_id' => $userBackTte->id,
                 'coaching_id' => $validated['coaching_id'],
                 'step' => 1,
                 'type' => CoachingSigner::TYPE_SIGN,
             ]);
 
-            $coachingSignerBack = CoachingSigner::create([
-                'user_id' => $userBackTte->id,
+            $coachingSignerFront = CoachingSigner::create([
+                'user_id' => $userFrontTte->id,
                 'coaching_id' => $validated['coaching_id'],
                 'step' => 2,
                 'type' => CoachingSigner::TYPE_SIGN,
@@ -338,7 +340,6 @@ class CoachingCertificateController extends Controller
             }
             $signersJson = json_encode($signersArray);
 
-
             $pdfPath = $coachingUserPivot->certificate_path;
             if (!Storage::disk('private')->exists($pdfPath)) {
                 return redirect()->back()->with(['messege' => __('Certificate file not found'), 'alert-type' => 'error']);
@@ -412,5 +413,46 @@ class CoachingCertificateController extends Controller
         // });
 
         return response($templateData)->header('Content-Type', 'text/html');
+    }
+
+
+    public function bantaraCallback(Request $request)
+    {
+        $validated = $request->validate([
+            'id' => 'required|string',
+            'file' => 'required|file',
+        ]);
+
+        $coachingUser = CoachingUu::where('certificate_uuid', $validated['id'])->firstOrFail();
+
+        $coaching = $coachingUser->coaching;
+
+        $file = $request->file('file');
+
+        // check if file is pdf
+        if ($file->getClientOriginalExtension() !== 'pdf') {
+            return response(['success' => false, 'message' => 'File must be pdf'], 400);
+        }
+
+        // check if file size is less than 1000mb
+        if ($file->getSize() > 1000 * 1024 * 1024) {
+            return response(['success' => false, 'message' => 'File size must be less than 1000mb'], 400);
+        }
+
+        $path = Storage::disk('private')->putFileAs(
+            sprintf(
+                '%s/%s/coaching/%s',
+                now()->year,
+                now()->month,
+                $coaching->id
+            ),
+            $file,
+            sprintf('%s-certificate.pdf', $coachingUser->id),
+        );
+
+        $coachingUser->signed_certificate_path = $path;
+        $coachingUser->save();
+
+        return response(['success' => true, 'message' => 'File uploaded successfully'], 200);
     }
 }

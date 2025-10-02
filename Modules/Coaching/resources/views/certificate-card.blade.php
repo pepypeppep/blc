@@ -15,6 +15,7 @@
          {{-- Generate Sertifikat --}}
          <a href="{{ route('admin.coaching.certificate.generate', $coaching->id) }}"
              class="btn btn-primary mt-3">{{ __('Generate Certificate') }}</a>
+
          {{-- Kirim ke Bantara --}}
          <a href="{{ route('admin.coaching.certificate.send', $coaching->id) }}"
              class="btn btn-primary mt-3">{{ __('Send to Bantara') }}</a>

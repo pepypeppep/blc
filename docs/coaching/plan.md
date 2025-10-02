@@ -8,7 +8,7 @@
 - [ ] Pemilihan penandatangan
 		+ [x] Penandatangan yang dipilih akan di simpan di coaching_signers
 		+ [ ] TTE depan : default terpilih kepala BKPSDM
-		+ [ ] TTE belakang : sesuai pilihan admin
+		+ [x] TTE belakang : sesuai pilihan admin
 		+ [x] Label dropdown penandatangan menampilkan nama-jabatan-instansi
 
 - [ ] Generate sertifikat
@@ -20,7 +20,7 @@
 
 - [ ] Kirim ke bantara
 		+ [ ] Tombol kirim ke bantara muncul ketika status coaching = "Verifikasi"
-		+ [ ] urutan TTE  (kepala OPD) -> (kelapa BKPSDM)
+		+ [x] urutan TTE: halaman belakang -> halaman depan
 		+ [ ] Tambahkan tombol batalkan pengajuan TTE, ketika di klik maka akan membatalkan pengajuan TTE di bantara
 		+ [ ] Verif berjenjang : verif mentor/coach kemudian penandatangan belakang lalu penandatangan depan
 		+ [ ] Setelah klik kirim ke bantara, tidak perlu menunggu callback, langsung set menjadi selesai

@@ -6,7 +6,7 @@
                 method="POST">
                 @csrf
                 <input type="hidden" name="coaching_id" value="{{ $coaching->id }}">
-                <input type="hidden" name="certificate_builder_id" value="">
+                <input type="hidden" name="certificate_name" value="">
                 <div class="modal-header" style="padding: 25px 25px 0px 25px;">
                     <h5 class="modal-title" id="certificateModalLabel">
                         {{ __('Choose Certificate') }}</h5>
@@ -16,20 +16,12 @@
                 </div>
                 <div class="modal-body row">
                     <div class="col">
-
-
-
-
                         <div class="row">
                             <div class="col mt-4">
                                 <button class="btn btn-primary mt-auto" type="submit">{{ __('Save') }}</button>
                             </div>
                         </div>
-
                     </div>
-
-
-
                 </div>
             </form>
 
@@ -39,7 +31,7 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary col" onclick="previewHTML()">Preview</button>
+
         </div>
     </div>
 </div>
@@ -61,6 +53,7 @@
 
                         const iframe = document.createElement('iframe');
                         iframe.id = 'previewFrame';
+                        iframe.className = 'iframe-content';
                         iframe.style =
                             'width:1122px; height:800px; border:1px solid #ccc; transform:scale(0.4); transform-origin: 0 0;';
                         iframeWrapper.appendChild(iframe);
@@ -72,6 +65,12 @@
                         doc.open();
                         doc.write(html);
                         doc.close();
+
+                        // render certificate name below iframe
+                        const certificateName = document.createElement('div');
+                        certificateName.style = 'position: absolute; bottom: 10px; left: 10px;';
+                        certificateName.innerHTML = name;
+                        iframeWrapper.appendChild(certificateName);
 
                         // render select button on iframe wrapper, under iframe 
                         const selectButton = document.createElement('button');
@@ -132,10 +131,9 @@
 
 
         function chooseCertificate(id) {
-            $('input[name="certificate_builder_id"]').val(id);
-            $('#certificateBg').html(
-                '<img src="{{ route('admin.certificate-builder.getBg', ':id') }}" alt="" style="width: 100%; height: auto;" />'
-                .replace(':id', id));
+            $('input[name="certificate_name"]').val(id);
+            // submit form
+            $('#certificate-type-form').submit();
         }
     </script>
 @endpush
@@ -156,20 +154,17 @@
 
         .iframe-wrapper {
             position: relative;
-            width: 400px;
-            height: 300px;
+            width: 500px;
+            height: 400px;
+            margin: 10px;
+            border: 1px solid #ccc;
             // padding-top: 56.25%;
             /* 16:9 ratio, adjust as needed */
             // overflow: hidden;
         }
 
-        .iframe-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
+        .iframe-content {
+            margin: 10px;
         }
     </style>
 @endpush

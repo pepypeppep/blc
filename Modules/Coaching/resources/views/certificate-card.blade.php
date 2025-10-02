@@ -19,14 +19,13 @@
          {{-- Kirim ke Bantara --}}
          <a href="{{ route('admin.coaching.certificate.send', $coaching->id) }}"
              class="btn btn-primary mt-3">{{ __('Send to Bantara') }}</a>
-         {{-- Batalkan TTE --}}
-         <a href="#" class="btn btn-danger mt-3">{{ __('Cancel TTE Bantara') }}</a>
+
 
          {{-- table list sertifikat --}}
          {{-- column name, link for download --}}
          <div class="table-responsive">
 
-             <table class="table">
+             <table class="table table-bordered">
                  <thead>
                      <tr>
                          <th>{{ __('Name') }}</th>
@@ -47,10 +46,13 @@
                                      <span class="badge badge-danger">{{ __('Belum TTE') }}</span>
                                  @endif
                              </td>
-                             <td>
+                             <td class="py-2">
                                  <a target="_blank"
                                      href="{{ route('admin.coaching.certificate.download', $coachingUser->id) }}"
                                      class="btn btn-primary">{{ __('Preview') }}</a>
+
+                                 {{-- batalkan tte --}}
+                                 {{-- <a href="#" class="btn btn-danger mt-3">{{ __('Cancel') }}</a> --}}
                              </td>
                          </tr>
                      @empty
@@ -79,14 +81,15 @@
                  .then(
                      html => {
                          const iframeWrapper = document.createElement('div');
-                         iframeWrapper.className = 'iframe-wrapper';
+                         iframeWrapper.style =
+                             'width:350px; height:300px;';
                          // preview.style =
                          // 'width:500px; height:300px; border:1px solid #ccc; padding: 100px;';
 
                          const iframe = document.createElement('iframe');
                          iframe.id = 'previewFrame';
                          iframe.style =
-                             'width:1122px; height:800px; border:1px solid #ccc; transform:scale(0.4); transform-origin: 0 0;';
+                             'width:1122px; height:800px; border:1px solid #ccc; transform:scale(0.3); transform-origin: 0 0;';
                          iframeWrapper.appendChild(iframe);
                          parent.appendChild(iframeWrapper);
 

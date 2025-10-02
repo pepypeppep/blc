@@ -1,4 +1,17 @@
-# Admin Role
+# Coaching Docs
+
+
+## Callback Bantara
+- route : /api/coaching/callback
+	- method : POST
+	- body : 
+		- id : string
+		- file: binary
+
+- storage path : {year}/{month}/coaching/{coaching_id}/{coaching_user_id}-signed-certificate.pdf
+
+
+# Todo
 ## [ ] Modul coaching certificate. Tambahkan module untuk memilih sertifikat pada admin coaching. (Bisa seperti mentoring)
 
 - [ ] Pemilihan jenis sertifikat
@@ -26,7 +39,7 @@
 		+ [ ] Setelah klik kirim ke bantara, tidak perlu menunggu callback, langsung set menjadi selesai
 
 - [ ] Callback dari bantara
-		+ [ ] simpan di coaching_users.signed_certificate_path berdasarkan document_id
+		+ [x] simpan di coaching_users.signed_certificate_path berdasarkan document_id
 
 
 

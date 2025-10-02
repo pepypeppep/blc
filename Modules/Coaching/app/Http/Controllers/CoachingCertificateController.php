@@ -91,13 +91,12 @@ class CoachingCertificateController extends Controller
     {
         $validated = $request->validate([
             'coaching_id' => 'required|exists:coachings,id',
-            'certificate_builder_id' => 'required|exists:certificate_builders,id',
+            'certificate_name' => 'required|string',
         ]);
 
         $coaching = Coaching::findOrFail($validated['coaching_id']);
-        $certificateBuilder = CertificateBuilder::findOrFail($validated['certificate_builder_id']);
 
-        $coaching->certificate_id = $certificateBuilder->id;
+        $coaching->certificate_template_name = $validated['certificate_name'];
         $coaching->save();
 
         return redirect()->back()->with('success', 'Tipe sertifikat berhasil disimpan');
@@ -167,15 +166,16 @@ class CoachingCertificateController extends Controller
         $frontSigner = $coachingSigners->where('step', 1)->first()->user;
         $backSigner = $coachingSigners->where('step', 2)->first()->user;
 
-        // dd($frontSigner, $backSigner);
-        // Load file content
+        $certicateTemplate = $coaching->certificate_template_name;
+
+        $htmlTemplateData = Storage::disk('templates')->get($certicateTemplate);
 
 
         $sessions = $coaching->coachingSessions;
         foreach ($coachingUsers as $coachingUserPivot) {
             $coachingUser = $coachingUserPivot->coachee;
 
-            $htmlTemplate = Storage::disk('templates')->get("certificate-blue-corporate-1-sig.html");
+            $htmlTemplate = $htmlTemplateData;
 
 
             $now = now();
@@ -205,7 +205,7 @@ class CoachingCertificateController extends Controller
                 '[organization_name]' => "Badan Kepegawaian Daerah Kabupaten Bantul"
             ];
 
-            $htmlTemplate = str_replace(array_keys($page1Data), array_values($page1Data), $htmlTemplate);
+            $htmlTemplateReplaced = str_replace(array_keys($page1Data), array_values($page1Data), $htmlTemplate);
 
 
 
@@ -213,15 +213,29 @@ class CoachingCertificateController extends Controller
             //     ->header('Content-Type', 'text/html');
 
 
-            $pdf1Data = Pdf::loadHTML($htmlTemplate)
-                ->setPaper('A4', 'landscape')
-                ->output();
+            // $pdf1Data = Pdf::loadHTML(str_replace(array_keys($page1Data), array_values($page1Data), $htmlTemplateReplaced))
+            //     ->setPaper('A4', 'landscape')
+            //     ->output();
 
-            Log::info('render pdf 1 took ' . now()->diffInMilliseconds($now, true) . ' ms');
+            // Log::info('render pdf 1 took ' . now()->diffInMilliseconds($now, true) . ' ms');
+
+            // Send HTML to Node service
+            $response = Http::withBody($htmlTemplateReplaced, 'text/html')
+                ->timeout(60) // in seconds
+                ->post('http://192.168.247.250:3000/convert');
+
+            if ($response->failed()) {
+                throw new \Exception('Failed to generate PDF: ' . $response->body());
+            }
+
+            $pdf1Data = $response->body();
+            // Save the PDF into storage/app/pdfs/
+            // $path = "pdfs/" . $filename;
+            // Storage::put($path, $response->body());
 
 
             // return PDF directly
-            // return response($pdf1Data, 200)
+            // return response($response->body(), 200)
             //     ->header('Content-Type', 'application/pdf');
 
             //=========
@@ -271,12 +285,21 @@ class CoachingCertificateController extends Controller
             //     ->header('Content-Type', 'text/html');
 
 
-            $pdf2Data = Pdf::loadHTML($page2Html)
-                ->setPaper('A4', 'portrait')->setWarnings(false)->output();
+            // $pdf2Data = Pdf::loadHTML($page2Html)
+            //     ->setPaper('A4', 'portrait')->setWarnings(false)->output();
 
             // return response($pdf2Data)
             //     ->header('Content-Type', 'application/pdf');
 
+            $response2 = Http::withBody($page2Html, 'text/html')
+                ->timeout(60) // in seconds
+                ->post('http://192.168.247.250:3000/convert');
+
+            if ($response2->failed()) {
+                throw new \Exception('Failed to generate PDF: ' . $response2->body());
+            }
+
+            $pdf2Data = $response2->body();
 
             Log::info('render pdf 2 took ' . now()->diffInMilliseconds($now, true) . ' ms');
 
@@ -360,7 +383,7 @@ class CoachingCertificateController extends Controller
                     'signers' => $signersJson,
                     'title' => sprintf("Sertifikat Coaching %s an %s", $coaching->title, $coachingUser->name),
                     'description' => $coachingUser->name,
-                    'callback_url' => sprintf("%s", route('api.bantara-callback', $coachingUserPivot)),
+                    'callback_url' => sprintf("%s", route('api.callback.coaching', $coachingUserPivot)),
                     'callback_key' => appConfig('bantara_callback_key'),
                 ]);
 

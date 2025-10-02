@@ -36,6 +36,7 @@ use App\Http\Controllers\Frontend\InstructorLiveCredentialController;
 use App\Http\Controllers\Frontend\InstructorProfileSettingController;
 use App\Http\Controllers\Frontend\PersonalCertificateRecognitionController;
 use App\Http\Controllers\Frontend\StudentPendidikanLanjutanController;
+use Illuminate\Support\Facades\Storage;
 
 Route::group(['middleware' => 'maintenance.mode'], function () {
 
@@ -363,7 +364,7 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::delete('course-chapter/quiz-question/delete/{question_id}', [CourseContentController::class, 'destroyQuizQuestion'])->name('course-chapter.quiz-question.destroy');
         Route::get('course-delete-request/{course_id}', [InstructorCourseController::class, 'showDeleteRequest'])->name('course.delete-request.show');
         Route::post('course-delete-request', [InstructorCourseController::class, 'sendDeleteRequest'])->name('course.send-delete-request');
-       
+
 
         /** payout routes */
         Route::get('payout', [InstructorPayoutController::class, 'index'])->name('payout.index');
@@ -401,6 +402,31 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
         Route::delete('tinymce-delete-image', [TinymceImageUploadController::class, 'destroy']);
     });
 });
+
+Route::get('questions/image/{filename}', function ($filename) {
+    $path = storage_path('app/private/uploads/questions/' . $filename);
+
+    if (!file_exists($path)) {
+        // fallback ke gambar default
+        return redirect('/frontend/img/no_file.svg');
+    }
+
+    return response()->file($path);
+})->name('questions.image');
+
+
+Route::get('answers/image/{filename}', function ($filename) {
+    $path = storage_path('app/private/uploads/answers/' . $filename);
+
+    if (!file_exists($path)) {
+        // fallback ke gambar default
+        return redirect('/frontend/img/no_file.svg');
+    }
+
+    return response()->file($path);
+})->name('answers.image');
+
+
 
 //maintenance mode route
 Route::get('/maintenance-mode', function () {

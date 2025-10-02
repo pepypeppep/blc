@@ -303,8 +303,12 @@
         });
 
         // isi dari database
-        let initialMainContent = `{!! $questionItem->title !!}`;
-        quillMain.root.innerHTML = initialMainContent;
+
+        let initialMainContent = @json($questionItem->title ?? null);
+
+        if (initialMainContent !== null) {
+            quillMain.root.innerHTML = initialMainContent;
+        }
 
         let quillModal = new Quill('#modal-question-editor', {
             theme: 'snow',
@@ -452,6 +456,19 @@
                 removeAnswerImage(index);
             }
         }
+        // function toggleAnswerImage(index, checked) {
+        //     const container = document.getElementById(`answerImageContainer-${index}`);
+        //     container.classList.toggle('d-none', !checked);
+
+        //     // jangan hapus gambar, cukup hide saja
+        // }
+
+        // function toggleQuestionImage(checked) {
+        //     const container = document.getElementById('questionImageContainer');
+        //     container.classList.toggle('d-none', !checked);
+
+        //     // gambar lama tetap ada, jangan dipanggil removeQuestionImage()
+        // }
 
         // Preview Question Image
         function previewQuestionImage(input) {

@@ -33,7 +33,7 @@ use Google\Client as GoogleClient;
 
 function file_upload(UploadedFile $file, string $path = 'custom-images/', string | null $oldFile = '', bool $optimize = false)
 {
-    $path = 'custom-images/';
+    // $path = 'custom-images/';
 
     // Validate file format
     $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];

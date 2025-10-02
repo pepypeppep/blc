@@ -421,15 +421,23 @@ class CourseContentController extends Controller
             $questionItem = null; // atau [] sesuai kebutuhanmu
         }
 
+        if ($questionItem->image != null) {
+            $questionItem->image = $questionItem->image
+                ? url('questions/image/' . baseName($questionItem->image))
+                : null;
+        }
+
         //question answer
         $questionAnswer = [];
-        if ($questionItem) {
+        if ($questionItem) {    
             $questionAnswer = $questionItem->answers()->get()->map(function ($answer) {
                 return [
                     'id' => $answer->id,
                     'title' => $answer->title,
                     'correct' => $answer->correct,
-                    'image' => isset($answer->image) ? asset($answer->image) : null
+                    'image'  => $answer->image
+                        ? url('answers/image/' . baseName($answer->image))
+                        : null,
                 ];
             })->toArray();
         }
@@ -498,10 +506,11 @@ class CourseContentController extends Controller
         try {
 
             if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('images/question'), $imageName);
-                $imagePath = 'images/question/' . $imageName;
+                // $image = $request->file('image');
+                // $imageName = time() . '.' . $image->getClientOriginalExtension();
+                // $image->move(public_path('images/question'), $imageName);
+                // $imagePath = 'images/question/' . $imageName;
+                $imagePath =  file_upload(file: $request->image, path: 'uploads/questions/');
             }
 
             $question = QuizQuestion::create([
@@ -671,20 +680,6 @@ class CourseContentController extends Controller
 
         $quiz = Quiz::findOrFail($quizId);
 
-        // Hitung total bobot pertanyaan
-        $currentWeight = $quiz->questions()->sum('grade');
-        $newTotal = $currentWeight + $validated['weight'];
-
-        if ($newTotal > $quiz->pass_mark) {
-            return response()->json([
-                'message' => 'The given data was invalid.',
-                'errors' => [
-                    'grade' => ['Bobot pertanyaan melebihi bobot dari bobot Kuis.'],
-                ],
-            ], 422);
-        }
-
-
         try {
             $question = null;
             $imagePath = null;
@@ -692,6 +687,19 @@ class CourseContentController extends Controller
             // UPDATE jika ada question_id
             if ($request->filled('question_id')) {
                 $question = QuizQuestion::where('quiz_id', $quizId)->where('id', $request->question_id)->firstOrFail();
+
+                $currentWeight = $quiz->questions()->sum('grade');
+                // total baru = (total sekarang - grade lama pertanyaan ini) + grade baru
+                $newTotal = ($currentWeight - $question->grade) + $validated['weight'];
+                if ($newTotal > $quiz->pass_mark) {
+                    return response()->json([
+                        'message' => 'The given data was invalid.',
+                        'errors' => [
+                            'grade' => ['Bobot pertanyaan melebihi bobot dari bobot Kuis.'],
+                        ],
+                    ], 422);
+                }
+
                 $imagePath = $question->image;
 
                 // ganti gambar pertanyaan kalau ada file baru
@@ -699,10 +707,13 @@ class CourseContentController extends Controller
                     if ($imagePath && file_exists(public_path($imagePath))) {
                         unlink(public_path($imagePath));
                     }
-                    $image = $request->file('question_image');
-                    $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('images/question'), $imageName);
-                    $imagePath = 'images/question/' . $imageName;
+                    // $image = $request->file('question_image');
+                    // $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    // $image->move(public_path('images/question'), $imageName);
+                    // $imagePath = 'images/question/' . $imageName;
+                    $imagePath =  file_upload(file: $request->question_image, path: 'uploads/questions/');
+                } else {
+                    $imagePath = null;
                 }
 
                 // hapus gambar pertanyaan jika diminta
@@ -721,12 +732,27 @@ class CourseContentController extends Controller
             } else {
                 // CREATE baru
 
+                // Hitung total bobot pertanyaan
+                $currentWeight = $quiz->questions()->sum('grade');
+                $newTotal = $currentWeight + $validated['weight'];
+
+                if ($newTotal > $quiz->pass_mark) {
+                    return response()->json([
+                        'message' => 'The given data was invalid.',
+                        'errors' => [
+                            'grade' => ['Bobot pertanyaan melebihi bobot dari bobot Kuis.'],
+                        ],
+                    ], 422);
+                }
 
                 if ($request->hasFile('question_image')) {
-                    $image = $request->file('question_image');
-                    $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('images/question'), $imageName);
-                    $imagePath = 'images/question/' . $imageName;
+                    // $image = $request->file('question_image');
+                    // $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                    // $image->move(public_path('images/question'), $imageName);
+                    // $imagePath = 'images/question/' . $imageName;
+                    $imagePath =  file_upload(file: $request->question_image, path: 'uploads/questions/');
+                } else {
+                    $imagePath = null;
                 }
 
                 $question = QuizQuestion::create([
@@ -754,10 +780,12 @@ class CourseContentController extends Controller
                         if ($answerImagePath && file_exists(public_path($answerImagePath))) {
                             unlink(public_path($answerImagePath));
                         }
-                        $img = $request->file("answers.$key.image");
-                        $imgName = time() . '_' . uniqid() . '.' . $img->getClientOriginalExtension();
-                        $img->move(public_path('images/answer'), $imgName);
-                        $answerImagePath = 'images/answer/' . $imgName;
+                        // $img = $request->file("answers.$key.image");
+                        // $imgName = time() . '_' . uniqid() . '.' . $img->getClientOriginalExtension();
+                        // $img->move(public_path('images/answer'), $imgName);
+                        // $answerImagePath = 'images/answer/' . $imgName;
+
+                        $answerImagePath =  file_upload(file: $request->file("answers.$key.image"), path: 'uploads/answers/');
                     }
 
                     if (!empty($answerData['remove_image'])) {
@@ -775,10 +803,11 @@ class CourseContentController extends Controller
                 } else {
                     // tambah jawaban baru
                     if ($request->hasFile("answers.$key.image")) {
-                        $img = $request->file("answers.$key.image");
-                        $imgName = time() . '_' . uniqid() . '.' . $img->getClientOriginalExtension();
-                        $img->move(public_path('images/answer'), $imgName);
-                        $answerImagePath = 'images/answer/' . $imgName;
+                        // $img = $request->file("answers.$key.image");
+                        // $imgName = time() . '_' . uniqid() . '.' . $img->getClientOriginalExtension();
+                        // $img->move(public_path('images/answer'), $imgName);
+                        // $answerImagePath = 'images/answer/' . $imgName;
+                        $answerImagePath =  file_upload(file: $request->file("answers.$key.image"), path: 'uploads/answers/');
                     }
 
                     $question->answers()->create([

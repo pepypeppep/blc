@@ -279,6 +279,7 @@
 
                                                                                         </ul>
                                                                                     </div>
+
                                                                                     <a href="javascript:;"
                                                                                         data-type="{{ $chapterItem->type }}"
                                                                                         data-courseid="{{ $chapter->course_id }}"
@@ -316,11 +317,17 @@
                                                                                                 <p
                                                                                                     class="mb-0 ms-2 bold-text">
                                                                                                     {!! clean(@$question->title) !!}
+
+
                                                                                                 </p>
                                                                                             </div>
                                                                                             <div class="item-action">
-                                                                                                <a href="javascript:;"
+                                                                                                {{-- <a href="javascript:;"
                                                                                                     class="ms-2 text-dark edit-question-btn"
+                                                                                                    data-question-id="{{ $question->id }}"><i
+                                                                                                        class="fas fa-edit"></i></a> --}}
+                                                                                                <a href="{{ url('/admin/course-chapter/quiz-question/create/' . $chapterItem->quiz->id . '?questionId=' . $question->id) }}"
+                                                                                                    class="ms-2 text-dark"
                                                                                                     data-question-id="{{ $question->id }}"><i
                                                                                                         class="fas fa-edit"></i></a>
                                                                                                 <a href="{{ route('admin.course-chapter.quiz-question.destroy', $question->id) }}"

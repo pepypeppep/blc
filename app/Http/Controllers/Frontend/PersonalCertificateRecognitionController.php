@@ -94,6 +94,7 @@ class PersonalCertificateRecognitionController extends Controller
             'jp' => $request->jp,
             'official_position' => $request->official_position,
             'graduation_predicate' => $request->graduation_predicate,
+            'status' => 'draft'
         ]);
 
         $path = 'pengakuan-sertifikat/' . now()->year . '/' . now()->month . '/' . $data->id . '/';

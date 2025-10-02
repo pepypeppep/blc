@@ -89,10 +89,22 @@ class ArticleController extends Controller
             $article->verificator_id = Auth::user()->id;
             $article->status = 'rejected';
             $article->note = $request->input('rejected_reason');
+
+            if ($article->personal_certificate_recognition_id) {
+                $article->certificateRecognition()->update([
+                    'status' => 'rejected',
+                ]);
+            }
         } elseif ($status === 'published') {
             $article->verificator_id = Auth::user()->id;
             $article->status = 'published';
             $article->published_at = now();
+
+            if ($article->personal_certificate_recognition_id) {
+                $article->certificateRecognition()->update([
+                    'status' => 'published',
+                ]);
+            }
         } else {
             return back()->with('error', 'Status tidak valid.');
         }

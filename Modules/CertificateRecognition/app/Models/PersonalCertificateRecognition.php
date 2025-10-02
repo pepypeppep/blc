@@ -3,6 +3,8 @@
 namespace Modules\CertificateRecognition\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Modules\Article\app\Models\Article;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\CertificateRecognition\Database\factories\PersonalCertificateRecognitionFactory;
@@ -23,14 +25,24 @@ class PersonalCertificateRecognition extends Model
         return $this->belongsTo(CompetencyDevelopment::class);
     }
 
+    /**
+     * Get the article associated with the PersonalCertificateRecognition
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function article(): HasOne
+    {
+        return $this->hasOne(Article::class, 'personal_certificate_recognition_id');
+    }
+
     public function getStatAttribute(): array
     {
-        if ($this->status === 'pending') {
-            return [
-                'label' => 'Tunda',
-                'color' => 'secondary'
-            ];
-        }
+        // if ($this->status === 'pending') {
+        //     return [
+        //         'label' => 'Tunda',
+        //         'color' => 'secondary'
+        //     ];
+        // }
         if ($this->status === 'draft') {
             return [
                 'label' => 'Draft',

@@ -25,6 +25,12 @@
                             <p class="text mt-0">{{ $pengetahuan->enrollment->course->title }}</p>
                         </div>
                     @endif
+                    @if ($pengetahuan->personal_certificate_recognition_id)
+                        <div class="col-12">
+                            <span class="text text-capitalize"><strong>Pengakuan Sertifikat: </strong></span>
+                            <p class="text mt-0">{{ $pengetahuan->certificateRecognition->title }}</p>
+                        </div>
+                    @endif
                     <div>
                         <span class="badge bg-primary">{{ $pengetahuan->category }}</span>
                         <span

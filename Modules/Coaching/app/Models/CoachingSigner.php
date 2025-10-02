@@ -13,6 +13,9 @@ class CoachingSigner extends Model
     const TYPE_SIGN = 'sign';
     const TYPE_VERIFY = 'verify';
 
+    const FRONT = 2;
+    const BACK = 1;
+
     /**
      * The attributes that are mass assignable.
      */

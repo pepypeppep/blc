@@ -151,20 +151,24 @@ class CoachingCertificateController extends Controller
      */
     function generate(Coaching $coaching)
     {
-        $title = $coaching->title;
-        $goal = $coaching->goal;
-        $reality = $coaching->reality;
-        $option = $coaching->option;
-        $wayForward = $coaching->way_forward;
-        $successIndicator = $coaching->success_indicator;
-        $totalSession = $coaching->total_session;
-        $coach = $coaching->coach;
+        // $title = $coaching->title;
+        // $goal = $coaching->goal;
+        // $reality = $coaching->reality;
+        // $option = $coaching->option;
+        // $wayForward = $coaching->way_forward;
+        // $successIndicator = $coaching->success_indicator;
+        // $totalSession = $coaching->total_session;
+        // $coach = $coaching->coach;
 
-        $certificateBuilder = CertificateBuilder::findOrFail($coaching->certificate_id);
+
+
+
+
         $coachingSigners = $coaching->signers;
         $coachingUsers = $coaching->completedCoachingUsers;
-        $frontSigner = $coachingSigners->where('step', 1)->first()->user;
-        $backSigner = $coachingSigners->where('step', 2)->first()->user;
+
+        $frontSigner = $coachingSigners->where('step',  CoachingSigner::FRONT)->first()->user;
+        $backSigner = $coachingSigners->where('step', CoachingSigner::BACK)->first()->user;
 
         $certicateTemplate = $coaching->certificate_template_name;
 
@@ -175,6 +179,7 @@ class CoachingCertificateController extends Controller
         foreach ($coachingUsers as $coachingUserPivot) {
             $coachingUser = $coachingUserPivot->coachee;
 
+            // copy template to new variable
             $htmlTemplate = $htmlTemplateData;
 
 
@@ -194,12 +199,6 @@ class CoachingCertificateController extends Controller
                 '[signer_1_name]' => $frontSigner->name,
                 '[signer_1_jabatan]' => $frontSigner->jabatan,
                 '[signer_1_nip]' => $frontSigner->nip,
-                '[signer_2_name]' => $backSigner->name,
-                '[signer_2_jabatan]' => $backSigner->jabatan,
-                '[signer_2_nip]' => $backSigner->nip,
-                '[signer_3_name]' => $backSigner->name,
-                '[signer_3_jabatan]' => $backSigner->jabatan,
-                '[signer_3_nip]' => $backSigner->nip,
                 '[certification_number]' => $coaching->id,
                 '[qrcode_data]' =>  'data:image/png;base64,' . base64_encode($page1Qrcode),
                 '[organization_name]' => "Badan Kepegawaian Daerah Kabupaten Bantul"
@@ -242,11 +241,6 @@ class CoachingCertificateController extends Controller
             // page2
             //=========
             $now = now();
-            $cover2Base64 = null;
-
-            $page2Qrcode = QrCode::format('png')->size(200)
-                ->merge('/public/backend/img/logobantul.png')
-                ->generate($page1QrcodeURL);
 
             $count = 0;
             $totalJP = 0;
@@ -255,21 +249,18 @@ class CoachingCertificateController extends Controller
             foreach ($sessions as $session) {
                 $count++;
                 $totalJP += $session->jp ?? 0;
-                $sessionData[] = (object) ['title' => sprintf('Pertemuan %s', $count), 'jp' => $session->jp ?? 0];
+                $sessionData[] =  [sprintf('Pertemuan %s', $count), $session->jp ?? 0];
             }
 
-            $page2Data = [
-                'coaching' => $coaching,
-                'certificateItems' => $certificateBuilder->items,
-                'certificate' => $certificateBuilder,
-                'courseChapers' => [],
-                'cover2Base64' => $cover2Base64,
-                'qrcodeData2' => 'data:image/png;base64,' . base64_encode($page2Qrcode),
-                'sessions' => $sessionData,
-                'totalJP' => $totalJP,
-            ];
+            $page2Html = view('coaching::certificate.certiticate-summary', [
+                'datas' => $sessionData,
+            ])->render();
 
-            $page2Html = view('coaching::certificate.certiticate-summary', $page2Data)->render();
+
+            $page2Qrcode = QrCode::format('png')->size(200)
+                ->merge('/public/backend/img/logobantul.png')
+                ->generate($page1QrcodeURL);
+
 
             $page2Data = [
                 '[tanggal_sertifikat]' => sprintf('Bantul, %s %s %s', now()->day, now()->monthName, now()->year),
@@ -277,12 +268,14 @@ class CoachingCertificateController extends Controller
                 '[nama_kepala_opd]' =>  $backSigner->name,
                 '[nama_golongan]' => $backSigner->golongan,
                 '[nip]' =>  $backSigner->nip,
+                '[title]' => sprintf('Sertifikat Coaching %s', $coaching->title),
+                '[qrcode_data]' => 'data:image/png;base64,' . base64_encode($page2Qrcode),
             ];
 
             $page2Html = str_replace(array_keys($page2Data), array_values($page2Data), $page2Html);
 
             // return response($page2Html)
-            //     ->header('Content-Type', 'text/html');
+            // ->header('Content-Type', 'text/html');
 
 
             // $pdf2Data = Pdf::loadHTML($page2Html)

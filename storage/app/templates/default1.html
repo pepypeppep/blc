@@ -179,49 +179,52 @@
 </head>
 
 <body>
-    <!-- === PAGE 2 === -->
+
+    <!-- === PAGE 1 === -->
     <div class="page">
         <div class="header">
-            <!-- FutureSkills logo approx -->
-            <svg width="200" height="60" viewBox="0 0 200 60">
-                <path d="M5 10 h20 v10 h-10 v10 h10 v10 h-20z" fill="#233774" />
-                <path d="M35 10 h10 v30 h-10z" fill="#f58220" />
-                <text x="50" y="35" font-size="20" font-weight="bold" fill="#233774">BKPP</text>
-                <text x="105" y="35" font-size="20" font-weight="bold" fill="#f58220">SDM</text>
-                <text x="50" y="50" font-size="10" fill="#233774">Kabupaten Bantul</text>
+            <!-- LAN RI Logo Approx -->
+            <svg width="120" height="50" viewBox="0 0 120 50">
+                <polygon points="5,45 5,5 35,25 35,45" fill="#233774" />
+                <polygon points="35,25 65,5 65,45 35,45" fill="#e63946" />
+                <text x="70" y="38" font-size="22" font-weight="bold" fill="#233774">BKPPSDM</text>
             </svg>
-            <div class="title">[title]</div>
+
+            <!-- ASN Berpijar Approx -->
+            <svg width="150" height="50" viewBox="0 0 200 60">
+                <path d="M10 50 L30 10 L50 50 Z" fill="#233774" />
+                <path d="M30 10 L70 50 L50 50 Z" fill="#f58220" />
+                <text x="80" y="40" font-size="20" font-weight="bold" fill="#233774">ASN</text>
+                <text x="80" y="55" font-size="16" fill="#233774">BERPIJAR</text>
+            </svg>
         </div>
 
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>{{ $column1Title ?? 'Judul' }}</th>
-                        <th>{{ $column2Title ?? 'JPL' }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{-- [[a,b,b],[a,b,c]] --}}
-                    @foreach ($datas as $data)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $data[0] ?? '-' }}</td>
-                            <td>{{ $data[1] ?? '-' }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        <div style="text-align:center;">
+            <div class="certificate-title">SERTIFIKAT</div>
         </div>
+
+        <div class="certificate-body">
+            dengan bangga mempersembahkan<br>sertifikat ini kepada:
+            <div class="recipient">[participant_name]</div>
+            Atas pencapaiannya dalam menyelesaikan<br>
+            tugas akhir pada kelas pelatihan:<br>
+            <span class="course">[program_name]</span>
+        </div>
+
+        <div class="date">Jakarta, 28 Agustus 2025</div>
 
         <div class="signature">
             <img src="[qrcode_data]" alt="QR Code" class="qr-code">
-            <div class="signatory">[nama_kepala_opd]</div>
-            <div class="signatory-title">[nama_jabatan]</div>
+            <div class="signatory">[signer_1_name]</div>
+            <div class="signatory-title">[signer_1_jabatan]</div>
         </div>
-    </div>
 
+        <!-- <div class="qr-code"></div> -->
+        <div class="cert-number">[certification_number]</div>
+
+        <div class="ribbon-left"></div>
+        <div class="ribbon-right"></div>
+    </div>
 </body>
 
 </html>

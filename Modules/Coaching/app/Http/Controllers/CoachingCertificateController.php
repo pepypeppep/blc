@@ -265,8 +265,16 @@ class CoachingCertificateController extends Controller
 
             $page2Html = str_replace(array_keys($page2Data), array_values($page2Data), $page2Html);
 
+            // return response($page2Html)
+            //     ->header('Content-Type', 'text/html');
+
+
             $pdf2Data = Pdf::loadHTML($page2Html)
                 ->setPaper('A4', 'portrait')->setWarnings(false)->output();
+
+            // return response($pdf2Data)
+            //     ->header('Content-Type', 'application/pdf');
+
 
             Log::info('render pdf 2 took ' . now()->diffInMilliseconds($now, true) . ' ms');
 

@@ -7,134 +7,92 @@
     <style>
         @page {
             size: A4 portrait;
-            margin: 0.3in;
+            margin: 1cm;
+            background-color: #ff00ff;
         }
 
+
+
         body {
+            border: 2px solid #2c3e50;
+            /* width: 21mm;
+            height: 297mm; */
+            /* margin: 0 auto; */
+            /* centers content if previewed in browser */
             font-family: 'DejaVu Sans', Arial, sans-serif;
-            margin: 0;
+            font-size: 12px;
+            /* margin: 0; */
             padding: 0;
-            background-color: #f8f9fa;
-            color: #333;
+            /* background-color: #ff0000; */
+            color: #333333;
         }
 
         .certificate-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            border: 3px solid #2c3e50;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
+            /* width: 100%;
+            height: 100%; */
+            margin: 0 0;
+            padding: 20px;
+            background-color: #ffffff;
         }
 
-        .certificate-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 8px;
-            background: linear-gradient(90deg, #3498db, #2ecc71, #f39c12, #e74c3c);
+        .certificate-number {
+            text-align: right;
+            font-size: 11px;
+            color: #555555;
+            font-weight: bold;
         }
 
         .certificate-header {
             text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 15px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid #3498db;
+            padding-bottom: 12px;
         }
 
         .certificate-title {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             color: #2c3e50;
             margin: 0;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .certificate-subtitle {
-            font-size: 16px;
-            color: #7f8c8d;
-            margin: 8px 0 0 0;
+            font-size: 14px;
+            color: #555555;
+            margin: 5px 0 0 0;
             font-style: italic;
         }
 
-        .certificate-number {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 12px;
-            color: #7f8c8d;
-            font-weight: bold;
-        }
-
         .content-section {
-            margin: 20px 0;
+            margin: 18px 0;
         }
 
         .section-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 12px;
             text-align: center;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background-color: #3498db;
+            margin: 0 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #3498db;
         }
 
         .coaching-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
+            margin: 12px 0;
         }
 
-        .coaching-table thead {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-        }
-
-        .coaching-table th {
-            padding: 10px 8px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
+        .coaching-table th,
         .coaching-table td {
-            padding: 8px 10px;
-            border-bottom: 1px solid #ecf0f1;
+            border: 1px solid #d0d5db;
+            padding: 6px;
             font-size: 11px;
         }
 
-        .coaching-table tbody tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-
-        .coaching-table tbody tr:nth-child(odd) {
-            background-color: white;
-        }
-
-        .coaching-table tbody tr:hover {
-            background-color: #e8f4fd;
-            transition: background-color 0.3s ease;
+        .coaching-table thead th {
+            background-color: #3498db;
+            color: #ffffff;
         }
 
         .text-center {
@@ -153,43 +111,46 @@
             font-weight: bold;
         }
 
+        .highlight-box {
+            border: 1px solid #3498db;
+            background-color: #eef5fb;
+            padding: 8px;
+            margin-top: 12px;
+        }
+
+        .total-hours {
+            text-align: right;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333333;
+        }
+
         .signature-section {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 2px solid #bdc3c7;
+            margin-top: 22px;
+            padding-top: 15px;
+            border-top: 1px solid #bdc3c7;
         }
 
-        .signature-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-top: 15px;
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .signature-block {
+        .signature-table td {
             text-align: center;
-            flex: 1;
-            max-width: 200px;
+            padding-top: 25px;
         }
 
         .signature-line {
-            width: 120px;
-            height: 1px;
-            background-color: #2c3e50;
-            margin: 30px auto 8px;
-            position: relative;
+            border-top: 1px solid #2c3e50;
+            width: 140px;
+            margin: 0 auto 6px;
         }
 
-        .signature-line::after {
-            content: '✕';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: white;
-            padding: 0 5px;
+        .signature-mark {
+            font-size: 10px;
             color: #2c3e50;
-            font-size: 12px;
+            margin-bottom: 4px;
         }
 
         .signature-name {
@@ -208,64 +169,34 @@
         .signature-location {
             font-size: 9px;
             color: #95a5a6;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .qr-code-section {
             text-align: center;
-            margin: 15px 0;
+            margin: 12px 0;
         }
 
         .qr-code {
             width: 60px;
             height: 60px;
-            border: 2px solid #3498db;
-            border-radius: 5px;
-            padding: 3px;
+            border: 1px solid #3498db;
+            padding: 2px;
         }
 
         .footer-text {
             text-align: center;
             font-size: 9px;
-            color: #95a5a6;
+            color: #7f8c8d;
             margin-top: 15px;
             font-style: italic;
-        }
-
-        .highlight-box {
-            background: linear-gradient(135deg, #e8f4fd, #f0f9ff);
-            border-left: 4px solid #3498db;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-
-        .total-hours {
-            text-align: right;
-            font-size: 14px;
-            font-weight: bold;
-            color: #e74c3c;
-            margin-top: 8px;
-        }
-
-        @media print {
-            body {
-                background-color: white;
-            }
-
-            .certificate-container {
-                box-shadow: none;
-                border: 2px solid #2c3e50;
-            }
         }
     </style>
 </head>
 
 <body>
     <div class="certificate-container">
-        <div class="certificate-number">
-            Certificate No: [nomor_sertifikat]
-        </div>
+        <div class="certificate-number">Certificate No: [nomor_sertifikat]</div>
 
         <div class="certificate-header">
             <h1 class="certificate-title">Sertifikat Penyelesaian</h1>
@@ -306,14 +237,17 @@
                 <img src="{{ $qrcodeData2 }}" alt="QR Code" class="qr-code">
             </div>
 
-            <div class="signature-content">
-                <div class="signature-block">
-                    <div class="signature-line"></div>
-                    <div class="signature-name">[nama_kepala_opd]</div>
-                    <div class="signature-title">[nama_jabatan]</div>
-                    <div class="signature-location">Kabupaten Bantul</div>
-                </div>
-            </div>
+            <table class="signature-table">
+                <tr>
+                    <td>
+                        <div class="signature-line"></div>
+                        <div class="signature-mark">✕</div>
+                        <div class="signature-name">[nama_kepala_opd]</div>
+                        <div class="signature-title">[nama_jabatan]</div>
+                        <div class="signature-location">Kabupaten Bantul</div>
+                    </td>
+                </tr>
+            </table>
         </div>
 
         <div class="footer-text">

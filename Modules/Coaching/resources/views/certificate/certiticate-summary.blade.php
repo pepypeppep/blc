@@ -296,8 +296,7 @@
 
             <div class="highlight-box">
                 <div class="total-hours">
-                    Total Jam Coaching: <span
-                        id="total-hours">{{ array_sum(collect($sessions)->pluck('jp')->toArray()) }}</span> Jam
+                    Total Jam Coaching: <span id="total-hours">{{ $totalJP }}</span> Jam
                 </div>
             </div>
         </div>
@@ -308,13 +307,6 @@
             </div>
 
             <div class="signature-content">
-                <div class="signature-block">
-                    <div class="signature-line"></div>
-                    <div class="signature-name">Peserta</div>
-                    <div class="signature-title">[nama_peserta]</div>
-                    <div class="signature-location">[tanggal_sertifikat]</div>
-                </div>
-
                 <div class="signature-block">
                     <div class="signature-line"></div>
                     <div class="signature-name">[nama_kepala_opd]</div>

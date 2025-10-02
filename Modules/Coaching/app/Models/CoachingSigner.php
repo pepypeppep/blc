@@ -10,10 +10,13 @@ class CoachingSigner extends Model
 {
     use HasFactory;
 
+    const TYPE_SIGN = 'sign';
+    const TYPE_VERIFY = 'verify';
+
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['user_id', 'coaching_id', 'step'];
+    protected $fillable = ['user_id', 'coaching_id', 'step', 'type'];
 
     public function user()
     {

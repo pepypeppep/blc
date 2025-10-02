@@ -48,6 +48,8 @@ class CoachingCertificateController extends Controller
             'coaching_id' => 'required|exists:coachings,id',
         ]);
 
+        // dd($request->all());
+
         // front tte
         $userFrontTte = User::findOrFail($validated['front_tte']);
 
@@ -56,21 +58,27 @@ class CoachingCertificateController extends Controller
 
         try {
             DB::beginTransaction();
+
+            // delete existing signer
+            CoachingSigner::where('coaching_id', $validated['coaching_id'])->delete();
+
             $coachingSignerFront = CoachingSigner::create([
                 'user_id' => $userFrontTte->id,
                 'coaching_id' => $validated['coaching_id'],
                 'step' => 1,
+                'type' => CoachingSigner::TYPE_SIGN,
             ]);
 
             $coachingSignerBack = CoachingSigner::create([
                 'user_id' => $userBackTte->id,
                 'coaching_id' => $validated['coaching_id'],
                 'step' => 2,
+                'type' => CoachingSigner::TYPE_SIGN,
             ]);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal menyimpan signer');
+            return redirect()->back()->withErrors('Gagal menyimpan signer');
         }
 
         return redirect()->back()->with('success', 'Signer berhasil disimpan');
@@ -150,13 +158,14 @@ class CoachingCertificateController extends Controller
         $successIndicator = $coaching->success_indicator;
         $totalSession = $coaching->total_session;
         $coach = $coaching->coach;
+
         $certificateBuilder = CertificateBuilder::findOrFail($coaching->certificate_id);
         $coachingSigners = $coaching->signers;
         $coachingUsers = $coaching->completedCoachingUsers;
         $frontSigner = $coachingSigners->where('step', 1)->first()->user;
         $backSigner = $coachingSigners->where('step', 2)->first()->user;
 
-
+        // dd($frontSigner, $backSigner);
         // Load file content
 
 
@@ -223,16 +232,15 @@ class CoachingCertificateController extends Controller
                 ->merge('/public/backend/img/logobantul.png')
                 ->generate($page1QrcodeURL);
 
-            $sessionData = [
-                (object) ['title' => 'Dasar-dasar Kepemimpinan dan Manajemen Tim', 'jp' => 8],
-                (object) ['title' => 'Keterampilan Komunikasi dan Public Speaking', 'jp' => 6],
-                (object) ['title' => 'Perencanaan Strategis dan Penetapan Tujuan', 'jp' => 10],
-                (object) ['title' => 'Resolusi Konflik dan Negosiasi', 'jp' => 5],
-                (object) ['title' => 'Manajemen Kinerja dan Umpan Balik', 'jp' => 7],
-                (object) ['title' => 'Manajemen Perubahan dan Pengembangan Organisasi', 'jp' => 9],
-                (object) ['title' => 'Manajemen Waktu dan Peningkatan Produktivitas', 'jp' => 4],
-                (object) ['title' => 'Kecerdasan Emosional dan Kesadaran Diri', 'jp' => 6],
-            ];
+            $count = 0;
+            $totalJP = 0;
+
+            $sessionData = [];
+            foreach ($sessions as $session) {
+                $count++;
+                $totalJP += $session->jp ?? 0;
+                $sessionData[] = (object) ['title' => sprintf('Pertemuan %s', $count), 'jp' => $session->jp ?? 0];
+            }
 
             $page2Data = [
                 'coaching' => $coaching,
@@ -242,6 +250,7 @@ class CoachingCertificateController extends Controller
                 'cover2Base64' => $cover2Base64,
                 'qrcodeData2' => 'data:image/png;base64,' . base64_encode($page2Qrcode),
                 'sessions' => $sessionData,
+                'totalJP' => $totalJP,
             ];
 
             $page2Html = view('coaching::certificate.certiticate-summary', $page2Data)->render();
@@ -365,5 +374,35 @@ class CoachingCertificateController extends Controller
 
 
         return redirect()->back()->with(['messege' => 'Sertifikat berhasil dikirim ke Bantara', 'alert-type' => 'success']);
+    }
+
+    public function listTemplate()
+    {
+        $templates = Storage::disk('templates')->files();
+
+        $result = [];
+        foreach ($templates as $template) {
+            if (!str_ends_with($template, '.html')) {
+                continue;
+            }
+            $result[] = $template;
+        }
+
+        return response()->json($result);
+    }
+
+    public function getHtml(string $name)
+    {
+        if (!str_ends_with($name, '.html')) {
+            return response()->json(['error' => 'Invalid template type'], 400);
+        }
+        // read html from template directory, loop through each html file and read the content, use Storage::disk('template')
+        $templateData = Storage::disk('templates')->get($name);
+        // $templates = Storage::disk('templates')->files();
+        // $templatesData = collect($templates)->map(function ($template) {
+        //     return Storage::disk('templates')->get($template);
+        // });
+
+        return response($templateData)->header('Content-Type', 'text/html');
     }
 }

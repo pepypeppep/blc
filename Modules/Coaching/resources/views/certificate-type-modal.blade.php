@@ -16,16 +16,7 @@
                 </div>
                 <div class="modal-body row">
                     <div class="col">
-                        <div class="row">
-                            @foreach ($certificates as $certificate)
-                                <div class="col-md-3 d-flex flex-column">
-                                    <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}"
-                                        alt="" style="width: 100%; height: auto;">
-                                    <button type="button" class="btn btn-primary mt-auto"
-                                        onclick="chooseCertificate({{ $certificate->id }})">{{ __('Choose') }}</button>
-                                </div>
-                            @endforeach
-                        </div>
+
 
 
 
@@ -41,6 +32,14 @@
 
                 </div>
             </form>
+
+            <div class="row">
+                <div class="col">
+                    <div id="previewContainer" class="d-flex flex-wrap">
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary col" onclick="previewHTML()">Preview</button>
         </div>
     </div>
 </div>
@@ -50,6 +49,44 @@
     <script src="{{ asset('backend/js/default/courses.js') }}"></script>
 
     <script>
+        function previewHTML(name, parent) {
+            // get html from endpoint
+            fetch(`{{ route('admin.coaching.certificate.get-html') }}/${name}`).then(response => response.text())
+                .then(
+                    html => {
+                        const iframeWrapper = document.createElement('div');
+                        iframeWrapper.className = 'iframe-wrapper';
+                        // preview.style =
+                        // 'width:500px; height:300px; border:1px solid #ccc; padding: 100px;';
+
+                        const iframe = document.createElement('iframe');
+                        iframe.id = 'previewFrame';
+                        iframe.style =
+                            'width:1122px; height:800px; border:1px solid #ccc; transform:scale(0.4); transform-origin: 0 0;';
+                        iframeWrapper.appendChild(iframe);
+                        parent.appendChild(iframeWrapper);
+
+
+                        // const iframe = document.getElementById('previewFrame');
+                        const doc = iframe.contentDocument || iframe.contentWindow.document;
+                        doc.open();
+                        doc.write(html);
+                        doc.close();
+
+                        // render select button on iframe wrapper, under iframe 
+                        const selectButton = document.createElement('button');
+                        selectButton.className = 'btn btn-primary';
+                        selectButton.innerHTML = 'Select';
+                        selectButton.onclick = function() {
+                            console.log(name);
+                            chooseCertificate(name);
+                            $('#certificate-type-modal').modal('hide');
+                        };
+                        selectButton.style = 'position: absolute; bottom: 10px; right: 10px;';
+                        iframeWrapper.appendChild(selectButton);
+                    });
+        }
+
         $(document).ready(function() {
             const $name = $("#title"),
                 $slug = $("#slug");
@@ -67,6 +104,16 @@
             }
 
 
+            // fetch list template
+            fetch("{{ route('admin.coaching.certificate.list-template') }}").then(response => response.json()).then(
+                data => {
+                    data.forEach(template => {
+                        const parent = document.getElementById('previewContainer');
+                        previewHTML(template, parent);
+                    });
+                });
+
+
 
 
         })
@@ -77,7 +124,7 @@
             format: "yyyy-mm-dd"
         });
 
-        @if ($coaching?->certificate_id != null)
+        @if ($coaching?->certificate_template_name != null)
             $('#certificateBg').html(
                 '<img src="{{ route('admin.certificate-builder.getBg', $coaching->certificate_id) }}" alt="" style="width: 100%; height: auto;" />'
             );
@@ -105,6 +152,24 @@
 
         .max-h-400 {
             min-height: 400px;
+        }
+
+        .iframe-wrapper {
+            position: relative;
+            width: 400px;
+            height: 300px;
+            // padding-top: 56.25%;
+            /* 16:9 ratio, adjust as needed */
+            // overflow: hidden;
+        }
+
+        .iframe-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 @endpush

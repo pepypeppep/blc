@@ -421,15 +421,15 @@ class CourseContentController extends Controller
             $questionItem = null; // atau [] sesuai kebutuhanmu
         }
 
-        $questionItem->image = $questionItem->image
-            ? url('questions/image/' . baseName($questionItem->image))
-            : null;
-
-        // dd($questionItem);
+        if ($questionItem->image != null) {
+            $questionItem->image = $questionItem->image
+                ? url('questions/image/' . baseName($questionItem->image))
+                : null;
+        }
 
         //question answer
         $questionAnswer = [];
-        if ($questionItem) {
+        if ($questionItem) {    
             $questionAnswer = $questionItem->answers()->get()->map(function ($answer) {
                 return [
                     'id' => $answer->id,

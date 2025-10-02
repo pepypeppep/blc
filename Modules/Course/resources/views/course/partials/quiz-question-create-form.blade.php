@@ -12,11 +12,15 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1 class="text-primary">{{ __('Course') }}</h1>
+                <h1 class="text-primary"> Buat Soal Kuis</h1>
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
                     </div>
-                    <div class="breadcrumb-item">{{ __('Course') }}</div>
+                    <div class="breadcrumb-item active"><a
+                            href="{{ url('admin/courses/create/' . $quiz->course_id . '/step/3') }}">Daftar 
+                            Pelatihan</a>
+                    </div>
+                    <div class="breadcrumb-item"> Buat Soal Kuis </div>
                 </div>
             </div>
             <div class="section-body">
@@ -24,7 +28,6 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-12">
-
                                 <div class="card shadow-sm">
                                     <div class="card-header bg-primary text-white">
                                         Informasi Kuis
@@ -295,7 +298,7 @@
                     }, {
                         'list': 'bullet'
                     }],
-                    ['link', 'image'],
+                    ['link'],
                     ['clean']
                 ]
             },

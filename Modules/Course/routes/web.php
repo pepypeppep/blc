@@ -115,6 +115,9 @@ Route::group(['middleware' => ['auth:admin', 'translation'], 'prefix' => 'admin'
     Route::put('course-chapter/quiz-question/update/{question_id}', [CourseContentController::class, 'updateQuizQuestion'])->name('course-chapter.quiz-question.update');
     Route::delete('course-chapter/quiz-question/delete/{question_id}', [CourseContentController::class, 'destroyQuizQuestion'])->name('course-chapter.quiz-question.destroy');
 
+    //imporve
+    Route::post('course-chapter/quiz-question-only/create/{quiz_id}', [CourseContentController::class, 'storeQuizQuestionOnly'])->name('course-chapter.quiz-question-only.store');
+    Route::post('course-chapter/quiz-question-answer/create/{quiz_id}', [CourseContentController::class, 'storeQuizQuestionAnswer'])->name('course-chapter.quiz-question-answer.store');
 
     Route::put('course-chapter/rtl/update/{follow_up_action_id}', [CourseContentController::class, 'updateFollowUpAction'])->name('course-chapter.rtl.update');
 

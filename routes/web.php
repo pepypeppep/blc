@@ -94,14 +94,6 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     /** Custom pages */
     Route::get('page/{slug}', [HomePageController::class, 'customPage'])->name('custom-page');
 
-    /** other routes */
-    Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['auth:admin'], 'as' => 'admin.'], function () {
-        \UniSharp\LaravelFilemanager\Lfm::routes();
-    });
-    Route::group(['prefix' => 'frontend-filemanager', 'middleware' => ['web']], function () {
-        \UniSharp\LaravelFilemanager\Lfm::routes();
-    });
-
     Route::get('change-theme/{name}', [HomePageController::class, 'changeTheme'])->name('change-theme');
 
     Route::get('/notifications', [NotificationController::class, 'list'])->name('notification.list');

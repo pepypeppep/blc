@@ -7,7 +7,12 @@
                 <div class="row">
                     <div class="alert alert-{{ $pengakuan->stat['color'] }} d-flex justify-content-between" role="alert">
                         <div class="my-auto"><span class="text text-capitalize">Status:
-                                <strong>{{ $pengakuan->stat['label'] }}</strong></span></div>
+                                <strong>{{ $pengakuan->stat['label'] }}</strong></span>
+                            @if ($pengakuan->status == 'Rejected')
+                                <div class="mt-2"><strong>Alasan:</strong></div>
+                                <div>{!! clean($pengakuan->article->note) !!}</div>
+                            @endif
+                        </div>
                         <div class="d-flex justify-content-between gap-2">
                             @if ($pengakuan->status == 'draft')
                                 <div class="courses__item-bottom m-0">

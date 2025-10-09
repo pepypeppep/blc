@@ -102,7 +102,7 @@ class ArticleController extends Controller
 
             if ($article->personal_certificate_recognition_id) {
                 $article->certificateRecognition()->update([
-                    'status' => 'published',
+                    'status' => 'done',
                 ]);
             }
         } else {

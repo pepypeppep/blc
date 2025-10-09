@@ -89,7 +89,7 @@
                          const iframe = document.createElement('iframe');
                          iframe.id = 'previewFrame';
                          iframe.style =
-                             'width:1122px; height:800px; border:1px solid #ccc; transform:scale(0.3); transform-origin: 0 0;';
+                             'width:1122px; height:800px; border:1px solid #ccc;';
                          iframeWrapper.appendChild(iframe);
                          parent.appendChild(iframeWrapper);
 

@@ -39,7 +39,6 @@ class CoachingCertificateController extends Controller
     }
 
     // store coaching signer
-    // this function receive user id and coaching id
     public function storeSigners(Request $request)
     {
         $validated = $request->validate([
@@ -48,7 +47,6 @@ class CoachingCertificateController extends Controller
             'coaching_id' => 'required|exists:coachings,id',
         ]);
 
-        // dd($request->all());
 
         // front tte
         $userFrontTte = User::findOrFail($validated['front_tte']);
@@ -61,8 +59,6 @@ class CoachingCertificateController extends Controller
 
             // delete existing signer
             CoachingSigner::where('coaching_id', $validated['coaching_id'])->delete();
-
-
 
             $coachingSignerBack = CoachingSigner::create([
                 'user_id' => $userBackTte->id,
@@ -95,44 +91,11 @@ class CoachingCertificateController extends Controller
         ]);
 
         $coaching = Coaching::findOrFail($validated['coaching_id']);
-
         $coaching->certificate_template_name = $validated['certificate_name'];
         $coaching->save();
 
         return redirect()->back()->with('success', 'Tipe sertifikat berhasil disimpan');
     }
-
-
-    /**
-     * Download Signed Certificate
-     * @param string $id
-     * @return Response
-     * @throws ModelNotFoundException
-     * @throws InvalidFormatException
-     * @throws BindingResolutionException
-     * @throws Exception
-     * @throws DOMException
-     * @throws GlobalException
-     */
-    // function downloadCertificate(Enrollment $enrollment)
-    // {
-    //     // validate ownership
-    //     if ($enrollment->user_id !==  Auth::user()->id) {
-    //         return redirect()->back()->with(['messege' => __('Unauthorized'), 'alert-type' => 'error']);
-    //     }
-
-    //     $pdfPath = $enrollment->certificate_path;
-    //     if (!$pdfPath) {
-    //         return redirect()->back()->with(['messege' => __('Certificate not found'), 'alert-type' => 'error']);
-    //     }
-
-    //     // check if file exists
-    //     if (!Storage::disk('private')->exists($pdfPath)) {
-    //         return redirect()->back()->with(['messege' => __('Certificate file not found'), 'alert-type' => 'error']);
-    //     }
-
-    //     return Storage::disk('private')->response($pdfPath);
-    // }
 
 
 
@@ -151,19 +114,6 @@ class CoachingCertificateController extends Controller
      */
     function generate(Coaching $coaching)
     {
-        // $title = $coaching->title;
-        // $goal = $coaching->goal;
-        // $reality = $coaching->reality;
-        // $option = $coaching->option;
-        // $wayForward = $coaching->way_forward;
-        // $successIndicator = $coaching->success_indicator;
-        // $totalSession = $coaching->total_session;
-        // $coach = $coaching->coach;
-
-
-
-
-
         $coachingSigners = $coaching->signers;
         $coachingUsers = $coaching->completedCoachingUsers;
 
@@ -206,32 +156,22 @@ class CoachingCertificateController extends Controller
 
             $htmlTemplateReplaced = str_replace(array_keys($page1Data), array_values($page1Data), $htmlTemplate);
 
-
-
+            // return HTML directly
             // return response($htmlTemplate)
             //     ->header('Content-Type', 'text/html');
 
-
-            // $pdf1Data = Pdf::loadHTML(str_replace(array_keys($page1Data), array_values($page1Data), $htmlTemplateReplaced))
-            //     ->setPaper('A4', 'landscape')
-            //     ->output();
-
-            // Log::info('render pdf 1 took ' . now()->diffInMilliseconds($now, true) . ' ms');
-
-            // Send HTML to Node service
+            // Send HTML to Converter service
             $response = Http::withBody($htmlTemplateReplaced, 'text/html')
                 ->timeout(60) // in seconds
-                ->post('http://192.168.247.250:3000/convert');
+                ->post(config('app.html_to_pdf_endpoint'));
 
             if ($response->failed()) {
                 throw new \Exception('Failed to generate PDF: ' . $response->body());
             }
 
             $pdf1Data = $response->body();
-            // Save the PDF into storage/app/pdfs/
-            // $path = "pdfs/" . $filename;
-            // Storage::put($path, $response->body());
 
+            // Log::info('render pdf 1 took ' . now()->diffInMilliseconds($now, true) . ' ms');
 
             // return PDF directly
             // return response($response->body(), 200)
@@ -274,25 +214,23 @@ class CoachingCertificateController extends Controller
 
             $page2Html = str_replace(array_keys($page2Data), array_values($page2Data), $page2Html);
 
+            // return HTML directly
             // return response($page2Html)
             // ->header('Content-Type', 'text/html');
 
 
-            // $pdf2Data = Pdf::loadHTML($page2Html)
-            //     ->setPaper('A4', 'portrait')->setWarnings(false)->output();
-
-            // return response($pdf2Data)
-            //     ->header('Content-Type', 'application/pdf');
-
             $response2 = Http::withBody($page2Html, 'text/html')
                 ->timeout(60) // in seconds
-                ->post('http://192.168.247.250:3000/convert');
+                ->post(config('app.html_to_pdf_endpoint'));
 
             if ($response2->failed()) {
                 throw new \Exception('Failed to generate PDF: ' . $response2->body());
             }
 
             $pdf2Data = $response2->body();
+
+            // return response($pdf2Data)
+            //     ->header('Content-Type', 'application/pdf');
 
             Log::info('render pdf 2 took ' . now()->diffInMilliseconds($now, true) . ' ms');
 
@@ -311,11 +249,6 @@ class CoachingCertificateController extends Controller
             // save to db
             $coachingUserPivot->certificate_path = $path;
             $coachingUserPivot->save();
-
-            // TODO: disable this on production
-            // return PDF directly
-            // return response($output, 200)
-            //     ->header('Content-Type', 'application/pdf');
         }
 
         return redirect()->route('admin.coaching.show', $coaching->id)->with(['messege' => __('Certificate generated successfully'), 'alert-type' => 'success']);
@@ -401,6 +334,7 @@ class CoachingCertificateController extends Controller
         return redirect()->back()->with(['messege' => 'Sertifikat berhasil dikirim ke Bantara', 'alert-type' => 'success']);
     }
 
+    // list template files in template directory
     public function listTemplate()
     {
         $templates = Storage::disk('templates')->files();
@@ -416,6 +350,7 @@ class CoachingCertificateController extends Controller
         return response()->json($result);
     }
 
+    // get html data from template directory
     public function getHtml(string $name)
     {
         if (!str_ends_with($name, '.html')) {
@@ -423,15 +358,11 @@ class CoachingCertificateController extends Controller
         }
         // read html from template directory, loop through each html file and read the content, use Storage::disk('template')
         $templateData = Storage::disk('templates')->get($name);
-        // $templates = Storage::disk('templates')->files();
-        // $templatesData = collect($templates)->map(function ($template) {
-        //     return Storage::disk('templates')->get($template);
-        // });
 
         return response($templateData)->header('Content-Type', 'text/html');
     }
 
-
+    // bantara callback
     public function bantaraCallback(Request $request)
     {
         $validated = $request->validate([

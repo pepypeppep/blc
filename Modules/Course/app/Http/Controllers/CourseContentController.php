@@ -410,29 +410,29 @@ class CourseContentController extends Controller
             // ->limit(15)
             ->get();
 
-        if ($questions->count() > 0) {
-            if ($request->has('questionId')) {
-                // Ambil berdasarkan questionId yang dikirim request
-                $questionItem = QuizQuestion::where('quiz_id', $quizId)
-                    ->where('id', $request->questionId)
-                    ->first();
-            } else {
-                // Jika tidak ada questionId, ambil pertanyaan pertama dari list
-                $questionItem = $questions->first();
+        $questionItem = null;
+
+        if ($questions->isNotEmpty()) {
+            $questionItem = QuizQuestion::where('quiz_id', $quizId)
+                ->when($request->filled('questionId'), function ($q) use ($request) {
+                    $q->where('id', $request->questionId);
+                })
+                ->first() ?? $questions->first();
+
+            if (!empty($questionItem?->image)) {
+                $questionItem->image = url('questions/image/' . basename($questionItem->image));
             }
-        } else {
-            $questionItem = null; // atau [] sesuai kebutuhanmu
         }
 
-        if ($questionItem->image != null) {
+        if ($questionItem && $questionItem->image != null) {
             $questionItem->image = $questionItem->image
-                ? url('questions/image/' . baseName($questionItem->image))
+                ? url('questions/image/' . basename($questionItem->image))
                 : null;
         }
 
         //question answer
         $questionAnswer = [];
-        if ($questionItem) {    
+        if ($questionItem) {
             $questionAnswer = $questionItem->answers()->get()->map(function ($answer) {
                 return [
                     'id' => $answer->id,
@@ -457,6 +457,7 @@ class CourseContentController extends Controller
 
     function storeQuizQuestion(Request $request, string $quizId)
     {
+
         $request->validate([
             'title' => ['required'],
             'answers.*' => ['required'],

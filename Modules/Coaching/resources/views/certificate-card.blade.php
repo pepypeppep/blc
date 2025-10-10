@@ -4,7 +4,11 @@
      </div>
      <div class="card-body">
 
-         <div id="certificateTemplate"></div>
+         <div id="certificateTemplate">
+             <img class="img-thumbnail"
+                 src="{{ route('admin.coaching.certificate.get-image', $coaching->certificate_template_name) }}"
+                 alt="">
+         </div>
 
          {{-- pilih sertifikat modal --}}
          <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
@@ -24,7 +28,6 @@
          {{-- table list sertifikat --}}
          {{-- column name, link for download --}}
          <div class="table-responsive">
-
              <table class="table table-bordered">
                  <thead>
                      <tr>
@@ -71,40 +74,4 @@
  @push('body-bottom')
      @include('coaching::certificate-type-modal')
      @include('coaching::certificate-signer-modal')
- @endpush
-
- @push('js')
-     <script>
-         function previewTemplate(name, parent) {
-             // get html from endpoint
-             fetch(`{{ route('admin.coaching.certificate.get-html') }}/${name}`).then(response => response.text())
-                 .then(
-                     html => {
-                         const iframeWrapper = document.createElement('div');
-                         iframeWrapper.style =
-                             'width:350px; height:300px;';
-                         // preview.style =
-                         // 'width:500px; height:300px; border:1px solid #ccc; padding: 100px;';
-
-                         const iframe = document.createElement('iframe');
-                         iframe.id = 'previewFrame';
-                         iframe.style =
-                             'width:1122px; height:800px; border:1px solid #ccc;';
-                         iframeWrapper.appendChild(iframe);
-                         parent.appendChild(iframeWrapper);
-
-
-                         // const iframe = document.getElementById('previewFrame');
-                         const doc = iframe.contentDocument || iframe.contentWindow.document;
-                         doc.open();
-                         doc.write(html);
-                         doc.close();
-                     });
-         }
-
-         $(document).ready(function() {
-             const parent = document.getElementById('certificateTemplate');
-             previewTemplate('{{ $coaching->certificate_template_name }}', parent);
-         });
-     </script>
  @endpush

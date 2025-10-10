@@ -334,32 +334,26 @@ class CoachingCertificateController extends Controller
         return redirect()->back()->with(['messege' => 'Sertifikat berhasil dikirim ke Bantara', 'alert-type' => 'success']);
     }
 
-    // list template files in template directory
-    public function listTemplate()
+    // get image data from template directory
+    public function getImage(string $name)
     {
-        $templates = Storage::disk('templates')->files();
-
-        $result = [];
-        foreach ($templates as $template) {
-            if (!str_ends_with($template, '.html')) {
-                continue;
-            }
-            $result[] = $template;
+        // if name contains extension html, change it to jpg
+        if (str_ends_with($name, '.html')) {
+            $name = str_replace('.html', '.jpg', $name);
         }
 
-        return response()->json($result);
-    }
-
-    // get html data from template directory
-    public function getHtml(string $name)
-    {
-        if (!str_ends_with($name, '.html')) {
-            return response()->json(['error' => 'Invalid template type'], 400);
+        if (!str_ends_with($name, '.jpg') && !str_ends_with($name, '.png')) {
+            return response()->json(['error' => 'Invalid image type'], 400);
         }
-        // read html from template directory, loop through each html file and read the content, use Storage::disk('template')
-        $templateData = Storage::disk('templates')->get($name);
 
-        return response($templateData)->header('Content-Type', 'text/html');
+
+        try {
+            $imageData = Storage::disk('templates')->get($name);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Image not found'], 404);
+        }
+
+        return response($imageData)->header('Content-Type', 'image/jpeg');
     }
 
     // bantara callback

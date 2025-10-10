@@ -75,10 +75,7 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
             Route::get('generate/{coaching}', [CoachingCertificateController::class, 'generate'])->name('generate');
             Route::get('download/{id}.pdf', [CoachingCertificateController::class, 'download'])->name('download');
             Route::get('send/{id}', [CoachingCertificateController::class, 'requestTTE'])->name('send');
-
-            // list template
-            Route::get('list-template', [CoachingCertificateController::class, 'listTemplate'])->name('list-template');
-            Route::get('get-html/{name?}', [CoachingCertificateController::class, 'getHtml'])->name('get-html');
+            Route::get('get-image/{name?}', [CoachingCertificateController::class, 'getImage'])->name('get-image');
         });
     });
 });

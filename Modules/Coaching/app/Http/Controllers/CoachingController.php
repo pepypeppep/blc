@@ -102,7 +102,18 @@ class CoachingController extends Controller
         authorizeCoachAccess($coaching);
         $certificates = CertificateBuilder::paginate();
 
-        return view('coaching::show', compact('coaching', 'certificates'));
+
+        $templatesList = Storage::disk('templates')->files();
+
+        $templates = [];
+        foreach ($templatesList as $template) {
+            if (!str_ends_with($template, '.html')) {
+                continue;
+            }
+            $templates[] = $template;
+        }
+
+        return view('coaching::show', compact('coaching', 'certificates', 'templates'));
     }
 
     /**

@@ -31,7 +31,7 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
-    'html_to_pdf_endpoint' => env('HTML_TO_PDF_ENDPOINT', 'http://192.168.247.250:3000/convert'),
+    'html_to_pdf_endpoint' => env('HTML_TO_PDF_ENDPOINT', 'http://htmlpdf:3000/convert'),
 
     /*
     |--------------------------------------------------------------------------

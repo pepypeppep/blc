@@ -36,6 +36,16 @@ class Quiz extends Model
         return $this->hasOne(CourseProgress::class, 'lesson_id', 'id');
     }
 
+    /**
+     * Get all of the results for the Quiz
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function results(): HasMany
+    {
+        return $this->hasMany(QuizResult::class);
+    }
+
     function instructor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'instructor_id', 'id');

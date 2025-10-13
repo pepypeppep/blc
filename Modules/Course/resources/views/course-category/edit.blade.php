@@ -65,8 +65,9 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <form action="{{ route('admin.course-category.update', ['course_category' => $category->id, 'code' => $code]) }}" method="post"
-                                    enctype="multipart/form-data">
+                                <form
+                                    action="{{ route('admin.course-category.update', ['course_category' => $category->id, 'code' => $code]) }}"
+                                    method="post" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
                                     <div class="row">
@@ -88,8 +89,8 @@
                                                     <label for="slug">{{ __('Slug') }}<span
                                                             class="text-danger">*</span></label>
                                                     <input type="text" id="slug" name="slug"
-                                                        value="{{ old('slug', $category->slug) }}" placeholder="{{ __('Enter Slug') }}"
-                                                        class="form-control">
+                                                        value="{{ old('slug', $category->slug) }}"
+                                                        placeholder="{{ __('Enter Slug') }}" class="form-control">
                                                     @error('slug')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
@@ -101,36 +102,42 @@
                                                     <div id="image-preview" class="image-preview">
                                                         <label for="image-upload"
                                                             id="image-label">{{ __('Icon') }}</label>
-                                                        <input type="file" name="icon" id="image-upload">
+                                                        <input type="file" name="icon" id="image-upload"
+                                                            accept="image/*" />
                                                     </div>
                                                     @error('icon')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                             </div>
-
                                         @endif
 
-                                        <div class="col-md-8 offset-md-2 {{ $code == $languages->first()->code ? '' : 'd-none' }}">
+                                        <div
+                                            class="col-md-8 offset-md-2 {{ $code == $languages->first()->code ? '' : 'd-none' }}">
                                             <div class="form-group">
                                                 <label for="status">{{ __('Show at trading') }}<span
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" name="show_at_trending">
-                                                    <option @selected($category->show_at_trending == 1) value="1">{{ __('Yes') }}</option>
-                                                    <option @selected($category->show_at_trending == 0) value="0">{{ __('No') }}</option>
+                                                    <option @selected($category->show_at_trending == 1) value="1">{{ __('Yes') }}
+                                                    </option>
+                                                    <option @selected($category->show_at_trending == 0) value="0">{{ __('No') }}
+                                                    </option>
                                                 </select>
                                                 @error('status')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-8 offset-md-2 {{ $code == $languages->first()->code ? '' : 'd-none' }}">
+                                        <div
+                                            class="col-md-8 offset-md-2 {{ $code == $languages->first()->code ? '' : 'd-none' }}">
                                             <div class="form-group">
                                                 <label for="status">{{ __('Status') }}<span
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" name="status">
-                                                    <option @selected($category->status == 1) value="1">{{ __('Active') }}</option>
-                                                    <option @selected($category->status == 0) value="0">{{ __('Inactive') }}</option>
+                                                    <option @selected($category->status == 1) value="1">{{ __('Active') }}
+                                                    </option>
+                                                    <option @selected($category->status == 0) value="0">
+                                                        {{ __('Inactive') }}</option>
                                                 </select>
                                                 @error('status')
                                                     <span class="text-danger">{{ $message }}</span>
@@ -156,7 +163,7 @@
 
 @if ($code == $languages->first()->code)
     @push('js')
-    <script src="{{ asset('backend/js/jquery.uploadPreview.min.js') }}"></script>
+        <script src="{{ asset('backend/js/jquery.uploadPreview.min.js') }}"></script>
 
         <script>
             "use strict";

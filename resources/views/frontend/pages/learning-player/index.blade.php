@@ -149,6 +149,13 @@
                                                         <path
                                                             d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z" />
                                                     </svg>
+                                                    Nilai:
+                                                    {{ $chapterItem->quiz->results()->latest()->first()->user_grade }}
+                                                    @if ($chapterItem->quiz->results()->latest()->first()->status == 'pass')
+                                                        <span class="badge bg-success">Lulus</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Gagal</span>
+                                                    @endif
                                                 </span>
                                             </label>
                                         </div>
@@ -331,29 +338,29 @@
             });
         }
 
-        (function() {
-            let devtoolsOpen = false;
-            const threshold = 160;
+        // (function() {
+        //     let devtoolsOpen = false;
+        //     const threshold = 160;
 
-            const checkDevTools = () => {
-                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-                if (widthThreshold || heightThreshold) {
-                    if (!devtoolsOpen) {
-                        devtoolsOpen = true;
-                        document.getElementById('main-lesson-section').style.display = 'none';
-                        document.getElementById('warning').style.display = 'block';
-                    }
-                } else {
-                    devtoolsOpen = false;
-                    document.getElementById('warning').style.display = 'none';
-                    document.getElementById('main-lesson-section').style.display = 'block';
-                }
-            };
+        //     const checkDevTools = () => {
+        //         const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+        //         const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+        //         if (widthThreshold || heightThreshold) {
+        //             if (!devtoolsOpen) {
+        //                 devtoolsOpen = true;
+        //                 document.getElementById('main-lesson-section').style.display = 'none';
+        //                 document.getElementById('warning').style.display = 'block';
+        //             }
+        //         } else {
+        //             devtoolsOpen = false;
+        //             document.getElementById('warning').style.display = 'none';
+        //             document.getElementById('main-lesson-section').style.display = 'block';
+        //         }
+        //     };
 
-            // check repeatedly
-            setInterval(checkDevTools, 500);
-        })();
+        //     // check repeatedly
+        //     setInterval(checkDevTools, 500);
+        // })();
     </script>
     <script src="{{ asset('frontend/js/custom-tinymce.js') }}"></script>
 @endpush

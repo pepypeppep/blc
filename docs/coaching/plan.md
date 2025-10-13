@@ -28,8 +28,8 @@
 		+ [ ] kata kata di sertifikat coaching berbeda, jadi buat admin harus buat template untuk sertifikat caching sendiri
 		+ [ ] Setelah memilih sertifikat dan penandatangan, langsung generate sertifikat agar bisa di preview.
 		+ [ ] Acuan generate jumlah sertifikat dari tabel coaching_users && coaching_users.final_report NOT NULL
-		+ [ ] tiap coachee sertifikat sendiri sendiri
-		+ [ ] simpan di coaching_users.certificate_path
+		+ [x] tiap coachee sertifikat sendiri sendiri
+		+ [x] simpan di coaching_users.certificate_path
 
 - [ ] Kirim ke bantara
 		+ [ ] Tombol kirim ke bantara muncul ketika status coaching = "Verifikasi"

@@ -10,15 +10,10 @@
                  alt="">
          </div>
 
-         {{-- pilih sertifikat modal --}}
-         <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
-             data-target="#certificate-type-modal">{{ __('Choose Certificate') }}</button>
+
          {{-- pilih penanda tangan modal --}}
          <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
-             data-target="#certificate-signer-modal">{{ __('Choose Signer') }}</button>
-         {{-- Generate Sertifikat --}}
-         <a href="{{ route('admin.coaching.certificate.generate', $coaching->id) }}"
-             class="btn btn-primary mt-3">{{ __('Generate Certificate') }}</a>
+             data-target="#certificate-signer-modal">{{ __('Choose Certificate') }}</button>
 
          {{-- Kirim ke Bantara --}}
          <a href="{{ route('admin.coaching.certificate.send', $coaching->id) }}"
@@ -72,6 +67,5 @@
  </div>
 
  @push('body-bottom')
-     @include('coaching::certificate-type-modal')
      @include('coaching::certificate-signer-modal')
  @endpush

@@ -71,8 +71,6 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         Route::group(['prefix' => 'certificate', 'as' => 'certificate.'], function () {
             Route::get('list-signer', [CoachingCertificateController::class, 'list'])->name('list-signer');
             Route::post('store-signer', [CoachingCertificateController::class, 'storeSigners'])->name('store-signer');
-            Route::post('store-type', [CoachingCertificateController::class, 'storeType'])->name('store-type');
-            Route::get('generate/{coaching}', [CoachingCertificateController::class, 'generate'])->name('generate');
             Route::get('download/{id}.pdf', [CoachingCertificateController::class, 'download'])->name('download');
             Route::get('send/{id}', [CoachingCertificateController::class, 'requestTTE'])->name('send');
             Route::get('get-image/{name?}', [CoachingCertificateController::class, 'getImage'])->name('get-image');

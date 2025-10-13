@@ -45,8 +45,8 @@ class CoachingCertificateController extends Controller
             'front_tte' => 'required|exists:users,id',
             'back_tte' => 'required|exists:users,id',
             'coaching_id' => 'required|exists:coachings,id',
+            'certificate_name' => 'required|string',
         ]);
-
 
         // front tte
         $userFrontTte = User::findOrFail($validated['front_tte']);
@@ -56,6 +56,10 @@ class CoachingCertificateController extends Controller
 
         try {
             DB::beginTransaction();
+
+            $coaching = Coaching::findOrFail($validated['coaching_id']);
+            $coaching->certificate_template_name = $validated['certificate_name'];
+            $coaching->save();
 
             // delete existing signer
             CoachingSigner::where('coaching_id', $validated['coaching_id'])->delete();
@@ -73,6 +77,10 @@ class CoachingCertificateController extends Controller
                 'step' => 2,
                 'type' => CoachingSigner::TYPE_SIGN,
             ]);
+
+            // generate certificate
+            $this->generate($coaching);
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -81,22 +89,6 @@ class CoachingCertificateController extends Controller
 
         return redirect()->back()->with('success', 'Signer berhasil disimpan');
     }
-
-    // store choosed certificate type
-    public function storeType(Request $request)
-    {
-        $validated = $request->validate([
-            'coaching_id' => 'required|exists:coachings,id',
-            'certificate_name' => 'required|string',
-        ]);
-
-        $coaching = Coaching::findOrFail($validated['coaching_id']);
-        $coaching->certificate_template_name = $validated['certificate_name'];
-        $coaching->save();
-
-        return redirect()->back()->with('success', 'Tipe sertifikat berhasil disimpan');
-    }
-
 
 
     /**

@@ -13,13 +13,32 @@
                 method="POST">
                 @csrf
                 <input type="hidden" name="coaching_id" value="{{ $coaching->id }}">
+                <input type="hidden" name="certificate_name" value="">
+
                 <div class="modal-body row">
                     <div class="col">
+                        {{-- type --}}
+                        <div class="d-flex flex-wrap">
+                            @foreach ($templates as $template)
+                                <div class="certificate-wrapper
+                                @if ($template == $coaching->certificate_template_name) certificate-selected @endif
+                                d-flex flex-column"
+                                    data-certificate="{{ $template }}">
+                                    <img class="img-thumbnail"
+                                        src="{{ route('admin.coaching.certificate.get-image', $template) }}"
+                                        alt="">
+                                    <button class="btn btn-primary mt-auto" type="button"
+                                        onclick="chooseCertificate('{{ $template }}')">{{ __('Choose') }}</button>
+                                </div>
+                            @endforeach
+                        </div>
+
+
+                        {{-- /type --}}
+
+                        {{-- list penandatangan --}}
                         <div class="row">
                             {{-- form --}}
-
-
-
                             {{-- TTE Depan --}}
                             <div class="col mt-4">
                                 <div class="partner_instructor_list">
@@ -55,6 +74,8 @@
                             {{-- /TTE Belakang --}}
 
                         </div>
+                        {{-- /list penandatangan --}}
+
 
                         <div class="row">
                             <div class="col mt-4">
@@ -69,6 +90,25 @@
     </div>
 </div>
 
+
+@push('css')
+    <style>
+        .certificate-selected {
+            border: 3px solid #007bff !important;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+        .certificate-wrapper {
+            width: 300px;
+            height: 300px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+    </style>
+@endpush
 
 @push('js')
     <script>
@@ -139,5 +179,19 @@
                 '<img src="{{ route('admin.certificate-builder.getBg', $coaching->certificate_id) }}" alt="" style="width: 100%; height: auto;" />'
             );
         @endif
+    </script>
+
+
+
+    <script>
+        function chooseCertificate(id) {
+            $('input[name="certificate_name"]').val(id);
+
+            // Remove selected border from all certificates
+            $('.certificate-wrapper').removeClass('certificate-selected');
+
+            // Add selected border to the chosen certificate
+            $('.certificate-wrapper[data-certificate="' + id + '"]').addClass('certificate-selected');
+        }
     </script>
 @endpush

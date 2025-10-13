@@ -41,7 +41,7 @@ class GlobalSettingInfoSeeder extends Seeder
 
 
         $setting_data = [
-            'app_name' => 'LMS Kabupaten Bantul',
+            'app_name' => 'Bantul Corpu',
             'version' => '2.0.0',
             'logo' => $logoFilename,
             'timezone' => 'Asia/Jakarta',
@@ -58,7 +58,7 @@ class GlobalSettingInfoSeeder extends Seeder
             'link' => '/page/privacy-policy',
             'btn_text' => 'Ya',
             'message' => 'Situs web ini menggunakan cookie esensial untuk memastikan operasinya berjalan dengan baik dan cookie pelacakan untuk memahami bagaimana Anda berinteraksi dengan situs ini. Persetujuan Anda diperlukan sebelum cookie pelacakan ini dapat diaktifkan.',
-            'copyright_text' => '2024 LMS Kabupaten Bantul. All rights reserved.',
+            'copyright_text' => '2024 Bantul Corpu. All rights reserved.',
             'recaptcha_site_key' => 'recaptcha_site_key',
             'recaptcha_secret_key' => 'recaptcha_secret_key',
             'recaptcha_status' => 'inactive',

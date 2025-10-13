@@ -55,6 +55,7 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         Route::get('public-certificate/{uuid}', [MentoringController::class, 'publicCertificate'])->name('public-certificate');
         Route::get('{mentoring}/mentee/{mentorId}/evaluasi', [MentoringController::class, 'menteeEvaluasi'])->name('mentee.evaluasi');
         Route::get('{mentoring}/mentor/{mentorId}/evaluasi', [MentoringController::class, 'mentorEvaluasi'])->name('mentor.evaluasi');
+        Route::get('{id}/export-report', [MentoringController::class, 'exportReport'])->name('export-report');
 
         Route::get('/{id}/img', [MentoringController::class, 'viewImage'])->name('view.img');
         Route::get('/{id}/document/{type}', [MentoringController::class, 'showDocument'])->name('view.document');

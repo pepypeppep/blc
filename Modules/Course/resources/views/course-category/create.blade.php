@@ -61,7 +61,8 @@
                                                 <label>{{ __('Icon') }}<span class="text-danger">*</span></label>
                                                 <div id="image-preview" class="image-preview">
                                                     <label for="image-upload" id="image-label">{{ __('Icon') }}</label>
-                                                    <input type="file" name="icon" id="image-upload">
+                                                    <input type="file" name="icon" id="image-upload"
+                                                        accept="image/*" />
                                                 </div>
                                                 @error('icon')
                                                     <span class="text-danger">{{ $message }}</span>

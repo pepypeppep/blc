@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header" style="padding: 25px 25px 0px 25px;">
                 <h5 class="modal-title" id="certificateModalLabel">
-                    {{ __('Choose Signer') }}</h5>
+                    {{ __('Choose Certificate') }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

@@ -20,6 +20,9 @@ class CoachingPolicy
 
     public function sendToBantara(Admin $user, Coaching $coaching)
     {
+        if (blank($coaching->certificate_template_name)) {
+            return false;
+        }
         return $coaching->status === Coaching::STATUS_VERIFICATION;
     }
 

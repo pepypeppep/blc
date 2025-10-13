@@ -144,11 +144,12 @@ class StudentLearningApiController extends Controller
                 'chapters',
                 'chapters.chapterItems',
                 'chapters.chapterItems.lesson',
-                'chapters.chapterItems.quiz',
+                'chapters.chapterItems.quiz' => function ($query) {
+                    $query->withCount('results');
+                },
                 'chapters.chapterItems.rtl',
             ])->withTrashed()
                 ->where('slug', $slug)
-                // ->select('courses.id', 'courses.title', 'courses.slug', 'courses.thumbnail')
                 ->first();
 
             $userId = $user->id;

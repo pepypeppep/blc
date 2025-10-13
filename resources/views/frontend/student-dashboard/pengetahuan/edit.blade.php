@@ -42,19 +42,34 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2">
-                                <div class="form-group">
-                                    <label for="enrollment">Pelatihan</label>
-                                    <select name="enrollment" class="form-control select2" disabled>
-                                        <option value="">{{ __('Select') }}</option>
-                                        @foreach ($completedCourses as $enrollment)
-                                            <option value="{{ $enrollment->id }}"
-                                                @if ($pengetahuan->enrollment_id == $enrollment->id) selected @endif>
-                                                {{ $enrollment->course->title }}</option>
-                                        @endforeach
-                                    </select>
+                            @if ($pengetahuan->personal_certificate_recognition_id || $pengetahuan->enrollment_id)
+                                <div class="col-md-12 mt-2">
+                                    @if ($pengetahuan->enrollment_id)
+                                        <div class="form-group">
+                                            <label for="enrollment">Pelatihan</label>
+                                            <select name="enrollment" class="form-control select2" disabled>
+                                                <option value="">{{ __('Select') }}</option>
+                                                @foreach ($completedCourses as $enrollment)
+                                                    <option value="{{ $enrollment->id }}"
+                                                        @if ($pengetahuan->enrollment_id == $enrollment->id) selected @endif>
+                                                        {{ $enrollment->course->title }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
+                                    @if ($pengetahuan->personal_certificate_recognition_id)
+                                        <div class="form-group">
+                                            <label for="certificateRecognition">Pengakuan Sertifikat <code>*</code></label>
+                                            <select id="certificateRecognition" name="certificateRecognition"
+                                                class="form-control select2" disabled>
+                                                <option value="{{ $pengetahuan->personal_certificate_recognition_id }}"
+                                                    selected>
+                                                    {{ $pengetahuan->certificateRecognition->title }}</option>
+                                            </select>
+                                        </div>
+                                    @endif
                                 </div>
-                            </div>
+                            @endif
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
                                     <label for="title">{{ __('Title') }} <code>*</code></label>
@@ -137,13 +152,15 @@
                                     <textarea name="description" class="text-editor form-control summernote">{{ $pengetahuan->description }}</textarea>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2">
-                                <div class="form-group">
-                                    <label for="content">{{ __('Content') }}
-                                        <code>*</code></label>
-                                    <textarea name="content" class="text-editor form-control summernote">{{ $pengetahuan->content }}</textarea>
+                            @if ($pengetahuan->category == 'blog')
+                                <div class="col-md-12 mt-2">
+                                    <div class="form-group">
+                                        <label for="content">{{ __('Content') }}
+                                            <code>*</code></label>
+                                        <textarea name="content" class="text-editor form-control summernote">{{ $pengetahuan->content }}</textarea>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
                                     <label for="Tags">{{ __('Tags') }}</label>

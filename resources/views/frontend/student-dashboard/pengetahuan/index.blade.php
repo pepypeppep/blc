@@ -35,7 +35,11 @@
                                                                 href="{{ route('student.pengetahuan.show', $pengetahuan->slug) }}">{{ $pengetahuan->title }}</a>
                                                         </h5>
                                                         @if ($pengetahuan->enrollment)
-                                                        <span><strong>Pelatihan:</strong> {{ optional(optional($pengetahuan->enrollment)->course)->title }}</span>
+                                                            <span><strong>Pelatihan:</strong>
+                                                                {{ optional(optional($pengetahuan->enrollment)->course)->title }}</span>
+                                                        @elseif ($pengetahuan->personal_certificate_recognition_id)
+                                                            <span><strong>Pengakuan Sertifikat:</strong>
+                                                                {{ optional($pengetahuan->certificateRecognition)->title }}</span>
                                                         @endif
                                                         <h6 class="sub-title">
                                                             {!! Str::limit(clean($pengetahuan->description), 75, '...') !!}
@@ -80,7 +84,8 @@
                                                                 <div class="courses__item-bottom">
                                                                     <div class="button">
                                                                         <a href="{{ route('student.pengetahuan.edit', $pengetahuan->slug) }}"
-                                                                            class="already-enrolled-btn bg-primary" data-id="">
+                                                                            class="already-enrolled-btn bg-primary"
+                                                                            data-id="">
                                                                             <i class="fa fa-pencil-alt text-white"></i>
                                                                         </a>
                                                                     </div>
@@ -93,7 +98,8 @@
                                                                         @method('DELETE')
                                                                         <div class="button">
                                                                             <a onclick="deletePengetahuan(event, {{ $pengetahuan->id }})"
-                                                                                class="already-enrolled-btn bg-danger" data-id="">
+                                                                                class="already-enrolled-btn bg-danger"
+                                                                                data-id="">
                                                                                 <i class="fa fa-trash text-white"></i>
                                                                             </a>
                                                                         </div>

@@ -198,20 +198,26 @@
                                                     <div class="avatar-name">
                                                         <h6 class="name">{{ $comment->user->name }}</h6>
                                                         <span class="date">
-                                                            @if (\Modules\Article\app\Models\ArticleCommentReport::where('comment_id', $comment->id)->where('user_id', auth()->user()->id)->exists())
-                                                                <span class="m-1 text-secondary report-btn"
-                                                                    title="Anda telah Melaporkan Komentar">
-                                                                    <i class="fa fa-flag" aria-hidden="true"></i>
-                                                                </span>
+                                                            @if (auth()->user())
+                                                                @if (\Modules\Article\app\Models\ArticleCommentReport::where('comment_id', $comment->id)->where('user_id', auth()->user()->id)->exists())
+                                                                    <span class="m-1 text-secondary report-btn"
+                                                                        title="Anda telah Melaporkan Komentar">
+                                                                        <i class="fa fa-flag" aria-hidden="true"></i>
+                                                                    </span>
+                                                                @else
+                                                                    <span class="m-1 text-danger report-btn"
+                                                                        title="Laporkan Komentar" data-bs-toggle="modal"
+                                                                        data-bs-target="#reportModal"
+                                                                        data-article-slug="{{ $article->slug }}"
+                                                                        data-id="{{ $comment->id }}"
+                                                                        style="cursor: pointer;">
+                                                                        <i class="fa fa-flag" aria-hidden="true"></i>
+                                                                    </span>
+                                                                @endif
                                                             @else
-                                                                <span class="m-1 text-danger report-btn"
-                                                                    title="Laporkan Komentar" data-bs-toggle="modal"
-                                                                    data-bs-target="#reportModal"
-                                                                    data-article-slug="{{ $article->slug }}"
-                                                                    data-id="{{ $comment->id }}"
-                                                                    style="cursor: pointer;">
-                                                                    <i class="fa fa-flag" aria-hidden="true"></i>
-                                                                </span>
+                                                                <a href="/login" class="m-1 text-danger report-btn"
+                                                                    title="Laporkan Komentar" style="cursor: pointer;">
+                                                                    <i class="fa fa-flag" aria-hidden="true"></i></a>
                                                             @endif
                                                             {{ formatDate($comment->created_at) }}
                                                         </span>

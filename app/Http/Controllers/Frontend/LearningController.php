@@ -39,7 +39,9 @@ class LearningController extends Controller
             'chapters.chapterItems.lesson',
             'chapters.chapterItems.quiz',
             'chapters.chapterItems.rtl',
-        ])->withTrashed()->where('slug', $slug)->firstOrFail();
+        ])->withTrashed()
+            ->where('slug', $slug)
+            ->firstOrFail();
 
         Session::put('course_slug', $slug);
         Session::put('course_title', $course->title);
@@ -216,7 +218,7 @@ class LearningController extends Controller
                 'file_info' => $fileInfo,
             ]);
         } else {
-            $fileInfo = array_merge(Quiz::findOrFail($request->lessonId)->toArray(), ['type' => 'quiz']);
+            $fileInfo = array_merge(Quiz::withCount('results')->findOrFail($request->lessonId)->toArray(), ['type' => 'quiz']);
 
             return response()->json([
                 'file_info' => $fileInfo,

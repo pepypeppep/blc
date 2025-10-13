@@ -7,13 +7,12 @@
                 <div class="row">
                     @if ($pengetahuan->status == 'rejected')
                         <div class="alert alert-danger" role="alert">
-                            <span class="text text-capitalize">Status: {{ $pengetahuan->stat['label'] }}</span>
-                            <span class="alert-heading">Alasan</span>
-                            <p>{!! clean($pengetahuan->note) !!}</p>
+                            <span class="text text-capitalize">Status: {{ __($pengetahuan->stat['label']) }}</span>
+                            <div>{!! clean($pengetahuan->note) !!}</div>
                         </div>
                     @else
                         <div class="alert alert-{{ $pengetahuan->stat['color'] }}" role="alert">
-                            <span class="text text-capitalize">Status: {{ $pengetahuan->stat['label'] }}</span>
+                            <span class="text text-capitalize">Status: {{ __($pengetahuan->stat['label']) }}</span>
                         </div>
                     @endif
                     <img src="{{ route('student.pengetahuan.view.file', $pengetahuan->id) }}"alt="img">
@@ -23,6 +22,13 @@
                         <div class="col-12">
                             <span class="text text-capitalize"><strong>Pelatihan: </strong></span>
                             <p class="text mt-0">{{ $pengetahuan->enrollment->course->title }}</p>
+                        </div>
+                    @endif
+                    @if ($pengetahuan->personal_certificate_recognition_id)
+                        <div class="col-12">
+                            <span class="text text-capitalize"><strong>Pengakuan Sertifikat: </strong></span>
+                            <p><a href="{{ route('student.pengakuan-sertifikat.show', $pengetahuan->certificateRecognition->id) }}"
+                                    class="text mt-0">{{ $pengetahuan->certificateRecognition->title }}</a></p>
                         </div>
                     @endif
                     <div>

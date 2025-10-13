@@ -18,259 +18,135 @@
             </div>
             <div class="section-body">
                 <div class="row mt-4">
-                    <div class="col-lg-8">
+                    <div class="col-12">
                         <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Rincian Diklat') }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-12 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Instansi') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->instansi->name }}
-                                            </p>
-                                        </div>
+                            <div class="card-body row">
+                                <div class="alert alert-{{ $pengakuan->stat['color'] }} d-flex justify-content-between w-100"
+                                    role="alert">
+                                    <div class="my-auto">
+                                        <span class="text text-capitalize">Status:
+                                            <strong>{{ $pengakuan->stat['label'] }}</strong>
+                                        </span>
+                                        @if ($pengakuan->status == 'Rejected')
+                                            <div class="mt-2"><strong>Alasan:</strong></div>
+                                            <div>{!! clean($pengakuan->article->note) !!}</div>
+                                        @endif
                                     </div>
-                                    <div class="col-lg-6 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Certificate') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->name }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Goal') }}</p>
-                                            <div class="render-content">{!! $certificate->goal !!}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Competency') }}</p>
-                                            <div class="render-content">{!! $certificate->competency !!}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Indicator of Success') }}</p>
-                                            <div class="render-content">{!! $certificate->indicator_of_success !!}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Activity Plan') }}</p>
-                                            <div class="render-content">{!! $certificate->activity_plan !!}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('Start At') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">
-                                                {{ \Carbon\Carbon::parse($certificate->start_at)->format('d M Y, H:i:s') }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-5 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('End At') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">
-                                                {{ \Carbon\Carbon::parse($certificate->end_at)->format('d M Y, H:i:s') }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 mb-4">
-                                        <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                {{ __('JP') }}</p>
-                                            <p class="mb-0" style="font-size: 1.1rem;">{{ $certificate->jp }}</p>
+                                    <div class="d-flex justify-content-between gap-2">
+                                        <div class="">
+                                            <div class="btn btn-info">
+                                                <a href="{{ route('admin.knowledge.detail', $pengakuan->article->id) }}"
+                                                    class="already-enrolled-btn" data-id="">
+                                                    <i class="fa fa-eye"></i> Lihat Pengetahuan
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Certificate Image') }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label for="">{{ __('Front Image') }}</label>
-                                    <img src="{{ route('admin.certificate-builder.getBg', $certificate->id) }}"
-                                        alt="" style="width: 50%; height: auto;"
-                                        onerror="this.onerror=null; this.src='{{ asset('assets/img/no-image.png') }}'">
-                                </div>
-                                @if ($certificate->certificate?->background2)
+                                <div class="col-md-12 mt-2">
                                     <div class="form-group">
-                                        <label for="">{{ __('Back Image') }} <code>( 1123px * 794px )
-                                                *</code></label>
-                                        <div id="image-preview-background" class="image-preview">
-                                            <label for="image-upload-background"
-                                                id="image-label-background">{{ __('Image') }}</label>
-                                            <input type="file" name="background" id="image-upload-background">
-                                        </div>
-                                        @error('image')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Tautan Dokumentasi') }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group d-flex justify-content-center">
-                                    <a href="{{ $certificate->documentation_link }}" target="_blank" class="btn btn-primary">Lihat Dokumentasi</a>
-                                </div>
-                            </div>
-                        </div>
-                        @if ($certificate->status != CertificateRecognition::STATUS_PUBLISHED)
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between">
-                                    <h4>{{ __('Certificate Verification') }}</h4>
-                                </div>
-                                <div class="card-body">
-                                    <form id="verification-form" method="POST"
-                                        action="{{ route('admin.certificate-recognition.verify', $certificate->id) }}">
-                                        @method('PUT')
-                                        @csrf
-                                        <input type="hidden" name="status" id="verification-status">
-                                        <input type="hidden" name="reason" id="verification-reason">
-                                        <div class="d-flex justify-content-between">
-                                            <button type="button" class="btn btn-outline-primary hover-bg-primary"
-                                                style="width: 48%; border: 2px solid #6777ef;"
-                                                onclick="handleApprove(event, 'verification-form')">
-                                                <i class="fa fa-check"></i>
-                                                {{ __('Approved') }}
-                                            </button>
-                                            <button type="button" class="btn btn-outline-danger hover-bg-danger"
-                                                style="width: 48%; border: 2px solid #fc544b;"
-                                                onclick="handleReject(event, 'verification-form')">
-                                                <i class="fa fa-times"></i>
-                                                {{ __('Rejected') }}
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        @endif
-                        @if ($certificate->status == CertificateRecognition::STATUS_PUBLISHED)
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between">
-                                    <h4>{{ __('Certificate Status') }}</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-12 d-flex align-items-center">
-                                            <h6 class="text-center mb-0">{{ __('Published') }}</h6>
-                                            &nbsp;
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                                fill="#6ac88e" stroke="#ffffff" stroke-width="1.5"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-badge-check-icon lucide-badge-check">
-                                                <path
-                                                    d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
-                                                <path d="m9 12 2 2 4-4" />
-                                            </svg>
-                                        </div>
+                                        <label for="title"><strong>Nama Pengembangan Kompetensi</strong></label>
+                                        <div>{{ $pengakuan->title }}</div>
                                     </div>
                                 </div>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Daftar Peserta') }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class=" max-h-400">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th style="width:1%">No</th>
-                                                <th style="width:35%">{{ __('Name') }}</th>
-                                                <th style="width:35%">{{ __('Jabatan') }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($users as $user)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td class="row">
-                                                        <div class="col-12">
-                                                            <strong>{{ $user->name }}</strong>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <span>Status ASN :</span>
-                                                            @if ($user->asn_status == 'PNS')
-                                                                <span class="badge badge-primary">PNS</span>
-                                                            @elseif ($user->asn_status == 'PPPK')
-                                                                <span class="badge badge-success">PPPK</span>
-                                                            @else
-                                                                <span class="badge badge-warning">Lainnya</span>
-                                                            @endif
-                                                        </div>
-                                                    </td>
-                                                    <td>{{ $user->jabatan }}</td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="4" class="text-center">{{ __('No data found') }}</td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
+                                <div class="col-md-6 mt-2">
+                                    <div class="form-group">
+                                        <label for="competency_development_id"><strong>Jalur Pengembangan
+                                                Kompetensi</strong>
+                                        </label>
+                                        <div>{{ $pengakuan->competency_development->name }}</div>
+                                    </div>
                                 </div>
-                                <div class="d-flex justify-content-end">
-                                    {{ $users->links() }}
+                                <div class="col-md-6 mt-2">
+                                    <div class="form-group">
+                                        <label for="organization"><strong>Penyelenggara</strong></label>
+                                        <div>{{ $pengakuan->organization }}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between">
-                                <h4>{{ __('Daftar Materi Pelatihan') }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class=" max-h-400">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th style="width:1%">No</th>
-                                                <th style="width:35%">{{ __('Name') }}</th>
-                                                <th style="width:35%">{{ __('JP') }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($pelatihans as $pelatihan)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $pelatihan->name }}</td>
-                                                    <td>{{ $pelatihan->jp }}</td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="4" class="text-center">{{ __('No data found') }}</td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
+                                <div class="col-md-6 mt-2">
+                                    <div class="form-group">
+                                        <label for="start_date"><strong>Tanggal Mulai</strong></label>
+                                        <div>{{ $pengakuan->start_date }}</div>
+                                    </div>
                                 </div>
-                                <div class="d-flex justify-content-end">
-                                    {{ $pelatihans->links() }}
+                                <div class="col-md-6 mt-2">
+                                    <div class="form-group">
+                                        <label for="end_date"><strong>Tanggal Selesai</strong></label>
+                                        <div>{{ $pengakuan->end_date }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <div class="form-group">
+                                        <label for="official_position"><strong>Jabatan Pejabat yang
+                                                mengeluarkan</strong></label>
+                                        <div>{{ $pengakuan->official_position }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <div class="form-group">
+                                        <label for="graduation_predicate"><strong>Predikat Kelulusan</strong></label>
+                                        <div>{{ $pengakuan->graduation_predicate ?? '-' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-2">
+                                    <div class="form-group">
+                                        <label for="certificate_number"><strong>Nomor Sertifikat</strong></label>
+                                        <div>{{ $pengakuan->certificate_number }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-2">
+                                    <div class="form-group">
+                                        <label for="certificate_date"><strong>Tanggal Sertifikat</strong></label>
+                                        <div>{{ $pengakuan->certificate_date }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mt-2">
+                                    <div class="form-group">
+                                        <label for="jp"><strong>Jumlah Jam Pelajaran</strong></label>
+                                        <div>{{ $pengakuan->jp }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-2" id="file-upload-field2">
+                                    <div class="form-group">
+                                        <label for="file"><strong>Laporan Pengembangan Kompetensi</strong></label>
+                                        <div>
+                                            <object
+                                                data="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'report_file']) }}"
+                                                type="application/pdf" width="100%" height="500px">
+                                                <embed
+                                                    src="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'report_file']) }}"
+                                                    type="application/pdf">
+                                            </object>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-2" id="file-upload-field3">
+                                    <div class="form-group">
+                                        <label for="file"><strong>Sertifikat</strong></label>
+                                        <div>
+                                            <object
+                                                data="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'certificate_file']) }}"
+                                                type="application/pdf" width="100%" height="500px">
+                                                <embed
+                                                    src="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'certificate_file']) }}"
+                                                    type="application/pdf">
+                                            </object>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-2" id="file-upload-field4">
+                                    <div class="form-group">
+                                        <label for="file"><strong>Piagam Penghargaan / Sejenisnya</strong></label>
+                                        <div>
+                                            <object
+                                                data="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'award_file']) }}"
+                                                type="application/pdf" width="100%" height="500px">
+                                                <embed
+                                                    src="{{ route('student.pengakuan-sertifikat.attachment', [$pengakuan->id, 'award_file']) }}"
+                                                    type="application/pdf">
+                                            </object>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

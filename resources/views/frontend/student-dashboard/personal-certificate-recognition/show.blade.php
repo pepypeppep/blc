@@ -6,15 +6,41 @@
             <div class="col-12">
                 <div class="row">
                     <div class="alert alert-{{ $pengakuan->stat['color'] }} d-flex justify-content-between" role="alert">
-                        <div><span class="text text-capitalize">Status:
-                                <strong>{{ $pengakuan->stat['label'] }}</strong></span></div>
-                        <div class="courses__item-bottom m-0">
-                            <div class="button">
-                                <a href="{{ route('student.pengakuan-sertifikat.edit', $pengakuan->id) }}"
-                                    class="already-enrolled-btn bg-primary" data-id="">
-                                    <i class="fa fa-pencil-alt text-white"></i>
-                                </a>
-                            </div>
+                        <div class="my-auto"><span class="text text-capitalize">Status:
+                                <strong>{{ $pengakuan->stat['label'] }}</strong></span>
+                            @if ($pengakuan->status == 'Rejected')
+                                <div class="mt-2"><strong>Alasan:</strong></div>
+                                <div>{!! clean($pengakuan->article->note) !!}</div>
+                            @endif
+                        </div>
+                        <div class="d-flex justify-content-between gap-2">
+                            @if ($pengakuan->status == 'draft')
+                                <div class="courses__item-bottom m-0">
+                                    <div class="button">
+                                        <a href="{{ route('student.pengakuan-sertifikat.edit', $pengakuan->id) }}"
+                                            class="already-enrolled-btn bg-primary text-white" data-id="">
+                                            <i class="fa fa-pencil-alt text-white"></i> Ubah
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="courses__item-bottom m-0">
+                                    <div class="button">
+                                        <a href="{{ route('student.pengetahuan.create') }}?cert={{ $pengakuan->id }}"
+                                            class="already-enrolled-btn bg-warning" data-id="">
+                                            <i class="fa fa-plus"></i> Tulis Pengetahuan
+                                        </a>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="courses__item-bottom m-0">
+                                    <div class="button">
+                                        <a href="{{ route('student.pengetahuan.show', $pengakuan->article->slug) }}"
+                                            class="already-enrolled-btn bg-info" data-id="">
+                                            <i class="fa fa-eye"></i> Lihat Pengetahuan
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="col-md-12 mt-2">

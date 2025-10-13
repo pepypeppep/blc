@@ -2,16 +2,17 @@
 
 namespace Modules\Article\app\Models;
 
-use App\Models\Course;
 use App\Models\Tag;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Course;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Order\app\Models\Enrollment;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Modules\CertificateRecognition\app\Models\PersonalCertificateRecognition;
 
 class Article extends Model
 {
@@ -88,6 +89,11 @@ class Article extends Model
     public function enrollment()
     {
         return $this->belongsTo(Enrollment::class);
+    }
+
+    public function certificateRecognition()
+    {
+        return $this->belongsTo(PersonalCertificateRecognition::class, 'personal_certificate_recognition_id');
     }
 
     public function articleTags(): ?BelongsToMany

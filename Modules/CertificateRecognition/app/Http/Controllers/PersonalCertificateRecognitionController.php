@@ -6,15 +6,38 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\CertificateRecognition\app\Models\PersonalCertificateRecognition;
 
 class PersonalCertificateRecognitionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('certificaterecognition::index');
+        $query = PersonalCertificateRecognition::query();
+
+        if ($request->has('is_approved') && $request->query('is_approved') != '') {
+            $is_approved = $request->query('is_approved', request('is_approved'));
+            $query->where('is_approved', $is_approved);
+        }
+
+        if ($request->has('certificate_status') && $request->query('certificate_status') != '') {
+            $certificate_status = $request->query('certificate_status', request('certificate_status'));
+            $query->where('certificate_status', $certificate_status);
+        }
+
+        if (auth()->user()->hasRole('Super Admin')) {
+            $query->where('status', '!=', 'draft');
+        } elseif (auth()->user()->hasRole('Admin OPD')) {
+            $query->where('instansi_id', auth()->user()->instansi_id);
+        }
+
+        $certificateRecognitions = $query
+            ->orderByDesc('updated_at')
+            ->paginate(10);
+
+        return view('certificaterecognition::index', compact('certificateRecognitions'));
     }
 
     /**
@@ -28,7 +51,7 @@ class PersonalCertificateRecognitionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         //
     }
@@ -38,7 +61,9 @@ class PersonalCertificateRecognitionController extends Controller
      */
     public function show($id)
     {
-        return view('certificaterecognition::show');
+        checkAdminHasPermissionAndThrowException('sertifikat.pengakuan.view');
+        $pengakuan = PersonalCertificateRecognition::with('competency_development', 'article', 'user')->find($id);
+        return view('certificaterecognition::show', compact('pengakuan'));
     }
 
     /**
@@ -52,7 +77,7 @@ class PersonalCertificateRecognitionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id)
     {
         //
     }
@@ -62,6 +87,9 @@ class PersonalCertificateRecognitionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        checkAdminHasPermissionAndThrowException('sertifikat.pengakuan.destroy');
+        $certificate = PersonalCertificateRecognition::find($id);
+        $certificate->delete();
+        return redirect()->route('admin.certificate-recognition.index')->with('success', 'Successfully deleted certificate recognition');
     }
 }

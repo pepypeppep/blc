@@ -35,8 +35,8 @@
                                             {{ $data->stat['label'] }}</div>
                                     </td>
                                     <td class="text-nowrap">
-                                        <div class="d-flex justify-content-end text-ebd items-end gap-2">
-                                            <div class="courses__item-bottom">
+                                        <div class="d-flex justify-content-center text-end items-end gap-2">
+                                            <div class="courses__item-bottom m-0">
                                                 <div class="button">
                                                     <a href="{{ route('student.pengakuan-sertifikat.show', $data->id) }}"
                                                         class="already-enrolled-btn bg-primary" data-id="">
@@ -44,7 +44,7 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                            <div class="courses__item-bottom">
+                                            <div class="courses__item-bottom m-0">
                                                 <form id="delete-form-{{ $data->id }}"
                                                     action="{{ route('student.pengakuan-sertifikat.destroy', $data->id) }}"
                                                     method="POST">

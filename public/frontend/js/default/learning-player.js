@@ -256,16 +256,30 @@ $(document).ready(function () {
                             : file_info.file_path
                     }" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe><div class="vjs-watermark"><img src="${watermark}"></div><div class="vjs-poster custom-poster"></div>`;
                 } else if (file_info.type == "quiz") {
-                    playerHtml = `<div class="resource-file">
-                    <div class="file-info">
-                        <div class="text-center">
-                            <img src="/uploads/website-images/quiz.png" alt="">
-                            <h6 class="mt-2">${file_info.title}</h6>
-                            <p>${quiz_st_des_txt}</p>
-                            <a href="/student/learning/quiz/${file_info.id}" class="btn btn-primary">${quiz_st_txt}</a>
-                        </div>
-                    </div>
-                </div>`;
+                    if (
+                        file_info.results_count == parseInt(file_info.attempt)
+                    ) {
+                        playerHtml = `<div class="resource-file">
+                            <div class="file-info">
+                                <div class="text-center">
+                                    <img src="/uploads/website-images/quiz.png" alt="">
+                                    <h6 class="mt-2">${file_info.title}</h6>
+                                    <p>Anda telah mencapai batas kesempatan untuk menyelesaikan soal ini</p>
+                                </div>
+                            </div>
+                        </div>`;
+                    } else {
+                        playerHtml = `<div class="resource-file">
+                            <div class="file-info">
+                                <div class="text-center">
+                                    <img src="/uploads/website-images/quiz.png" alt="">
+                                    <h6 class="mt-2">${file_info.title}</h6>
+                                    <p>${quiz_st_des_txt}</p>
+                                    <a href="/student/learning/quiz/${file_info.id}" class="btn btn-primary">${quiz_st_txt}</a>
+                                </div>
+                            </div>
+                        </div>`;
+                    }
                 } else {
                     playerHtml = `<div class="resource-file">
                         <div class="file-info">

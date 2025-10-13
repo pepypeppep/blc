@@ -14,7 +14,7 @@ class CourseCategoryStoreRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'unique:course_categories,slug'],
-            'icon' => ['required', 'image', 'max:255'],
+            'icon' => ['required', 'image', 'mimes:jpg,jpeg,png'],
             'status' => ['required', 'boolean'],
             'show_at_trending' => ['required', 'boolean'],
         ];
@@ -30,7 +30,7 @@ class CourseCategoryStoreRequest extends FormRequest
             'slug.unique' => __('The slug has already been taken.'),
             'icon.required' => __('The icon field is required'),
             'icon.image' => __('The icon must be an image'),
-            'icon.max' => __('The icon may not be greater than 255 characters.'),
+            // 'icon.max' => __('The icon may not be greater than 255 characters.'),
             'status.required' => __('The status field is required'),
             'status.boolean' => __('The status must be a boolean'),
             'show_at_rending.required' => __('The show_at_rending field is required'),

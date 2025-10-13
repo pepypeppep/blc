@@ -65,6 +65,19 @@ class StudentPengetahuanController extends Controller
             }
         }
 
+        if ($request->certificateRecognition != null) {
+            $certificateRecognition = PersonalCertificateRecognition::where('user_id', auth()->user()->id)
+                ->where('id', $request->certificateRecognition)
+                ->first();
+            if (!$certificateRecognition) {
+                return redirect()->back()->with(['messege' => __('Certificate Recognition not found'), 'alert-type' => 'error']);
+            }
+
+            $certificateRecognition->update([
+                'status' => 'process'
+            ]);
+        }
+
         DB::beginTransaction();
 
         $result = Article::create([
@@ -155,7 +168,7 @@ class StudentPengetahuanController extends Controller
 
     public function edit($slug)
     {
-        $pengetahuan = Article::where('slug', $slug)->with(['enrollment.course', 'articleTags'])->first();
+        $pengetahuan = Article::where('slug', $slug)->with(['enrollment.course', 'articleTags', 'certificateRecognition'])->first();
         if (!$pengetahuan) {
             return redirect()->back()->with(['messege' => __('Pengetahuan not found'), 'alert-type' => 'error']);
         }
@@ -170,6 +183,7 @@ class StudentPengetahuanController extends Controller
             return $enrollment->course->iscompleted();
         });
         $tags = Tag::all();
+
         return view('frontend.student-dashboard.pengetahuan.edit', compact('pengetahuan', 'completedCourses', 'tags'));
     }
 
@@ -196,6 +210,19 @@ class StudentPengetahuanController extends Controller
                     return redirect()->back()->with(['messege' => __('Pengetahuan already created for this enrollment'), 'alert-type' => 'error']);
                 }
             }
+        }
+
+        if ($request->certificateRecognition != null) {
+            $certificateRecognition = PersonalCertificateRecognition::where('user_id', auth()->user()->id)
+                ->where('id', $request->certificateRecognition)
+                ->first();
+            if (!$certificateRecognition) {
+                return redirect()->back()->with(['messege' => __('Certificate Recognition not found'), 'alert-type' => 'error']);
+            }
+
+            $certificateRecognition->update([
+                'status' => 'process'
+            ]);
         }
 
 
@@ -282,23 +309,41 @@ class StudentPengetahuanController extends Controller
 
     public function ajukanPengetahuan($slug)
     {
-        $pengetahuan = Article::where('slug', $slug)->where('author_id', userAuth()->id)->first();
+        try {
+            $pengetahuan = Article::where('slug', $slug)->where('author_id', userAuth()->id)->first();
 
-        if (!$pengetahuan) {
-            return redirect()->back()->with(['messege' => __('Pengetahuan not found'), 'alert-type' => 'error']);
+            if (!$pengetahuan) {
+                return redirect()->back()->with(['messege' => __('Pengetahuan not found'), 'alert-type' => 'error']);
+            }
+
+            if ($pengetahuan->status == Article::STATUS_PUBLISHED) {
+                return redirect()->back()->with(['messege' => __('Pengetahuan already published'), 'alert-type' => 'error']);
+            }
+
+            if ($pengetahuan->status == Article::STATUS_VERIFICATION) {
+                return redirect()->back()->with(['messege' => __('Pengetahuan sedang diverifikasi'), 'alert-type' => 'error']);
+            }
+
+            $pengetahuan->status = Article::STATUS_VERIFICATION;
+            $pengetahuan->save();
+
+            if ($pengetahuan->personal_certificate_recognition_id != null) {
+                $certificateRecognition = PersonalCertificateRecognition::where('user_id', auth()->user()->id)
+                    ->where('id', $pengetahuan->personal_certificate_recognition_id)
+                    ->first();
+                if (!$certificateRecognition) {
+                    return redirect()->back()->with(['messege' => __('Certificate Recognition not found'), 'alert-type' => 'error']);
+                }
+
+                $certificateRecognition->update([
+                    'status' => 'verification'
+                ]);
+            }
+
+            return redirect()->route('student.pengetahuan.index')->with(['messege' => __('Pengetahuan berhasil diajukan untuk diverifikasi'), 'alert-type' => 'success']);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->with(['messege' => __('Pengetahuan gagal diajukan untuk diverifikasi'), 'alert-type' => 'error']);
         }
-
-        if ($pengetahuan->status == Article::STATUS_PUBLISHED) {
-            return redirect()->back()->with(['messege' => __('Pengetahuan already published'), 'alert-type' => 'error']);
-        }
-
-        if ($pengetahuan->status == Article::STATUS_VERIFICATION) {
-            return redirect()->back()->with(['messege' => __('Pengetahuan sedang diverifikasi'), 'alert-type' => 'error']);
-        }
-
-        $pengetahuan->status = Article::STATUS_VERIFICATION;
-        $pengetahuan->save();
-
-        return redirect()->route('student.pengetahuan.index')->with(['messege' => __('Pengetahuan berhasil diajukan untuk diverifikasi'), 'alert-type' => 'success']);
     }
 }

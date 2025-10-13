@@ -2,30 +2,31 @@
 
 namespace Modules\Mentoring\app\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
+use App\Models\User;
 use iio\libmergepdf\Merger;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Modules\Mentoring\app\Models\Mentoring;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Intervention\Image\Colors\Rgb\Channels\Red;
 use Modules\Mentoring\app\Models\MentoringReview;
+use Modules\Mentoring\app\Models\MentoringSigner;
 use Modules\Mentoring\app\Models\MentoringSession;
-use Modules\CertificateBuilder\app\Http\Requests\CertificateUpdateRequest;
+use Modules\Mentoring\app\Models\MentoringFeedback;
 use Modules\CertificateBuilder\app\Models\CertificateBuilder;
 use Modules\CertificateBuilder\app\Models\CertificateBuilderItem;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Colors\Rgb\Channels\Red;
-use Modules\Mentoring\app\Models\MentoringFeedback;
-use Modules\Mentoring\app\Models\MentoringSigner;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Modules\CertificateBuilder\app\Http\Requests\CertificateUpdateRequest;
 
 class MentoringController extends Controller
 {
@@ -469,5 +470,24 @@ class MentoringController extends Controller
             ->get();
 
         return response()->json($users);
+    }
+
+    public function exportReport(Request $request, $id)
+    {
+        $data = Mentoring::with('mentee', 'mentor', 'mentoringSessions')->findOrFail($id);
+        $slug = Str::slug($data->title, '-');
+
+        // return view('mentoring::export-report-template', compact('data'));
+
+        $pdf = Pdf::loadView('mentoring::export-report-template', compact('data'));
+
+        // Optional: Set paper size and orientation
+        $pdf->setPaper('a4', 'portrait');
+
+        // To stream (display in browser):
+        // return $pdf->stream('invoice-' . $order->id . '.pdf');
+
+        // To download:
+        return $pdf->download('laporan-mentoring-' . $slug . '.pdf');
     }
 }

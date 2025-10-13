@@ -50,9 +50,18 @@
 
                                     <div class="col-lg-12 mb-4">
                                         <div>
-                                            <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
-                                                Pelaksanaan Pertemuan ({{ count($mentoring->mentoringSessions) }})
-                                            </p>
+                                            <div class="d-flex justify-content-between">
+                                                <p class="text-primary mb-1" style="font-size: 0.9rem; font-weight: 600;">
+                                                    Pelaksanaan Pertemuan ({{ count($mentoring->mentoringSessions) }})
+                                                </p>
+                                                <a href="{{ route('admin.mentoring.export-report', $mentoring->id) }}"
+                                                    class="export-link" data-id="{{ $mentoring->id }}">
+                                                    <button class="btn btn-outline-primary btn-sm export-button"
+                                                        data-id="{{ $mentoring->id }}">
+                                                        <i class="fa fa-file-pdf"></i> Ekspor Laporan
+                                                    </button>
+                                                </a>
+                                            </div>
 
                                             <div class="accordion card mb-2" id="mentoringAccordion">
                                                 @foreach ($mentoring->mentoringSessions as $index => $session)
@@ -534,6 +543,24 @@
                     '<img src="{{ route('admin.certificate-builder.getBg', $mentoring->certificate_id) }}" alt="{{ __('Sertifikat') }}" style="width: 100%; height: auto; max-width: 300px;">'
                 );
             @endif
+
+            $('.export-link').on('click', function(e) {
+                const mentoringId = $(this).data('id');
+                const button = $(`.export-button[data-id="${mentoringId}"]`);
+                const originalContent = button.html();
+
+                // Disable the button and show spinner
+                button.prop('disabled', true);
+                button.html('<i class="fa fa-spinner fa-spin"></i> Memproses...');
+
+                // Re-enable after 10 seconds if still on same page
+                setTimeout(() => {
+                    if (button.prop('disabled')) {
+                        button.prop('disabled', false);
+                        button.html(originalContent);
+                    }
+                }, 4000);
+            });
         });
     </script>
 

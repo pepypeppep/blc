@@ -62,12 +62,20 @@ class MentorApiController extends Controller
                 ->whereNot('status', Mentoring::STATUS_DRAFT);
 
             if ($request->has('search')) {
-                $dataQuery->where('title', 'like', '%' . $request->search . '%')
-                    ->orWhere('description', 'like', '%' . $request->search . '%')
-                    ->orWhere('purpose', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('mentee', function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->search . '%');
-                    });
+                $dataQuery->where(function ($qr) use ($request) {
+                    $qr->where('title', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%')
+                        ->orWhere('purpose', 'like', '%' . $request->search . '%')
+                        ->orWhereHas('mentee', function ($query) use ($request) {
+                            $query->where('name', 'like', '%' . $request->search . '%');
+                        });
+                });
+                // $dataQuery->where('title', 'like', '%' . $request->search . '%')
+                //     ->orWhere('description', 'like', '%' . $request->search . '%')
+                //     ->orWhere('purpose', 'like', '%' . $request->search . '%')
+                //     ->orWhereHas('mentee', function ($query) use ($request) {
+                //         $query->where('name', 'like', '%' . $request->search . '%');
+                //     });
             }
 
             $data = $dataQuery->orderByDesc('id')->paginate($request->per_page ?? 10);

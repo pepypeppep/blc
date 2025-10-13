@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Unor;
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
@@ -42,7 +43,8 @@ class UnorSync extends Command
         $unorsData = $response->json('result');
 
         foreach ($unorsData as $unorData) {
-            try {
+            try{
+
                 Unor::updateOrCreate([
                     'id' => $unorData['id'],
                 ], [
@@ -50,9 +52,9 @@ class UnorSync extends Command
                     'parent_id' => $unorData['parent_id'],
                     'name' => $unorData['name'],
                 ]);
-            } catch (\Exception $e) {
-
-                $this->error('Gagal mengupdate data unor dengan id ' . $unorData['id'] . ': ' . $e->getMessage());
+            }
+            catch(Exception $e){
+                $this->error('Gagal sinkronisasi data unor' . 'status: ' . $e->getMessage());
             }
         }
 

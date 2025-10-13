@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Modules\Coaching\app\Http\Controllers\CoacheeController;
 use Modules\Coaching\app\Http\Controllers\CoachingController;
 use Modules\Coaching\app\Http\Controllers\CoachController;
+use Modules\Coaching\app\Http\Controllers\CoachingCertificateController;
+use Modules\Coaching\App\Models\CoachingUser;
+use Modules\Coaching\app\Models\CoachingUu;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,11 +60,20 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
         // Route::get('{coachingId}/penilaian/{coacheeId}', [CoachingController::class, 'assessment'])->name('penilaian');
         Route::put('{id}/update-certificate', [CoachingController::class, 'updateCertificate'])->name('update-certificate');
         Route::get('get-users', [CoachingController::class, 'getUsers'])->name('get-users');
-        Route::post('{id}/request-sign-certificate', [CoachingController::class, 'requestSignCertificate'])->name('request-sign-certificate');
         Route::get('public-certificate/{uuid}', [CoachingController::class, 'publicCertificate'])->name('public-certificate');
         Route::get('/{id}/img', [CoachingController::class, 'viewImage'])->name('view.img');
         Route::get('/{id}/document', [CoachingController::class, 'showDocumentSpt'])->name('view.spt');
         Route::get('/{id}/report', [CoachingController::class, 'showReport'])->name('view.report');
         Route::get('/{id}/document/{type}', [CoachingController::class, 'showDocument'])->name('view.document');
+
+
+        // Certificate
+        Route::group(['prefix' => 'certificate', 'as' => 'certificate.'], function () {
+            Route::get('list-signer', [CoachingCertificateController::class, 'list'])->name('list-signer');
+            Route::post('store-signer', [CoachingCertificateController::class, 'storeSigners'])->name('store-signer');
+            Route::get('download/{id}.pdf', [CoachingCertificateController::class, 'download'])->name('download');
+            Route::post('send/{id}', [CoachingCertificateController::class, 'requestTTE'])->name('send-bantara');
+            Route::get('get-image/{name?}', [CoachingCertificateController::class, 'getImage'])->name('get-image');
+        });
     });
 });

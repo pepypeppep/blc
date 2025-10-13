@@ -15,6 +15,7 @@ services:
       - app_cache_codeium:/data/home/dockeruser/.codeium
       - app_cache_bun:/data/home/dockeruser/.bun
     command: ["chown", "-R", "1000:1000", "/data"]
+
   app:
     image: wbso/php8.3-ssh-dev:latest
     depends_on:
@@ -30,6 +31,11 @@ services:
       - app_cache_codeium:/home/dockeruser/.codeium
       - app_cache_bun:/home/dockeruser/.bun
       - app_cache_home:/home/dockeruser/.cache
+
+  htmlpdf:
+    image: wbso/htmlpdf:latest
+    depends_on:
+      - app
 
   webserver:
     image: nginx:1.27

@@ -18,7 +18,6 @@ class ConfigSeeder extends Seeder
     public function run(): void
     {
         $configs = [
-            'bantara_nik' => '1313312',
             'bantara_key' => 'HJzDwpf7qV37QW4Oh7qByll8byNg7VAYuHVsDETWdHE',
             'bantara_url' => 'https://bantarastg.dev.inidev.my.id',
             'bantara_callback_key' => 'bantara_callback_key',

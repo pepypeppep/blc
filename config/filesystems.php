@@ -52,6 +52,13 @@ return [
             'throw' => false,
         ],
 
+        'templates' => [
+            'driver' => 'local',
+            'root' => storage_path('app/templates'),
+            'url' => env('APP_URL') . '/storage',
+            'throw' => false,
+        ],
+
         'public' => [
             'driver'      => 'local',
             'root'        => public_path('uploads/store'),

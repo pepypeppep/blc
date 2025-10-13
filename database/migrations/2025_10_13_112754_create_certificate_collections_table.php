@@ -17,7 +17,8 @@ return new class extends Migration
             $table->longText('title');
             $table->string('category');
             $table->integer('jp');
-            $table->date('date');
+            $table->integer('year');
+            $table->date('start_at');
             $table->string('periode');
             $table->integer('triwulan');
             $table->longText('url');

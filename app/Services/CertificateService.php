@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Http\Request;
 use App\Models\CourseProgress;
 use App\Models\CourseChapterItem;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Modules\Order\app\Models\Enrollment;
 use Modules\Coaching\app\Models\Coaching;
@@ -237,7 +238,8 @@ class CertificateService
                         'name' => $course->title,
                         'jp' => $course->jp,
                         'date' => $completed_date,
-                        'periode' => $course->start_date . ' - ' . $course->end_date,
+                        'start_at' => $course->start_date,
+                        'periode' => Carbon::parse($course->start_date)->format('d-m-Y') . ' - ' . Carbon::parse($course->end_date)->format('d-m-Y'),
                         'triwulan' => (int) ceil((date('n', strtotime($course->start_date)) - 1) / 3) + 1,
                         'url' => route('student.download-certificate', $course->id),
                     ];
@@ -257,7 +259,8 @@ class CertificateService
                 'name' => $data->title,
                 'jp' => $data->jp,
                 'date' => $data->updated_at->format('Y'),
-                'periode' => $data->mentoringSessions->first()->mentoring_date . ' - ' . $data->mentoringSessions->last()->mentoring_date,
+                'start_at' => $data->mentoringSessions->first()->mentoring_date,
+                'periode' => Carbon::parse($data->mentoringSessions->first()->mentoring_date)->format('d-m-Y') . ' - ' . Carbon::parse($data->mentoringSessions->last()->mentoring_date)->format('d-m-Y'),
                 'triwulan' => (int) ceil((date('n', strtotime($data->mentoringSessions->first()->mentoring_date)) - 1) / 3) + 1,
                 'url' => $data->certificate_url,
             ];
@@ -279,7 +282,8 @@ class CertificateService
                 'name' => $data->title,
                 'jp' => $data->jp,
                 'date' => $data->updated_at->format('Y'),
-                'periode' => $data->coachingSessions->first()->coaching_date . ' - ' . $data->coachingSessions->last()->coaching_date,
+                'start_at' => $data->coachingSessions->first()->coaching_date,
+                'periode' => Carbon::parse($data->coachingSessions->first()->coaching_date)->format('d-m-Y') . ' - ' . Carbon::parse($data->coachingSessions->last()->coaching_date)->format('d-m-Y'),
                 'triwulan' => (int) ceil((date('n', strtotime($data->coachingSessions->first()->coaching_date)) - 1) / 3) + 1,
                 'url' => $data->certificate_url,
             ];
@@ -292,23 +296,11 @@ class CertificateService
                 'category' => 'pengakuan',
                 'name' => $data->title,
                 'jp' => $data->jp,
-                'date' => $data->start_date,
-                'periode' => $data->start_date . ' - ' . $data->end_date,
+                'date' => $data->start_date->format('Y'),
+                'start_at' => $data->start_date,
+                'periode' => Carbon::parse($data->start_date)->format('d-m-Y') . ' - ' . Carbon::parse($data->end_date)->format('d-m-Y'),
                 'triwulan' => (int) ceil((date('n', strtotime($data->start_date)) - 1) / 3) + 1,
                 'url' => $data->certificate_file_url,
-            ];
-        }
-
-        if (count($certificates) === 0) {
-            return [
-                'success' => false,
-                'message' => 'Sertifikat tidak ditemukan.',
-                'data' => [],
-                'totalJp' => 0,
-                'totalJpPerTriwulan' => [],
-                'total' => 0,
-                'last_page' => 0,
-                'code' => 404
             ];
         }
 

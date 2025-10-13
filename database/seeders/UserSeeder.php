@@ -130,9 +130,19 @@ class UserSeeder extends Seeder
 
         User::create([
             'id' => 8,
-            'name' => 'Laire Kaira Nayadita',
+            'name' => 'LMS Student Two',
             'email' => 'studenttwo@gmail.com',
             'username' => 'lms_student_two',
+            'password' => bcrypt('1234'),
+            'role' => 'student',
+            'email_verified_at' => now(),
+        ]);
+
+        User::create([
+            'id' => 12,
+            'name' => 'LMS Student Three',
+            'email' => 'studentthree@gmail.com',
+            'username' => 'lms_student_three',
             'password' => bcrypt('1234'),
             'role' => 'student',
             'email_verified_at' => now(),

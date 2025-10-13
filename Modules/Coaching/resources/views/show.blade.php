@@ -484,6 +484,7 @@
                                 </div>
                             </div>
                         @endif
+                        {{-- SPT Coaching --}}
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <h4>{{ __('SPT Coaching') }}</h4>
@@ -502,12 +503,17 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- /SPT Coaching --}}
+                        @include('coaching::certificate-card')
                     </div>
                 </div>
             </div>
         </section>
     </div>
 @endsection
+
+
+
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">

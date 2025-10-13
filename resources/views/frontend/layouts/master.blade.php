@@ -61,7 +61,7 @@
 
     @if ($setting->preloader_status == 1)
         <!--Preloader-->
-        <div id="preloader">
+        {{-- <div id="preloader">
             <div id="loader" class="loader">
                 <div class="loader-container">
                     <div class="loader-icon"><img
@@ -69,7 +69,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <!--Preloader-end -->
     @endif
 

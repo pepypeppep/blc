@@ -72,7 +72,7 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['auth:admi
             Route::get('list-signer', [CoachingCertificateController::class, 'list'])->name('list-signer');
             Route::post('store-signer', [CoachingCertificateController::class, 'storeSigners'])->name('store-signer');
             Route::get('download/{id}.pdf', [CoachingCertificateController::class, 'download'])->name('download');
-            Route::get('send/{id}', [CoachingCertificateController::class, 'requestTTE'])->name('send');
+            Route::post('send/{id}', [CoachingCertificateController::class, 'requestTTE'])->name('send-bantara');
             Route::get('get-image/{name?}', [CoachingCertificateController::class, 'getImage'])->name('get-image');
         });
     });

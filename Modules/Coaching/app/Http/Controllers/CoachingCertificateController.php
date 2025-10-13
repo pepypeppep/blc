@@ -266,62 +266,73 @@ class CoachingCertificateController extends Controller
         $coaching = Coaching::findOrFail($id);
         $coachingUsers = $coaching->completedCoachingUsers;
 
-        foreach ($coachingUsers as $coachingUserPivot) {
-            $coachingUser = $coachingUserPivot->coachee;
-            $signers = $coaching->signers()->orderBy('step', 'asc')->get();
-            // send to Bantara API endpoint
-            $url = sprintf('%s/internal/v1/tte/documents', appConfig('bantara_url'));
-            $signersArray = [];
-            foreach ($signers as $signer) {
-                $signersArray[] =
-                    [
-                        'nik' => $signer->user->nik,
-                        'action' => 'SIGN'
-                    ];
+
+        try {
+            DB::beginTransaction();
+
+            foreach ($coachingUsers as $coachingUserPivot) {
+                $coachingUser = $coachingUserPivot->coachee;
+                $signers = $coaching->signers()->orderBy('step', 'asc')->get();
+                // send to Bantara API endpoint
+                $url = sprintf('%s/internal/v1/tte/documents', appConfig('bantara_url'));
+                $signersArray = [];
+                foreach ($signers as $signer) {
+                    $signersArray[] =
+                        [
+                            'nik' => $signer->user->nik,
+                            'action' => 'SIGN'
+                        ];
+                }
+                $signersJson = json_encode($signersArray);
+
+                $pdfPath = $coachingUserPivot->certificate_path;
+                if (!Storage::disk('private')->exists($pdfPath)) {
+                    return redirect()->back()->with(['messege' => __('Certificate file not found'), 'alert-type' => 'error']);
+                }
+
+                $pdfData = Storage::disk('private')->get($pdfPath);
+
+                $response = Http::attach(
+                    'file',
+                    $pdfData,
+                    'certificate.pdf',
+                    ['Content-Type' => 'application/pdf']
+                )
+                    ->withHeaders([
+                        'Authorization' => 'Bearer ' . appConfig('bantara_key'),
+                    ])
+                    ->post($url, [
+                        'signers' => $signersJson,
+                        'title' => sprintf("Sertifikat Coaching %s an %s", $coaching->title, $coachingUser->name),
+                        'description' => $coachingUser->name,
+                        'callback_url' => sprintf("%s", route('api.callback.coaching', $coachingUserPivot)),
+                        'callback_key' => appConfig('bantara_callback_key'),
+                    ]);
+
+                if ($response->failed()) {
+                    Log::error($response->body());
+                    return redirect()->back()->with(['messege' => 'Terjadi kesalahan dalam pengiriman sertifikat ke Bantara', 'alert-type' => 'error']);
+                }
+
+                $certificateUuid = $response->json('document_id');
+
+                if (!$certificateUuid) {
+                    Log::error($response->body());
+                    return redirect()->back()->with(['messege' => 'Terjadi kesalahan dalam pengiriman sertifikat ke Bantara', 'alert-type' => 'error']);
+                }
+
+                $coachingUserPivot->certificate_uuid = $certificateUuid;
+                $coachingUserPivot->save();
             }
-            $signersJson = json_encode($signersArray);
 
-            $pdfPath = $coachingUserPivot->certificate_path;
-            if (!Storage::disk('private')->exists($pdfPath)) {
-                return redirect()->back()->with(['messege' => __('Certificate file not found'), 'alert-type' => 'error']);
-            }
-
-            $pdfData = Storage::disk('private')->get($pdfPath);
-
-            $response = Http::attach(
-                'file',
-                $pdfData,
-                'certificate.pdf',
-                ['Content-Type' => 'application/pdf']
-            )
-                ->withHeaders([
-                    'Authorization' => 'Bearer ' . appConfig('bantara_key'),
-                ])
-                ->post($url, [
-                    'signers' => $signersJson,
-                    'title' => sprintf("Sertifikat Coaching %s an %s", $coaching->title, $coachingUser->name),
-                    'description' => $coachingUser->name,
-                    'callback_url' => sprintf("%s", route('api.callback.coaching', $coachingUserPivot)),
-                    'callback_key' => appConfig('bantara_callback_key'),
-                ]);
-
-            if ($response->failed()) {
-                Log::error($response->body());
-                return redirect()->back()->with(['messege' => 'Terjadi kesalahan dalam pengiriman sertifikat ke Bantara', 'alert-type' => 'error']);
-            }
-
-            $certificateUuid = $response->json('document_id');
-
-            if (!$certificateUuid) {
-                Log::error($response->body());
-                return redirect()->back()->with(['messege' => 'Terjadi kesalahan dalam pengiriman sertifikat ke Bantara', 'alert-type' => 'error']);
-            }
-
-            $coachingUserPivot->certificate_uuid = $certificateUuid;
-            $coachingUserPivot->save();
+            // set coaching status as done
+            $coaching->status = Coaching::STATUS_DONE;
+            $coaching->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with(['messege' => 'Terjadi kesalahan dalam pengiriman sertifikat ke Bantara', 'alert-type' => 'error']);
         }
-
-
 
         return redirect()->back()->with(['messege' => 'Sertifikat berhasil dikirim ke Bantara', 'alert-type' => 'success']);
     }

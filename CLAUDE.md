@@ -19,6 +19,7 @@ This is a Laravel-based Learning Management System (LMS) called "SkillGro" with 
 - **CSS Framework**: Tailwind CSS 3.4.13
 - **JavaScript**: Vanilla JS with Axios 1.7.4 for API calls
 - **Asset Processing**: Autoprefixer 10.4.20, PostCSS 8.4.47
+- **Confirmation Popup**: SweetAlert
 
 ### Modular Architecture
 - **Module System**: nwidart/laravel-modules v10.0

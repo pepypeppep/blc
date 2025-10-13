@@ -10,15 +10,23 @@
                  alt="">
          </div>
 
+         <div class="d-flex flex-wrap align-items-center mt-3">
+             @can('chooseCertificate', $coaching)
+                 {{-- pilih penanda tangan modal --}}
+                 <button type="button" class="btn btn-primary mr-2 mb-2" data-toggle="modal"
+                     data-target="#certificate-signer-modal">{{ __('Choose Certificate') }}</button>
+             @endcan
 
-         {{-- pilih penanda tangan modal --}}
-         <button type="button" class="btn btn-primary mt-3" data-toggle="modal"
-             data-target="#certificate-signer-modal">{{ __('Choose Certificate') }}</button>
-
-         {{-- Kirim ke Bantara --}}
-         <a href="{{ route('admin.coaching.certificate.send', $coaching->id) }}"
-             class="btn btn-primary mt-3">{{ __('Send to Bantara') }}</a>
-
+             @can('sendToBantara', $coaching)
+                 {{-- Kirim ke Bantara --}}
+                 <form id="send-to-bantara-form"
+                     action="{{ route('admin.coaching.certificate.send-bantara', $coaching->id) }}" method="POST"
+                     class="mb-2">
+                     @csrf
+                     <button type="button" class="btn btn-primary send-to-bantara">{{ __('Send to Bantara') }}</button>
+                 </form>
+             @endcan
+         </div>
 
          {{-- table list sertifikat --}}
          {{-- column name, link for download --}}
@@ -65,6 +73,29 @@
 
      </div>
  </div>
+
+ @push('js')
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+     <script>
+         $(document).on('click', '.send-to-bantara', function(e) {
+             e.preventDefault();
+             const form = $('#send-to-bantara-form');
+             Swal.fire({
+                 title: '{{ __('Confirmation') }}',
+                 text: '{{ __('Send certificates to Bantara?') }}',
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonText: '{{ __('Yes') }}',
+                 cancelButtonText: '{{ __('Cancel') }}'
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     form.trigger('submit');
+                 }
+             });
+         });
+     </script>
+ @endpush
 
  @push('body-bottom')
      @include('coaching::certificate-signer-modal')

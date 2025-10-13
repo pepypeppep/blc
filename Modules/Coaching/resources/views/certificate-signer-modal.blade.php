@@ -13,7 +13,7 @@
                 method="POST">
                 @csrf
                 <input type="hidden" name="coaching_id" value="{{ $coaching->id }}">
-                <input type="hidden" name="certificate_name" value="">
+                <input type="hidden" name="certificate_name" value="{{ $coaching->certificate_template_name }}">
 
                 <div class="modal-body row">
                     <div class="col">

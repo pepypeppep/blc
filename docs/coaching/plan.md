@@ -1,16 +1,5 @@
 # Coaching Docs
 
-
-## Callback Bantara
-- route : /api/coaching/callback
-	- method : POST
-	- body : 
-		- id : string
-		- file: binary
-
-- storage path : {year}/{month}/coaching/{coaching_id}/{coaching_user_id}-signed-certificate.pdf
-
-
 # Todo
 ## [ ] Modul coaching certificate. Tambahkan module untuk memilih sertifikat pada admin coaching. (Bisa seperti mentoring)
 
@@ -20,13 +9,13 @@
 
 - [ ] Pemilihan penandatangan
 		+ [x] Penandatangan yang dipilih akan di simpan di coaching_signers
-		+ [ ] TTE depan : default terpilih kepala BKPSDM
+		+ [x] TTE depan : default terpilih kepala BKPSDM
 		+ [x] TTE belakang : sesuai pilihan admin
 		+ [x] Label dropdown penandatangan menampilkan nama-jabatan-instansi
 
 - [ ] Generate sertifikat
 		+ [ ] kata kata di sertifikat coaching berbeda, jadi buat admin harus buat template untuk sertifikat caching sendiri
-		+ [ ] Setelah memilih sertifikat dan penandatangan, langsung generate sertifikat agar bisa di preview.
+		+ [x] Setelah memilih sertifikat dan penandatangan, langsung generate sertifikat agar bisa di preview.
 		+ [ ] Acuan generate jumlah sertifikat dari tabel coaching_users && coaching_users.final_report NOT NULL
 		+ [x] tiap coachee sertifikat sendiri sendiri
 		+ [x] simpan di coaching_users.certificate_path

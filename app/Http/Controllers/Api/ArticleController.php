@@ -12,8 +12,9 @@ use Modules\Article\app\Models\Article;
 use Modules\Order\app\Models\Enrollment;
 use Illuminate\Support\Facades\Validator;
 use Modules\Article\app\Models\ArticleReview;
-use App\Http\Requests\Frontend\StudentPelatihanStoreRequest;
 use Modules\Article\app\Models\ArticleComment;
+use App\Http\Requests\Frontend\StudentPelatihanStoreRequest;
+use Modules\CertificateRecognition\app\Models\PersonalCertificateRecognition;
 
 class ArticleController extends Controller
 {
@@ -404,6 +405,7 @@ class ArticleController extends Controller
         $validator = Validator::make($request->all(), [
             'category' => 'required|in:blog,document,video',
             'enrollment' => 'nullable|exists:enrollments,id',
+            'certificateRecognition' => 'nullable|exists:personal_certificate_recognitions,id',
             'title' => 'required',
             'description' => 'required',
             'thumbnail' => 'required|mimes:jpg,jpeg,png|max:2048',
@@ -422,6 +424,7 @@ class ArticleController extends Controller
             'content.required_if' => __('The content field is required when category is blog'),
             'category.in' => __('The selected category is invalid'),
             'enrollment.exists' => __('The selected enrollment id is invalid'),
+            'certificateRecognition.exists' => __('The selected certificate recognition id is invalid'),
             'thumbnail.mimes' => __('The thumbnail must be a file of type: jpg, jpeg, png'),
             'thumbnail.max' => __('The thumbnail may not be greater than 2048 kilobytes'),
             'file.mimes' => __('The file must be a file of type: pdf'),
@@ -447,6 +450,19 @@ class ArticleController extends Controller
             }
         }
 
+        if ($request->certificateRecognition != null) {
+            $certificateRecognition = PersonalCertificateRecognition::where('user_id', auth()->user()->id)
+                ->where('id', $request->certificateRecognition)
+                ->first();
+            if (!$certificateRecognition) {
+                return $this->errorResponse('Certificate Recognition not found', [], 404);
+            }
+
+            $certificateRecognition->update([
+                'status' => 'process'
+            ]);
+        }
+
         DB::beginTransaction();
 
         $result = Article::create([
@@ -454,6 +470,7 @@ class ArticleController extends Controller
             'author_id' => $request->user()->id,
             'category' => $request->category,
             'enrollment_id' => $request->enrollment != null ? $enrollment->id : null,
+            'personal_certificate_recognition_id' => $request->certificateRecognition ?? null,
             'title' => $request->title,
             'description' => $request->description,
             'visibility' => $request->visibility,
@@ -782,6 +799,19 @@ class ArticleController extends Controller
             }
         }
 
+        if ($request->certificateRecognition != null) {
+            $certificateRecognition = PersonalCertificateRecognition::where('user_id', auth()->user()->id)
+                ->where('id', $request->certificateRecognition)
+                ->first();
+            if (!$certificateRecognition) {
+                return $this->errorResponse('Certificate Recognition not found', [], 404);
+            }
+
+            $certificateRecognition->update([
+                'status' => 'process'
+            ]);
+        }
+
         DB::beginTransaction();
 
         $result = $article->update([
@@ -934,6 +964,19 @@ class ArticleController extends Controller
 
         $pengetahuan->status = Article::STATUS_VERIFICATION;
         $pengetahuan->save();
+
+        if ($pengetahuan->personal_certificate_recognition_id != null) {
+            $certificateRecognition = PersonalCertificateRecognition::where('user_id', auth()->user()->id)
+                ->where('id', $pengetahuan->personal_certificate_recognition_id)
+                ->first();
+            if (!$certificateRecognition) {
+                return $this->errorResponse('Certificate Recognition not found', [], 404);
+            }
+
+            $certificateRecognition->update([
+                'status' => 'verification'
+            ]);
+        }
 
         return $this->successResponse($pengetahuan, 'Pengetahuan submitted successfully');
     }

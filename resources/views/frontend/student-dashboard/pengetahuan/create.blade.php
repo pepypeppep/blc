@@ -42,48 +42,42 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2 alert alert-warning">
-                                <div class="form-group">
-                                    <label for="enrollment">Pelatihan</label>
-                                    <select id="enrollment" name="enrollment" class="form-control select2">
-                                        <option value="">{{ __('Select') }}</option>
-                                        @foreach ($completedCourses as $enrollment)
-                                            <option
-                                                value="{{ $enrollment->id }}"@if (old('enrollment') == $enrollment->id) selected @endif>
-                                                {{ $enrollment->course->title }}</option>
-                                        @endforeach
-                                    </select>
+                            @if (request()->has('cert') || request()->has('course'))
+                                <div class="col-md-12 mt-2">
+                                    @if (request()->has('course'))
+                                        <div class="form-group">
+                                            <label for="enrollment">Pelatihan <code>*</code></label>
+                                            <select id="enrollment" name="enrollment" class="form-control select2" required>
+                                                <option value="">{{ __('Select') }}</option>
+                                                @foreach ($completedCourses as $enrollment)
+                                                    <option
+                                                        value="{{ $enrollment->id }}"@if (old('enrollment') == $enrollment->id) selected @endif>
+                                                        {{ $enrollment->course->title }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
+                                    @if (request()->has('cert'))
+                                        <div class="form-group">
+                                            <label for="certificateRecognition">Pengakuan Sertifikat <code>*</code></label>
+                                            <select id="certificateRecognition" name="certificateRecognition"
+                                                class="form-control select2" required>
+                                                <option value="">{{ __('Select') }}</option>
+                                                @foreach ($certificateRecognitions as $certificate)
+                                                    <option
+                                                        value="{{ $certificate->id }}"@if (old('certificateRecognition') == $certificate->id) selected @endif>
+                                                        {{ $certificate->title }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
                                 </div>
-                                <div class="form-group mt-3">
-                                    <label for="certificateRecognition">Pengakuan Sertifikat</label>
-                                    <select id="certificateRecognition" name="certificateRecognition"
-                                        class="form-control select2">
-                                        <option value="">{{ __('Select') }}</option>
-                                        @foreach ($certificateRecognitions as $certificate)
-                                            <option
-                                                value="{{ $certificate->id }}"@if (old('enrollment') == $certificate->id) selected @endif>
-                                                {{ $certificate->title }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="mt-3">
-                                    <small><code>*</code>Jika Anda memilih pelatihan, maka akan dikaitkan ke pelatihan yang
-                                        dipilih.
-                                        <br><code>*</code>Jika Anda memilih pengakuan sertifikat, maka akan dikaitkan ke
-                                        pengakuan
-                                        sertifikat
-                                        yang dipilih.
-                                        <br><code>*</code>Tidak dapat memilih keduanya dalam satu waktu.
-                                        <br><code>*</code>Jika Anda hanya ingin membuat materi pengetahuan, maka tidak perlu
-                                        memilih pelatihan atau pengakuan sertifikat.
-                                    </small>
-                                </div>
-                            </div>
+                            @endif
                             <div class="col-md-12 mt-2">
                                 <div class="form-group">
                                     <label for="title">{{ __('Title') }} <code>*</code></label>
                                     <input id="title" name="title" type="text" class="form-control"
-                                        placeholder="example" value="{{ old('title') }}">
+                                        placeholder="example" value="{{ old('title') }}" required>
                                 </div>
                             </div>
                             <div class="col-md-6 mt-2">
@@ -149,7 +143,7 @@
                                     <label for="link">{{ __('Link Learning Material') }}
                                         <code>*</code></label>
                                     <input id="link" name="link" type="url" class="form-control"
-                                        placeholder="example" value="{{ old('link') }}">
+                                        placeholder="https://youtube.com/watch?v=14045" value="{{ old('link') }}">
                                 </div>
                             </div>
                             <div class="col-md-12 mt-2">
@@ -163,7 +157,7 @@
 </textarea>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-2">
+                            <div class="col-md-12 mt-2" id="content-field">
                                 <div class="form-group">
                                     <label for="content">{{ __('Content') }}
                                         <code>*</code></label>
@@ -215,14 +209,23 @@
             $("input[name='category']").change(function() {
                 if ($("#document").is(":checked")) {
                     $("#file-upload-field").show();
+                    // $("#content-field").hide();
+                    $("#content-field textarea[name='content']").removeAttr('required');
                 } else {
                     $("#file-upload-field").hide();
                 }
 
                 if ($("#video").is(":checked")) {
                     $("#link-field").show();
+                    // $("#content-field").hide();
+                    $("#content-field textarea[name='content']").removeAttr('required');
                 } else {
                     $("#link-field").hide();
+                }
+
+                if ($("#blog").is(":checked")) {
+                    $("#content-field").show();
+                    $("#content-field textarea[name='content']").attr('required', 'required');
                 }
             }).trigger('change');
 

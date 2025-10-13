@@ -17,7 +17,7 @@ class StudentPelatihanUpdateRequest extends FormRequest
             'visibility' => 'required|in:public,internal',
             'link' => 'nullable',
             'file' => 'nullable|mimes:pdf|max:10240',
-            'content' => 'required',
+            'content' => 'nullable|required_if:category,blog',
             'tags' => 'nullable|array|max:5',
             'tags.*' => 'required|string',
         ];
@@ -41,8 +41,8 @@ class StudentPelatihanUpdateRequest extends FormRequest
             'file.mimes' => __('The file must be a file of type: pdf'),
             'file.max' => __('The file may not be greater than 10240 kilobytes'),
             'visibility.in' => __('The selected visibility is invalid'),
-            'content.required' => __('The content field is required'),
             'tags.max' => __('The tags may not be greater than 5 items'),
+            'content.required_if' => __('The content field is required when category is blog'),
         ];
     }
 }

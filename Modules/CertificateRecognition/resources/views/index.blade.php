@@ -82,8 +82,6 @@
                                                 <th>{{ __('Instansi') }}</th>
                                                 <th>{{ __('Course Name') }}</th>
                                                 <th>{{ __('Status') }}</th>
-                                                <th>{{ __('Approval Status') }}</th>
-                                                <th>{{ __('Certificate Status') }}</th>
                                                 <th>{{ __('Action') }}</th>
                                             </tr>
                                         </thead>
@@ -92,38 +90,28 @@
                                                 <tr>
                                                     <td>{{ ++$index }}</td>
                                                     <td><a
-                                                            href="{{ route('admin.certificate-recognition.show', $certificate->id) }}">{{ $certificate->name }}</a>
+                                                            href="{{ route('admin.certificate-recognition.show', $certificate->id) }}">{{ $certificate->user->name }}</a>
                                                     </td>
-                                                    <td>{{ $certificate->instansi->name }}</td>
-                                                    <td>{{ $certificate->name }}</td>
+                                                    <td>{{ $certificate->organization }}</td>
+                                                    <td>{{ $certificate->title }}</td>
                                                     <td>
                                                         <div class="badge badge-{{ $certificate->stat['color'] }}">
                                                             {{ __($certificate->stat['label']) }}</div>
                                                     </td>
-                                                    <td>
-                                                        <div
-                                                            class="badge badge-{{ $certificate->approval_stat['color'] }}">
-                                                            {{ __($certificate->approval_stat['label']) }}</div>
-                                                    </td>
-                                                    <td>
-                                                        <div
-                                                            class="badge badge-{{ $certificate->certificate_stat['color'] }}">
-                                                            {{ __($certificate->certificate_stat['label']) }}</div>
-                                                    </td>
                                                     <td class="flex text-end justify-end items-end">
-                                                        @if ($certificate->status != CertificateRecognition::STATUS_PUBLISHED)
+                                                        {{-- @if ($certificate->status != 'published')
                                                             @adminCan('sertifikat.pengakuan.verify')
                                                                 <a href="{{ route('admin.certificate-recognition.show', $certificate->id) }}"
                                                                     class="btn btn-primary btn-sm"><i class="fa fa-check"></i>
                                                                 </a>
                                                             @endadminCan
-                                                        @else
-                                                            @adminCan('sertifikat.pengakuan.view')
-                                                                <a href="{{ route('admin.certificate-recognition.show', $certificate->id) }}"
-                                                                    class="btn btn-info btn-sm"><i class="fa fa-eye"></i>
-                                                                </a>
-                                                            @endadminCan
-                                                        @endif
+                                                        @else --}}
+                                                        @adminCan('sertifikat.pengakuan.view')
+                                                            <a href="{{ route('admin.certificate-recognition.show', $certificate->id) }}"
+                                                                class="btn btn-info btn-sm"><i class="fa fa-eye"></i>
+                                                            </a>
+                                                        @endadminCan
+                                                        {{-- @endif
                                                         @adminCan('sertifikat.pengakuan.destroy')
                                                             <form
                                                                 action="{{ route('admin.certificate-recognition.destroy', $certificate->id) }}"
@@ -136,7 +124,7 @@
                                                                     class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>
                                                                 </a>
                                                             </form>
-                                                        @endadminCan
+                                                        @endadminCan --}}
                                                     </td>
                                                 </tr>
                                             @empty

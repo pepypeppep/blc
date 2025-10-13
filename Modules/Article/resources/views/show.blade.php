@@ -114,6 +114,33 @@
                             </div>
                         @endif
 
+                        <!-- Related Certificate Recognition -->
+                        @if ($article->certificateRecognition)
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>{{ __('Certificate Recognition') }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <a href="{{ route('admin.certificate-recognition.show', $article->certificateRecognition->id) }}"
+                                        class="text-decoration-none text-dark" target="_blank">
+                                        <div class="" style="gap: 1rem;">
+                                            <object data="{{ $article->certificateRecognition->certificate_file_url }}"
+                                                type="application/pdf" width="100%" height="500px">
+                                                <embed src="{{ $article->certificateRecognition->certificate_file_url }}"
+                                                    type="application/pdf">
+                                            </object>
+                                            <div class="d-flex align-items-center mt-2">
+                                                <h5 class="card-title m-0" style="font-size: 1rem;">
+                                                    Pengakuan Sertifikat: {{ $article->certificateRecognition->title }}
+                                                </h5>
+                                                <i class="fa fa-chevron-circle-right ml-1"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+
                         <!-- Action -->
                         @php
                             $actions = [

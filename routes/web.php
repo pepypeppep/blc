@@ -95,12 +95,12 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::get('page/{slug}', [HomePageController::class, 'customPage'])->name('custom-page');
 
     /** other routes */
-    Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['auth:admin'], 'as' => 'admin.'], function () {
-        \UniSharp\LaravelFilemanager\Lfm::routes();
-    });
-    Route::group(['prefix' => 'frontend-filemanager', 'middleware' => ['web']], function () {
-        \UniSharp\LaravelFilemanager\Lfm::routes();
-    });
+    // Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['auth:admin'], 'as' => 'admin.'], function () {
+    //     \UniSharp\LaravelFilemanager\Lfm::routes();
+    // });
+    // Route::group(['prefix' => 'frontend-filemanager', 'middleware' => ['web']], function () {
+    //     \UniSharp\LaravelFilemanager\Lfm::routes();
+    // });
 
     Route::get('change-theme/{name}', [HomePageController::class, 'changeTheme'])->name('change-theme');
 
@@ -122,6 +122,8 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
     Route::get('/stream-video/{fileId}', [GoogleDrivePublicVideoController::class, 'streamVideo']);
 
     Route::get('faqs', [HomePageController::class, 'faq'])->name('faqs');
+
+    Route::get('pengakuan-sertifikatfile/{id}/{file}', [PersonalCertificateRecognitionController::class, 'attachment'])->name('student.pengakuan-sertifikat.attachment');
 
 
     /**
@@ -180,7 +182,6 @@ Route::group(['middleware' => 'maintenance.mode'], function () {
             Route::put('update/{id}', [PersonalCertificateRecognitionController::class, 'update'])->name('update');
             // Route::put('/{slug}/ajukan', [StudentPengetahuanController::class, 'ajukanPengetahuan'])->name('ajukan');
             Route::delete('destroy/{id}', [PersonalCertificateRecognitionController::class, 'destroy'])->name('destroy');
-            Route::get('file/{id}/{file}', [PersonalCertificateRecognitionController::class, 'attachment'])->name('attachment');
         });
 
         Route::get('reviews', [StudentReviewController::class, 'index'])->name('reviews.index');

@@ -11,6 +11,7 @@ class StudentPelatihanStoreRequest extends FormRequest
         $rules = [
             'category' => 'required|in:blog,document,video',
             'enrollment' => 'nullable|exists:enrollments,id',
+            'certificateRecognition' => 'nullable|exists:personal_certificate_recognitions,id',
             'title' => 'required',
             'description' => 'required',
             'thumbnail' => 'required|mimes:jpg,jpeg,png|max:2048',
@@ -37,6 +38,7 @@ class StudentPelatihanStoreRequest extends FormRequest
             'content.required_if' => __('The content field is required when category is blog'),
             'category.in' => __('The selected category is invalid'),
             'enrollment.exists' => __('The selected enrollment id is invalid'),
+            'certificateRecognition.exists' => __('The selected certificate recognition id is invalid'),
             'thumbnail.mimes' => __('The thumbnail must be a file of type: jpg, jpeg, png'),
             'thumbnail.max' => __('The thumbnail may not be greater than 2048 kilobytes'),
             'file.mimes' => __('The file must be a file of type: pdf'),

@@ -17,6 +17,23 @@
     <!-- CSS here -->
     @include('frontend.layouts.styles')
     <!-- CustomCSS here -->
+    <style>
+        .logo a img {
+            max-width: 90px;
+        }
+
+        .tgmenu__navbar-wrap ul {
+            margin: 0 auto 0 10px;
+        }
+
+        @media (max-width: 1199.98px) {
+
+            .tg-header__area,
+            .tg-header__area.sticky-menu {
+                padding: 5px 0;
+            }
+        }
+    </style>
     @stack('styles')
     @if (customCode()?->css)
         <style>

@@ -88,28 +88,56 @@
                     <div class="card-body">
                         @foreach ($quiz->questions as $question)
                             <div class="question-box mt-4">
-                                <div class="d-flex align-items-baseline">
-                                    <h6 class="me-2">{{ $loop->iteration }}.</h6>
-                                    <div class="question-title">{!! $question->title !!}</div>
+                                <div class="d-flex align-items-start mb-4">
+                                    <!-- Kotak nomor: tetap kecil dan sejajar atas -->
+                                    <div class="me-3" style="width: 42px;">
+                                        <h6 class="mb-0 fs-5 fw-bold">{{ $loop->iteration }}.</h6>
+                                    </div>
+
+                                    <!-- Konten gambar + title -->
+                                    <div class="flex-grow-1">
+                                        @if ($question->image)
+                                            <div class="mb-2">
+                                                <img src="{{ $question->image ? url('questions/image/' . baseName($question->image)) : null }}"
+                                                    alt="Gambar Pertanyaan" class="img-fluid border shadow-sm"
+                                                    style="max-width: 420px; height: auto; object-fit: cover; display: block;">
+                                            </div>
+                                        @endif
+
+                                        <div class="question-title fs-5 fw-semibold">
+                                            {!! $question->title !!}
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     @foreach ($question->answers as $answer)
                                         <div class="col-md-6">
-                                            <div class="card ans-body m-2">
-                                                <label for="ans-{{ $answer->id }}" class="box first">
-                                                    <div class="course d-flex align-items-baseline">
-                                                        <span class="circle me-2">
+                                            <div class="card ans-body m-2 shadow-sm border-0">
+                                                <label for="ans-{{ $answer->id }}" class="box first p-3 w-100 d-block">
+                                                    @if ($answer->image)
+                                                        <div class="mb-2 text-start">
+                                                            <img src="{{ $answer->image ? url('answers/image/' . baseName($answer->image)) : null }}"
+                                                                alt="Gambar Jawaban" class="img-fluid"
+                                                                style="width: 100%; height: 180px; object-fit: contain; object-position: left;">
+                                                        </div>
+                                                    @endif
+
+                                                    <div class="course d-flex align-items-start">
+                                                        <span class="circle me-2 mt-1">
                                                             <input type="radio" name="question[{{ $question->id }}]"
                                                                 id="ans-{{ $answer->id }}" value="{{ $answer->id }}">
                                                         </span>
-                                                        <span class="subject question-title">{!! $answer->title !!}</span>
+                                                        <span class="subject question-title fw-medium">
+                                                            {!! $answer->title !!}
+                                                        </span>
                                                     </div>
                                                 </label>
                                             </div>
                                         </div>
                                     @endforeach
-
                                 </div>
+
+
                             </div>
                         @endforeach
                         <div class="mt-4 text-end">

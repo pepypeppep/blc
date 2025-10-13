@@ -173,12 +173,6 @@
             autoclose: false,
             format: "yyyy-mm-dd"
         });
-
-        @if ($coaching?->certificate_id != null)
-            $('#certificateBg').html(
-                '<img src="{{ route('admin.certificate-builder.getBg', $coaching->certificate_id) }}" alt="" style="width: 100%; height: auto;" />'
-            );
-        @endif
     </script>
 
 

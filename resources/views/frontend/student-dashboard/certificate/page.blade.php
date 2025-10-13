@@ -98,7 +98,7 @@
                         <tbody>
                             @foreach ($certificates as $data)
                                 <tr>
-                                    <td><strong>{{ $data->name }}</strong> ({{ $data->date }})</td>
+                                    <td><strong>{{ $data->title }}</strong> ({{ $data->year }})</td>
                                     <td>{{ ucwords($data->category) }}</td>
                                     <td>{{ $data->jp }}</td>
                                     <td>{{ $data->periode }}</td>

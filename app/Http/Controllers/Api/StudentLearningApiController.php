@@ -145,7 +145,12 @@ class StudentLearningApiController extends Controller
                 'chapters.chapterItems',
                 'chapters.chapterItems.lesson',
                 'chapters.chapterItems.quiz' => function ($query) {
-                    $query->withCount('results');
+                    $query->withCount('results')
+                        ->with(['results' => function ($query) {
+                            $query->select('id', 'status', 'user_Grade', 'quiz_id')
+                                ->latest('created_at')
+                                ->first();
+                        }]);
                 },
                 'chapters.chapterItems.rtl',
             ])->withTrashed()

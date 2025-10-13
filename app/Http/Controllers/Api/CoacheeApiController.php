@@ -72,10 +72,16 @@ class CoacheeApiController extends Controller
             })->where('status', '!=', 'draft');
 
             if ($request->has('search')) {
-                $dataQuery->where('title', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('coach', function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->search . '%');
-                    });
+                $dataQuery->where(function ($qr) use ($request) {
+                    $qr->where('title', 'like', '%' . $request->search . '%')
+                        ->orWhereHas('coach', function ($query) use ($request) {
+                            $query->where('name', 'like', '%' . $request->search . '%');
+                        });
+                });
+                // $dataQuery->where('title', 'like', '%' . $request->search . '%')
+                //     ->orWhereHas('coach', function ($query) use ($request) {
+                //         $query->where('name', 'like', '%' . $request->search . '%');
+                //     });
             }
 
             $coachingSessions = $dataQuery->paginate($request->per_page ?? 10);

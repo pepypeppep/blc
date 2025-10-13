@@ -68,10 +68,16 @@ class CoachApiController extends Controller
             $dataQuery = Coaching::with('coach:id,name')->where('coach_id', $request->user()->id);
 
             if ($request->has('search')) {
-                $dataQuery->where('title', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('coachees', function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->search . '%');
-                    });
+                $dataQuery->where(function ($qr) use ($request) {
+                    $qr->where('title', 'like', '%' . $request->search . '%')
+                        ->orWhereHas('coachees', function ($query) use ($request) {
+                            $query->where('name', 'like', '%' . $request->search . '%');
+                        });
+                });
+                // $dataQuery->where('title', 'like', '%' . $request->search . '%')
+                //     ->orWhereHas('coachees', function ($query) use ($request) {
+                //         $query->where('name', 'like', '%' . $request->search . '%');
+                //     });
             }
 
             $data = $dataQuery->orderByDesc('id')->paginate($request->per_page ?? 10);

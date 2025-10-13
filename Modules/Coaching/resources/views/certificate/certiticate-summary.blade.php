@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sertifikat</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Arial", sans-serif;
+        }
+
+        /* ==== GENERIC CONTAINER ==== */
+        .page {
+            width: 297mm;
+            height: 209mm;
+            border: 1.5pt solid #233774;
+            /* background: repeating-linear-gradient(45deg, rgba(35, 55, 116, 0.03) 0, rgba(35, 55, 116, 0.03) 20px,
+                    transparent 20px, transparent 40px) white; */
+
+            /* background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' > <path d='M0 50 Q25 0 50 50 T100 50 V100 H0 Z' fill='%23233774' fill-opacity='0.04' /> </svg>");
+            background-repeat: repeat; */
+
+
+            /* background-color: #DFDBE5; */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 192 192'%3E%3Cpath fill='%239C92AC' fill-opacity='0.3' d='M192 15v2a11 11 0 0 0-11 11c0 1.94 1.16 4.75 2.53 6.11l2.36 2.36a6.93 6.93 0 0 1 1.22 7.56l-.43.84a8.08 8.08 0 0 1-6.66 4.13H145v35.02a6.1 6.1 0 0 0 3.03 4.87l.84.43c1.58.79 4 .4 5.24-.85l2.36-2.36a12.04 12.04 0 0 1 7.51-3.11 13 13 0 1 1 .02 26 12 12 0 0 1-7.53-3.11l-2.36-2.36a4.93 4.93 0 0 0-5.24-.85l-.84.43a6.1 6.1 0 0 0-3.03 4.87V143h35.02a8.08 8.08 0 0 1 6.66 4.13l.43.84a6.91 6.91 0 0 1-1.22 7.56l-2.36 2.36A10.06 10.06 0 0 0 181 164a11 11 0 0 0 11 11v2a13 13 0 0 1-13-13 12 12 0 0 1 3.11-7.53l2.36-2.36a4.93 4.93 0 0 0 .85-5.24l-.43-.84a6.1 6.1 0 0 0-4.87-3.03H145v35.02a8.08 8.08 0 0 1-4.13 6.66l-.84.43a6.91 6.91 0 0 1-7.56-1.22l-2.36-2.36A10.06 10.06 0 0 0 124 181a11 11 0 0 0-11 11h-2a13 13 0 0 1 13-13c2.47 0 5.79 1.37 7.53 3.11l2.36 2.36a4.94 4.94 0 0 0 5.24.85l.84-.43a6.1 6.1 0 0 0 3.03-4.87V145h-35.02a8.08 8.08 0 0 1-6.66-4.13l-.43-.84a6.91 6.91 0 0 1 1.22-7.56l2.36-2.36A10.06 10.06 0 0 0 107 124a11 11 0 0 0-22 0c0 1.94 1.16 4.75 2.53 6.11l2.36 2.36a6.93 6.93 0 0 1 1.22 7.56l-.43.84a8.08 8.08 0 0 1-6.66 4.13H49v35.02a6.1 6.1 0 0 0 3.03 4.87l.84.43c1.58.79 4 .4 5.24-.85l2.36-2.36a12.04 12.04 0 0 1 7.51-3.11A13 13 0 0 1 81 192h-2a11 11 0 0 0-11-11c-1.94 0-4.75 1.16-6.11 2.53l-2.36 2.36a6.93 6.93 0 0 1-7.56 1.22l-.84-.43a8.08 8.08 0 0 1-4.13-6.66V145H11.98a6.1 6.1 0 0 0-4.87 3.03l-.43.84c-.79 1.58-.4 4 .85 5.24l2.36 2.36a12.04 12.04 0 0 1 3.11 7.51A13 13 0 0 1 0 177v-2a11 11 0 0 0 11-11c0-1.94-1.16-4.75-2.53-6.11l-2.36-2.36a6.93 6.93 0 0 1-1.22-7.56l.43-.84a8.08 8.08 0 0 1 6.66-4.13H47v-35.02a6.1 6.1 0 0 0-3.03-4.87l-.84-.43c-1.59-.8-4-.4-5.24.85l-2.36 2.36A12 12 0 0 1 28 109a13 13 0 1 1 0-26c2.47 0 5.79 1.37 7.53 3.11l2.36 2.36a4.94 4.94 0 0 0 5.24.85l.84-.43A6.1 6.1 0 0 0 47 84.02V49H11.98a8.08 8.08 0 0 1-6.66-4.13l-.43-.84a6.91 6.91 0 0 1 1.22-7.56l2.36-2.36A10.06 10.06 0 0 0 11 28 11 11 0 0 0 0 17v-2a13 13 0 0 1 13 13c0 2.47-1.37 5.79-3.11 7.53l-2.36 2.36a4.94 4.94 0 0 0-.85 5.24l.43.84A6.1 6.1 0 0 0 11.98 47H47V11.98a8.08 8.08 0 0 1 4.13-6.66l.84-.43a6.91 6.91 0 0 1 7.56 1.22l2.36 2.36A10.06 10.06 0 0 0 68 11 11 11 0 0 0 79 0h2a13 13 0 0 1-13 13 12 12 0 0 1-7.53-3.11l-2.36-2.36a4.93 4.93 0 0 0-5.24-.85l-.84.43A6.1 6.1 0 0 0 49 11.98V47h35.02a8.08 8.08 0 0 1 6.66 4.13l.43.84a6.91 6.91 0 0 1-1.22 7.56l-2.36 2.36A10.06 10.06 0 0 0 85 68a11 11 0 0 0 22 0c0-1.94-1.16-4.75-2.53-6.11l-2.36-2.36a6.93 6.93 0 0 1-1.22-7.56l.43-.84a8.08 8.08 0 0 1 6.66-4.13H143V11.98a6.1 6.1 0 0 0-3.03-4.87l-.84-.43c-1.59-.8-4-.4-5.24.85l-2.36 2.36A12 12 0 0 1 124 13a13 13 0 0 1-13-13h2a11 11 0 0 0 11 11c1.94 0 4.75-1.16 6.11-2.53l2.36-2.36a6.93 6.93 0 0 1 7.56-1.22l.84.43a8.08 8.08 0 0 1 4.13 6.66V47h35.02a6.1 6.1 0 0 0 4.87-3.03l.43-.84c.8-1.59.4-4-.85-5.24l-2.36-2.36A12 12 0 0 1 179 28a13 13 0 0 1 13-13zM84.02 143a6.1 6.1 0 0 0 4.87-3.03l.43-.84c.8-1.59.4-4-.85-5.24l-2.36-2.36A12 12 0 0 1 83 124a13 13 0 1 1 26 0c0 2.47-1.37 5.79-3.11 7.53l-2.36 2.36a4.94 4.94 0 0 0-.85 5.24l.43.84a6.1 6.1 0 0 0 4.87 3.03H143v-35.02a8.08 8.08 0 0 1 4.13-6.66l.84-.43a6.91 6.91 0 0 1 7.56 1.22l2.36 2.36A10.06 10.06 0 0 0 164 107a11 11 0 0 0 0-22c-1.94 0-4.75 1.16-6.11 2.53l-2.36 2.36a6.93 6.93 0 0 1-7.56 1.22l-.84-.43a8.08 8.08 0 0 1-4.13-6.66V49h-35.02a6.1 6.1 0 0 0-4.87 3.03l-.43.84c-.79 1.58-.4 4 .85 5.24l2.36 2.36a12.04 12.04 0 0 1 3.11 7.51A13 13 0 1 1 83 68a12 12 0 0 1 3.11-7.53l2.36-2.36a4.93 4.93 0 0 0 .85-5.24l-.43-.84A6.1 6.1 0 0 0 84.02 49H49v35.02a8.08 8.08 0 0 1-4.13 6.66l-.84.43a6.91 6.91 0 0 1-7.56-1.22l-2.36-2.36A10.06 10.06 0 0 0 28 85a11 11 0 0 0 0 22c1.94 0 4.75-1.16 6.11-2.53l2.36-2.36a6.93 6.93 0 0 1 7.56-1.22l.84.43a8.08 8.08 0 0 1 4.13 6.66V143h35.02z'%3E%3C/path%3E%3C/svg%3E");
+
+            position: relative;
+            page-break-after: avoid;
+            overflow: hidden;
+        }
+
+        /* ==== HEADER ==== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15mm 20mm 5mm 20mm;
+        }
+
+        .header .title {
+            font-size: 16pt;
+            font-weight: bold;
+            color: #233774;
+        }
+
+        /* ==== PAGE 1 ==== */
+        .certificate-title {
+            text-align: center;
+            font-size: 32pt;
+            font-weight: 900;
+            color: #233774;
+            margin-top: 15mm;
+            margin-bottom: 5mm;
+            border-bottom: 2px solid #233774;
+            display: inline-block;
+        }
+
+        .certificate-body {
+            text-align: center;
+            margin-top: 10mm;
+            font-size: 14pt;
+            line-height: 1.5;
+        }
+
+        .recipient {
+            font-size: 22pt;
+            font-weight: bold;
+            color: #233774;
+            margin: 5mm 0;
+        }
+
+        .course {
+            font-weight: bold;
+            color: #233774;
+        }
+
+        .date {
+            text-align: center;
+            margin-top: 15mm;
+            font-size: 12pt;
+        }
+
+        .signature {
+            text-align: center;
+            margin-top: 15mm;
+        }
+
+        .signature svg {
+            width: 120px;
+            height: auto;
+        }
+
+        .signatory {
+            font-weight: bold;
+            margin-top: 2mm;
+        }
+
+        .signatory-title {
+            font-size: 11pt;
+        }
+
+        .qr-code-float {
+            position: absolute;
+            bottom: 20mm;
+            right: 25mm;
+            width: 70px;
+            height: 70px;
+            background: #eee;
+        }
+
+        .qr-code {
+            width: 70px;
+            height: 70px;
+            background: #eee;
+        }
+
+        .cert-number {
+            position: absolute;
+            bottom: 15mm;
+            right: 25mm;
+            font-size: 10pt;
+        }
+
+        /* decorations */
+        .ribbon-left {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #f58220 50%, #233774 50%);
+            clip-path: polygon(0 100%, 0 0, 100% 100%);
+        }
+
+        .ribbon-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(-135deg, #233774 70%, #f58220 30%);
+            clip-path: polygon(100% 0, 0 0, 100% 100%);
+        }
+
+        /* ==== PAGE 2 ==== */
+        .table-wrapper {
+            margin: 20mm;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12pt;
+        }
+
+        thead {
+            background: #233774;
+            color: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #233774;
+            padding: 8px 12px;
+        }
+
+        th:first-child,
+        td:first-child {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- === PAGE 2 === -->
+    <div class="page">
+        <div class="header">
+            <!-- FutureSkills logo approx -->
+            <svg width="200" height="60" viewBox="0 0 200 60">
+                <path d="M5 10 h20 v10 h-10 v10 h10 v10 h-20z" fill="#233774" />
+                <path d="M35 10 h10 v30 h-10z" fill="#f58220" />
+                <text x="50" y="35" font-size="20" font-weight="bold" fill="#233774">BKPP</text>
+                <text x="105" y="35" font-size="20" font-weight="bold" fill="#f58220">SDM</text>
+                <text x="50" y="50" font-size="10" fill="#233774">Kabupaten Bantul</text>
+            </svg>
+            <div class="title">[title]</div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>{{ $column1Title ?? 'Judul' }}</th>
+                        <th>{{ $column2Title ?? 'JPL' }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{-- [[a,b,b],[a,b,c]] --}}
+                    @foreach ($datas as $data)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $data[0] ?? '-' }}</td>
+                            <td>{{ $data[1] ?? '-' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <div class="signature">
+            <img src="[qrcode_data]" alt="QR Code" class="qr-code">
+            <div class="signatory">[nama_kepala_opd]</div>
+            <div class="signatory-title">[nama_jabatan]</div>
+        </div>
+    </div>
+
+</body>
+
+</html>

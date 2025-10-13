@@ -19,6 +19,8 @@ use App\Http\Controllers\Api\StudentLearningApiController;
 use App\Http\Controllers\Api\StudentQuizApiController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\SSOController;
+use Modules\Coaching\app\Http\Controllers\CoachingCertificateController;
+use Modules\Coaching\app\Http\Controllers\CoachingController;
 
 Route::middleware('auth:sso-api')->get('/hello', function (Request $request) {
     return [
@@ -220,6 +222,11 @@ Route::name('api.')->group(function () {
 
 
     // Bantara Callback
-    Route::post('/callback/course/{enrollment}', [CertificateApiController::class, 'bantaraCallback'])->name('bantara-callback');
-    Route::post('/callback/mentoring/{mentoring}', [MentorApiController::class, 'bantaraCallback'])->name('mentoring-callback');
+    Route::prefix('callback')
+        ->name('callback.')
+        ->group(function () {
+            Route::post('/course/{enrollment}', [CertificateApiController::class, 'bantaraCallback'])->name('bantara-callback');
+            Route::post('/mentoring/{mentoring}', [MentorApiController::class, 'bantaraCallback'])->name('mentoring-callback');
+            Route::post('/coaching', [CoachingCertificateController::class, 'bantaraCallback'])->name('coaching');
+        });
 });

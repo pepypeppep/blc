@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/kominfosys/Code/BKPPSDM/lms/Modules/Coaching/resources/views/**)",
+      "Read(//home/kominfosys/Code/BKPPSDM/lms/Modules/Coaching/app/Http/Controllers/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

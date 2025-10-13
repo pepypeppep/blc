@@ -1,15 +1,16 @@
 <?php
 
-namespace Modules\Coaching\App\Models;
+namespace Modules\Coaching\app\Models;
 
-use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User;
-use Modules\Coaching\app\Models\Coaching;
-use Modules\Coaching\app\Models\CoachingAssessment;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Coaching\Database\factories\CoachingUuFactory;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class CoachingUser extends Pivot
+
+class CoachingUu extends Pivot
 {
     protected $table = 'coaching_users';
     protected $appends = ['final_report_url'];

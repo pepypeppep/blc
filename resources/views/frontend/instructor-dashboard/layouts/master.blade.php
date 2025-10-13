@@ -48,11 +48,11 @@
                     @include('frontend.instructor-dashboard.layouts.sidebar')
                 </div>
                 <div class="col-lg-9 position-relative">
-                    <div class="preloader d-none">
+                    {{-- <div class="preloader d-none">
                         <div class="loader-icon"><img
                                 src="{{ route('get.section.asset', [1, 'preloader']) }}?module=general" alt="Preloader">
                         </div>
-                    </div>
+                    </div> --}}
 
                     @yield('dashboard-contents')
                 </div>

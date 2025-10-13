@@ -179,8 +179,9 @@
     @include('admin.partials.javascripts')
     @include('global.dynamic-js-variables')
 
-    @stack('js')
+    @stack('body-bottom')
 
+    @stack('js')
 </body>
 
 </html>

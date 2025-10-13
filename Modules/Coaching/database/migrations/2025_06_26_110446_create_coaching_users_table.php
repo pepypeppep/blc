@@ -19,6 +19,11 @@ return new class extends Migration
             $table->timestamp('joined_at')->nullable();
             $table->text('notes')->nullable();
             $table->string('final_report')->nullable();
+
+            // certificate
+            $table->string('certificate_path')->nullable(); // store the certificate path before sending to Bantara.
+            $table->string('certificate_uuid')->nullable(); // store the certificate uuid after request to Bantara.
+            $table->string('signed_certificate_path')->nullable(); // store the signed certificate path after receiving callback from Bantara.
             $table->timestamps();
         });
     }

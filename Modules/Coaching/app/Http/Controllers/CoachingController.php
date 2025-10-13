@@ -94,13 +94,26 @@ class CoachingController extends Controller
     public function show($id)
     {
         $coaching = Coaching::with([
-            'coachees:id,name', 'joinedCoachees:id,name', 'coachingSessions.details.coachingUser.coachee'
+            'coachees:id,name',
+            'joinedCoachees:id,name',
+            'coachingSessions.details.coachingUser.coachee'
         ])->findOrFail($id);
 
         authorizeCoachAccess($coaching);
         $certificates = CertificateBuilder::paginate();
 
-        return view('coaching::show', compact('coaching', 'certificates'));
+
+        $templatesList = Storage::disk('templates')->files();
+
+        $templates = [];
+        foreach ($templatesList as $template) {
+            if (!str_ends_with($template, '.html')) {
+                continue;
+            }
+            $templates[] = $template;
+        }
+
+        return view('coaching::show', compact('coaching', 'certificates', 'templates'));
     }
 
     /**
@@ -160,7 +173,7 @@ class CoachingController extends Controller
         ]);
 
         $coachingUser = CoachingUser::with('coaching')
-        ->findOrFail($validated['coaching_user_id']);
+            ->findOrFail($validated['coaching_user_id']);
 
         if (!$coachingUser) {
             abort(403, 'Anda tidak memiliki izin untuk mengakses ini.');
@@ -185,6 +198,5 @@ class CoachingController extends Controller
         $detail->save();
 
         return redirect()->back()->with(['messege' => 'Review berhasil disimpan', 'alert-type' => 'success']);
-
     }
 }

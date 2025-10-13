@@ -8,6 +8,7 @@ use App\Models\CourseProgress;
 use App\Models\CourseChapterItem;
 use App\Http\Controllers\Controller;
 use App\Services\CertificateService;
+use App\Models\CertificateCollection;
 use Illuminate\Support\Facades\Storage;
 use Modules\Order\app\Models\Enrollment;
 use Modules\CertificateRecognition\app\Models\CertificateRecognitionEnrollment;
@@ -144,9 +145,68 @@ class CertificateApiController extends Controller
     public function getCertificatesForStudent(Request $request, CertificateService $certificateService)
     {
         try {
-            $result = $certificateService->getCertificatesForUser($request, $request->user()->id);
+            // $result = $certificateService->getCertificatesForUser($request, $request->user()->id);
 
-            return response()->json($result);
+            $sql = CertificateCollection::where('user_id', $request->user()->id);
+
+            if ($request->has('year')) {
+                $sql->where('year', $request->year);
+            }
+
+            // Get paginated results
+            $perPage = $request->per_page ?? 10;
+            $result = $sql->orderBy('start_at', 'desc')->paginate($perPage);
+
+            // Calculate totals using aggregate queries (more efficient)
+            $totalJp = CertificateCollection::where('user_id', $request->user()->id)
+                ->when($request->has('year'), function ($query) use ($request) {
+                    $query->where('year', $request->year);
+                })
+                ->sum('jp');
+
+            $totalJpPerTriwulan = [];
+            for ($triwulan = 1; $triwulan <= 4; $triwulan++) {
+                $totalJpPerTriwulan[$triwulan] = CertificateCollection::where('user_id', $request->user()->id)
+                    ->when($request->has('year'), function ($query) use ($request) {
+                        $query->where('year', $request->year);
+                    })
+                    ->where('triwulan', $triwulan)
+                    ->sum('jp');
+            }
+
+            // Transform the data if needed (assuming you have accessors or need to format)
+            $formattedData = $result->getCollection()->map(function ($certificate) {
+                return [
+                    'category' => $certificate->category,
+                    'name' => $certificate->title,
+                    'jp' => $certificate->jp,
+                    'date' => $certificate->year,
+                    'periode' => $certificate->periode,
+                    'triwulan' => $certificate->triwulan,
+                    'url' => $certificate->url
+                ];
+            });
+
+            // Replace the collection with formatted data
+            $result->setCollection($formattedData);
+
+            // Return the formatted response
+            return response()->json([
+                'success' => true,
+                'message' => 'Daftar sertifikat ditemukan.',
+                'data' => $result->items(),
+                'totalJp' => $totalJp,
+                'totalJpPerTriwulan' => $totalJpPerTriwulan,
+                'pagination' => [
+                    'total' => $result->total(),
+                    'per_page' => $result->perPage(),
+                    'current_page' => $result->currentPage(),
+                    'last_page' => $result->lastPage(),
+                    'from' => $result->firstItem(),
+                    'to' => $result->lastItem()
+                ],
+                'code' => 200
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

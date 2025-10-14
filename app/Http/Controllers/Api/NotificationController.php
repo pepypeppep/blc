@@ -40,7 +40,7 @@ class NotificationController extends Controller
             'fcm_token' => 'required|string',
         ]);
 
-        $user = User::find($request->auth()->user()->id);
+        $user = User::find($request->user()->id);
         $user->update(['fcm_token' => $request->fcm_token]);
 
         return response()->json(['message' => 'Device token updated successfully']);

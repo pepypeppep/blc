@@ -5442,11 +5442,6 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "user_id": {
-                                        "description": "User ID",
-                                        "type": "integer",
-                                        "example": 1
-                                    },
                                     "fcm_token": {
                                         "description": "FCM token",
                                         "type": "string",

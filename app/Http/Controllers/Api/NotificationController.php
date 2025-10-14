@@ -15,7 +15,7 @@ class NotificationController extends Controller
      *     summary="Update device token",
      *     description="Update device token",
      *     tags={"Notifications"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"bearer":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(

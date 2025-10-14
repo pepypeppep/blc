@@ -40,7 +40,7 @@ Route::name('api.')->group(function () {
     Route::get('/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('privacy-policy');
     Route::get('/terms-and-conditions', [HomeController::class, 'termsAndConditions'])->name('terms-and-conditions');
 
-    Route::post('/update-device-token', [NotificationController::class, 'updateDeviceToken'])->name('firebase.update.token');
+    Route::middleware('auth:sso-api')->post('/update-device-token', [NotificationController::class, 'updateDeviceToken'])->name('firebase.update.token');
     Route::get('/notifications', [NotificationController::class, 'list'])->name('notification.list');
     Route::get('/notifications/read', [NotificationController::class, 'read'])->name('notification.read');
 

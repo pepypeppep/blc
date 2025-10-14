@@ -21,12 +21,6 @@ class NotificationController extends Controller
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(
-     *                 property="user_id",
-     *                 type="integer",
-     *                 example=1,
-     *                 description="User ID"
-     *             ),
-     *             @OA\Property(
      *                 property="fcm_token",
      *                 type="string",
      *                 example="fcm token",
@@ -43,11 +37,10 @@ class NotificationController extends Controller
     public function updateDeviceToken(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'fcm_token' => 'required|string',
         ]);
 
-        $user = User::find($request->user_id);
+        $user = User::find($request->auth()->user()->id);
         $user->update(['fcm_token' => $request->fcm_token]);
 
         return response()->json(['message' => 'Device token updated successfully']);

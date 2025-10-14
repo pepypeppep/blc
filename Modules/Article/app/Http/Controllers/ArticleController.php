@@ -95,6 +95,19 @@ class ArticleController extends Controller
                     'status' => 'rejected',
                 ]);
             }
+
+            sendNotification([
+                'user_id' => $article->author_id,
+                'title' => 'Pengetahuan Ditolak',
+                'body' => "Pengetahuan Anda dengan judul '{$article->title}' telah ditolak. Alasan: {$article->note}",
+                'link' => route('student.pengetahuan.show', $article->slug),
+                'path' => [
+                    'module' => 'article',
+                    'submodule' => 'show',
+                    'id' => $article->id,
+                    'slug' => $article->slug
+                ]
+            ]);
         } elseif ($status === 'published') {
             $article->verificator_id = Auth::user()->id;
             $article->status = 'published';
@@ -105,6 +118,19 @@ class ArticleController extends Controller
                     'status' => 'done',
                 ]);
             }
+
+            sendNotification([
+                'user_id' => $article->author_id,
+                'title' => 'Pengetahuan Diterbitkan',
+                'body' => "Pengetahuan Anda dengan judul '{$article->title}' telah diterbitkan.",
+                'link' => route('student.pengetahuan.show', $article->slug),
+                'path' => [
+                    'module' => 'article',
+                    'submodule' => 'show',
+                    'id' => $article->id,
+                    'slug' => $article->slug
+                ]
+            ]);
         } else {
             return back()->with('error', 'Status tidak valid.');
         }

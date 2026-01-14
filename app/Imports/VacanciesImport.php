@@ -2,16 +2,17 @@
 
 namespace App\Imports;
 
+use Throwable;
+use App\Models\Instansi;
+use App\Models\EmployeeGrade;
+use App\Enums\EmploymentGrade;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Modules\PendidikanLanjutan\app\Models\Study;
 use Modules\PendidikanLanjutan\app\Models\Vacancy;
-use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
-use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
-use App\Enums\EmploymentGrade;
-use App\Models\EmployeeGrade;
-use App\Models\Instansi;
 use Modules\PendidikanLanjutan\app\Models\VacancyDetail;
+use Modules\PendidikanLanjutan\app\Models\VacancyAttachment;
+use Modules\PendidikanLanjutan\app\Models\VacancyMasterAttachment;
 
 class VacanciesImport implements ToModel, WithHeadingRow
 {
@@ -23,22 +24,57 @@ class VacanciesImport implements ToModel, WithHeadingRow
 
     public int $imported = 0;
     public int $skipped = 0;
+    private int $rowNumber = 1;
 
     public function model(array $row)
     {
+        $this->rowNumber++;
+
         // Check if the row is empty
         if (empty(array_filter($row))) {
-            return null;
+            throw new \Exception("Row {$this->rowNumber} | The row is empty.");
         }
 
         // Check if required fields are present and not empty
-        if (empty($row['jenjang']) || empty($row['pangkatgolongan']) || empty($row['status_kepegawaian']) || empty($row['jenis_biaya']) || empty($row['jumlah_formasi']) || empty($row['batas_usia']) || empty($row['tahun'])) {
-            return null;
-        }
+        // if (empty($row['jenjang']) || empty($row['pangkatgolongan']) || empty($row['status_kepegawaian']) || empty($row['jenis_biaya']) || empty($row['jumlah_formasi']) || empty($row['batas_usia']) || empty($row['tahun'])) {
+        //     throw new \Exception("Row {$this->rowNumber} | Missing required fields in the row.");
+        // }
 
         $employeeGrade = EmployeeGrade::where('name', $row['pangkatgolongan'])->first();
         if (!$employeeGrade) {
-            throw new \Exception("Invalid pangkat/golongan: {$row['pangkatgolongan']}");
+            throw new \Exception("Row {$this->rowNumber} | Invalid pangkat/golongan: {$row['pangkatgolongan']}");
+        }
+
+        if (empty($row['jenjang'])) {
+            throw new \Exception("Row {$this->rowNumber} | Missing required fields in the row for data Jenjang: {$row['jenjang']}");
+        }
+
+        if (empty($row['pangkatgolongan'])) {
+            throw new \Exception("Row {$this->rowNumber} | Missing required fields in the row for data Pangkat Golongan: {$row['pangkatgolongan']}");
+        }
+
+        if (empty($row['syarat_pendidikan'])) {
+            throw new \Exception("Row {$this->rowNumber} | Missing required fields in the row for data Syarat Pendidikan: {$row['syarat_pendidikan']}");
+        }
+
+        if (empty($row['status_kepegawaian'])) {
+            throw new \Exception("Row {$this->rowNumber} | Missing required fields in the row for data Status Kepegawaian: {$row['status_kepegawaian']}");
+        }
+
+        if (empty($row['jenis_biaya'])) {
+            throw new \Exception("Row {$this->rowNumber} | Missing required fields in the row for data Jenis Biaya: {$row['jenis_biaya']}");
+        }
+
+        if (empty($row['jumlah_formasi'])) {
+            throw new \Exception("Row {$this->rowNumber} | Missing required fields in the row for data Jumlah Formasi: {$row['jumlah_formasi']}");
+        }
+
+        if (empty($row['batas_usia'])) {
+            throw new \Exception("Row {$this->rowNumber} | Missing required fields in the row for data Batas Usia: {$row['batas_usia']}");
+        }
+
+        if (empty($row['tahun'])) {
+            throw new \Exception("Row {$this->rowNumber} | Missing required fields in the row for data Tahun: {$row['tahun']}");
         }
 
         // Dump the row for debugging purposes
@@ -109,5 +145,10 @@ class VacanciesImport implements ToModel, WithHeadingRow
         }
 
         return $vacancy;
+    }
+
+    public function onError(Throwable $e)
+    {
+        throw $e;
     }
 }

@@ -4,31 +4,24 @@
 
 ```sh
 php artisan migrate:fresh --seed
+php artisan unorjenis:sync
 php artisan unor:sync
 php artisan instansi:sync
-php artisan user:sync {instansi_id}
+php artisan user:sync
 ```
 
 ## Fill Following Data on Config Table
 
-| Key | Value |
-| --- | --- |
-| bantara_url | https://bantara.inidev.my.id |
-| bantara_key | {bantara_api_key} |
-| bantara_callback_key | {bantara_callback_key} |
+| Key                  | Value                        |
+| -------------------- | ---------------------------- |
+| bantara_url          | https://bantara.inidev.my.id |
+| bantara_key          | {bantara_api_key}            |
+| bantara_callback_key | {bantara_callback_key}       |
 
-# Data User
+# Background Jobs
 
-[x] 'alamat',
-[x] 'jenis_kelamin',  
-[x] 'pendidikan',
-[x] 'tingkat_pendidikan',
-[x] 'tmt_golongan',
-[x] 'tmt_jabatan',
-[x] 'bup': 2025-{tahun_lahir}+{bup_from_api}
-[x] 'eselon',
-[x] 'golongan',
-[x] 'jabatan',
-[x] 'pangkat',
-[x] 'tanggal_lahir',
-[x] 'tempat_lahir'
+Using crontab run this script every 10 minutes
+
+```sh
+php artisan certificate:collect
+```

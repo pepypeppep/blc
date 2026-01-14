@@ -43,17 +43,17 @@ class UnorSync extends Command
         $unorsData = $response->json('result');
 
         foreach ($unorsData as $unorData) {
-            try{
-
-                Unor::updateOrCreate([
-                    'id' => $unorData['id'],
-                ], [
-                    'unor_jenis_id' => $unorData['id_jenis_unor'],
-                    'parent_id' => $unorData['parent_id'],
-                    'name' => $unorData['name'],
-                ]);
-            }
-            catch(Exception $e){
+            try {
+                if ($unorData['parent_id'] != 20419) {
+                    Unor::updateOrCreate([
+                        'id' => $unorData['id'],
+                    ], [
+                        'unor_jenis_id' => $unorData['id_jenis_unor'],
+                        'parent_id' => $unorData['parent_id'],
+                        'name' => $unorData['name'],
+                    ]);
+                }
+            } catch (Exception $e) {
                 $this->error('Gagal sinkronisasi data unor' . 'status: ' . $e->getMessage());
             }
         }

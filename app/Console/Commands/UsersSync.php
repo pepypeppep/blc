@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Http;
 
 class UsersSync extends Command
 {
-
-    protected $signature = 'users:sync {instansi}';
-
+    protected $signature = 'users:sync {instansi?}';
 
     protected $description = 'Sync users';
 
@@ -21,10 +19,19 @@ class UsersSync extends Command
         $instansiID = $this->argument('instansi');
 
         if (empty($instansiID)) {
-            $this->error('Instansi ID is required');
-            return;
+            $instansis = Instansi::all();
+            foreach ($instansis as $key => $instansi) {
+                $this->crawler($instansi->id);
+            }
+        } else {
+            $this->crawler($instansiID);
         }
 
+        $this->info('Berhasil sinkronisasi data user');
+    }
+
+    public function crawler($instansiID)
+    {
         $instansi = Instansi::where('id', $instansiID)->firstOrFail();
 
         if ($instansi->unor_id == null) {
@@ -32,7 +39,7 @@ class UsersSync extends Command
             return;
         }
 
-        $this->info("Crawling data users on " . $instansi->name);
+        $this->info("Crawling data users on " . $instansi->name . "UNOR ID: " . $instansi->unor_id);
 
         $response = Http::timeout(60)->withHeaders([
             'Authorization' => 'Basic ' . base64_encode(env('SAPA_USERNAME') . ':' . env('SAPA_PASSWORD')),
@@ -44,7 +51,6 @@ class UsersSync extends Command
             $this->error('Gagal mengambil data user' . 'status: ' . $response->status());
             return;
         }
-
 
         $usersData = $response->json('result');
 
@@ -114,7 +120,5 @@ class UsersSync extends Command
                 'ninebox' => $nineboxData['data']['ninebox'] ?? null
             ]);
         }
-
-        $this->info('Berhasil sinkronisasi data user');
     }
 }

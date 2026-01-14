@@ -233,9 +233,22 @@ class VacancyController extends Controller
             $import = new VacanciesImport();
             Excel::import($import, $request->file('vacancies'));
 
-            return redirect()->route('admin.vacancies.index')->with('success', "Vacancy imported successfully. Successfully imported {$import->imported} data. Duplicates skipped: {$import->skipped}.");
+            if ($import->imported === 0) {
+                return redirect()
+                    ->route('admin.vacancies.index')
+                    ->with('error', 'Import failed. No valid data found.');
+            }
+
+            return redirect()
+                ->route('admin.vacancies.index')
+                ->with(
+                    'success',
+                    "Vacancy imported successfully. Imported {$import->imported} data. Duplicates skipped: {$import->skipped}."
+                );
         } catch (\Throwable $e) {
-            return redirect()->route('admin.vacancies.index')->with('error', $e->getMessage());
+            return redirect()
+                ->route('admin.vacancies.index')
+                ->with('error', $e->getMessage());
         }
     }
 

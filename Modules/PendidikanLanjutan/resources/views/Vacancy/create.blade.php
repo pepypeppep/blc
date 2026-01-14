@@ -51,8 +51,9 @@
                                             <div class="form-group col-md-4">
                                                 <label for="employee_grade_id">{{ __('Employment Grade') }} <span
                                                         class="text-danger">*</span></label>
-                                                <select name="employee_grade_id" class="form-control select2" id="employee_grade_id">
-                                                    @foreach($employeeGrades as $grade)
+                                                <select name="employee_grade_id" class="form-control select2"
+                                                    id="employee_grade_id">
+                                                    @foreach ($employeeGrades as $grade)
                                                         <option value="{{ $grade->id }}"
                                                             {{ old('employee_grade_id', $selected ?? '') === $grade->id ? 'selected' : '' }}>
                                                             {{ $grade->name }}
@@ -87,9 +88,11 @@
                                                     <option value="S-1">{{ __('Strata I') }}</option>
                                                     <option value="S-2">{{ __('Strata II') }}</option>
                                                     <option value="S-3">{{ __('Strata III') }}</option>
-                                                    <option value="Profesi PPDS">{{ __('Profesi, PPDS (Dokter Spesialis)') }}
+                                                    <option value="Profesi PPDS">
+                                                        {{ __('Profesi, PPDS (Dokter Spesialis)') }}
                                                     </option>
-                                                    <option value="PPDS Subspesialis">{{ __('PPDS (Dokter Subspesialis)') }}
+                                                    <option value="PPDS Subspesialis">
+                                                        {{ __('PPDS (Dokter Subspesialis)') }}
                                                     </option>
                                                 </select>
                                                 @error('education_level')
